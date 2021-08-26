@@ -25,12 +25,14 @@ module.exports = {
     name: "help",
     description: "Displays all of the available commands",
     category: "utility",
-    options: [{
-      name: "command",
-      description: "The command you want to get more information about",
-      type: 3,
-      required: false
-    }],
+    options: [
+      {
+        name: "command",
+        description: "The command you want to get more information about",
+        type: 3,
+        required: false
+      }
+    ],
     examples: [
       "help"
     ]

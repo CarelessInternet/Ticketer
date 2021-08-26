@@ -1,0 +1,24 @@
+{
+  "name": "ticketer",
+  "version": "1.0.0",
+  "description": "Ticketing bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_ENV=development node .",
+    "production": "NODE_ENV=production node .",
+    "deploy": "node deploy.js"
+  },
+  "author": "CarelessInternet",
+  "license": "GPL-V3",
+  "dependencies": {
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "bufferutil": "^4.0.3",
+    "dateformat": "^4.5.1",
+    "discord-api-types": "^0.22.0",
+    "discord.js": "^13.1.0",
+    "dotenv": "^10.0.0",
+    "topgg-autoposter": "^2.0.0",
+    "utf-8-validate": "^5.0.5",
+    "zlib-sync": "^0.1.7"
+  }
+}

@@ -19,6 +19,12 @@ module.exports = {
         type: 3,
         required: false
       }
+    ],
+    examples: [
+      "ban @SomeDude#1337",
+      "ban @you#5555 why are you gae",
+      "ban @noone#2321",
+      "ban @whyamistillherejusttosuffer#1111 reason reason reason reason sample text"
     ]
   },
   async execute(interaction) {

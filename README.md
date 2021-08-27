@@ -8,7 +8,8 @@ Welcome to the official GitHub page for the Ticketer bot! You can find all of th
 ## Running the Bot
 
 #### Creating `.env` File
-In order to do anything with the bot, create a file named `.env` and add all necessary environment variables in the list labelled "Environment Variables"
+In order to do anything with the bot, create a file named `.env` and add all necessary environment variables in the list labelled "Environment Variables."
+Don't forget to enable the Server Members Intent for your bot.
 #### Installing Dependencies
 Run the command `npm i` to install all dependencies
 

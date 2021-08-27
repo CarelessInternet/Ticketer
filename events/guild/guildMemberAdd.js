@@ -18,7 +18,7 @@ async function memberAdd(client, Discord, prefix, member) {
     if (!record) return;
 
     const {ChannelID, Enabled} = record;
-    if (!Enabled) return;
+    if (!Enabled || ChannelID === 0) return;
 
     const channel = await member.guild.channels.fetch(ChannelID);
     const embed = new Discord.MessageEmbed()

@@ -12,12 +12,15 @@ In order to do anything with the bot, create a file named `.env` and add all nec
 #### Installing Dependencies
 Run the command `npm i` to install all dependencies
 
+#### Creating MySQL Table
+If you haven't, install `mysql` on your system first. Run the command `npm run mysql` to create all necessary tables
+
 #### Deploying Commands
 Run the command `npm run deploy` to deploy the commands
 
 #### Running the Bot
 Run the command `npm start` to run the bot in a development environment.<br>
-Run the command `npm run production` for a production environment (NEVER run this unless you're running the bot, and the bot is in [top.gg](https://top.gg))
+Run the command `npm run production` for a production environment (NEVER run this unless you're running the bot for production, and the bot is in [top.gg](https://top.gg))
 
 ## Issues
 
@@ -28,3 +31,9 @@ For any bug reports, suggestions or general feedback, please submit an issue.
 
 * token (the bot's token)
 * clientID (the bot's client ID)
+* topGGToken (ONLY for production environment, bot must be in top.gg as well)
+* dbHost (for database connections)
+* dbUser
+* dbPassword
+* dbDatabase
+* dbPort (if not present, the database connection will use the default `3306`)

@@ -6,6 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=development node .",
     "production": "NODE_ENV=production node .",
+    "mysql": "node mysql.js",
     "deploy": "node deploy.js"
   },
   "author": "CarelessInternet",
@@ -17,6 +18,7 @@
     "discord-api-types": "^0.22.0",
     "discord.js": "^13.1.0",
     "dotenv": "^10.0.0",
+    "mysql2": "^2.3.0",
     "topgg-autoposter": "^2.0.0",
     "utf-8-validate": "^5.0.5",
     "zlib-sync": "^0.1.7"

@@ -79,8 +79,10 @@ module.exports = {
     });
     collector.on('end', (collected, reason) => {
       switch (reason) {
-        case 'time':
-          return confirmation.edit({content: 'Ban aborted due to no response', components: []}).catch(console.error);
+        case 'time': {
+          embed.setDescription(`The ban on <@${member.user.id}> has been aborted due to no response`);
+          return confirmation.edit({embeds: [embed], components: []}).catch(console.error);
+        }
         case 'messageDelete':
           return interaction.channel.send({content: 'Ban aborted because the message was deleted'}).catch(console.error);
         case 'channelDelete':

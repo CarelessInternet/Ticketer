@@ -39,7 +39,7 @@ module.exports = {
       interaction.reply({embeds: [embed]});
     } catch(err) {
       console.error(err);
-      interaction.reply({content: 'An unknown error occured whilst fetching data, please try again later', ephemeral: true});
+      interaction.reply({content: 'An unknown error occured whilst fetching data, please try again later', ephemeral: true}).catch(console.error);
     }
   }
 }

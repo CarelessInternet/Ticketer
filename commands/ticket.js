@@ -49,6 +49,9 @@ module.exports = {
       const name = `ticket-${user.username.slice(0, 4).toLowerCase()}-${user.discriminator}`;
       if (channel.threads.cache.find(thread => thread.name === name)) return interaction.reply({content: 'You must close your previous ticket before creating a new one', ephemeral: true});
 
+      const {RoleID} = config;
+      if (RoleID === 0) return interaction.reply({content: 'Missing the managers, please add them via ticket-config', ephemeral: true});
+      
       const thread = await channel.threads.create({
         name: name,
         autoArchiveDuration: 60 * 24,
@@ -62,13 +65,13 @@ module.exports = {
       .setDescription(`<@${user.id}> created a new support ticket.`)
       .addField('Subject', subject)
       .addField('Date', dateFormat(thread.createdAt, 'yyyy-mm-dd HH:MM:ss'))
-      .setTimestamp();
+      .setTimestamp()
+      .setFooter(`Version ${version}`);
 
       const msg = await thread.send({embeds: [threadEmbed]});
       await msg.pin();
-      await thread.lastMessage.delete();
+      if (thread.lastMessage.system) await thread.lastMessage.delete();
 
-      const {RoleID} = config;
       const {members} = await guild.roles.fetch(RoleID);
       members.forEach(manager => thread.members.add(manager.user.id));
       thread.members.add(user.id);

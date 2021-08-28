@@ -20,7 +20,7 @@ async function onDelete(client, Discord, prefix, channel) {
     const {ChannelID} = record;
     if (ChannelID !== channel.id) return;
 
-    await connection.execute("UPDATE GuildMemberEvent SET ChannelID = 0 WHERE GuildID = ?", [channel.guildId]);
+    connection.execute("UPDATE GuildMemberEvent SET ChannelID = 0 WHERE GuildID = ?", [channel.guildId]);
   } catch(err) {
     console.error(err);
   }

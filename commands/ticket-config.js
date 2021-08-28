@@ -63,7 +63,9 @@ module.exports = {
     try {
       switch (interaction.options.getSubcommand()) {
         case 'managers': {
-          const {id} = interaction.options.getRole('role');
+          const {id, name} = interaction.options.getRole('role');
+          if (name === '@everyone') return interaction.reply({content: 'Role cannot be @ everyone', ephemeral: true});
+          
           const {guildId} = interaction;
           const exists = await ifExist(guildId);
 

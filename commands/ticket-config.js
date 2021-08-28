@@ -1,4 +1,5 @@
 const connection = require('../db');
+const {version} = require('../package.json');
 const {MessageEmbed} = require('discord.js');
 
 function ifExist(guildId) {
@@ -72,7 +73,14 @@ module.exports = {
           if (!exists) await insert(guildId, id);
           else await update(guildId, id);
 
-          interaction.reply({content: `Updated managers to <@&${id}>`});
+          const embed = new MessageEmbed()
+          .setColor('DARK_GREEN')
+          .setAuthor(interaction.user.tag, interaction.user.avatarURL())
+          .setTitle('Changed Managers')
+          .setDescription(`<@${interaction.user.id}> changed managers to <@&${id}>`)
+          .setTimestamp()
+          .setFooter(`Version ${version}`);
+          interaction.reply({embeds: [embed]});
           break;
         }
         default:

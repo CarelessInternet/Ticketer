@@ -1,0 +1,77 @@
+const connection = require('../db');
+const {version} = require('../package.json');
+const {MessageEmbed} = require('discord.js');
+
+function ifExists(guildId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const [rows] = await connection.execute('SELECT * FROM TicketingManagers WHERE GuildID = ?', [guildId]);
+      resolve(rows[0] ?? false);
+    } catch(err) {
+      reject(err);
+    }
+  });
+}
+
+module.exports = {
+  name: 'close',
+  data: {
+    name: "close",
+    description: "Closes the current support ticket",
+    category: "ticketing",
+    options: [
+      {
+        name: "archive",
+        description: "Archive the support ticket",
+        type: 1,
+        options: []
+      },
+      {
+        name: "delete",
+        description: "Delete the support ticket",
+        type: 1,
+        options: []
+      }
+    ],
+    examples: [
+      "close archive",
+      "close delete"
+    ]
+  },
+  async execute(interaction) {
+    try {
+      const {user, channel, guild, guildId} = interaction;
+      if (channel.type !== 'GUILD_PRIVATE_THREAD' && channel.type !== 'GUILD_PUBLIC_THREAD') return interaction.reply({content: 'You must be in a support ticket to close it', ephemeral: true});
+
+      const record = await ifExists(guildId);
+      if (!record) return interaction.reply({content: 'No ticketing config could be found, please create one', ephemeral: true});
+
+      const {members} = await guild.roles.fetch(record['RoleID']);
+      const ticketName = `ticket-${user.id}`;
+      if (ticketName !== channel.name && !members.has(user.id)) return interaction.reply({content: 'You cannot close this thread, you are not the original author or a manager', ephemeral: true});
+
+      const embed = new MessageEmbed()
+      .setColor('DARK_GREEN')
+      .setAuthor(user.tag, user.avatarURL())
+      .setTitle('Ticket Closed')
+      .setDescription(`<@${user.id}> closed the support ticket`)
+      .setTimestamp()
+      .setFooter(`Version ${version}`);
+      await interaction.reply({embeds: [embed]});
+
+      switch (interaction.options.getSubcommand()) {
+        case 'archive':
+          channel.setArchived(true);
+          break;
+        case 'delete':
+          channel.delete();
+          break;
+        default:
+          break;
+      }
+    } catch(err) {
+      console.error(err);
+      interaction.reply({content: 'An error occured whilst closing the thread, please try again later', ephemeral: true}).catch(console.error);
+    }
+  }
+}

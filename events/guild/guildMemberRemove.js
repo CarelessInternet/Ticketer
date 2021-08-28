@@ -15,6 +15,7 @@ function ifExists(guildId) {
 async function memberRemove(client, Discord, prefix, member) {
   try {
     const record = await ifExists(member.guild.id);
+    if (member.id === client.user.id) return;
     if (!record) return;
 
     const {ChannelID, Enabled} = record;

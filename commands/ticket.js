@@ -46,8 +46,8 @@ module.exports = {
       
       const subject = interaction.options.getString('subject');
       const {user, channel, guild} = interaction;
-      const name = `ticket-${user.username.slice(0, 4).toLowerCase()}-${user.discriminator}`;
-      if (channel.threads.cache.find(thread => thread.name === name)) return interaction.reply({content: 'You must close your previous ticket before creating a new one', ephemeral: true});
+      const name = `ticket-${user.id}`;
+      if (channel.threads.cache.find(thread => thread.name === name && !thread.archived)) return interaction.reply({content: 'You must close your previous ticket before creating a new one', ephemeral: true});
 
       const {RoleID} = config;
       if (RoleID === 0) return interaction.reply({content: 'Missing the managers, please add them via ticket-config', ephemeral: true});
@@ -81,6 +81,7 @@ module.exports = {
       .setAuthor(interaction.user.tag, interaction.user.avatarURL())
       .setTitle('Ticket Created')
       .setDescription(`Your support ticket has successfully been created!\nView it at <#${thread.id}>`)
+      .addField('Subject', subject)
       .addField('Name of Ticket', thread.name)
       .setTimestamp()
       .setFooter(`Version ${version}`);

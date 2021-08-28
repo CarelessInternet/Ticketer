@@ -1,4 +1,5 @@
 const connection = require('../db');
+const {version} = require('../package.json');
 const dateFormat = require('dateformat');
 const {MessageEmbed} = require('discord.js');
 
@@ -51,10 +52,10 @@ module.exports = {
       const thread = await channel.threads.create({
         name: name,
         autoArchiveDuration: 60 * 24,
-        type: 'GUILD_PUBLIC_THREAD',
+        type: guild.premiumTier === 'TIER_2' ? 'GUILD_PRIVATE_THREAD' : 'GUILD_PUBLIC_THREAD',
         reason: subject
       });
-      const embed = new MessageEmbed()
+      const threadEmbed = new MessageEmbed()
       .setColor('DARK_GREEN')
       .setAuthor(interaction.user.tag, interaction.user.avatarURL())
       .setTitle('Support Ticket')
@@ -63,7 +64,7 @@ module.exports = {
       .addField('Date', dateFormat(thread.createdAt, 'yyyy-mm-dd HH:MM:ss'))
       .setTimestamp();
 
-      const msg = await thread.send({embeds: [embed]});
+      const msg = await thread.send({embeds: [threadEmbed]});
       await msg.pin();
       await thread.lastMessage.delete();
 
@@ -72,7 +73,15 @@ module.exports = {
       members.forEach(manager => thread.members.add(manager.user.id));
       thread.members.add(user.id);
 
-      interaction.reply({content: `Successfully created the support ticket: <#${thread.id}>`});
+      const ticketEmbed = new MessageEmbed()
+      .setColor('DARK_GREEN')
+      .setAuthor(interaction.user.tag, interaction.user.avatarURL())
+      .setTitle('Ticket Created')
+      .setDescription(`Your support ticket has successfully been created!\nView it at <#${thread.id}>`)
+      .addField('Name of Ticket', thread.name)
+      .setTimestamp()
+      .setFooter(`Version ${version}`);
+      interaction.reply({embeds: [ticketEmbed]});
     } catch(err) {
       console.error(err);
       interaction.reply({content: 'An unknown error occured, please try again later', ephemeral: true}).catch(console.error);

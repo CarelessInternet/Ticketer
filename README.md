@@ -8,7 +8,7 @@ Welcome to the official GitHub page for the Ticketer bot! You can find all of th
 ## Running the Bot
 
 #### Getting the Files
-Obviously, you're gonna need the files to run anything. Get them by running `git clone https://github.com/CarelessInternet/NodeBot.git`
+Obviously, you're gonna need the files to run anything. Get them by running `git clone https://github.com/CarelessInternet/Ticketer.git`
 
 #### Creating `.env` File
 In order to do anything with the bot, create a file named `.env` and add all necessary environment variables in the list labelled "Environment Variables."

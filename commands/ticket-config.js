@@ -60,6 +60,7 @@ module.exports = {
   },
   async execute(interaction) {
     if (!interaction.member.permissions.has('MANAGE_GUILD')) return interaction.reply({content: 'You need the manage server permission to edit ticketing config'}).catch(console.error);
+    if (!interaction.guild.me.permissions.has(['MANAGE_THREADS', 'USE_PUBLIC_THREADS', 'USE_PRIVATE_THREADS'])) return interaction.reply({content: 'I need all thread permissions to modify tickets', ephemeral: true});
 
     try {
       switch (interaction.options.getSubcommand()) {

@@ -88,6 +88,10 @@ module.exports = {
           value: fieldValue(commands.filter(cmd => cmd.category === 'utility'))
         },
         {
+          name: 'Ticketing',
+          value: fieldValue(commands.filter(cmd => cmd.category === 'ticketing'))
+        },
+        {
           name: 'Staff',
           value: fieldValue(commands.filter(cmd => cmd.category === 'staff'))
         }

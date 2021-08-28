@@ -1,0 +1,2 @@
+1. Create a text channel named #support.
+2. Add the manager via `ticket-config.`

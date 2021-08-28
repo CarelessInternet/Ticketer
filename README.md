@@ -7,6 +7,9 @@ Welcome to the official GitHub page for the Ticketer bot! You can find all of th
 
 ## Running the Bot
 
+#### Getting the Files
+Obviously, you're gonna need the files to run anything. Get them by running `git clone https://github.com/CarelessInternet/NodeBot.git`
+
 #### Creating `.env` File
 In order to do anything with the bot, create a file named `.env` and add all necessary environment variables in the list labelled "Environment Variables."
 Don't forget to enable the Server Members and Presence Intent for your bot.

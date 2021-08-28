@@ -1,4 +1,6 @@
 const connection = require('../db');
+const {version} = require('../package.json');
+const {MessageEmbed} = require('discord.js');
 
 function ifExists(guildId) {
   return new Promise(async (resolve, reject) => {
@@ -72,6 +74,12 @@ module.exports = {
       const commandType = interaction.options.getSubcommand();
       const {guildId} = interaction;
       const exists = await ifExists(guildId);
+      const embed = new MessageEmbed()
+      .setColor('DARK_GREEN')
+      .setAuthor(interaction.user.tag, interaction.user.avatarURL())
+      .setTitle('Welcome/Goodbye Messages Modified')
+      .setTimestamp()
+      .setFooter(`Version ${version}`);
 
       switch (commandType) {
         case 'add': {
@@ -80,7 +88,8 @@ module.exports = {
           if (exists) return interaction.reply({content: 'A channel has already been added', ephemeral: true});
 
           await connection.execute('INSERT INTO GuildMemberEvent (GuildID, ChannelID, Enabled) VALUES (?, ?, TRUE)', [guildId, id]);
-          interaction.reply({content: `Successfully created welcome/goodbye messages in <#${id}>!`});
+          embed.setDescription(`Successfully created welcome/goodbye messages in <#${id}>!`);
+          interaction.reply({embeds: [embed]});
           break;
         }
         case 'edit': {
@@ -89,21 +98,24 @@ module.exports = {
           if (!exists) return interaction.reply({content: 'You must add a channel first before editing', ephemeral: true});
 
           await connection.execute('UPDATE GuildMemberEvent SET ChannelID = ? WHERE GuildID = ?', [id, guildId]);
-          interaction.reply({content: `Successfully changed channel to <#${id}>!`});
+          embed.setDescription(`Successfully changed channel to <#${id}>!`)
+          interaction.reply({embeds: [embed]});
           break;
         }
         case 'enable': {
           if (!exists) return interaction.reply({content: 'You must add a channel first before enabling', ephemeral: true});
 
           await connection.execute('UPDATE GuildMemberEvent SET Enabled = TRUE WHERE GuildID = ?', [guildId]);
-          interaction.reply({content: 'Successfully enabled welcome and goodbye messages!'});
+          embed.setDescription('Successfully enabled welcome and goodbye messages!');
+          interaction.reply({embeds: [embed]});
           break;
         }
         case 'disable': {
           if (!exists) return interaction.reply({content: 'You must add a channel first before disabling', ephemeral: true});
 
           await connection.execute('UPDATE GuildMemberEvent SET Enabled = FALSE WHERE GuildID = ?', [guildId]);
-          interaction.reply({content: 'Successfully disabled welcome and goodbye messages!'});
+          embed.setDescription('Successfully disabled welcome and goodbye messages!');
+          interaction.reply({embeds: [embed]});
           break;
         }
         default:

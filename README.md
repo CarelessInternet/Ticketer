@@ -3,7 +3,7 @@
 Welcome to the official GitHub page for the Ticketer bot! You can find all of the source code right here!<br>
 
 ## Support
-[The Link to the Discord Server](https://discord.gg/yYwye5q22y)
+[The Link to the Discord Server](https://discord.gg/kswKHpJeqC)
 
 ## Running the Bot
 
@@ -28,7 +28,7 @@ Run the command `npm run production` for a production environment (NEVER run thi
 
 ## Issues
 
-If you can't get the bot to run, join the [support server](https://discord.gg/yYwye5q22y) and create a support ticket in #support.<br>
+If you can't get the bot to run, join the [support server](https://discord.gg/kswKHpJeqC) and create a support ticket in #support.<br>
 For any bug reports, suggestions or general feedback, please submit an issue.
 
 ## Environment Variables

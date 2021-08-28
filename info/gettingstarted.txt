@@ -1,4 +1,5 @@
-**DISCLAIMER**: I don't know if private threads will work for boosted servers, so if they don't, please join the support server and tell me
+**DISCLAIMER**: I don't know if private threads will work for boosted servers, so if they don't, please join the support server and tell me.
+Also don't change the name of the thread channel, the bot won't be able to close the channel
 
 1. Create a text channel named #support.
 2. Add the managers via `ticket-config`.

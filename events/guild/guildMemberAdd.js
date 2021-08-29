@@ -14,6 +14,8 @@ function ifExists(guildId) {
 
 async function memberAdd(client, Discord, prefix, member) {
   try {
+    if (!member.guild.me.permissions.has('ADMINISTRATOR')) return;
+    
     const record = await ifExists(member.guild.id);
     if (!record) return;
 

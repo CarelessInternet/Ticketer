@@ -42,7 +42,7 @@ module.exports = {
     try {
       const {user, channel, guild, guildId} = interaction;
       if (channel.type !== 'GUILD_PRIVATE_THREAD' && channel.type !== 'GUILD_PUBLIC_THREAD') return interaction.reply({content: 'You must be in a support ticket to close it', ephemeral: true});
-      if (!interaction.guild.me.permissions.has(['MANAGE_THREADS', 'USE_PUBLIC_THREADS', 'USE_PRIVATE_THREADS'])) return interaction.reply({content: 'I need all thread permissions to close tickets', ephemeral: true});
+      if (!interaction.guild.me.permissions.has(['MANAGE_THREADS', 'USE_PUBLIC_THREADS', 'USE_PRIVATE_THREADS', 'MANAGE_MESSAGES'])) return interaction.reply({content: 'I need all thread permissions and manage messages to close tickets', ephemeral: true});
 
       const record = await ifExists(guildId);
       if (!record) return interaction.reply({content: 'No ticketing config could be found, please create one', ephemeral: true});

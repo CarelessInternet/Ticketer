@@ -37,7 +37,7 @@ module.exports = {
   },
   async execute(interaction) {
     try {
-      if (!interaction.guild.me.permissions.has(['MANAGE_THREADS', 'USE_PUBLIC_THREADS', 'USE_PRIVATE_THREADS'])) return interaction.reply({content: 'I need all thread permissions to create tickets', ephemeral: true});
+      if (!interaction.guild.me.permissions.has(['MANAGE_THREADS', 'USE_PUBLIC_THREADS', 'USE_PRIVATE_THREADS', 'MANAGE_MESSAGES'])) return interaction.reply({content: 'I need all thread permissions and manage messages to create tickets', ephemeral: true});
       if (interaction.channel.type !== 'GUILD_TEXT') return interaction.reply({content: 'You must use this command in a valid text channel', ephemeral: true});
       if (interaction.channel.name.toLowerCase() !== 'support') return interaction.reply({content: 'Tickets are only allowed in the support channel', ephemeral: true});
 

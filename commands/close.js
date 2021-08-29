@@ -49,6 +49,7 @@ module.exports = {
       const {members} = await guild.roles.fetch(record['RoleID']);
       const ticketName = `ticket-${user.id}`;
       if (ticketName !== channel.name && !members.has(user.id)) return interaction.reply({content: 'You cannot close this thread, you are not the original author or a manager', ephemeral: true});
+      if (channel.parent.name.toLowerCase() !== 'support') return interaction.reply({content: 'You may only close support tickets', ephemeral: true});
 
       const embed = new MessageEmbed()
       .setColor('DARK_GREEN')

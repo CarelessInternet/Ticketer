@@ -19,6 +19,7 @@ module.exports = {
     name: "ticket",
     description: "Creates a support ticket under the #support channel",
     category: "ticketing",
+    cooldown: 15,
     options: [
       {
         name: "subject",

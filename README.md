@@ -5,22 +5,26 @@ Welcome to the official GitHub page for the Ticketer bot! You can find all of th
 ## Support
 [The Link to the Discord Server](https://discord.gg/kswKHpJeqC)
 
-## Running the Bot
+## Setup
 
 #### Getting the Files
 Obviously, you're gonna need the files to run anything. Get them by running `git clone https://github.com/CarelessInternet/Ticketer.git`
+
+#### Installing MySQL
+You're gonna need MySQL to run this bot, please find a tutorial on how to setup MySQL on your system if you don't have it, and come back when you are done
 
 #### Creating `.env` File
 In order to do anything with the bot, create a file named `.env` and add all necessary environment variables in the list labelled "Environment Variables."
 Don't forget to enable the Server Members and Presence Intent for your bot.
 #### Installing Dependencies
-Run the command `npm i` to install all dependencies
+Run the command `npm i` to install all dependencies. This is only needed once
 
 #### Creating MySQL Table
-If you haven't, install `mysql` on your system first. Run the command `npm run mysql` to create all necessary tables
+Run the command `npm run mysql` to create all necessary tables. This is only needed once
 
 #### Deploying Commands
-Run the command `npm run deploy` to deploy the commands
+Run the command `npm run deploy` to deploy the commands. This is only needed once if you're not adding new commands.
+If you are adding new commands, run this command when you have done so
 
 #### Running the Bot
 Run the command `npm start` to run the bot in a development environment.<br>
@@ -31,11 +35,15 @@ Run the command `npm run production` for a production environment (NEVER run thi
 If you can't get the bot to run, join the [support server](https://discord.gg/kswKHpJeqC) and create a support ticket in #support.<br>
 For any bug reports, suggestions or general feedback, please submit an issue.
 
+## Pull Requests
+If you found any bug and created code to solve it, or updated anything important, feel free to submit a pull request so I can merge it into the main branch.<br>
+You can also submit a pull request if you made a new command and want it to be a part of the production bot
+
 ## Environment Variables
 
 * token (the bot's token)
 * clientID (the bot's client ID)
-* topGGToken (ONLY for production environment, bot must be in top.gg as well)
+* topGGToken (ONLY NEEDED for production environment, bot must be in top.gg as well)
 * dbHost (for database connections)
 * dbUser
 * dbPassword

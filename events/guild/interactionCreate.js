@@ -4,7 +4,6 @@ function interaction(client, Discord, prefix, interaction) {
 
   const cmd = interaction.commandName.toLowerCase();
   const command = client.commands.get(cmd) || client.commands.find(file => file.aliases?.includes(cmd));
-
   if (!command) return;
 
   command.execute(interaction, cmd, prefix);

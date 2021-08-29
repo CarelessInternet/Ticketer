@@ -34,7 +34,6 @@ function update(guildId, roleId) {
 }
 
 module.exports = {
-  name: 'ticket-config',
   data: {
     name: "ticket-config",
     description: "Edit ticketing details",

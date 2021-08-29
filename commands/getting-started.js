@@ -3,7 +3,6 @@ const {readFileSync} = require('fs');
 const {MessageEmbed} = require('discord.js');
 
 module.exports = {
-  name: 'getting-started',
   data: {
     name: "getting-started",
     description: "Shows how to get started with using the bot",

@@ -1,7 +1,6 @@
 const {MessageEmbed} = require('discord.js');
 
 module.exports = {
-  name: 'bot-stats',
   data: {
     name: "bot-stats",
     description: "Returns info about the bot's stats",

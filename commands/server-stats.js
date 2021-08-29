@@ -1,7 +1,6 @@
 const {MessageEmbed} = require('discord.js');
 
 module.exports = {
-  name: 'server-stats',
   data: {
     name: "server-stats",
     description: "Returns stats about the current server",

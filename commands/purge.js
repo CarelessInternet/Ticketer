@@ -1,5 +1,4 @@
 module.exports = {
-  name: 'purge',
   data: {
     name: "purge",
     description: "Deletes the latest messages by a specified amount",

@@ -14,7 +14,6 @@ function ifExists(guildId) {
 }
 
 module.exports = {
-  name: 'close',
   data: {
     name: "close",
     description: "Closes the current support ticket",

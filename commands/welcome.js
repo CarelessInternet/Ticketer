@@ -14,7 +14,6 @@ function ifExists(guildId) {
 }
 
 module.exports = {
-  name: 'welcome',
   data: {
     name: "welcome",
     description: "Enables welcome and goodbye messages in a specific channel",

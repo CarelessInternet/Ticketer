@@ -20,7 +20,6 @@ function fieldValue(list) {
 }
 
 module.exports = {
-  name: 'help',
   data: {
     name: "help",
     description: "Displays all of the available commands",

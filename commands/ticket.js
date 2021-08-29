@@ -15,7 +15,6 @@ function checkForConfig(guildId) {
 }
 
 module.exports = {
-  name: 'ticket',
   data: {
     name: "ticket",
     description: "Creates a support ticket under the #support channel",

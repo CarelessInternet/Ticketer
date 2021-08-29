@@ -1,7 +1,6 @@
 const {MessageEmbed, MessageActionRow, MessageButton} = require('discord.js');
 
 module.exports = {
-  name: 'ban',
   data: {
     name: "ban",
     description: "Bans a user from the server",

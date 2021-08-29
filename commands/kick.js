@@ -1,7 +1,6 @@
 const {MessageEmbed, MessageActionRow, MessageButton} = require('discord.js');
 
 module.exports = {
-  name: 'kick',
   data: {
     name: "kick",
     description: "Kicks a user from the server",

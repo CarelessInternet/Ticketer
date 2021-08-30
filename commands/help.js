@@ -39,13 +39,16 @@ module.exports = {
   execute(interaction, cmd, prefix) {
     const requestedCommand = interaction.options.getString('command');
     const files = readdirSync('./commands/').filter(file => file.endsWith('.js'));
+    const guildCommands = [];
     const commands = files.reduce((acc, file) => {
-      acc.push(require(`./${file}`).data);
+      const {data} = require(`./${file}`);
+      if (!data.guild) acc.push(data);
+      else guildCommands.push(data);
       return acc;
     }, []);
 
     if (requestedCommand) {
-      const command = commands.find(file => file.name === requestedCommand.toLowerCase());
+      const command = commands.find(file => file.name === requestedCommand.toLowerCase()) || (interaction.guildId === process.env.guildID ? guildCommands.find(file => file.name === requestedCommand.toLowerCase()) : false);
       if (!command) return interaction.reply({content: 'Requested command does not exist', ephemeral: true}).catch(console.error);
       if (command.name && command.type && !command.description && !command.options) return interaction.reply({content: 'This is a context menu command, information cannot be given about it', ephemeral: true}).catch(console.error);
 
@@ -81,6 +84,7 @@ module.exports = {
       .setTimestamp()
       .setFooter(`* means that options are required, use ${prefix}help command to view more information about that command`);
 
+      if (interaction.guildId === process.env.guildID) guildCommands.forEach(file => commands.push(file));
       const categories = [
         {
           name: 'Utility',

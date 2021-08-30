@@ -5,6 +5,7 @@ module.exports = {
     name: "bot-stats",
     description: "Returns info about the bot's stats",
     category: "utility",
+    guild: process.env.guildID,
     options: [],
     examples: [
       "bot-stats"

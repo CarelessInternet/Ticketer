@@ -1,6 +1,6 @@
 {
   "name": "ticketer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Ticketing bot",
   "main": "index.js",
   "scripts": {

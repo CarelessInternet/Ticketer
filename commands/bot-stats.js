@@ -38,7 +38,7 @@ module.exports = {
       .addField('Emojis', '💩 ' + emojiSize.reduce((acc, curr) => acc + curr, 0), true)
       .setTimestamp();
 
-      interaction.reply({embeds: [embed]});
+      interaction.reply({embeds: [embed], ephemeral: true});
     } catch(err) {
       console.error(err);
       interaction.reply({content: 'An unknown error occured whilst fetching data, please try again later', ephemeral: true}).catch(console.error);

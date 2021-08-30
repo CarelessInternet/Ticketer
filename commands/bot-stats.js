@@ -13,6 +13,8 @@ module.exports = {
   },
   async execute(interaction) {
     try {
+      if (interaction.user.id !== process.env.ownerID) return interaction.reply({content: 'You are not the owner of this bot, you may not view the stats', ephemeral: true});
+      
       const {shard} = interaction.client;
       const promises = [
         shard.fetchClientValues('guilds.cache.size'),

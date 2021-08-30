@@ -43,7 +43,7 @@ You can also submit a pull request if you made a new command and want it to be a
 
 * token (the bot's token)
 * clientID (the bot's client ID)
-* guildID (the id of the first server you invited the bot into, for sensitive information commands like bot-stats)
+* guildID (the id of the first available server you invited the bot into, for sensitive information commands like bot-stats)
 * topGGToken (ONLY NEEDED for production environment, bot must be in top.gg as well)
 * dbHost (for database connections)
 * dbUser

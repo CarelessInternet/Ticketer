@@ -1,6 +1,8 @@
 # Ticketer
 
 Welcome to the official GitHub page for the Ticketer bot! You can find all of the source code right here!<br>
+The source code is mainly for educational and demonstration purposes on building a Discord bot.<br>
+I advise you to only clone this repository for making pull requests, or making your own private version of the bot
 
 ## Support
 [The Link to the Discord Server](https://discord.gg/kswKHpJeqC)

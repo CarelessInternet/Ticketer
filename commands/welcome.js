@@ -67,7 +67,6 @@ module.exports = {
   },
   async execute(interaction) {
     if (!interaction.member.permissions.has(['MANAGE_GUILD', 'MANAGE_CHANNELS'])) return interaction.reply({content: 'You need the manage server and channels permission to run this command', ephemeral: true}).catch(console.error);
-    if (!interaction.guild.me.permissions.has('ADMINISTRATOR')) return interaction.reply({content: 'I need administrator to run this command', ephemeral: true}).catch(console.error);
 
     try {
       const commandType = interaction.options.getSubcommand();
@@ -82,9 +81,12 @@ module.exports = {
 
       switch (commandType) {
         case 'add': {
-          const {type, id} = interaction.options.getChannel('channel');
+          // const {permissionsFor, type, id} = interaction.options.getChannel('channel');
+          const channel = interaction.options.getChannel('channel');
+          const {type, id} = channel;
           if (type !== 'GUILD_TEXT') return interaction.reply({content: 'Channel must be a valid text channel', ephemeral: true});
           if (exists) return interaction.reply({content: 'A channel has already been added', ephemeral: true});
+          if (!channel.permissionsFor(interaction.guild.me).has('SEND_MESSAGES')) return interaction.reply({content: `I need the send messages permission in <#${id}> to send welcome and goodbye messages`, ephemeral: true});
 
           await connection.execute('INSERT INTO GuildMemberEvent (GuildID, ChannelID, Enabled) VALUES (?, ?, TRUE)', [guildId, id]);
           embed.setDescription(`Successfully created welcome/goodbye messages in <#${id}>!`);
@@ -92,9 +94,12 @@ module.exports = {
           break;
         }
         case 'edit': {
-          const {type, id} = interaction.options.getChannel('channel');
+          // const {permissionsFor, type, id} = interaction.options.getChannel('channel');
+          const channel = interaction.options.getChannel('channel');
+          const {type, id} = channel;
           if (type !== 'GUILD_TEXT') return interaction.reply({content: 'Channel must be a valid text channel', ephemeral: true});
           if (!exists) return interaction.reply({content: 'You must add a channel first before editing', ephemeral: true});
+          if (!channel.permissionsFor(interaction.guild.me).has('SEND_MESSAGES')) return interaction.reply({content: `I need the send messages permission in <#${id}> to send welcome and goodbye messages`, ephemeral: true});
 
           await connection.execute('UPDATE GuildMemberEvent SET ChannelID = ? WHERE GuildID = ?', [id, guildId]);
           embed.setDescription(`Successfully changed channel to <#${id}>!`)

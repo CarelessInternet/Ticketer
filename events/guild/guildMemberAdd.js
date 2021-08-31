@@ -14,15 +14,15 @@ function ifExists(guildId) {
 
 async function memberAdd(client, Discord, prefix, member) {
   try {
-    if (!member.guild.me.permissions.has('ADMINISTRATOR')) return;
-    
     const record = await ifExists(member.guild.id);
     if (!record) return;
-
+    
     const {ChannelID, Enabled} = record;
     if (!Enabled || ChannelID === 0) return;
 
     const channel = await member.guild.channels.fetch(ChannelID);
+    if (!channel.permissionsFor(member.guild.me).has('SEND_MESSAGES')) return;
+  
     const embed = new Discord.MessageEmbed()
     .setColor('DARK_GREEN')
     .setTitle(`Welcome ${member.user.tag}`)

@@ -28,7 +28,7 @@ module.exports = {
   },
   async execute(interaction) {
     if (!interaction.member.permissions.has('BAN_MEMBERS')) return interaction.reply({content: 'You do not have the permissions to ban a member', ephemeral: true}).catch(console.error);
-    if (!interaction.guild.me.permissions.has(['BAN_MEMBERS', 'MANAGE_MESSAGES'])) return interaction.reply({content: 'I need the ban members and manage messages permission to run this command', ephemeral: true}).catch(console.error);
+    if (!interaction.guild.me.permissions.has('BAN_MEMBERS')) return interaction.reply({content: 'I need the ban members permission to run this command', ephemeral: true}).catch(console.error);
 
     const [member, reason] = [interaction.options.getMember('user'), interaction.options.getString('reason') ?? ''];
     if (member.user.id === interaction.user.id) return interaction.reply({content: 'You cannot ban yourself', ephemeral: true}).catch(console.error);

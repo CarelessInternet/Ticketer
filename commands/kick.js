@@ -28,7 +28,7 @@ module.exports = {
   },
   async execute(interaction) {
     if (!interaction.member.permissions.has('KICK_MEMBERS')) return interaction.reply({content: 'You do not have the permissions to kick a member', ephemeral: true}).catch(console.error);
-    if (!interaction.guild.me.permissions.has(['KICK_MEMBERS', 'MANAGE_MESSAGES'])) return interaction.reply({content: 'I need the kick members and manage messages permission to run this command', ephemeral: true}).catch(console.error);
+    if (!interaction.guild.me.permissions.has('KICK_MEMBERS')) return interaction.reply({content: 'I need the kick members permission to run this command', ephemeral: true}).catch(console.error);
 
     const [member, reason] = [interaction.options.getMember('user'), interaction.options.getString('reason') ?? ''];
     if (member.user.id === interaction.user.id) return interaction.reply({content: 'You cannot kick yourself', ephemeral: true}).catch(console.error);

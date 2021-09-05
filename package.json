@@ -10,7 +10,7 @@
     "deploy": "node deploy.js"
   },
   "author": "CarelessInternet",
-  "license": "GPL-V3",
+  "license": "GPL-3.0",
   "dependencies": {
     "@discordjs/rest": "^0.1.0-canary.0",
     "bufferutil": "^4.0.3",

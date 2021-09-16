@@ -30,6 +30,7 @@ async function memberRemove(client, Discord, prefix, member) {
     .setTitle(`Bye ${member.user.tag}`)
     .setDescription(`<@${member.id}> has left the server.`)
     .addField('Account Creation', dateFormat(member.user.createdAt, 'yyyy-mm-dd HH:MM:ss'))
+    .addField('Join Date', dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss'))
     .setThumbnail(member.user.avatarURL())
     .setTimestamp();
 

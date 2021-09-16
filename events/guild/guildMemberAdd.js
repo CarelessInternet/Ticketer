@@ -28,6 +28,7 @@ async function memberAdd(client, Discord, prefix, member) {
     .setTitle(`Welcome ${member.user.tag}`)
     .setDescription(`<@${member.id}> Thank you for joining ${member.guild.name}! Enjoy your stay here!`)
     .addField('Account Creation', dateFormat(member.user.createdAt, 'yyyy-mm-dd HH:MM:ss'))
+    .addField('Join Date', dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss'))
     .setThumbnail(member.user.avatarURL())
     .setTimestamp();
 

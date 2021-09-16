@@ -1,3 +1,9 @@
+<div align="center">
+
+  [![Discord Bots](https://top.gg/api/widget/880454049370083329.svg)](https://top.gg/bot/880454049370083329)
+
+</div>
+
 # Ticketer
 
 Welcome to the official GitHub page for the Ticketer bot! You can find all of the source code right here!<br>

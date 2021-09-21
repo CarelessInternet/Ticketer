@@ -1,5 +1,4 @@
 const connection = require('../../db');
-const dateFormat = require('dateformat');
 
 function ifExists(guildId) {
   return new Promise(async (resolve, reject) => {
@@ -29,8 +28,8 @@ async function memberRemove(client, Discord, prefix, member) {
     .setColor('RED')
     .setTitle(`Bye ${member.user.tag}`)
     .setDescription(`<@${member.id}> has left the server.`)
-    .addField('Account Creation', dateFormat(member.user.createdAt, 'yyyy-mm-dd HH:MM:ss'))
-    .addField('Leave Date', dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss'))
+    .addField('Account Creation Date', `<t:${Math.floor(member.user.createdTimestamp / 1000)}>`)
+    .addField('Leave Date', `<t:${Math.floor(new Date().getTime() / 1000)}:R>`)
     .setThumbnail(member.user.avatarURL())
     .setTimestamp();
 

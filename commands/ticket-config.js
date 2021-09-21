@@ -79,6 +79,7 @@ module.exports = {
           .setDescription(`<@${interaction.user.id}> changed managers to <@&${id}>`)
           .setTimestamp()
           .setFooter(`Version ${version}`);
+
           interaction.reply({embeds: [embed]});
           break;
         }

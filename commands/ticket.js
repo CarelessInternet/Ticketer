@@ -40,7 +40,7 @@ module.exports = {
       if (!interaction.guild.me.permissions.has(['MANAGE_THREADS', 'USE_PUBLIC_THREADS', 'USE_PRIVATE_THREADS', 'MANAGE_MESSAGES'])) return interaction.reply({content: 'I need all thread permissions and manage messages to create tickets', ephemeral: true});
       if (interaction.channel.type !== 'GUILD_TEXT') return interaction.reply({content: 'You must use this command in a valid text channel', ephemeral: true});
       if (interaction.channel.name.toLowerCase() !== 'support') return interaction.reply({content: 'Tickets are only allowed in the support channel', ephemeral: true});
-
+      
       const config = await checkForConfig(interaction.guildId);
       if (!config) return interaction.reply({content: 'I am missing the config for tickets', ephemeral: true});
       
@@ -48,9 +48,9 @@ module.exports = {
       const {user, channel, guild} = interaction;
       const name = `ticket-${user.id}`;
       if (channel.threads.cache.find(thread => thread.name === name && !thread.archived)) return interaction.reply({content: 'You must close your previous ticket before creating a new one', ephemeral: true});
-
+      
       const {RoleID} = config;
-      if (RoleID === 0) return interaction.reply({content: 'Missing the managers, please add them via ticket-config', ephemeral: true});
+      if (RoleID === '0') return interaction.reply({content: 'Missing the managers, please add them via ticket-config', ephemeral: true});
       
       const thread = await channel.threads.create({
         name: name,
@@ -64,7 +64,7 @@ module.exports = {
       .setTitle('Support Ticket')
       .setDescription(`<@${user.id}> created a new support ticket.`)
       .addField('Subject', subject)
-      .addField('Date', dateFormat(thread.createdAt, 'yyyy-mm-dd HH:MM:ss'))
+      .addField('Ticket Date', `<t:${Math.floor(thread.createdTimestamp / 1000)}:R>`)
       .setTimestamp()
       .setFooter(`Version ${version}`);
 

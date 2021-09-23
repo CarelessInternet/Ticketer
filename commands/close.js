@@ -42,14 +42,14 @@ module.exports = {
       const {user, channel, guild, guildId} = interaction;
       if (channel.type !== 'GUILD_PRIVATE_THREAD' && channel.type !== 'GUILD_PUBLIC_THREAD') return interaction.reply({content: 'You must be in a support ticket to close it', ephemeral: true});
       if (!interaction.guild.me.permissions.has(['MANAGE_THREADS', 'USE_PUBLIC_THREADS', 'USE_PRIVATE_THREADS', 'MANAGE_MESSAGES'])) return interaction.reply({content: 'I need all thread permissions and manage messages to close tickets', ephemeral: true});
-
+      if (channel.parent.name.toLowerCase() !== 'support') return interaction.reply({content: 'You may only close support tickets', ephemeral: true});
+      
       const record = await ifExists(guildId);
-      if (!record) return interaction.reply({content: 'No ticketing config could be found, please create one', ephemeral: true});
-
+      if (!record || record['RoleID'] === '0') return interaction.reply({content: 'No ticketing config or available role could be found, please create one', ephemeral: true});
+      
       const {members} = await guild.roles.fetch(record['RoleID']);
       const ticketName = `ticket-${user.id}`;
       if (ticketName !== channel.name && !members.has(user.id)) return interaction.reply({content: 'You cannot close this thread, you are not the original author or a manager', ephemeral: true});
-      if (channel.parent.name.toLowerCase() !== 'support') return interaction.reply({content: 'You may only close support tickets', ephemeral: true});
 
       const embed = new MessageEmbed()
       .setColor('DARK_GREEN')

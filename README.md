@@ -41,7 +41,7 @@ Run the command `npm run production` for a production environment (NEVER run thi
 ## Issues
 
 If you can't get the bot to run, join the [support server](https://discord.gg/kswKHpJeqC) and create a support ticket in #support.<br>
-For any bug reports, suggestions or general feedback, please submit an issue.
+For any bug reports, suggestions or general feedback, please submit an issue or join the support server.
 
 ## Pull Requests
 If you found any bug and created code to solve it, or updated anything important, feel free to submit a pull request so I can merge it into the main branch.<br>

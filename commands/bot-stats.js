@@ -21,10 +21,11 @@ module.exports = {
         shard.fetchClientValues('emojis.cache.size'),
         shard.fetchClientValues('channels.cache.size'),
         shard.fetchClientValues('users.cache.size'),
+        shard.broadcastEval(c => c.guilds.cache.reduce((acc, curr) => acc + curr.channels.channelCountWithoutThreads, 0)),
         shard.broadcastEval(c => c.guilds.cache.reduce((acc, curr) => acc + curr.memberCount, 0))
       ];
 
-      const [guildSize, emojiSize, channelSize, userSize, memberSize] = await Promise.all(promises);
+      const [guildSize, emojiSize, channelSize, userSize, channelSizeWithoutThreads, memberSize] = await Promise.all(promises);
       const embed = new MessageEmbed()
       .setColor('RANDOM')
       .setAuthor(interaction.user.tag, interaction.user.avatarURL())
@@ -34,7 +35,8 @@ module.exports = {
       .addField('Server Members', '👥 ' + memberSize.reduce((acc, curr) => acc + curr, 0), true)
       .addField('Cached Users', '👤 ' + userSize.reduce((acc, curr) => acc + curr, 0), true)
       .addField('\u200B', '\u200B')
-      .addField('Channels', '📺 ' + channelSize.reduce((acc, curr) => acc + curr, 0), true)
+      .addField('Channels + Threads', '📺 ' + channelSize.reduce((acc, curr) => acc + curr, 0), true)
+      .addField('Channels - Threads', '💻 ' + channelSizeWithoutThreads.reduce((acc, curr) => acc + curr, 0), true)
       .addField('Emojis', '💩 ' + emojiSize.reduce((acc, curr) => acc + curr, 0), true)
       .setTimestamp();
 

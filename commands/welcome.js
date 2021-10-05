@@ -74,7 +74,7 @@ module.exports = {
       const exists = await ifExists(guildId);
       const embed = new MessageEmbed()
       .setColor('DARK_GREEN')
-      .setAuthor(interaction.user.tag, interaction.user.avatarURL())
+      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
       .setTitle('Welcome/Goodbye Messages Modified')
       .setTimestamp()
       .setFooter(`Version ${version}`);

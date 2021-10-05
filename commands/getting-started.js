@@ -6,7 +6,7 @@ module.exports = {
   data: {
     name: "getting-started",
     description: "Shows how to get started with using the bot",
-    category: "utility",
+    category: "staff",
     options: [],
     examples: [
       "getting-started"
@@ -14,11 +14,13 @@ module.exports = {
   },
   execute(interaction) {
     try {
+      if (!interaction.member.permissions.has('MANAGE_GUILD')) return interaction.reply({content: 'You need the manage server permission to use this command', ephemeral: true});
+      
       const startingFile = readFileSync('./info/gettingstarted.txt', 'utf8');
       const inviteFile = readFileSync('./info/invitelink.txt', 'utf8');
       const embed = new MessageEmbed()
       .setColor('RANDOM')
-      .setAuthor(interaction.user.tag, interaction.user.avatarURL())
+      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
       .setTitle('Getting Started')
       .setDescription(inviteFile)
       .addField('Steps', startingFile)

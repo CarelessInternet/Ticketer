@@ -28,7 +28,7 @@ module.exports = {
       const [guildSize, emojiSize, channelSize, userSize, channelSizeWithoutThreads, memberSize] = await Promise.all(promises);
       const embed = new MessageEmbed()
       .setColor('RANDOM')
-      .setAuthor(interaction.user.tag, interaction.user.avatarURL())
+      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
       .setTitle('Bot Stats')
       .setDescription('Shows info about the bot\'s stats')
       .addField('Servers', '📊 ' + guildSize.reduce((acc, curr) => acc + curr, 0), true)

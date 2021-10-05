@@ -53,7 +53,7 @@ module.exports = {
 
       const embed = new MessageEmbed()
       .setColor('DARK_GREEN')
-      .setAuthor(user.tag, user.avatarURL())
+      .setAuthor(user.tag, user.displayAvatarURL())
       .setTitle('Ticket Closed')
       .setDescription(`<@${user.id}> closed the support ticket`)
       .setTimestamp()

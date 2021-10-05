@@ -49,7 +49,7 @@ module.exports = {
     );
     const embed = new MessageEmbed()
     .setColor('RANDOM')
-    .setAuthor(interaction.user.tag, interaction.user.avatarURL())
+    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
     .setTitle('Kick Confirmation')
     .setDescription(`Are you sure you want to kick <@${member.user.id}>${reason ? ' for the following reason: ' + reason : ''}?`)
     .setTimestamp();

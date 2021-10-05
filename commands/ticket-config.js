@@ -74,7 +74,7 @@ module.exports = {
 
           const embed = new MessageEmbed()
           .setColor('DARK_GREEN')
-          .setAuthor(interaction.user.tag, interaction.user.avatarURL())
+          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
           .setTitle('Changed Managers')
           .setDescription(`<@${interaction.user.id}> changed managers to <@&${id}>`)
           .setTimestamp()

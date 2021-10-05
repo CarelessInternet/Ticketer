@@ -60,7 +60,7 @@ module.exports = {
       });
       const threadEmbed = new MessageEmbed()
       .setColor('DARK_GREEN')
-      .setAuthor(interaction.user.tag, interaction.user.avatarURL())
+      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
       .setTitle('Support Ticket')
       .setDescription(`<@${user.id}> created a new support ticket.`)
       .addField('Subject', subject)
@@ -78,7 +78,7 @@ module.exports = {
 
       const ticketEmbed = new MessageEmbed()
       .setColor('DARK_GREEN')
-      .setAuthor(interaction.user.tag, interaction.user.avatarURL())
+      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
       .setTitle('Ticket Created')
       .setDescription(`Your support ticket has successfully been created!\nView it at <#${thread.id}>`)
       .addField('Subject', subject)

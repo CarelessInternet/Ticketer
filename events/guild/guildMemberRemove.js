@@ -30,7 +30,7 @@ async function memberRemove(client, Discord, prefix, member) {
     .setDescription(`<@${member.id}> has left the server.`)
     .addField('Account Creation Date', `<t:${Math.floor(member.user.createdTimestamp / 1000)}>`)
     .addField('Leave Date', `<t:${Math.floor(new Date().getTime() / 1000)}:R>`)
-    .setThumbnail(member.user.avatarURL())
+    .setThumbnail(member.user.displayAvatarURL())
     .setTimestamp();
 
     channel.send({embeds: [embed]});

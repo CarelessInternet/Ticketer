@@ -49,7 +49,7 @@ module.exports = {
     );
     const embed = new MessageEmbed()
     .setColor('RANDOM')
-    .setAuthor(interaction.user.tag, interaction.user.avatarURL())
+    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
     .setTitle('Ban Confirmation')
     .setDescription(`Are you sure you want to ban <@${member.user.id}>${reason ? ' for the following reason: ' + reason : ''}?`)
     .setTimestamp();

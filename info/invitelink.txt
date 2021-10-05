@@ -1,1 +1,1 @@
-Here's the [Invite Link](https://discord.com/api/oauth2/authorize?client_id=880454049370083329&permissions=8&scope=applications.commands%20bot)
+Here's the [invite link to the support server](https://discord.com/api/oauth2/authorize?client_id=880454049370083329&permissions=8&scope=applications.commands%20bot)

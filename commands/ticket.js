@@ -1,6 +1,5 @@
 const connection = require('../db');
 const {version} = require('../package.json');
-const dateFormat = require('dateformat');
 const {MessageEmbed} = require('discord.js');
 
 function checkForConfig(guildId) {
@@ -49,7 +48,7 @@ module.exports = {
       const name = `ticket-${user.id}`;
       if (channel.threads.cache.find(thread => thread.name === name && !thread.archived)) return interaction.reply({content: 'You must close your previous ticket before creating a new one', ephemeral: true});
       
-      const {RoleID} = config;
+      const {RoleID, ReplyEmbed} = config;
       if (RoleID === '0') return interaction.reply({content: 'Missing the managers, please add them via ticket-config', ephemeral: true});
       
       const thread = await channel.threads.create({
@@ -76,16 +75,21 @@ module.exports = {
       members.forEach(manager => thread.members.add(manager.user.id));
       thread.members.add(user.id);
 
-      const ticketEmbed = new MessageEmbed()
-      .setColor('DARK_GREEN')
-      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
-      .setTitle('Ticket Created')
-      .setDescription(`Your support ticket has successfully been created!\nView it at <#${thread.id}>`)
-      .addField('Subject', subject)
-      .addField('Name of Ticket', thread.name)
-      .setTimestamp()
-      .setFooter(`Version ${version}`);
-      interaction.reply({embeds: [ticketEmbed]});
+      if (ReplyEmbed) {
+        const ticketEmbed = new MessageEmbed()
+        .setColor('DARK_GREEN')
+        .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+        .setTitle('Ticket Created')
+        .setDescription(`Your support ticket has successfully been created!\nView it at <#${thread.id}>`)
+        .addField('Subject', subject)
+        .addField('Name of Ticket', thread.name)
+        .setTimestamp()
+        .setFooter(`Version ${version}`);
+  
+        interaction.reply({embeds: [ticketEmbed]});
+      } else {
+        interaction.reply({content: `Ticket successfully created! View it at <#${thread.id}>`, ephemeral: true});
+      }
     } catch(err) {
       console.error(err);
       interaction.reply({content: 'An unknown error occured, please try again later', ephemeral: true}).catch(console.error);

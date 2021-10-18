@@ -18,7 +18,7 @@
     "discord-api-types": "^0.23.1",
     "discord.js": "^13.2.0",
     "dotenv": "^10.0.0",
-    "mysql2": "^2.3.0",
+    "mysql2": "^2.3.2",
     "topgg-autoposter": "^2.0.0",
     "utf-8-validate": "^5.0.7",
     "zlib-sync": "^0.1.7"

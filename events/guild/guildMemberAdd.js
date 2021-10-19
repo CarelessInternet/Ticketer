@@ -1,4 +1,5 @@
 const connection = require('../../db');
+const {version} = require('../../package.json');
 
 function ifExists(guildId) {
   return new Promise(async (resolve, reject) => {
@@ -29,7 +30,8 @@ async function memberAdd(client, Discord, prefix, member) {
     .addField('Account Creation Date', `<t:${Math.floor(member.user.createdTimestamp / 1000)}>`)
     .addField('Join Date', `<t:${Math.floor(new Date().getTime() / 1000)}:R>`)
     .setThumbnail(member.user.displayAvatarURL())
-    .setTimestamp();
+    .setTimestamp()
+    .setFooter(`Version ${version}`);
 
     channel.send({embeds: [embed]});
   } catch(err) {

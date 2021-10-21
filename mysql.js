@@ -17,7 +17,9 @@ CREATE TABLE IF NOT EXISTS TicketingManagers (
   ID int NOT NULL AUTO_INCREMENT,
   GuildID bigint(20) NOT NULL UNIQUE,
   RoleID bigint(20) NOT NULL,
-  ReplyEmbed boolean NOT NULL,
+  SupportChannel bigint(20) DEFAULT 0,
+  LogsChannel bigint(20) DEFAULT 0,
+  ReplyEmbed boolean DEFAULT 0,
   PRIMARY KEY (ID)
 )
 `;

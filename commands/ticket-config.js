@@ -1,6 +1,6 @@
 const connection = require('../db');
 const {version} = require('../package.json');
-const {MessageEmbed} = require('discord.js');
+const {MessageEmbed, TextChannel} = require('discord.js');
 
 function ifExist(guildId) {
   return new Promise(async (resolve, reject) => {
@@ -42,6 +42,26 @@ function updateReplyEmbed(guildId, boolean) {
     }
   });
 }
+function updateSupportChannel(guildId, channelId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await connection.execute('UPDATE TicketingManagers SET SupportChannel = ? WHERE GuildID = ?', [channelId, guildId]);
+      resolve();
+    } catch(err) {
+      reject(err);
+    }
+  });
+}
+function updateLogsChannel(guildId, channelId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await connection.execute('UPDATE TicketingManagers SET LogsChannel = ? WHERE GuildID = ?', [channelId, guildId]);
+      resolve();
+    } catch(err) {
+      reject(err);
+    }
+  });
+}
 
 module.exports = {
   data: {
@@ -58,6 +78,32 @@ module.exports = {
             name: "role",
             description: "The role that manages tickets",
             type: 8,
+            required: true
+          }
+        ]
+      },
+      {
+        name: "support-channel",
+        description: "Specifies the support channel, this is not required if there is a support channel named 'support'",
+        type: 1,
+        options: [
+          {
+            name: "channel",
+            description: "The channel for creating tickets",
+            type: 7,
+            required: true
+          }
+        ]
+      },
+      {
+        name: "logs-channel",
+        description: "Specifies the logs channel, the bot sends a message on ticket activity",
+        type: 1,
+        options: [
+          {
+            name: "channel",
+            description: "The channel for posting logs",
+            type: 7,
             required: true
           }
         ]
@@ -100,6 +146,58 @@ module.exports = {
           .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
           .setTitle('Changed Managers')
           .setDescription(`<@${interaction.user.id}> changed managers to <@&${id}>`)
+          .setTimestamp()
+          .setFooter(`Version ${version}`);
+
+          interaction.reply({embeds: [embed]});
+          break;
+        }
+        case 'support-channel': {
+          const channel = interaction.options.getChannel('channel');
+
+          const {guildId} = interaction;
+          const exists = await ifExist(guildId);
+
+          if (!exists) {
+            return interaction.reply({content: 'You need to create the managers first before editing this configuration', ephemeral: true});
+          }
+          if (!(channel instanceof TextChannel)) {
+            return interaction.reply({content: 'The channel must be a valid text channel', ephemeral: true});
+          }
+
+          await updateSupportChannel(guildId, channel.id);
+
+          const embed = new MessageEmbed()
+          .setColor('DARK_GREEN')
+          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+          .setTitle('Changed Support Channel')
+          .setDescription(`<@${interaction.user.id}> changed the support channel ${exists['SupportChannel'] !== '0' ? 'from <#' + exists['SupportChannel'] + '>' : ''} to <#${channel.id}>`)
+          .setTimestamp()
+          .setFooter(`Version ${version}`);
+
+          interaction.reply({embeds: [embed]});
+          break;
+        }
+        case 'logs-channel': {
+          const channel = interaction.options.getChannel('channel');
+
+          const {guildId} = interaction;
+          const exists = await ifExist(guildId);
+
+          if (!exists) {
+            return interaction.reply({content: 'You need to create the managers first before editing this configuration', ephemeral: true});
+          }
+          if (!(channel instanceof TextChannel)) {
+            return interaction.reply({content: 'The channel must be a valid text channel', ephemeral: true});
+          }
+
+          await updateLogsChannel(guildId, channel.id);
+
+          const embed = new MessageEmbed()
+          .setColor('DARK_GREEN')
+          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+          .setTitle('Changed Logs Channel')
+          .setDescription(`<@${interaction.user.id}> changed the logs channel ${exists['LogsChannel'] !== '0' ? 'from <#' + exists['LogsChannel'] + '>' : ''} to <#${channel.id}>`)
           .setTimestamp()
           .setFooter(`Version ${version}`);
 

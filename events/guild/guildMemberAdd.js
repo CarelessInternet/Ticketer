@@ -29,7 +29,7 @@ async function memberAdd(client, Discord, prefix, member) {
     .setDescription(`<@${member.id}> Thank you for joining ${member.guild.name}! Enjoy your stay here!`)
     .addField('Account Creation Date', `<t:${Math.floor(member.user.createdTimestamp / 1000)}>`)
     .addField('Join Date', `<t:${Math.floor(new Date().getTime() / 1000)}:R>`)
-    .setThumbnail(member.user.displayAvatarURL())
+    .setThumbnail(member.user.displayAvatarURL({dynamic: true}))
     .setTimestamp()
     .setFooter(`Version ${version}`);
 

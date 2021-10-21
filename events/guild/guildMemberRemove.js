@@ -31,7 +31,7 @@ async function memberRemove(client, Discord, prefix, member) {
     .setDescription(`<@${member.id}> has left the server.`)
     .addField('Account Creation Date', `<t:${Math.floor(member.user.createdTimestamp / 1000)}>`)
     .addField('Leave Date', `<t:${Math.floor(new Date().getTime() / 1000)}:R>`)
-    .setThumbnail(member.user.displayAvatarURL())
+    .setThumbnail(member.user.displayAvatarURL({dynamic: true}))
     .setTimestamp()
     .setFooter(`Version ${version}`);
 

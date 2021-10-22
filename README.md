@@ -2,6 +2,12 @@
 
 [![Discord Bots](https://top.gg/api/widget/880454049370083329.svg)](https://top.gg/bot/880454049370083329)
 
+</div><br>
+
+<div align="center">
+  <img src="https://shields.io/github/package-json/v/CarelessInternet/Ticketer">
+  <img src="https://shields.io/github/license/CarelessInternet/Ticketer">
+  <img src="https://shields.io/github/commit-activity/m/CarelessInternet/Ticketer?color=green">
 </div>
 
 # Ticketer

@@ -1,6 +1,9 @@
 const connection = require('../db');
 const {version} = require('../package.json');
 const {MessageEmbed} = require('discord.js');
+const {default: PasteAPI} = require('pastebin-api');
+
+const pasteClient = new PasteAPI(process.env.pastebinApiKey);
 
 function ifExists(guildId) {
   return new Promise(async (resolve, reject) => {
@@ -27,7 +30,7 @@ module.exports = {
       },
       {
         name: "delete",
-        description: "Delete the support ticket",
+        description: "Delete the support ticket, message content is saved via logs for 7 days",
         type: 1,
         options: []
       }
@@ -41,7 +44,7 @@ module.exports = {
     try {
       const {user, channel, guild, guildId} = interaction;
       if (channel.type !== 'GUILD_PRIVATE_THREAD' && channel.type !== 'GUILD_PUBLIC_THREAD') return interaction.reply({content: 'You must be in a support ticket to close it', ephemeral: true});
-      if (!interaction.guild.me.permissions.has(['MANAGE_THREADS', 'USE_PUBLIC_THREADS', 'USE_PRIVATE_THREADS', 'MANAGE_MESSAGES'])) return interaction.reply({content: 'I need all thread permissions and manage messages to close tickets', ephemeral: true});
+      if (!guild.me.permissions.has(['MANAGE_THREADS', 'USE_PUBLIC_THREADS', 'USE_PRIVATE_THREADS', 'MANAGE_MESSAGES'])) return interaction.reply({content: 'I need all thread permissions and manage messages to close tickets', ephemeral: true});
       
       const record = await ifExists(guildId);
       if (!record || record['RoleID'] === '0') return interaction.reply({content: 'No ticketing config or available role could be found, please create one', ephemeral: true});
@@ -83,23 +86,43 @@ module.exports = {
             break;
           }
           case 'delete': {
-            channel.delete();
-
             if (record['LogsChannel'] !== '0') {
+              const logsChannel = await guild.channels.fetch(record['LogsChannel']);
+              if (!logsChannel.permissionsFor(guild.me).has('SEND_MESSAGES')) return;
+              
+              // this code might not work when message content becomes a privileged intent
+              const messagesCache = channel.messages.cache;
+              const messages = messagesCache.map((msg) => {
+                if (msg.author?.id !== interaction.client.user?.id) {
+                  const user = msg.author?.tag ?? 'Unknown';
+                  const content = msg.content ?? '';
+  
+                  return `${user}: ${content}\n`;
+                }
+              });
+              const botPinEmbed = messagesCache.first();
+              const subject = botPinEmbed.author?.id === interaction.client.user?.id ? botPinEmbed.embeds[0].fields[0].value : 'Not Found';
+              
+              const url = await pasteClient.createPaste({
+                code: `Subject: ${subject}\n\n` + messages.join(' '),
+                expireDate: '1W',
+                name: `Ticketer-${Date.now()}`
+              });
+              
               const logEmbed = new MessageEmbed()
               .setColor('DARK_GREEN')
               .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
               .setTitle('Ticket Deleted')
               .setDescription(`<@!${interaction.user.id}> deleted a ticket`)
               .addField('Name of Ticket', channel.name)
+              .addField('Link to Message History', `[${url}](${url})`)
               .setTimestamp()
               .setFooter(`Version ${version}`);
-
-              const logsChannel = await interaction.guild.channels.fetch(record['LogsChannel']);
-              if (!logsChannel.permissionsFor(interaction.guild.me).has('SEND_MESSAGES')) return;
-
+              
               logsChannel.send({embeds: [logEmbed]});
             }
+
+            channel.delete();
             break;
           }
           default:

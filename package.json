@@ -4,8 +4,8 @@
   "description": "Ticketing bot",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=development node .",
-    "production": "NODE_ENV=production node .",
+    "start": "NODE_ENV=development node index.js",
+    "production": "NODE_ENV=production node index.js",
     "mysql": "node mysql.js",
     "deploy": "node deploy.js"
   },
@@ -19,6 +19,7 @@
     "discord.js": "^13.2.0",
     "dotenv": "^10.0.0",
     "mysql2": "^2.3.2",
+    "pastebin-api": "^2.4.0",
     "topgg-autoposter": "^2.0.0",
     "utf-8-validate": "^5.0.7",
     "zlib-sync": "^0.1.7"

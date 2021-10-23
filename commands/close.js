@@ -101,7 +101,7 @@ module.exports = {
                 }
               });
               const botPinEmbed = messagesCache.first();
-              const subject = botPinEmbed.author?.id === interaction.client.user?.id ? botPinEmbed.embeds[0].fields[0].value : 'Not Found';
+              const subject = botPinEmbed.author?.id === interaction.client.user?.id ? (botPinEmbed.embeds[0].fields[0].value ?? 'Not Found') : 'Not Found';
               
               const url = await pasteClient.createPaste({
                 code: `Subject: ${subject}\n\n` + messages.join(' '),

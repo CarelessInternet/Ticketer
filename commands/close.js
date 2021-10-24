@@ -44,7 +44,7 @@ module.exports = {
     try {
       const {user, channel, guild, guildId} = interaction;
       if (channel.type !== 'GUILD_PRIVATE_THREAD' && channel.type !== 'GUILD_PUBLIC_THREAD') return interaction.reply({content: 'You must be in a support ticket to close it', ephemeral: true});
-      if (!guild.me.permissions.has(['MANAGE_THREADS', 'USE_PUBLIC_THREADS', 'USE_PRIVATE_THREADS', 'MANAGE_MESSAGES'])) return interaction.reply({content: 'I need all thread permissions and manage messages to close tickets', ephemeral: true});
+      if (!guild.me.permissions.has(['MANAGE_THREADS', 'CREATE_PUBLIC_THREADS', 'CREATE_PRIVATE_THREADS', 'SEND_MESSAGES_IN_THREADS', 'MANAGE_MESSAGES'])) return interaction.reply({content: 'I need all thread permissions and manage messages to close tickets', ephemeral: true});
       
       const record = await ifExists(guildId);
       if (!record || record['RoleID'] === '0') return interaction.reply({content: 'No ticketing config or available role could be found, please create one', ephemeral: true});
@@ -78,8 +78,8 @@ module.exports = {
               .setTimestamp()
               .setFooter(`Version ${version}`);
 
-              const logsChannel = await interaction.guild.channels.fetch(record['LogsChannel']);
-              if (!logsChannel.permissionsFor(interaction.guild.me).has('SEND_MESSAGES')) return;
+              const logsChannel = await guild.channels.fetch(record['LogsChannel']);
+              if (!logsChannel.permissionsFor(guild.me).has('SEND_MESSAGES')) return;
 
               logsChannel.send({embeds: [logEmbed]});
             }

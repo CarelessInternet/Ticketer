@@ -90,7 +90,7 @@ module.exports = {
               const logsChannel = await guild.channels.fetch(record['LogsChannel']);
               if (!logsChannel.permissionsFor(guild.me).has('SEND_MESSAGES')) return;
               
-              // this code might not work when message content becomes a privileged intent
+              // this code will not work when message content becomes a privileged intent
               const messagesCache = channel.messages.cache;
               const messages = messagesCache.map((msg) => {
                 if (msg.author?.id !== interaction.client.user?.id) {
@@ -101,7 +101,7 @@ module.exports = {
                 }
               });
               const botPinEmbed = messagesCache.first();
-              const subject = botPinEmbed.author?.id === interaction.client.user?.id ? (botPinEmbed.embeds[0].fields[0].value ?? 'Not Found') : 'Not Found';
+              const subject = botPinEmbed.author?.id === interaction.client.user?.id ? (botPinEmbed?.embeds?.[0]?.fields?.[0]?.value ?? 'Not Found') : 'Not Found';
               
               const url = await pasteClient.createPaste({
                 code: `Subject: ${subject}\n\n` + messages.join(' '),
@@ -133,7 +133,7 @@ module.exports = {
       }
     } catch(err) {
       console.error(err);
-      interaction.reply({content: 'An error occured whilst closing the thread, please try again later', ephemeral: true}).catch(console.error);
+      interaction.followUp({content: 'An error occured whilst closing the thread, please try again later', ephemeral: true}).catch(console.error);
     }
   }
 }

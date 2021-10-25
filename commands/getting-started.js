@@ -20,7 +20,7 @@ module.exports = {
       const inviteFile = readFileSync('./info/invitelink.txt', 'utf8');
       const embed = new MessageEmbed()
       .setColor('RANDOM')
-      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({dynamic: true}))
       .setTitle('Getting Started')
       .setDescription(inviteFile)
       .addField('Steps', startingFile)

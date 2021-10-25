@@ -143,7 +143,7 @@ module.exports = {
 
           const embed = new MessageEmbed()
           .setColor('DARK_GREEN')
-          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({dynamic: true}))
           .setTitle('Changed Managers')
           .setDescription(`<@${interaction.user.id}> changed managers to <@&${id}>`)
           .setTimestamp()
@@ -169,7 +169,7 @@ module.exports = {
 
           const embed = new MessageEmbed()
           .setColor('DARK_GREEN')
-          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({dynamic: true}))
           .setTitle('Changed Support Channel')
           .setDescription(`<@${interaction.user.id}> changed the support channel ${exists['SupportChannel'] !== '0' ? 'from <#' + exists['SupportChannel'] + '>' : ''} to <#${channel.id}>`)
           .setTimestamp()
@@ -195,7 +195,7 @@ module.exports = {
 
           const embed = new MessageEmbed()
           .setColor('DARK_GREEN')
-          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({dynamic: true}))
           .setTitle('Changed Logs Channel')
           .setDescription(`<@${interaction.user.id}> changed the logs channel ${exists['LogsChannel'] !== '0' ? 'from <#' + exists['LogsChannel'] + '>' : ''} to <#${channel.id}>`)
           .setTimestamp()
@@ -218,7 +218,7 @@ module.exports = {
 
           const embed = new MessageEmbed()
           .setColor('DARK_GREEN')
-          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({dynamic: true}))
           .setTitle('Changed Reply Embed Option')
           .setDescription(`<@${interaction.user.id}> changed reply embeds to ${type === true ? 'on' : 'off'}`)
           .setTimestamp()

@@ -23,7 +23,7 @@ module.exports = {
 
       const embed = new MessageEmbed()
       .setColor('RANDOM')
-      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({dynamic: true}))
       .setTitle(`Stats of ${name}`)
       .setDescription('All interesting stats of the server')
       .addField('Member Count', memberCount.toLocaleString(), true)

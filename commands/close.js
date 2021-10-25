@@ -56,7 +56,7 @@ module.exports = {
   
         const embed = new MessageEmbed()
         .setColor('DARK_GREEN')
-        .setAuthor(user.tag, user.displayAvatarURL())
+        .setAuthor(user.tag, user.displayAvatarURL({dynamic: true}))
         .setTitle('Ticket Closed')
         .setDescription(`<@${user.id}> closed the support ticket`)
         .setTimestamp()
@@ -71,7 +71,7 @@ module.exports = {
             if (record['LogsChannel'] !== '0') {
               const logEmbed = new MessageEmbed()
               .setColor('DARK_GREEN')
-              .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+              .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({dynamic: true}))
               .setTitle('Ticket Closed')
               .setDescription(`<@!${interaction.user.id}> closed a ticket\nView it at <#${channel.id}>`)
               .addField('Name of Ticket', channel.name)
@@ -111,7 +111,7 @@ module.exports = {
               
               const logEmbed = new MessageEmbed()
               .setColor('DARK_GREEN')
-              .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+              .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({dynamic: true}))
               .setTitle('Ticket Deleted')
               .setDescription(`<@!${interaction.user.id}> deleted a ticket`)
               .addField('Name of Ticket', channel.name)

@@ -57,12 +57,29 @@ module.exports = {
           type: guild.premiumTier === 'TIER_2' ? 'GUILD_PRIVATE_THREAD' : 'GUILD_PUBLIC_THREAD',
           reason: subject
         });
+        const {members} = await guild.roles.fetch(RoleID);
+        const presences = members.map((manager) => {
+          const mention = `<@!${manager.id}>`;
+          const status = manager.presence?.status;
+
+          if (status === 'online') {
+            return `🟢 ${mention}`;
+          } else if (status === 'idle') {
+            return `🟡 ${mention}`;
+          } else if (status === 'dnd') {
+            return `🔴 ${mention}`;
+          } else {
+            return `⚫ ${mention}`;
+          }
+        });
+
         const threadEmbed = new MessageEmbed()
         .setColor('DARK_GREEN')
-        .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+        .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({dynamic: true}))
         .setTitle('Support Ticket')
         .setDescription(`<@${user.id}> created a new support ticket.`)
         .addField('Subject', subject)
+        .addField('Statuses of Managers', presences.join('\n'))
         .addField('Ticket Date', `<t:${Math.floor(thread.createdTimestamp / 1000)}:R>`)
         .setTimestamp()
         .setFooter(`Version ${version}`);
@@ -71,14 +88,13 @@ module.exports = {
         await msg.pin();
         if (thread.lastMessage.system) await thread.lastMessage.delete();
   
-        const {members} = await guild.roles.fetch(RoleID);
         members.forEach(manager => thread.members.add(manager.user.id));
         thread.members.add(user.id);
   
         if (ReplyEmbed) {
           const ticketEmbed = new MessageEmbed()
           .setColor('DARK_GREEN')
-          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({dynamic: true}))
           .setTitle('Ticket Created')
           .setDescription(`Your support ticket has successfully been created!\nView it at <#${thread.id}>`)
           .addField('Subject', subject)
@@ -94,7 +110,7 @@ module.exports = {
         if (LogsChannel !== '0') {
           const logEmbed = new MessageEmbed()
           .setColor('DARK_GREEN')
-          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({dynamic: true}))
           .setTitle('Ticket Created')
           .setDescription(`<@!${interaction.user.id}> created a ticket!\nView it at <#${thread.id}>`)
           .addField('Subject', subject)
@@ -112,7 +128,7 @@ module.exports = {
       }
     } catch(err) {
       console.error(err);
-      interaction.reply({content: 'An unknown error occured, please try again later', ephemeral: true}).catch(console.error);
+      interaction.followUp({content: 'An unknown error occured, please try again later', ephemeral: true}).catch(console.error);
     }
   }
 }

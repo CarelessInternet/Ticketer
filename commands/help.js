@@ -77,7 +77,7 @@ module.exports = {
       .setColor('RANDOM')
       .setTitle('Command List')
       .setDescription('A list of all available commands')
-      .addField('Prefix', `The prefix is \`${prefix}\`, and it\'s unchangeable, due to message content soon being [deprecated in April 2022](https://support-dev.discord.com/hc/en-us/articles/4404772028055)`)
+      .addField('Prefix', `The prefix is \`${prefix}\`, and it\'s unchangeable, due to message content soon being [restricted in April 2022](https://support-dev.discord.com/hc/en-us/articles/4404772028055)`)
       .addField('Support', readFileSync('./info/support.txt', 'utf8'))
       .addField('Invite', readFileSync('./info/invitelink.txt', 'utf8'))
       .addField('\u200B', '\u200B')

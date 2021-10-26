@@ -18,22 +18,22 @@ async function memberAdd(client, Discord, prefix, member) {
     if (!record) return;
     
     const {ChannelID, Enabled} = record;
-    if (!Enabled || ChannelID === 0) return;
-
-    const channel = await member.guild.channels.fetch(ChannelID);
-    if (!channel.permissionsFor(member.guild.me).has('SEND_MESSAGES')) return;
+    if (Enabled && ChannelID !== '0') {
+      const channel = await member.guild.channels.fetch(ChannelID);
+      if (!channel.permissionsFor(member.guild.me).has('SEND_MESSAGES')) return;
+    
+      const embed = new Discord.MessageEmbed()
+      .setColor('DARK_GREEN')
+      .setTitle(`Welcome ${member.user.tag}`)
+      .setDescription(`<@${member.id}> Thank you for joining ${member.guild.name}! Enjoy your stay here!`)
+      .addField('Account Creation Date', `<t:${Math.floor(member.user.createdTimestamp / 1000)}>`)
+      .addField('Join Date', `<t:${Math.floor(new Date().getTime() / 1000)}:R>`)
+      .setThumbnail(member.user.displayAvatarURL({dynamic: true}))
+      .setTimestamp()
+      .setFooter(`Version ${version}`);
   
-    const embed = new Discord.MessageEmbed()
-    .setColor('DARK_GREEN')
-    .setTitle(`Welcome ${member.user.tag}`)
-    .setDescription(`<@${member.id}> Thank you for joining ${member.guild.name}! Enjoy your stay here!`)
-    .addField('Account Creation Date', `<t:${Math.floor(member.user.createdTimestamp / 1000)}>`)
-    .addField('Join Date', `<t:${Math.floor(new Date().getTime() / 1000)}:R>`)
-    .setThumbnail(member.user.displayAvatarURL({dynamic: true}))
-    .setTimestamp()
-    .setFooter(`Version ${version}`);
-
-    channel.send({embeds: [embed]});
+      channel.send({embeds: [embed]});
+    }
   } catch(err) {
     console.error(err);
   }

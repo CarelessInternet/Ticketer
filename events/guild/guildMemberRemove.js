@@ -20,22 +20,22 @@ async function memberRemove(client, Discord, prefix, member) {
     if (!record) return;
     
     const {ChannelID, Enabled} = record;
-    if (!Enabled || ChannelID === 0) return;
-
-    const channel = await member.guild.channels.fetch(ChannelID);
-    if (!channel.permissionsFor(member.guild.me).has('SEND_MESSAGES')) return;
-
-    const embed = new Discord.MessageEmbed()
-    .setColor('RED')
-    .setTitle(`Bye ${member.user.tag}`)
-    .setDescription(`<@${member.id}> has left the server.`)
-    .addField('Account Creation Date', `<t:${Math.floor(member.user.createdTimestamp / 1000)}>`)
-    .addField('Leave Date', `<t:${Math.floor(new Date().getTime() / 1000)}:R>`)
-    .setThumbnail(member.user.displayAvatarURL({dynamic: true}))
-    .setTimestamp()
-    .setFooter(`Version ${version}`);
-
-    channel.send({embeds: [embed]});
+    if (Enabled && ChannelID !== '0') {
+      const channel = await member.guild.channels.fetch(ChannelID);
+      if (!channel.permissionsFor(member.guild.me).has('SEND_MESSAGES')) return;
+  
+      const embed = new Discord.MessageEmbed()
+      .setColor('RED')
+      .setTitle(`Bye ${member.user.tag}`)
+      .setDescription(`<@${member.id}> has left the server.`)
+      .addField('Account Creation Date', `<t:${Math.floor(member.user.createdTimestamp / 1000)}>`)
+      .addField('Leave Date', `<t:${Math.floor(new Date().getTime() / 1000)}:R>`)
+      .setThumbnail(member.user.displayAvatarURL({dynamic: true}))
+      .setTimestamp()
+      .setFooter(`Version ${version}`);
+  
+      channel.send({embeds: [embed]});
+    }
   } catch(err) {
     console.error(err);
   }

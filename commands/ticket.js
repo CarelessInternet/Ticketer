@@ -83,6 +83,10 @@ module.exports = {
         .addField('Ticket Date', `<t:${Math.floor(thread.createdTimestamp / 1000)}:R>`)
         .setTimestamp()
         .setFooter(`Version ${version}`);
+
+        if (LogsChannel !== '0') {
+          threadEmbed.addField('Logs are On', 'Message logs are on, please be careful of what you say in this ticket!');
+        }
   
         const msg = await thread.send({embeds: [threadEmbed]});
         await msg.pin();

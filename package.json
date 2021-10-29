@@ -16,7 +16,7 @@
     "bufferutil": "^4.0.5",
     "dateformat": "^4.6.3",
     "discord-api-types": "^0.24.0",
-    "discord.js": "^13.2.0",
+    "discord.js": "^13.3.0",
     "dotenv": "^10.0.0",
     "mysql2": "^2.3.2",
     "pastebin-api": "^2.4.0",

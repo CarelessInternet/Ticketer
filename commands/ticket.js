@@ -54,7 +54,7 @@ module.exports = {
         const thread = await channel.threads.create({
           name: name,
           autoArchiveDuration: 60 * 24,
-          type: guild.premiumTier === 'TIER_2' ? 'GUILD_PRIVATE_THREAD' : 'GUILD_PUBLIC_THREAD',
+          type: guild.premiumTier === 'TIER_2' || guild.premiumTier === 'TIER_3' ? 'GUILD_PRIVATE_THREAD' : 'GUILD_PUBLIC_THREAD',
           reason: subject
         });
         const {members} = await guild.roles.fetch(RoleID);

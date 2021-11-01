@@ -1,6 +1,6 @@
 # Terms of Service
 
-Last Updated: 28 October, 2021
+Last Updated: 02 November, 2021
 
 Looking for the [privacy policy](https://github.com/CarelessInternet/Ticketer/blob/main/privacy_policy.md)?
 

@@ -1,7 +1,7 @@
 ## Disclaimer
 
 The information here may not always be up to date. If it isn't up to date, feel free to join the [support server](https://discord.gg/kswKHpJeqC) and say so or open an issue here on GitHub.<br>
-Last Updated: 22 October, 2021
+Last Updated: 02 November, 2021
 
 ## What do you mean by "Discord Data?"
 

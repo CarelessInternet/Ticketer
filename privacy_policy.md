@@ -31,7 +31,7 @@ As of right now, Ticketer collects/creates the following data on success and req
   - Channel(s) ID (optional specified support channel and logs channel)
   - True/False for Reply Embeds
 - Ticket `close delete` Command:
-  - All of the messages' content in the ticket are sent to [pastebin](https://pastebin.com) and saved for 7 days before being automatically deleted. Only users who have access to the logs channel get to view the link and see the content for themselves
+  - If ticket logs are toggled on, all of the messages' content and respective authors in the ticket are sent to [Pastebin](https://pastebin.com) and saved for 7 days before being automatically deleted. Only users who have access to the logs channel get to view the link and see the content for themselves
 - Welcome/Goodbye Config Commands:
   - Enabled (to enable or disable the welcome/goodye messages)
 
@@ -50,7 +50,7 @@ All data collected remains permanently, except for the `close delete` command, w
 
 ## Do you share any data to companies or other people?
 
-No data is shared with anyone or any companies, except to [pastebin](https://pastebin.com) for the logs.
+No data is shared with anyone or any companies, except to [Pastebin](https://pastebin.com) for the logs.
 
 ## How can users contact you if they have concerns about your bot?
 

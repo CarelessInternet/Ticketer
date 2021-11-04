@@ -81,11 +81,12 @@ module.exports = {
         .addField('Subject', subject)
         .addField('Statuses of Managers', presences.join('\n'))
         .addField('Ticket Date', `<t:${Math.floor(thread.createdTimestamp / 1000)}:R>`)
-        .setTimestamp()
-        .setFooter(`Version ${version}`);
+        .setTimestamp();
 
         if (LogsChannel !== '0') {
-          threadEmbed.addField('Logs are On', 'Message logs are on, please be careful of what you say in this ticket!');
+          threadEmbed.setFooter(`Message logs are on, please be careful of what you say! Version ${version}`);
+        } else {
+          threadEmbed.setFooter(`Version ${version}`);
         }
   
         const msg = await thread.send({embeds: [threadEmbed]});

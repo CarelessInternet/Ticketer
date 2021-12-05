@@ -19,7 +19,7 @@
     "discord.js": "^13.3.1",
     "dotenv": "^10.0.0",
     "mysql2": "^2.3.3",
-    "pastebin-api": "^2.6.0",
+    "pastebin-api": "^2.6.1",
     "topgg-autoposter": "^2.0.0",
     "utf-8-validate": "^5.0.7",
     "zlib-sync": "^0.1.7"

@@ -1,0 +1,170 @@
+import {
+	memberNicknameMention,
+	SlashCommandBuilder
+} from '@discordjs/builders';
+import {
+	GuildMember,
+	Message,
+	MessageActionRow,
+	MessageButton,
+	MessageEmbed
+} from 'discord.js';
+import { Command } from '../../types';
+
+export const category: Command['category'] = 'Staff';
+
+export const data: Command['data'] = new SlashCommandBuilder()
+	.setName('ban')
+	.setDescription('Bans a user from the server')
+	.addUserOption((option) =>
+		option
+			.setName('user')
+			.setDescription('The desired user to be banned')
+			.setRequired(true)
+	)
+	.addIntegerOption((option) =>
+		option
+			.setName('days')
+			.setDescription('Number of days of messages to delete')
+			.addChoices([
+				['0', 0],
+				['1', 1],
+				['2', 2],
+				['3', 3],
+				['4', 4],
+				['5', 5],
+				['6', 6],
+				['7', 7]
+			])
+			.setRequired(true)
+	)
+	.addStringOption((option) =>
+		option
+			.setName('reason')
+			.setDescription('The reason for the ban')
+			.setRequired(false)
+	);
+
+export const execute: Command['execute'] = async ({ interaction }) => {
+	const ephemeral = true;
+
+	try {
+		if (!interaction.memberPermissions!.has(['BAN_MEMBERS'])) {
+			return interaction.reply({
+				content: 'You need the ban members permission to run this command',
+				ephemeral
+			});
+		}
+		if (!interaction.guild!.me!.permissions.has(['BAN_MEMBERS'])) {
+			return interaction.reply({
+				content: 'I need the ban members permission to run this command',
+				ephemeral
+			});
+		}
+
+		const [member, days, reason] = [
+			interaction.options.getMember('user') as GuildMember,
+			interaction.options.getInteger('days')!,
+			interaction.options.getString('reason') ?? ''
+		];
+
+		if (member.id === interaction.user.id) {
+			return interaction.reply({
+				content: 'You cannot ban yourself',
+				ephemeral
+			});
+		}
+		if (!member.bannable) {
+			return interaction.reply({
+				content: 'I am unable to ban this member',
+				ephemeral
+			});
+		}
+
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('confirm')
+				.setEmoji('✔️')
+				.setStyle('SUCCESS'),
+			new MessageButton().setCustomId('abort').setEmoji('❌').setStyle('DANGER')
+		);
+		const embed = new MessageEmbed()
+			.setColor('BLURPLE')
+			.setAuthor(
+				interaction.user.tag,
+				interaction.user.displayAvatarURL({ dynamic: true })
+			)
+			.setTitle('Ban Confirmation')
+			.setDescription(
+				`Are you sure you want to ban ${memberNicknameMention(member.id)}?`
+			)
+			.setTimestamp();
+
+		if (reason) {
+			embed.addField('Reason', reason);
+		}
+
+		const confirmation = (await interaction.reply({
+			embeds: [embed],
+			components: [row],
+			fetchReply: true
+		})) as Message;
+		const collector = confirmation.createMessageComponentCollector({
+			filter: (i) =>
+				(i.customId === 'confirm' || i.customId === 'abort') &&
+				i.user.id === interaction.user.id,
+			componentType: 'BUTTON',
+			time: 15 * 1000
+		});
+
+		collector.on('collect', (i) => {
+			if (i.customId === 'confirm') {
+				member
+					.ban({ reason, days })
+					.then((user) => {
+						embed.setDescription(
+							`👍 ${memberNicknameMention(
+								user.id
+							)} has been banned from the server`
+						);
+						i.update({ embeds: [embed], components: [] });
+					})
+					.catch(() => {
+						embed.setDescription('Failed to ban for an unknown reason');
+						i.update({ embeds: [embed], components: [] });
+					});
+			} else {
+				embed.setDescription(
+					`The ban on ${memberNicknameMention(member.id)} has been aborted`
+				);
+				i.update({ embeds: [embed], components: [] });
+			}
+
+			collector.stop();
+		});
+		collector.on('end', (_collected, reason) => {
+			switch (reason) {
+				case 'time': {
+					embed.setDescription(
+						`The ban on ${memberNicknameMention(
+							member.id
+						)} has been aborted due to no response`
+					);
+					confirmation.edit({ embeds: [embed], components: [] });
+
+					break;
+				}
+				case 'messageDelete': {
+					interaction.channel?.send({
+						content: 'Ban aborted because the message was deleted'
+					});
+					break;
+				}
+				default:
+					break;
+			}
+		});
+	} catch (err) {
+		console.error(err);
+	}
+};

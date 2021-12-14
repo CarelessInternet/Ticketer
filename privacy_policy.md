@@ -1,7 +1,7 @@
 ## Disclaimer
 
 The information here may not always be up to date. If it isn't up to date, feel free to join the [support server](https://discord.gg/kswKHpJeqC) and say so or open an issue here on GitHub.<br>
-Last Updated: 02 November, 2021
+Last Updated: 14 December, 2021
 
 ## What do you mean by "Discord Data?"
 
@@ -30,7 +30,7 @@ As of right now, Ticketer collects/creates the following data on success and req
 - Ticketing Config Commands:
   - Channel(s) ID (optional specified support channel and logs channel)
   - True/False for Reply Embeds
-- Ticket `close delete` Command:
+- Ticket `delete` Command:
   - If ticket logs are toggled on, all of the messages' content and respective authors in the ticket are sent to [Pastebin](https://pastebin.com) and saved for 7 days before being automatically deleted. Only users who have access to the logs channel get to view the link and see the content for themselves
 - Welcome/Goodbye Config Commands:
   - Enabled (to enable or disable the welcome/goodye messages)
@@ -46,7 +46,7 @@ The welcome/goodbye messages is used to greet or say goodbye to an incoming or l
 
 ## How long is the data stored for?
 
-All data collected remains permanently, except for the `close delete` command, which the logs get deleted after 7 days.
+All data collected remains permanently, except for the `delete` command, which the logs get deleted after 7 days.
 
 ## Do you share any data to companies or other people?
 

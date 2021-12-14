@@ -1,10 +1,10 @@
 # Terms of Service
 
-Last Updated: 02 November, 2021
+Last Updated: 14 December, 2021
 
 Looking for the [privacy policy](https://github.com/CarelessInternet/Ticketer/blob/main/privacy_policy.md)?
 
-By using Ticketer, you are agreeing to both the privacy policy and terms of service. These terms of service may be changed at any moment without notice. You are also agreeing that you are over 13 years old.
+By using Ticketer, you are agreeing to both the privacy policy and terms of service. These terms of service may be changed at any moment without notice. You are also agreeing that you are over 13 years old, or the minimum age to use Discord in your country, whichever is higher.
 
 ## Message Logs
 

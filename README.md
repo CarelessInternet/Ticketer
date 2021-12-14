@@ -39,6 +39,10 @@ Don't forget to enable the Server Members and Presence Intent for your bot. The 
 
 Run the command `npm i` to install all dependencies. This is only needed once
 
+#### Building
+
+Run the command `npm run build` to compile the files
+
 #### Creating MySQL Table
 
 Run the command `npm run mysql` to create all necessary tables. This is only needed once

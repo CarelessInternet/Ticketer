@@ -146,7 +146,10 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 					)} created a new support ticket`
 				)
 				.addField('Subject', subject)
-				.addField('Statuses of Managers', presences?.join('\n') ?? 'Unknown')
+				.addField(
+					'Statuses of Managers',
+					presences?.length ? presences.join('\n') : 'Unknown'
+				)
 				.addField('Ticket Date', time(thread.createdAt, 'R'))
 				.setTimestamp();
 

@@ -22,7 +22,7 @@ I advise you to only clone this repository for making pull requests, or making y
 
 ## Need a DB?
 
-If you're planning on hosting your own version of the bot and are in need of a database, contact `🙏Hope#0001` on Discord.
+If you're planning on hosting your own version of the bot and are in need of a database, contact `🙏Hope#0001` on Discord. They can also be found in the support server.
 
 ## Setup
 

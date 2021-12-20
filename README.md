@@ -33,7 +33,22 @@ You're gonna need MySQL to run this bot, please find a [tutorial](https://www.di
 #### Creating `.env` File
 
 In order to do anything with the bot, create a file named `.env` and add all necessary environment variables that can be found in `src/environment.d.ts`<br>
-Don't forget to enable the Server Members and Presence Intent for your bot. The Presence Intent is needed to get members of roles, and getting their presences.
+Don't forget to enable the Server Members and Presence Intent for your bot. The Presence Intent is needed to get members of roles, and getting their presences.<br>
+Template:
+```env
+NODE_ENV="development or production"
+DISCORD_BOT_TOKEN="bots_token"
+DISCORD_CLIENT_ID="bots_client ID"
+DISCORD_GUILD_ID="main_server ID"
+DISCORD_OWNER_ID="Owner's ID - your ID"
+TOP_GG_TOKEN="get from top.gg (not required unless running in production)"
+PASTEBIN_API_KEY="https://pastebin.com/doc_api"
+DB_HOST="Host URL of the database"
+DB_USER="DB username"
+DB_PASSWORD="DB password"
+DB_DATABASE="Name of the DB"
+DB_PORT="usually 3306"
+```
 
 #### Installing Dependencies
 

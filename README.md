@@ -20,6 +20,10 @@ I advise you to only clone this repository for making pull requests, or making y
 
 [The Link to the Discord Server](https://discord.gg/kswKHpJeqC)
 
+## Need a DB?
+
+If you're planning on hosting your own version of the bot and are in need of a database, contact `🙏Hope#0001` on Discord.
+
 ## Setup
 
 #### Getting the Files

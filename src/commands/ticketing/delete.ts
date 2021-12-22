@@ -126,7 +126,8 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 				const url = await pasteClient.createPaste({
 					code: `Subject: ${subject}\n\n` + messages.join(' '),
 					name: `Ticketer-${Date.now()}`,
-					expireDate: '1W'
+					expireDate: '1W',
+					publicity: 1
 				});
 
 				embed.setDescription(

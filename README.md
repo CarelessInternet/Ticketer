@@ -37,7 +37,7 @@ You're gonna need MySQL to run this bot, please find a [tutorial](https://www.di
 #### Creating `.env` File
 
 In order to do anything with the bot, create a file named `.env` and add all necessary environment variables that can be found in `src/environment.d.ts`<br>
-Don't forget to enable the Server Members and Presence Intent for your bot. The Presence Intent is needed to get members of roles, and getting their presences.<br>
+Don't forget to enable the Server Members, Presence Intent, and Message Content Intent for your bot<br>
 Template:
 ```env
 NODE_ENV="development or production"

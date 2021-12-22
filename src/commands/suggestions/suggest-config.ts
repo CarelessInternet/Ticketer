@@ -120,9 +120,11 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 						});
 					}
 
-					// mariadb turns json into longtex which mysql2 won't recognize as json, so it doesn't parse
-					let blockedUsers = JSON.parse(
-						record.BlockedUsers as unknown as string
+					// longtext and json difference stuff like bruh
+					let blockedUsers = (
+						typeof record.BlockedUsers === 'string'
+							? JSON.parse(record.BlockedUsers as unknown as string)
+							: record.BlockedUsers
 					) as Tables.Suggestions['BlockedUsers'];
 					blockedUsers.push(user.id);
 					blockedUsers = [...new Set(blockedUsers)];
@@ -143,8 +145,10 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 				case 'unblock': {
 					const user = interaction.options.getMember('user') as GuildMember;
 
-					let blockedUsers = JSON.parse(
-						record.BlockedUsers as unknown as string
+					let blockedUsers = (
+						typeof record.BlockedUsers === 'string'
+							? JSON.parse(record.BlockedUsers as unknown as string)
+							: record.BlockedUsers
 					) as Tables.Suggestions['BlockedUsers'];
 					blockedUsers = blockedUsers.filter((id) => id !== user.id);
 

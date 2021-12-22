@@ -38,8 +38,10 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 			});
 		}
 
-		const blockedUsers = JSON.parse(
-			record.BlockedUsers as unknown as string
+		const blockedUsers = (
+			typeof record.BlockedUsers === 'string'
+				? JSON.parse(record.BlockedUsers as unknown as string)
+				: record.BlockedUsers
 		) as Tables.Suggestions['BlockedUsers'];
 
 		if (blockedUsers.some((id) => id === interaction.user.id)) {

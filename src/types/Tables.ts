@@ -23,7 +23,7 @@ export interface Suggestions {
 	Target: number;
 	ReplyEmbed: boolean;
 	/**
-	 * Convert it to array via JSON.parse() first
+	 * Might have to convert it to array via JSON.parse() first
 	 */
 	BlockedUsers: Snowflake[];
 }

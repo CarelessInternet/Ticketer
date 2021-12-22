@@ -64,15 +64,10 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 				record.SupportChannel === '0')
 		) {
 			const managers = await interaction.guild!.roles.fetch(record.RoleID);
-			const name = `ticket-${interaction.user.id}`;
 
-			if (
-				name !== interaction.channel.name &&
-				!managers?.members.has(interaction.user.id)
-			) {
+			if (!managers?.members.has(interaction.user.id)) {
 				return interaction.reply({
-					content:
-						'You may not delete this thread, you are not the original author nor a manager',
+					content: 'You need to be a ticketing manager to delete this ticket',
 					ephemeral: true
 				});
 			}
@@ -127,6 +122,7 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 					code: `Subject: ${subject}\n\n` + messages.join(' '),
 					name: `Ticketer-${Date.now()}`,
 					expireDate: '1W',
+					// 0 = public, 1 = unlisted, 2 = private
 					publicity: 1
 				});
 

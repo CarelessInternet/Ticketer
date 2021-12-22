@@ -15,3 +15,15 @@ export interface GuildMemberEvent {
 	ChannelID: Snowflake;
 	Enabled: boolean;
 }
+
+export interface Suggestions {
+	ID: number;
+	GuildID: Snowflake;
+	SuggestionsChannel: Snowflake;
+	Target: number;
+	ReplyEmbed: boolean;
+	/**
+	 * Convert it to array via JSON.parse() first
+	 */
+	BlockedUsers: Snowflake[];
+}

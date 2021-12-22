@@ -1,6 +1,6 @@
 # Terms of Service
 
-Last Updated: 14 December, 2021
+Last Updated: 22 December, 2021
 
 Looking for the [privacy policy](https://github.com/CarelessInternet/Ticketer/blob/main/privacy_policy.md)?
 
@@ -9,6 +9,10 @@ By using Ticketer, you are agreeing to both the privacy policy and terms of serv
 ## Message Logs
 
 Message logs are stored when ticket logs are toggled on. These message logs are sent to [Pastebin](https://pastebin.com) when the ticket gets deleted through the `close delete` command. Ticketer does not verify, filter, or endorse content in support tickets. You, the user, are responsible for any content delivered by you in support tickets, including message log histories. Ticketer cannot remove content from message log histories until the 7 day expire date from the moment the support ticket has been deleted. Please be careful of what you post in support tickets.
+
+## Suggestions
+
+Suggestion commands are for suggesting an idea, feature, or anything. You are held responsible for the content you post in suggestion commands. Once again, Ticketer doesn't filter nor verify the content posted in these messages.
 
 ## Termination
 

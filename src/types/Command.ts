@@ -17,7 +17,7 @@ export interface Command {
 		| Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
 		| SlashCommandBuilder
 		| SlashCommandSubcommandsOnlyBuilder;
-	readonly category: 'Utility' | 'Ticketing' | 'Staff';
+	readonly category: 'Utility' | 'Ticketing' | 'Staff' | 'Suggestions';
 	readonly ownerOnly?: boolean;
 	readonly privateGuildAndOwnerOnly?: boolean;
 }

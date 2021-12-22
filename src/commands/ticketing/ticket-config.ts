@@ -12,7 +12,7 @@ import { version } from '../../../package.json';
 import { conn } from '../../utils';
 import { Command, Tables } from '../../types';
 
-export const category: Command['category'] = 'Staff';
+export const category: Command['category'] = 'Ticketing';
 
 export const data: Command['data'] = new SlashCommandBuilder()
 	.setName('ticket-config')

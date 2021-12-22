@@ -120,7 +120,7 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 				const pin = cache.first();
 				const subject =
 					pin?.author.id === interaction.client.user!.id
-						? pin.embeds?.[0]?.fields?.[0].value
+						? pin.embeds?.[0]?.fields?.[0]?.value
 						: 'Not Found';
 
 				const url = await pasteClient.createPaste({

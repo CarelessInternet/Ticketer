@@ -40,5 +40,5 @@ export const execute: Handler['execute'] = (client, guild: Guild) => {
 		.setTimestamp()
 		.setFooter(`Version ${version}`);
 
-	guild.systemChannel.send({ embeds: [embed] });
+	guild.systemChannel.send({ embeds: [embed] }).catch(console.error);
 };

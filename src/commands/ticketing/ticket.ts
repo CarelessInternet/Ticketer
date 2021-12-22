@@ -216,7 +216,7 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 			}
 		} else {
 			return interaction.reply({
-				content: 'Tickets are only allowed in the support/ticket channel',
+				content: 'Tickets are only allowed in the ticket channel',
 				ephemeral: true
 			});
 		}

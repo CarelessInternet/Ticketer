@@ -244,7 +244,7 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 						`Changed reply embeds to ${opposite ? 'shown' : 'hidden'}`
 					);
 
-					interaction.reply({ embeds: [embed] });
+					return interaction.reply({ embeds: [embed] });
 				}
 				default:
 					break;

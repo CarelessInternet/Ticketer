@@ -4,7 +4,7 @@ import { conn } from '../../utils';
 import { Handler, Tables } from '../../types';
 
 export const execute: Handler['execute'] = async (
-	_client,
+	client,
 	reaction: MessageReaction
 ) => {
 	try {
@@ -17,7 +17,10 @@ export const execute: Handler['execute'] = async (
 		if (!record) return;
 		if (record.SuggestionsChannel !== reaction.message.channelId) return;
 
-		if (reaction.emoji.name === '👍' || reaction.emoji.name === '👎') {
+		if (
+			reaction.emoji.name === '👍' &&
+			reaction.message.author?.id === client.user!.id
+		) {
 			if (reaction.count >= record.Target) {
 				reaction.message.pin();
 			}

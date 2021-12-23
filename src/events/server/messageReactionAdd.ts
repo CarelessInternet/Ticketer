@@ -22,7 +22,9 @@ export const execute: Handler['execute'] = async (
 			reaction.message.author?.id === client.user!.id
 		) {
 			if (reaction.count >= record.Target) {
-				reaction.message.pin();
+				if (reaction.message.pinnable && !reaction.message.pinned) {
+					reaction.message.pin();
+				}
 			}
 		}
 	} catch (err) {

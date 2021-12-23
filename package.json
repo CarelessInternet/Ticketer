@@ -1,6 +1,6 @@
 {
 	"name": "ticketer",
-	"version": "2.1.1",
+	"version": "2.1.2",
 	"description": "Ticketing bot using threads!",
 	"main": "./dist/src/index.js",
 	"types": "./dist/src/index.d.ts",

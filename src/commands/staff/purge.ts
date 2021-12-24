@@ -10,7 +10,7 @@ import { Command } from '../../types';
 export const category: Command['category'] = 'Staff';
 
 export const data: Command['data'] = new SlashCommandBuilder()
-	.setName('prune')
+	.setName('purge')
 	.setDescription('Removes the latest messages by the requested amount')
 	.addIntegerOption((option) =>
 		option

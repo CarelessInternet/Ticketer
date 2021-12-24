@@ -6,7 +6,7 @@ import {
 	roleMention,
 	SlashCommandBuilder
 } from '@discordjs/builders';
-import { MessageEmbed, Role, TextChannel } from 'discord.js';
+import { MessageEmbed, Role } from 'discord.js';
 import { ChannelType } from 'discord-api-types';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
@@ -57,6 +57,25 @@ export const data: Command['data'] = new SlashCommandBuilder()
 					.setRequired(true)
 					.addChannelTypes([ChannelType.GuildText, ChannelType.GuildNews])
 			)
+	)
+	.addSubcommand((subcommand) =>
+		subcommand
+			.setName('support-category')
+			.setDescription(
+				'The category to create text channels under if text-based ticketing is enabled'
+			)
+			.addChannelOption((option) =>
+				option
+					.setName('channel')
+					.setDescription('The channel for creating text-based tickets under')
+					.setRequired(true)
+					.addChannelType(ChannelType.GuildCategory)
+			)
+	)
+	.addSubcommand((subcommand) =>
+		subcommand
+			.setName('text-channels')
+			.setDescription('Toggle to use either threads or text channels')
 	)
 	.addSubcommand((subcommand) =>
 		subcommand
@@ -135,9 +154,7 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 				return interaction.reply({ embeds: [embed] });
 			}
 			case 'support-channel': {
-				const channel = interaction.options.getChannel(
-					'channel'
-				) as TextChannel;
+				const channel = interaction.options.getChannel('channel')!;
 
 				if (!record) {
 					return interaction.reply({
@@ -172,9 +189,7 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 				return interaction.reply({ embeds: [embed] });
 			}
 			case 'logs-channel': {
-				const channel = interaction.options.getChannel(
-					'channel'
-				) as TextChannel;
+				const channel = interaction.options.getChannel('channel')!;
 
 				if (!record) {
 					return interaction.reply({
@@ -208,6 +223,74 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 
 				return interaction.reply({ embeds: [embed] });
 			}
+			case 'support-category': {
+				if (!record) {
+					return interaction.reply({
+						content:
+							'You need to create the managers first before editing this config',
+						ephemeral: true
+					});
+				}
+
+				const channel = interaction.options.getChannel('channel')!;
+				await conn.execute(
+					'UPDATE TicketingManagers SET SupportCategory = ? WHERE GuildID = ?',
+					[channel.id, interaction.guildId]
+				);
+
+				embed.setTitle('Changed Support Category');
+				if (record.SupportCategory !== '0') {
+					embed.setDescription(
+						`${memberNicknameMention(
+							interaction.user.id
+						)} changed the support category channel from ${channelMention(
+							record.SupportCategory
+						)} to ${channelMention(channel.id)}`
+					);
+				} else {
+					embed.setDescription(
+						`${memberNicknameMention(
+							interaction.user.id
+						)} changed the support category channel to ${channelMention(
+							channel.id
+						)}`
+					);
+				}
+
+				return interaction.reply({ embeds: [embed] });
+			}
+			case 'text-channels': {
+				if (!record) {
+					return interaction.reply({
+						content:
+							'You need to create the managers first before editing this config',
+						ephemeral: true
+					});
+				}
+
+				if (record.SupportCategory === '0') {
+					return interaction.reply({
+						content: 'Please specify a support category first',
+						ephemeral: true
+					});
+				}
+
+				await conn.execute(
+					'UPDATE TicketingManagers SET UseTextChannels = ? WHERE GuildID = ?',
+					[!record.UseTextChannels, interaction.guildId]
+				);
+
+				embed.setTitle('Changed Ticket Channel Type');
+				embed.setDescription(
+					`${memberNicknameMention(
+						interaction.user.id
+					)} changed ticket channel type to ${inlineCode(
+						!record.UseTextChannels ? 'text channels' : 'threads'
+					)}`
+				);
+
+				return interaction.reply({ embeds: [embed] });
+			}
 			case 'reply-embed': {
 				if (!record) {
 					return interaction.reply({
@@ -227,7 +310,7 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 					`${memberNicknameMention(
 						interaction.user.id
 					)} changed reply embeds to ${inlineCode(
-						record.ReplyEmbed ? 'hidden' : 'shown'
+						!record.ReplyEmbed ? 'shown' : 'hidden'
 					)}`
 				);
 

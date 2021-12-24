@@ -1,9 +1,13 @@
 import { RowDataPacket } from 'mysql2';
 import {
+	CategoryChannel,
+	GuildChannel,
 	NewsChannel,
 	TextChannel,
 	ThreadChannel,
-	MessageEmbed
+	MessageEmbed,
+	CommandInteraction,
+	Role
 } from 'discord.js';
 import {
 	SlashCommandBuilder,
@@ -66,15 +70,88 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 			});
 		}
 
-		const channel = interaction.channel as TextChannel | NewsChannel;
+		if (record.RoleID === '0') {
+			return interaction.reply({
+				content: 'Missing the managers, please add them via ticket-config',
+				ephemeral: true
+			});
+		}
 
-		if (
-			channel.id === record.SupportChannel ||
-			(channel.name.toLowerCase() === 'support' &&
+		const preChannel = interaction.channel as GuildChannel;
+		const subject = interaction.options.getString('subject')!;
+		const name = `ticket-${interaction.user.id}`;
+
+		// for text channel based ticketing
+		if (record.SupportCategory !== '0' && record.UseTextChannels) {
+			const channelCategory = (await interaction.guild!.channels.fetch(
+				record.SupportCategory
+			)) as CategoryChannel | null;
+
+			if (!channelCategory) {
+				return interaction.reply({
+					content: 'No support category channel found',
+					ephemeral: true
+				});
+			}
+			if (channelCategory.children.find((channel) => channel.name === name)) {
+				return interaction.reply({
+					content: 'Please close your previous ticket before opening a new one',
+					ephemeral: true
+				});
+			}
+			if (!channelCategory.viewable || !channelCategory.manageable) {
+				return interaction.reply({
+					content:
+						'I cannot view/manage the category channel, please give me the permissions to view it',
+					ephemeral: true
+				});
+			}
+
+			const managers = await interaction.guild!.roles.fetch(record.RoleID);
+			if (!managers) {
+				return interaction.reply({
+					content: 'No manager role could be found',
+					ephemeral: true
+				});
+			}
+
+			const channel = await channelCategory.createChannel(name, {
+				type: 'GUILD_TEXT',
+				permissionOverwrites: [
+					{
+						id: interaction.user,
+						allow: [
+							'VIEW_CHANNEL',
+							'SEND_MESSAGES',
+							'READ_MESSAGE_HISTORY',
+							'USE_APPLICATION_COMMANDS'
+						]
+					},
+					{
+						id: managers,
+						allow: [
+							'VIEW_CHANNEL',
+							'SEND_MESSAGES',
+							'READ_MESSAGE_HISTORY',
+							'USE_APPLICATION_COMMANDS'
+						]
+					},
+					{
+						id: interaction.guild!.roles.everyone,
+						deny: ['VIEW_CHANNEL']
+					}
+				]
+			});
+
+			handleRest(interaction, subject, record, channel, managers);
+		}
+		// for thread based ticketing
+		else if (
+			preChannel.id === record.SupportChannel ||
+			(preChannel.name.toLowerCase() === 'support' &&
 				record.SupportChannel === '0')
 		) {
-			const subject = interaction.options.getString('subject')!;
-			const name = `ticket-${interaction.user.id}`;
+			const channel = interaction.channel as TextChannel | NewsChannel;
 
 			if (
 				channel.threads.cache.find(
@@ -84,13 +161,6 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 				return interaction.reply({
 					content:
 						'You must close your previous ticket before opening a new one',
-					ephemeral: true
-				});
-			}
-
-			if (record.RoleID === '0') {
-				return interaction.reply({
-					content: 'Missing the managers, please add them via ticket-config',
 					ephemeral: true
 				});
 			}
@@ -117,103 +187,14 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 			}
 
 			const managers = await interaction.guild!.roles.fetch(record.RoleID);
-			const presences = managers?.members.map((manager) => {
-				const mention = memberNicknameMention(manager.id);
-				const status = manager.presence?.status;
-
-				switch (status) {
-					case 'online':
-						return `🟢 ${mention}`;
-					case 'idle':
-						return `🟡 ${mention}`;
-					case 'dnd':
-						return `🔴 ${mention}`;
-					default:
-						return `⚫ ${mention}`;
-				}
-			});
-
-			const threadEmbed = new MessageEmbed()
-				.setColor('DARK_GREEN')
-				.setAuthor(
-					interaction.user.tag,
-					interaction.user.displayAvatarURL({ dynamic: true })
-				)
-				.setTitle('Support Ticket')
-				.setDescription(
-					`${memberNicknameMention(
-						interaction.user.id
-					)} created a new support ticket`
-				)
-				.addField('Subject', subject)
-				.addField(
-					'Statuses of Managers',
-					presences?.length ? presences.join('\n') : 'Unknown'
-				)
-				.addField('Ticket Date', time(thread.createdAt, 'R'))
-				.setTimestamp();
-
-			if (record.LogsChannel !== '0') {
-				threadEmbed.setFooter(
-					`Message logs are on, please be careful of what you say! Version ${version}`
-				);
-			} else {
-				threadEmbed.setFooter(`Version ${version}`);
+			if (!managers) {
+				return interaction.reply({
+					content: 'No manager role could be found',
+					ephemeral: true
+				});
 			}
 
-			const msg = await thread.send({ embeds: [threadEmbed] });
-			await msg.pin();
-
-			if (thread.lastMessage?.system && thread.lastMessage.deletable) {
-				await thread.lastMessage.delete();
-			}
-
-			managers?.members.forEach((manager) => thread.members.add(manager.id));
-			thread.members.add(interaction.user.id);
-
-			const ticketEmbed = new MessageEmbed()
-				.setColor('DARK_GREEN')
-				.setAuthor(
-					interaction.user.tag,
-					interaction.user.displayAvatarURL({ dynamic: true })
-				)
-				.setTitle('Ticket Created')
-				.setDescription(
-					`Your support ticket has been successfully created! View it at ${channelMention(
-						thread.id
-					)}`
-				)
-				.addField('Subject', subject)
-				.addField('Name of Ticket', thread.name)
-				.setTimestamp()
-				.setFooter(`Version ${version}`);
-
-			interaction.reply({
-				embeds: [ticketEmbed],
-				...(!record.ReplyEmbed && { ephemeral: true })
-			});
-
-			if (record.LogsChannel !== '0') {
-				ticketEmbed.setDescription(
-					`${memberNicknameMention(
-						interaction.user.id
-					)} has created a ticket! View it at ${channelMention(thread.id)}`
-				);
-
-				const logsChannel = await interaction.guild!.channels.fetch(
-					record.LogsChannel
-				)!;
-
-				if (!logsChannel?.isText()) return;
-				if (
-					!logsChannel
-						.permissionsFor(interaction.guild!.me!)
-						.has(['SEND_MESSAGES'])
-				)
-					return;
-
-				logsChannel.send({ embeds: [ticketEmbed] });
-			}
+			handleRest(interaction, subject, record, thread, managers);
 		} else {
 			return interaction.reply({
 				content: 'Tickets are only allowed in the ticket channel',
@@ -222,5 +203,111 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 		}
 	} catch (err) {
 		console.error(err);
+	}
+};
+
+const handleRest = async (
+	interaction: CommandInteraction,
+	subject: string,
+	record: Tables.TicketingManagers,
+	channel: ThreadChannel | TextChannel,
+	managers: Role
+): Promise<void> => {
+	const presences = managers.members.map((manager) => {
+		const mention = memberNicknameMention(manager.id);
+		const status = manager.presence?.status;
+
+		switch (status) {
+			case 'online':
+				return `🟢 ${mention}`;
+			case 'idle':
+				return `🟡 ${mention}`;
+			case 'dnd':
+				return `🔴 ${mention}`;
+			default:
+				return `⚫ ${mention}`;
+		}
+	});
+
+	const channelEmbed = new MessageEmbed()
+		.setColor('DARK_GREEN')
+		.setAuthor(
+			interaction.user.tag,
+			interaction.user.displayAvatarURL({ dynamic: true })
+		)
+		.setTitle('Support Ticket')
+		.setDescription(
+			`${memberNicknameMention(
+				interaction.user.id
+			)} created a new support ticket`
+		)
+		.addField('Subject', subject)
+		.addField(
+			'Statuses of Managers',
+			presences?.length ? presences.join('\n') : 'Unknown'
+		)
+		.addField('Ticket Date', time(channel.createdAt, 'R'))
+		.setTimestamp();
+
+	if (record.LogsChannel !== '0') {
+		channelEmbed.setFooter(
+			`Message logs are on, please be careful of what you say! Version ${version}`
+		);
+	} else {
+		channelEmbed.setFooter(`Version ${version}`);
+	}
+
+	const msg = await channel.send({ embeds: [channelEmbed] });
+	await msg.pin();
+
+	if (channel.lastMessage?.system && channel.lastMessage.deletable) {
+		await channel.lastMessage.delete();
+	}
+
+	if (channel.isThread()) {
+		managers.members.forEach((manager) => channel.members.add(manager.id));
+		channel.members.add(interaction.user.id);
+	}
+
+	const ticketEmbed = new MessageEmbed()
+		.setColor('DARK_GREEN')
+		.setAuthor(
+			interaction.user.tag,
+			interaction.user.displayAvatarURL({ dynamic: true })
+		)
+		.setTitle('Ticket Created')
+		.setDescription(
+			`Your support ticket has been successfully created! View it at ${channelMention(
+				channel.id
+			)}`
+		)
+		.addField('Subject', subject)
+		.addField('Name of Ticket', channel.name)
+		.setTimestamp()
+		.setFooter(`Version ${version}`);
+
+	interaction.reply({
+		embeds: [ticketEmbed],
+		...(!record.ReplyEmbed && { ephemeral: true })
+	});
+
+	if (record.LogsChannel !== '0') {
+		ticketEmbed.setDescription(
+			`${memberNicknameMention(
+				interaction.user.id
+			)} has created a ticket! View it at ${channelMention(channel.id)}`
+		);
+
+		const logsChannel = await interaction.guild!.channels.fetch(
+			record.LogsChannel
+		)!;
+
+		if (!logsChannel?.isText()) return;
+		if (
+			!logsChannel.permissionsFor(interaction.guild!.me!).has(['SEND_MESSAGES'])
+		)
+			return;
+
+		logsChannel.send({ embeds: [ticketEmbed] });
 	}
 };

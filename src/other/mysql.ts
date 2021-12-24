@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS TicketingManagers (
   RoleID bigint(20) NOT NULL,
   SupportChannel bigint(20) DEFAULT 0,
   LogsChannel bigint(20) DEFAULT 0,
+  SupportCategory bigint(20) DEFAULT 0,
+  UseTextChannels boolean DEFAULT 0,
   ReplyEmbed boolean DEFAULT 1,
   PRIMARY KEY (ID)
 )

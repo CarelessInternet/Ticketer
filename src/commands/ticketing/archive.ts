@@ -19,7 +19,8 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 	try {
 		if (!interaction.channel!.isThread()) {
 			return interaction.reply({
-				content: 'You must use this command in a support ticket',
+				content:
+					'You can only use this command in a support ticket which uses threads',
 				ephemeral: true
 			});
 		}

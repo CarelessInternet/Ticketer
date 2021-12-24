@@ -7,8 +7,6 @@ export const execute: Handler['execute'] = async (
 	_client,
 	channel: GuildChannel
 ) => {
-	if (channel.type !== 'GUILD_TEXT') return;
-
 	try {
 		const [rows1] = await conn.execute(
 			'SELECT * FROM GuildMemberEvent WHERE GuildID = ?',
@@ -45,6 +43,12 @@ export const execute: Handler['execute'] = async (
 			if (managersRecord.LogsChannel === channel.id) {
 				conn.execute(
 					'UPDATE TicketingManagers SET LogsChannel = 0 WHERE GuildID = ?',
+					[channel.guildId]
+				);
+			}
+			if (managersRecord.SupportCategory === channel.id) {
+				conn.execute(
+					'UPDATE TicketingManagers SET SupportCategory = 0 WHERE GuildID = ?',
 					[channel.guildId]
 				);
 			}

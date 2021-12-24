@@ -5,7 +5,7 @@ import {
 	memberNicknameMention,
 	SlashCommandBuilder
 } from '@discordjs/builders';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, TextChannel } from 'discord.js';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
 import { Command, Tables } from '../../types';
@@ -22,7 +22,10 @@ export const data: Command['data'] = new SlashCommandBuilder()
 
 export const execute: Command['execute'] = async ({ interaction }) => {
 	try {
-		if (!interaction.channel!.isThread()) {
+		if (
+			!interaction.channel!.isThread() &&
+			!(interaction.channel instanceof TextChannel)
+		) {
 			return interaction.reply({
 				content: 'You must use this command in a support ticket',
 				ephemeral: true
@@ -58,11 +61,30 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 			});
 		}
 
-		if (
-			interaction.channel.parentId === record.SupportChannel ||
-			(interaction.channel.parent!.name.toLowerCase() === 'support' &&
-				record.SupportChannel === '0')
-		) {
+		let isSupportTicket = false;
+		const authorId = interaction.channel.name.split('-').at(-1)!;
+		const hasAuthorInName = interaction.channel.isThread()
+			? interaction.channel.members.resolve(authorId)
+			: interaction.channel.members.get(authorId);
+
+		// messy code but it works
+		if (hasAuthorInName) {
+			if (record.UseTextChannels) {
+				if (interaction.channel.parentId === record.SupportCategory) {
+					isSupportTicket = true;
+				}
+			} else {
+				if (
+					interaction.channel.parentId === record.SupportChannel ||
+					(interaction.channel.parent!.name.toLowerCase() === 'support' &&
+						record.SupportChannel === '0')
+				) {
+					isSupportTicket = true;
+				}
+			}
+		}
+
+		if (isSupportTicket) {
 			const managers = await interaction.guild!.roles.fetch(record.RoleID);
 
 			if (!managers?.members.has(interaction.user.id)) {
@@ -121,7 +143,7 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 				const url = await pasteClient.createPaste({
 					code: `Subject: ${subject}\n\n` + messages.join(' '),
 					name: `Ticketer-${Date.now()}`,
-					expireDate: '1W',
+					expireDate: record.UseTextChannels ? '1M' : '1W',
 					// 0 = public, 1 = unlisted, 2 = private
 					publicity: 1
 				});
@@ -138,7 +160,8 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 			interaction.channel.delete();
 		} else {
 			return interaction.reply({
-				content: 'You may only close support tickets',
+				content:
+					'You may only delete support tickets which are using the current type of ticket channel (threads/text channel)',
 				ephemeral: true
 			});
 		}

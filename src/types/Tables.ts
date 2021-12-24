@@ -4,8 +4,16 @@ export interface TicketingManagers {
 	ID: number;
 	GuildID: Snowflake;
 	RoleID: Snowflake;
+	/**
+	 * For thread based ticketing
+	 */
 	SupportChannel: Snowflake;
 	LogsChannel: Snowflake;
+	/**
+	 * For text channel based ticketing
+	 */
+	SupportCategory: Snowflake;
+	UseTextChannels: boolean;
 	ReplyEmbed: boolean;
 }
 

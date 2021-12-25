@@ -8,7 +8,8 @@ const client = new Client({
 		Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
 		Intents.FLAGS.GUILD_MEMBERS,
 		Intents.FLAGS.GUILD_PRESENCES,
-		Intents.FLAGS.GUILD_BANS
+		Intents.FLAGS.GUILD_BANS,
+		Intents.FLAGS.DIRECT_MESSAGES
 	],
 	shards: 'auto'
 });

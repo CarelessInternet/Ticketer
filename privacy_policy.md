@@ -1,7 +1,7 @@
 ## Disclaimer
 
 The information here may not always be up to date. If it isn't up to date, feel free to join the [support server](https://discord.gg/kswKHpJeqC) and say so or open an issue here on GitHub.<br>
-Last Updated: 24 December, 2021
+Last Updated: 25 December, 2021
 
 ## What do you mean by "Discord Data?"
 
@@ -33,7 +33,7 @@ As of right now, Ticketer collects/creates the following data on success and req
   - Channel(s) ID (optional specified support channel, logs channel, or support category channel)
   - True/False for whether or not the reply should be shown or hidden (Reply Embeds)
 - Ticket `delete` Command:
-  - If ticket logs are toggled on, all of the messages' content and respective authors in the ticket are sent to [Pastebin](https://pastebin.com) and saved for 7 days before being automatically deleted. Only users who have access to the logs channel get to view the link and see the content for themselves
+  - If ticket logs are toggled on, all of the messages' content and respective authors in the ticket are sent to the logs channel and the ticket author.
 - Welcome/Goodbye Config Commands:
   - Enabled (to enable or disable the welcome/goodye messages)
 - Suggestions Commands:
@@ -57,7 +57,7 @@ All data collected remains permanently, except for the `delete` command, which t
 
 ## Do you share any data to companies or other people?
 
-No data is shared with anyone or any companies, except to [Pastebin](https://pastebin.com) for the logs. The message logs are unlisted.
+No data is shared with anyone or any companies.
 
 ## How can users contact you if they have concerns about your bot?
 

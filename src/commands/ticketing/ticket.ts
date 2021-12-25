@@ -108,6 +108,7 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 			}
 
 			const managers = await interaction.guild!.roles.fetch(record.RoleID);
+
 			if (!managers) {
 				return interaction.reply({
 					content: 'No manager role could be found',
@@ -187,6 +188,7 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 			}
 
 			const managers = await interaction.guild!.roles.fetch(record.RoleID);
+
 			if (!managers) {
 				return interaction.reply({
 					content: 'No manager role could be found',

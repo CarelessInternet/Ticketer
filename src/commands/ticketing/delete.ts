@@ -1,16 +1,12 @@
-import PasteAPI from 'pastebin-api';
 import { RowDataPacket } from 'mysql2';
 import {
-	hyperlink,
 	memberNicknameMention,
 	SlashCommandBuilder
 } from '@discordjs/builders';
-import { MessageEmbed, TextChannel } from 'discord.js';
+import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
 import { Command, Tables } from '../../types';
-
-const pasteClient = new PasteAPI(process.env.PASTEBIN_API_KEY);
 
 export const category: Command['category'] = 'Ticketing';
 
@@ -65,7 +61,7 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 		const authorId = interaction.channel.name.split('-').at(-1)!;
 		const hasAuthorInName = interaction.channel.isThread()
 			? interaction.channel.members.resolve(authorId)
-			: interaction.channel.members.get(authorId);
+			: interaction.channel.members.has(authorId);
 
 		// messy code but it works
 		if (hasAuthorInName) {
@@ -140,21 +136,33 @@ export const execute: Command['execute'] = async ({ interaction }) => {
 						? pin.embeds?.[0]?.fields?.[0]?.value
 						: 'Not Found';
 
-				const url = await pasteClient.createPaste({
-					code: `Subject: ${subject}\n\n` + messages.join(' '),
-					name: `Ticketer-${Date.now()}`,
-					expireDate: record.UseTextChannels ? '1M' : '1W',
-					// 0 = public, 1 = unlisted, 2 = private
-					publicity: 1
-				});
+				const content = `Subject: ${subject}\n\n` + messages.join('');
+				const attachment = new MessageAttachment(
+					Buffer.from(content, 'utf8'),
+					`Ticketer-${Date.now()}.txt`
+				);
 
 				embed.setDescription(
 					`${memberNicknameMention(interaction.user.id)} deleted a ticket`
 				);
 				embed.addField('Name of Ticket', interaction.channel.name);
-				embed.addField('Link to Message History', hyperlink(url, url));
+				embed.addField(
+					'Message History',
+					'The message history can be found in the attachment above'
+				);
 
-				logsChannel.send({ embeds: [embed] });
+				logsChannel.send({ embeds: [embed], files: [attachment] });
+
+				const user = interaction.guild!.members.resolve(authorId);
+
+				if (user && !managers.members.has(user.id)) {
+					embed.setDescription(
+						`${memberNicknameMention(
+							interaction.user.id
+						)} deleted your support ticket in ${interaction.guild!.name}`
+					);
+					user.send({ embeds: [embed], files: [attachment] });
+				}
 			}
 
 			interaction.channel.delete();

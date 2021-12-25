@@ -7,7 +7,6 @@ declare global {
 			DISCORD_GUILD_ID: string;
 			DISCORD_OWNER_ID: string;
 			TOP_GG_TOKEN: string;
-			PASTEBIN_API_KEY: string;
 			DB_HOST: string;
 			DB_USER: string;
 			DB_PASSWORD: string;

@@ -1,4 +1,4 @@
-name: TypeScript Load Files
+name: TypeScript Test Commands
 
 on:
   push:
@@ -23,9 +23,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - run: |
-          touch .env
-          echo PASTEBIN_API_KEY=bruh >> .env
       - run: npm ci
       - run: npm run build
       - run: npm test

@@ -25,7 +25,6 @@
 		"dotenv": "^10.0.0",
 		"fast-glob": "^3.2.7",
 		"mysql2": "^2.3.3",
-		"pastebin-api": "^2.6.1",
 		"topgg-autoposter": "^2.0.1"
 	},
 	"devDependencies": {

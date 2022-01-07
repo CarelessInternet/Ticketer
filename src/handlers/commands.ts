@@ -1,10 +1,12 @@
 import { fetchCommands } from '../utils';
-import { Handler } from '../types';
+import type { Handler } from '../types';
 
-export const execute: Handler['execute'] = async (client) => {
+const execute: Handler = async (client) => {
 	const commands = await fetchCommands();
 
 	for (const command of commands) {
 		client.commands.set(command.data.name, command);
 	}
 };
+
+export default execute;

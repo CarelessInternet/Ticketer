@@ -1,10 +1,15 @@
 import { red } from 'chalk';
-import { Handler } from '../../types';
+import { Constants } from 'discord.js';
+import type { Event } from '../../types';
 
-export const execute: Handler['execute'] = (
-	_client,
-	error: Error,
-	id: number
-) => {
-	console.error(red(`[Shard ${id} at ${new Date().toLocaleString()}]`), error);
+const event: Event = {
+	name: Constants.Events.SHARD_ERROR,
+	execute: (_client, error: Error, id: number) => {
+		console.error(
+			red(`[Shard ${id} at ${new Date().toLocaleString()}]`),
+			error
+		);
+	}
 };
+
+export default event;

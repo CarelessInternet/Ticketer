@@ -1,6 +1,6 @@
 import fg from 'fast-glob';
 import { resolve } from 'path';
-import { Command } from '../types';
+import type { Command } from '../types';
 
 /**
  * Returns a list of all commands
@@ -10,7 +10,7 @@ export const fetchCommands = async (): Promise<Command[]> => {
 	const commands: Command[] = [];
 
 	for (const file of files) {
-		const command: Command = await import(file);
+		const { default: command }: { default: Command } = await import(file);
 		commands.push(command);
 	}
 

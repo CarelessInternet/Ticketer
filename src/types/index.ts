@@ -1,4 +1,5 @@
 export { Client } from './Client';
-export { Command } from './Command';
-export { Handler } from './Handler';
+export type { Command } from './Command';
+export type { Handler } from './Handler';
+export type { Event } from './Event';
 export * as Tables from './Tables';

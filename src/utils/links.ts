@@ -1,5 +1,5 @@
 import { Permissions } from 'discord.js';
-import { Client } from 'discord.js';
+import type { Client } from '../types';
 
 /**
  * Links used to display in for example the help command

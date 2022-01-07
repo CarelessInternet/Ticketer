@@ -1,5 +1,5 @@
 import { Intents } from 'discord.js';
-import { Client, Handler } from './types';
+import { Client, type Handler } from './types';
 
 const client = new Client({
 	intents: [
@@ -15,8 +15,10 @@ const client = new Client({
 });
 
 ['commands', 'events'].forEach(async (handler) => {
-	const file: Handler = await import(`./handlers/${handler}`);
-	file.execute(client);
+	const { default: file }: { default: Handler } = await import(
+		`./handlers/${handler}`
+	);
+	file(client);
 });
 
 client.login(process.env.DISCORD_BOT_TOKEN);

@@ -1,9 +1,9 @@
-import {
+import type {
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder
 } from '@discordjs/builders';
-import { CommandInteraction } from 'discord.js';
-import { Client } from './index';
+import type { CommandInteraction } from 'discord.js';
+import type { Client } from '.';
 
 export interface Command {
 	readonly execute: ({

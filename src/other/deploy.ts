@@ -15,7 +15,7 @@ const rest = new REST({ version: '9' }).setToken(token);
 
 (async () => {
 	try {
-		console.log(green('Started refreshing applicaton (/) commands'));
+		console.log(green('Started refreshing application (/) commands'));
 
 		const [globalCommands, ownerGuildCommands] = await fetchCommandsData();
 

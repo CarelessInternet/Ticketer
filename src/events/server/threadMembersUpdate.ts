@@ -1,76 +1,92 @@
-import { Collection, MessageEmbed, Snowflake, ThreadMember } from 'discord.js';
+import type { RowDataPacket } from 'mysql2';
+import {
+	Constants,
+	type Collection,
+	MessageEmbed,
+	type Snowflake,
+	type ThreadMember
+} from 'discord.js';
 import { channelMention, memberNicknameMention } from '@discordjs/builders';
-import { RowDataPacket } from 'mysql2';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
-import { Handler, Tables } from '../../types';
+import type { Event, Tables } from '../../types';
 
-export const execute: Handler['execute'] = async (
-	client,
-	members: Collection<Snowflake, ThreadMember>
-) => {
-	try {
-		const first = members.first()!;
-		const { thread } = first;
-		const { name, id } = first.thread;
+const event: Event = {
+	name: Constants.Events.THREAD_MEMBERS_UPDATE,
+	execute: async (client, members: Collection<Snowflake, ThreadMember>) => {
+		try {
+			const first = members.first();
 
-		const ticketUserId = name.split('-').at(-1)!;
-		const member = members.get(ticketUserId);
+			if (!first) return;
 
-		if (!member) return;
+			const { thread } = first;
+			const { name, id } = first.thread;
 
-		if (name === `ticket-${ticketUserId}`) {
-			if (
-				thread.members.cache.has(client.user!.id) &&
-				!thread.members.cache.has(ticketUserId)
-			) {
-				const [rows] = await conn.execute(
-					'SELECT * FROM TicketingManagers WHERE GuildID = ?',
-					[thread.guildId]
-				);
-				const record = (
-					rows as RowDataPacket[]
-				)[0] as Tables.TicketingManagers | null;
+			const ticketUserId = name.split('-').at(-1)!;
+			const member = members.get(ticketUserId);
 
-				if (!record) return;
+			if (!member) return;
 
-				const user = member.user!;
-				const embed = new MessageEmbed()
-					.setColor('YELLOW')
-					.setAuthor(user.tag, user.displayAvatarURL({ dynamic: true }))
-					.setTitle('Ticket Archived')
-					.setDescription(
-						`${memberNicknameMention(user.id)} left the support ticket!`
-					)
-					.setTimestamp()
-					.setFooter(`Version ${version}`);
-
-				await thread.send({ embeds: [embed] });
-				await thread.setArchived(true);
-
-				if (record.LogsChannel !== '0') {
-					embed.setDescription(
-						`${memberNicknameMention(
-							user.id
-						)} left their ticket! View it at ${channelMention(id)}`
+			if (name === `ticket-${ticketUserId}`) {
+				if (
+					thread.members.cache.has(client.user!.id) &&
+					!thread.members.cache.has(ticketUserId)
+				) {
+					const [rows] = await conn.execute(
+						'SELECT * FROM TicketingManagers WHERE GuildID = ?',
+						[thread.guildId]
 					);
-					embed.addField('Name of Ticket', name);
+					const record = (
+						rows as RowDataPacket[]
+					)[0] as Tables.TicketingManagers | null;
 
-					const logsChannel = await thread.guild.channels.fetch(
-						record.LogsChannel
-					);
+					if (!record) return;
 
-					if (!logsChannel?.isText()) return;
-					if (
-						!logsChannel.permissionsFor(thread.guild.me!).has(['SEND_MESSAGES'])
-					)
-						return;
+					const user = member.user!;
+					const embed = new MessageEmbed()
+						.setColor('YELLOW')
+						.setAuthor({
+							name: user.tag,
+							iconURL: user.displayAvatarURL({ dynamic: true })
+						})
+						.setTitle('Ticket Archived')
+						.setDescription(
+							`${memberNicknameMention(user.id)} left the support ticket!`
+						)
+						.setTimestamp()
+						.setFooter({ text: `Version ${version}` });
 
-					logsChannel.send({ embeds: [embed] });
+					await thread.send({ embeds: [embed] });
+					await thread.setArchived(true);
+
+					if (record.LogsChannel !== '0') {
+						embed.setDescription(
+							`${memberNicknameMention(
+								user.id
+							)} left their ticket! View it at ${channelMention(id)}`
+						);
+						embed.addField('Name of Ticket', name);
+
+						const logsChannel = await thread.guild.channels.fetch(
+							record.LogsChannel
+						);
+
+						if (!logsChannel?.isText()) return;
+						if (
+							!logsChannel
+								.permissionsFor(thread.guild.me!)
+								.has(['SEND_MESSAGES'])
+						)
+							return;
+
+						logsChannel.send({ embeds: [embed] });
+					}
 				}
 			}
+		} catch (err) {
+			console.error(err);
 		}
-	} catch (err) {
-		console.error(err);
 	}
 };
+
+export default event;

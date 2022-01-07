@@ -3,6 +3,7 @@ import { Status } from 'discord.js';
 /**
  * Returns string form of the status of a shard
  * @param status - The status of the shard
+ * @link https://discord.js.org/#/docs/main/stable/typedef/Status
  */
 export const shardStatus = (status: Status) => {
 	switch (status) {

@@ -1,5 +1,3 @@
-import { Client } from './index';
+import type { Client } from '.';
 
-export interface Handler {
-	execute: (client: Client, ...args: any[]) => void;
-}
+export type Handler = (client: Client) => Promise<void> | void;

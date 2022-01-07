@@ -1,72 +1,75 @@
 import { inspect } from 'util';
 import { codeBlock, SlashCommandBuilder } from '@discordjs/builders';
 import { MessageEmbed, Util } from 'discord.js';
-import { Client, Command } from '../../types';
+import { version } from '../../../package.json';
+import type { Client, Command } from '../../types';
 
-export const ownerOnly: Command['ownerOnly'] = true;
-
-export const category: Command['category'] = 'Utility';
-
-export const data: Command['data'] = new SlashCommandBuilder()
-	.setName('eval')
-	.setDescription('Evaluates some code and returns result')
-	.addStringOption((option) =>
-		option
-			.setName('code')
-			.setDescription('The code to evaluate')
-			.setRequired(true)
-	)
-	.addBooleanOption((option) =>
-		option
-			.setName('hidden')
-			.setDescription('Whether or not the reply should be shown just to you')
-			.setRequired(false)
-	);
-
-export const execute: Command['execute'] = async ({ client, interaction }) => {
-	const embed = new MessageEmbed()
-		.setColor('DARK_GREEN')
-		.setAuthor(
-			interaction.user.tag,
-			interaction.user.displayAvatarURL({ dynamic: true })
+const command: Command = {
+	ownerOnly: true,
+	category: 'Utility',
+	data: new SlashCommandBuilder()
+		.setName('eval')
+		.setDescription('Evaluates some code and returns result')
+		.addStringOption((option) =>
+			option
+				.setName('code')
+				.setDescription('The code to evaluate')
+				.setRequired(true)
 		)
-		.setTitle('Eval')
-		.setTimestamp();
+		.addBooleanOption((option) =>
+			option
+				.setName('hidden')
+				.setDescription('Whether or not the reply should be shown just to you')
+				.setRequired(false)
+		),
+	execute: async ({ client, interaction }) => {
+		const embed = new MessageEmbed()
+			.setColor('DARK_GREEN')
+			.setAuthor({
+				name: interaction.user.tag,
+				iconURL: interaction.user.displayAvatarURL({ dynamic: true })
+			})
+			.setTitle('Eval')
+			.setTimestamp()
+			.setFooter({ text: `Version ${version}` });
 
-	let msg: string[] = [];
+		let msg: string[] = [];
 
-	try {
-		const [code, ephemeral] = [
-			interaction.options.getString('code')!,
-			interaction.options.getBoolean('hidden') ?? true
-		];
+		try {
+			const [code, ephemeral] = [
+				interaction.options.getString('code')!,
+				interaction.options.getBoolean('hidden') ?? true
+			];
 
-		await interaction.deferReply({ ephemeral });
+			await interaction.deferReply({ ephemeral });
 
-		const evaled = await eval(code);
+			const evaled = await eval(code);
 
-		let cleaned = await clean(client, evaled);
-		cleaned = cleaned.substring(0, 5500);
+			let cleaned = await clean(client, evaled);
+			cleaned = cleaned.substring(0, 5500);
 
-		msg = Util.splitMessage(cleaned, { maxLength: 1024 });
-	} catch (_err) {
-		embed.setColor('DARK_RED');
-	} finally {
-		embed.setDescription(codeBlock('js', msg.shift() ?? ''));
+			msg = Util.splitMessage(cleaned, { maxLength: 1024 });
+		} catch (_err) {
+			embed.setColor('DARK_RED');
+		} finally {
+			embed.setDescription(codeBlock('js', msg.shift() ?? ''));
 
-		if (msg.length >= 1) {
-			for (const result of msg) {
-				embed.addField('Continued', codeBlock('js', result));
+			if (msg.length >= 1) {
+				for (const result of msg) {
+					embed.addField('Continued', codeBlock('js', result));
+				}
 			}
-		}
 
-		if (interaction.deferred) {
-			interaction.editReply({ embeds: [embed] }).catch(console.error);
-		} else {
-			interaction.reply({ embeds: [embed] }).catch(console.error);
+			if (interaction.deferred) {
+				interaction.editReply({ embeds: [embed] }).catch(console.error);
+			} else {
+				interaction.reply({ embeds: [embed] }).catch(console.error);
+			}
 		}
 	}
 };
+
+export default command;
 
 // https://github.com/AnIdiotsGuide/discordjs-bot-guide/blob/master/examples/making-an-eval-command.md
 

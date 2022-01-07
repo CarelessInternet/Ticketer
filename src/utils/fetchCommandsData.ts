@@ -1,7 +1,7 @@
 import fg from 'fast-glob';
-import { RESTPatchAPIApplicationCommandJSONBody } from 'discord-api-types';
+import type { RESTPatchAPIApplicationCommandJSONBody } from 'discord-api-types/v9';
 import { resolve } from 'path';
-import { Command } from '../types';
+import type { Command } from '../types';
 
 /**
  * Fetches the slash command builder data for each command and returns global commands array and owner commands array in an array
@@ -19,7 +19,7 @@ export const fetchCommandsData = async (): Promise<
 			file: string
 		) => {
 			const accumulator = await acc;
-			const command: Command = await import(file);
+			const { default: command }: { default: Command } = await import(file);
 			const data = command.data.toJSON();
 
 			command.privateGuildAndOwnerOnly

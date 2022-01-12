@@ -8,7 +8,7 @@ config();
 	const commands = await fetchCommands();
 
 	for (const [i, command] of commands.entries()) {
-		if (!command.data?.toJSON().name) {
+		if (!command.data?.name) {
 			throw new SyntaxError(
 				`Missing a name property for the command file: ${commands[i]}.ts`
 			);

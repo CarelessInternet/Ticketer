@@ -20,10 +20,6 @@ I advise you to only clone this repository for making pull requests, or making y
 
 [The Link to the Discord Server](https://discord.gg/kswKHpJeqC)
 
-## Need a DB?
-
-If you're planning on hosting your own version of the bot and are in need of a database, contact `🙏Hope#0001` on Discord. They can also be found in the support server.
-
 ## Setup
 
 #### Getting the Files
@@ -73,7 +69,7 @@ If you are adding new commands, run this command when you have done so
 #### Running the Bot
 
 Run the command `npm start` to run the bot in a development environment.<br>
-Run the command `npm run production` for a production environment (NEVER run this unless you're running the bot for production, and the bot is in [top.gg](https://top.gg))
+Run the command `npm run production` for a production environment (same as development but bot must be in top.gg)
 
 ## Issues
 

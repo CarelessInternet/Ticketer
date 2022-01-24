@@ -63,15 +63,13 @@ const command: Command = {
 				.setDescription(
 					'The amount of upvotes to reach to get pinned in the channel'
 				)
-				.addIntegerOption(
-					(option) =>
-						option
-							.setName('amount')
-							.setDescription('The amount of upvotes')
-							.setRequired(true)
-					// TODO: uncomment below after patch release for @discordjs/builders min/max values
-					// .setMinValue(0)
-					// .setMaxValue(32_767)
+				.addIntegerOption((option) =>
+					option
+						.setName('amount')
+						.setDescription('The amount of upvotes')
+						.setRequired(true)
+						.setMinValue(0)
+						.setMaxValue(32_767)
 				)
 		)
 		.addSubcommand((subcommand) =>
@@ -210,14 +208,6 @@ const command: Command = {
 						}
 
 						const target = interaction.options.getInteger('amount')!;
-
-						// TODO: remove below line after patch release @discordjs/builders min/max value
-						if (target < 0 || target >= 32_767) {
-							return interaction.reply({
-								content: 'Value must be over 0 and below 32767',
-								ephemeral: true
-							});
-						}
 
 						await conn.execute(
 							'UPDATE Suggestions SET Target = ? WHERE GuildID = ?',

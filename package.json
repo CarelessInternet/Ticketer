@@ -34,7 +34,7 @@
 		"@typescript-eslint/parser": "^5.10.1",
 		"bufferutil": "^4.0.6",
 		"eslint": "^8.7.0",
-		"node-fetch": "^2.6.7",
+		"node-fetch": "^3.2.0",
 		"prettier": "^2.5.1",
 		"typescript": "^4.5.5",
 		"utf-8-validate": "^5.0.8",

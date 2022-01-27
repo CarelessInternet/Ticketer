@@ -13,7 +13,8 @@ import {
 	SlashCommandBuilder,
 	memberNicknameMention,
 	time,
-	channelMention
+	channelMention,
+	roleMention
 } from '@discordjs/builders';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
@@ -268,7 +269,13 @@ const handleRest = async (
 		channelEmbed.setFooter({ text: `Version ${version}` });
 	}
 
-	const msg = await channel.send({ embeds: [channelEmbed] });
+	const msg = await channel.send({
+		embeds: [channelEmbed],
+		...(channel.isThread() && {
+			content: roleMention(managers.id),
+			allowedMentions: { roles: [managers.id] }
+		})
+	});
 	await msg.pin();
 
 	if (channel.lastMessage?.system && channel.lastMessage.deletable) {
@@ -276,7 +283,6 @@ const handleRest = async (
 	}
 
 	if (channel.isThread()) {
-		managers.members.forEach((manager) => channel.members.add(manager.id));
 		channel.members.add(interaction.user.id);
 	}
 

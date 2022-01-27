@@ -7,7 +7,7 @@ import {
 	SlashCommandBuilder
 } from '@discordjs/builders';
 import { MessageEmbed, type Role } from 'discord.js';
-import { ChannelType } from 'discord-api-types';
+import { ChannelType } from 'discord-api-types/v9';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
 import type { Command, Tables } from '../../types';

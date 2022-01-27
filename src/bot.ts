@@ -1,4 +1,5 @@
-import { Intents } from 'discord.js';
+import { Constants, Intents } from 'discord.js';
+import { PresenceUpdateStatus } from 'discord-api-types/v9';
 import { Client, type Handler } from './types';
 
 const client = new Client({
@@ -11,7 +12,13 @@ const client = new Client({
 		Intents.FLAGS.GUILD_BANS,
 		Intents.FLAGS.DIRECT_MESSAGES
 	],
-	shards: 'auto'
+	shards: 'auto',
+	presence: {
+		activities: [
+			{ name: '🎳 | /help', type: Constants.ActivityTypes.COMPETING }
+		],
+		status: PresenceUpdateStatus.Online
+	}
 });
 
 ['commands', 'events'].forEach(async (handler) => {

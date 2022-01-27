@@ -2,8 +2,10 @@ import type {
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder
 } from '@discordjs/builders';
-import type { CommandInteraction } from 'discord.js';
+import type { ButtonInteraction, CommandInteraction } from 'discord.js';
 import type { Client } from '.';
+
+type Awaitable<T> = T | PromiseLike<T>;
 
 export interface Command {
 	readonly execute: ({
@@ -12,7 +14,14 @@ export interface Command {
 	}: {
 		client: Client;
 		interaction: CommandInteraction;
-	}) => Promise<void> | void;
+	}) => Awaitable<void>;
+	readonly buttonExecute?: ({
+		client,
+		interaction
+	}: {
+		client: Client;
+		interaction: ButtonInteraction;
+	}) => Awaitable<void>;
 	readonly data:
 		| Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
 		| SlashCommandBuilder

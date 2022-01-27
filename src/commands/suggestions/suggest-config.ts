@@ -6,7 +6,7 @@ import {
 	inlineCode,
 	channelMention
 } from '@discordjs/builders';
-import { ChannelType } from 'discord-api-types';
+import { ChannelType } from 'discord-api-types/v9';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
 import type { Command, Tables } from '../../types';

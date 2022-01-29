@@ -110,8 +110,9 @@ const command: Command = {
 							(channel.name === 'support' && channel.type === 'GUILD_TEXT') ||
 							channel.type === 'GUILD_NEWS'
 					);
-				const supportChannelWithRecord =
-					await interaction.guild!.channels.fetch(record.SupportChannel);
+				const supportChannelWithRecord = interaction.guild!.channels.resolve(
+					record.SupportChannel
+				);
 
 				// thread based ticketing
 				if (supportChannelWithRecord || supportChannelWithoutRecord) {

@@ -23,7 +23,7 @@ export const handleTicketCreation = async (
 	interaction: CommandInteraction | MessageComponentInteraction,
 	managers: Role,
 	record: Tables.TicketingManagers,
-	subject = 'None'
+	subject = 'Unknown'
 ) => {
 	try {
 		const name = `ticket-${interaction.user.id}`;

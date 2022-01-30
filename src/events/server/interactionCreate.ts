@@ -1,8 +1,4 @@
-import {
-	Constants,
-	type MessageInteraction,
-	type Interaction
-} from 'discord.js';
+import { Constants, type Interaction } from 'discord.js';
 import type { Event } from '../../types';
 
 const event: Event = {
@@ -18,8 +14,12 @@ const event: Event = {
 
 			const cmd = interaction.isCommand()
 				? interaction.commandName
-				: (interaction.message.interaction as MessageInteraction).commandName;
-			const command = client.commands.get(cmd);
+				: interaction.customId;
+			const command =
+				client.commands.get(cmd) ||
+				client.commands.find(
+					(comm) => comm.components?.customIds?.includes(cmd) ?? false
+				);
 
 			if (!command) return;
 
@@ -36,7 +36,7 @@ const event: Event = {
 			if (interaction.isCommand()) {
 				command.execute({ client, interaction });
 			} else {
-				command.buttonExecute?.({ client, interaction });
+				command.components?.execute?.({ client, interaction });
 			}
 		} else {
 			return;

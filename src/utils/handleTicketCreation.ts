@@ -6,7 +6,9 @@ import {
 	TextChannel,
 	type CategoryChannel,
 	type ThreadChannel,
-	type MessageComponentInteraction
+	type MessageComponentInteraction,
+	MessageActionRow,
+	MessageButton
 } from 'discord.js';
 import {
 	channelMention,
@@ -27,7 +29,10 @@ export const handleTicketCreation = async (
 ) => {
 	try {
 		// 1024 is max length of embed field value
-		const subject = `${initialSubject.substring(0, 1024 - 3)}...`;
+		const subject =
+			initialSubject.length >= 1024
+				? `${initialSubject.substring(0, 1024 - 3)}...`
+				: initialSubject;
 		const name = `ticket-${interaction.user.id}`;
 
 		const supportChannelWithoutRecord = interaction.guild!.channels.cache.find(
@@ -223,8 +228,29 @@ const handleRest = async (
 			channelEmbed.setFooter({ text: `Version ${version}` });
 		}
 
+		const row = new MessageActionRow();
+
+		if (channel.isThread()) {
+			row.addComponents(
+				new MessageButton()
+					.setCustomId('button_ticket_archive')
+					.setStyle('SUCCESS')
+					.setEmoji('🔒')
+					.setLabel('Archive')
+			);
+		}
+
+		row.addComponents(
+			new MessageButton()
+				.setCustomId('button_ticket_delete')
+				.setStyle('DANGER')
+				.setEmoji('✖️')
+				.setLabel('Delete')
+		);
+
 		const msg = await channel.send({
 			embeds: [channelEmbed],
+			components: [row],
 			...(channel.isThread() && {
 				content: roleMention(managers.id),
 				allowedMentions: { roles: [managers.id] }

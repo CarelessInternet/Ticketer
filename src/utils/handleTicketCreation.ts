@@ -23,9 +23,11 @@ export const handleTicketCreation = async (
 	interaction: CommandInteraction | MessageComponentInteraction,
 	managers: Role,
 	record: Tables.TicketingManagers,
-	subject = 'Unknown'
+	initialSubject = 'Unknown'
 ) => {
 	try {
+		// 1024 is max length of embed field value
+		const subject = `${initialSubject.substring(0, 1024 - 3)}...`;
 		const name = `ticket-${interaction.user.id}`;
 
 		const supportChannelWithoutRecord = interaction.guild!.channels.cache.find(

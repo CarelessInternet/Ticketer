@@ -54,7 +54,7 @@ const command: Command = {
 						.setName('channel')
 						.setDescription('The channel for suggestions')
 						.setRequired(true)
-						.addChannelTypes([ChannelType.GuildText, ChannelType.GuildNews])
+						.addChannelType(ChannelType.GuildText)
 				)
 		)
 		.addSubcommand((subcommand) =>

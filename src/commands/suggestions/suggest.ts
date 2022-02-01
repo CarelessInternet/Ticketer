@@ -92,6 +92,7 @@ const command: Command = {
 				const suggestionMessage = await suggestionsChannel.send({
 					embeds: [embed]
 				});
+
 				suggestionMessage.react('👍');
 				suggestionMessage.react('👎');
 

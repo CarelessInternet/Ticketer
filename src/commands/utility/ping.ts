@@ -1,5 +1,5 @@
 import { inlineCode, SlashCommandBuilder } from '@discordjs/builders';
-import { Message, MessageEmbed } from 'discord.js';
+import { type Message, MessageEmbed } from 'discord.js';
 import { version } from '../../../package.json';
 import { shardStatus } from '../../utils';
 import type { Command } from '../../types';

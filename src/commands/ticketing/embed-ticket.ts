@@ -3,7 +3,6 @@ import {
 	MessageActionRow,
 	MessageButton,
 	MessageEmbed,
-	type NewsChannel,
 	type TextChannel
 } from 'discord.js';
 import { inlineCode, SlashCommandBuilder } from '@discordjs/builders';
@@ -23,7 +22,7 @@ const command: Command = {
 				.setName('channel')
 				.setDescription('The channel where the ticket embed will be in')
 				.setRequired(true)
-				.addChannelTypes([ChannelType.GuildText, ChannelType.GuildNews])
+				.addChannelType(ChannelType.GuildText)
 		),
 	execute: async function ({ interaction }) {
 		try {
@@ -52,9 +51,7 @@ const command: Command = {
 				});
 			}
 
-			const channel = interaction.options.getChannel('channel')! as
-				| TextChannel
-				| NewsChannel;
+			const channel = interaction.options.getChannel('channel')! as TextChannel;
 
 			if (
 				!channel.permissionsFor(interaction.guild!.me!).has(['SEND_MESSAGES'])
@@ -107,8 +104,7 @@ const command: Command = {
 				const supportChannelWithoutRecord =
 					interaction.guild!.channels.cache.find(
 						(channel) =>
-							(channel.name === 'support' && channel.type === 'GUILD_TEXT') ||
-							channel.type === 'GUILD_NEWS'
+							channel.name === 'support' && channel.type === 'GUILD_TEXT'
 					);
 				const supportChannelWithRecord = interaction.guild!.channels.resolve(
 					record.SupportChannel

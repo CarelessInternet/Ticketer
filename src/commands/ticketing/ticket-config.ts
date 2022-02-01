@@ -41,7 +41,7 @@ const command: Command = {
 						.setName('channel')
 						.setDescription('The channel for creating tickets')
 						.setRequired(true)
-						.addChannelTypes([ChannelType.GuildText, ChannelType.GuildNews])
+						.addChannelType(ChannelType.GuildText)
 				)
 		)
 		.addSubcommand((subcommand) =>
@@ -55,7 +55,7 @@ const command: Command = {
 						.setName('channel')
 						.setDescription('The channel for posting logs')
 						.setRequired(true)
-						.addChannelTypes([ChannelType.GuildText, ChannelType.GuildNews])
+						.addChannelType(ChannelType.GuildText)
 				)
 		)
 		.addSubcommand((subcommand) =>

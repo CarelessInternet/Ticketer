@@ -1,11 +1,9 @@
 import {
 	MessageEmbed,
-	type NewsChannel,
 	type CommandInteraction,
 	type Role,
 	TextChannel,
 	type CategoryChannel,
-	type ThreadChannel,
 	type MessageComponentInteraction,
 	MessageActionRow,
 	MessageButton
@@ -18,8 +16,6 @@ import {
 } from '@discordjs/builders';
 import { version } from '../../package.json';
 import type { Tables, TicketChannel } from '../types';
-
-type SupportChannel = TextChannel | NewsChannel;
 
 export const handleTicketCreation = async (
 	interaction: CommandInteraction | MessageComponentInteraction,
@@ -37,14 +33,13 @@ export const handleTicketCreation = async (
 
 		const supportChannelWithoutRecord = interaction.guild!.channels.cache.find(
 			(channel) =>
-				(channel.name.toLowerCase() === 'support' &&
-					channel.type === 'GUILD_TEXT') ||
-				channel.type === 'GUILD_NEWS'
-		) as SupportChannel | null;
+				channel.name.toLowerCase() === 'support' &&
+				channel.type === 'GUILD_TEXT'
+		) as TextChannel | null;
 		const supportChannel =
 			record.SupportChannel === '0'
 				? supportChannelWithoutRecord
-				: <SupportChannel | null>(
+				: <TextChannel | null>(
 						await interaction.guild!.channels.fetch(record.SupportChannel)
 				  );
 
@@ -135,28 +130,16 @@ export const handleTicketCreation = async (
 				});
 			}
 
-			let thread: ThreadChannel;
-			const reason = `Ticket Subject: ${subject}`;
-
-			if (channel instanceof TextChannel) {
-				thread = await channel.threads.create({
-					name,
-					reason,
-					autoArchiveDuration: 'MAX',
-					type: interaction.guild!.features.find(
-						(feature) => feature === 'PRIVATE_THREADS'
-					)
-						? 'GUILD_PRIVATE_THREAD'
-						: 'GUILD_PUBLIC_THREAD',
-					invitable: false
-				});
-			} else {
-				thread = await channel!.threads.create({
-					name,
-					reason,
-					autoArchiveDuration: 'MAX'
-				});
-			}
+			const thread = await channel.threads.create({
+				name,
+				autoArchiveDuration: 'MAX',
+				type: interaction.guild!.features.find(
+					(feature) => feature === 'PRIVATE_THREADS'
+				)
+					? 'GUILD_PRIVATE_THREAD'
+					: 'GUILD_PUBLIC_THREAD',
+				invitable: false
+			});
 
 			handleRest(interaction, thread, managers, record, subject);
 		} else {

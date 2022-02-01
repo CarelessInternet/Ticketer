@@ -4,3 +4,5 @@ export { fetchCommandsData } from './fetchCommandsData';
 export { links } from './links';
 export { shardStatus } from './shardStatus';
 export { handleTicketCreation } from './handleTicketCreation';
+export { handleTicketArchive } from './handleTicketArchive';
+export { handleTicketDelete } from './handleTicketDelete';

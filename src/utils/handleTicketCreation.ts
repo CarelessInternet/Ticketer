@@ -162,26 +162,11 @@ const handleRest = async (
 ) => {
 	try {
 		const onlineManagers = managers.members.filter(
-			(manager) =>
-				manager.presence?.status === 'online' ||
-				manager.presence?.status === 'idle' ||
-				manager.presence?.status === 'dnd'
+			(manager) => manager.presence?.status === 'online'
 		);
-		const presences = onlineManagers.map((manager) => {
-			const mention = memberNicknameMention(manager.id);
-			const status = manager.presence?.status;
-
-			switch (status) {
-				case 'online':
-					return `🟢 ${mention}`;
-				case 'idle':
-					return `🟡 ${mention}`;
-				case 'dnd':
-					return `🔴 ${mention}`;
-				default:
-					return `⚫ ${mention}`;
-			}
-		});
+		const presences = onlineManagers.map(
+			(manager) => `🟢 ${memberNicknameMention(manager.id)}`
+		);
 
 		const channelEmbed = new MessageEmbed()
 			.setColor('DARK_GREEN')
@@ -198,9 +183,10 @@ const handleRest = async (
 			.addField('Subject', subject)
 			.addField(
 				'Available Managers',
-				presences?.length ? presences.join('\n') : 'Unknown'
+				presences?.length ? presences.join('\n') : 'Unknown',
+				true
 			)
-			.addField('Ticket Date', time(channel.createdAt, 'R'))
+			.addField('Ticket Date', time(channel.createdAt, 'R'), true)
 			.setTimestamp();
 
 		if (record.LogsChannel !== '0') {

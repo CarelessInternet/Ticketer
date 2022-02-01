@@ -49,7 +49,9 @@ export const handleTicketDelete = async (
 		let isSupportTicket = false;
 		const authorId = interaction.channel.name.split('-').at(-1)!;
 		const hasAuthorInName = interaction.channel.isThread()
-			? interaction.channel.members.resolve(authorId)
+			? await interaction.channel.members
+					.fetch(authorId, { force: true })
+					.catch(() => false)
 			: interaction.channel.members.has(authorId);
 
 		// messy code but it works

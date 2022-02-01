@@ -1,7 +1,7 @@
 ## Disclaimer
 
 The information here may not always be up to date. If it isn't up to date, feel free to join the [support server](https://discord.gg/kswKHpJeqC) and say so or open an issue here on GitHub.<br>
-Last Updated: 25 December, 2021
+Last Updated: 01 February, 2022
 
 ## What do you mean by "Discord Data?"
 
@@ -11,7 +11,7 @@ From the official [Discord Developer Privacy Policy](https://discord.com/develop
 
 # Privacy Policy
 
-## What Discord Data do you collect?
+## What Discord Data do you store?
 
 As of right now, Ticketer collects the following Discord Data on success, requested through a command, and if it isn't already stored:
 
@@ -25,15 +25,14 @@ As of right now, Ticketer collects the following Discord Data on success, reques
   - Guild ID
   - Channel ID
 
-## What other optional data is collected/created?
+## What other optional data is stored/created?
 
 As of right now, Ticketer collects/creates the following data on success and requested through a command:
 
 - Ticketing Config Commands:
-  - Channel(s) ID (optional specified support channel, logs channel, or support category channel)
+  - Channel(s) ID (optional specified support channel, logs channel or support category channel)
   - True/False for whether or not the reply should be shown or hidden (Reply Embeds)
-- Ticket `delete` Command:
-  - If ticket logs are toggled on, all of the messages' content and respective authors in the ticket are sent to the logs channel and the ticket author.
+  - True/False for whether or not text channels should be used instead of threads
 - Welcome/Goodbye Config Commands:
   - Enabled (to enable or disable the welcome/goodye messages)
 - Suggestions Commands:
@@ -53,7 +52,7 @@ The suggestions data is used to know what server the data belongs to, the channe
 
 ## How long is the data stored for?
 
-All data collected remains permanently, except for the `delete` command, which the logs get deleted after 7 days.
+All data collected remains permanently, unless asked for deletion or the bot gets kicked/leaves the guild.
 
 ## Do you share any data to companies or other people?
 
@@ -65,5 +64,4 @@ They may join the official support server, or open an issue on GitHub.
 
 ## How can users have the data removed?
 
-Again, they may join the official support server, or open an issue on GitHub clarifying why they want the data removed.
-As long as it's an acceptable reason, the data will be removed from the database.
+They can either kick the bot from their server, which will automatically delete all data associated with the server, or do the following above.

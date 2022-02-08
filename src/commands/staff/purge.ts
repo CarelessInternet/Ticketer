@@ -18,6 +18,8 @@ const command: Command = {
 				.setName('amount')
 				.setDescription('The amount of messages to delete')
 				.setRequired(true)
+				.setMinValue(1)
+				.setMaxValue(100)
 		),
 	execute: async ({ interaction }) => {
 		const ephemeral = true;
@@ -38,13 +40,6 @@ const command: Command = {
 			}
 
 			const amount = interaction.options.getInteger('amount')!;
-
-			if (amount < 1 || amount > 100) {
-				return interaction.reply({
-					content: 'Amount must be at minimum 1 and at maximum 100',
-					ephemeral
-				});
-			}
 
 			const channel = interaction.channel as
 				| TextChannel

@@ -1,7 +1,4 @@
-import {
-	memberNicknameMention,
-	SlashCommandBuilder
-} from '@discordjs/builders';
+import { memberNicknameMention, SlashCommandBuilder } from '@discordjs/builders';
 import {
 	type GuildMember,
 	type Message,
@@ -18,10 +15,7 @@ const command: Command = {
 		.setName('ban')
 		.setDescription('Bans a user from the server')
 		.addUserOption((option) =>
-			option
-				.setName('user')
-				.setDescription('The desired user to be banned')
-				.setRequired(true)
+			option.setName('user').setDescription('The desired user to be banned').setRequired(true)
 		)
 		.addIntegerOption((option) =>
 			option
@@ -40,10 +34,7 @@ const command: Command = {
 				.setRequired(true)
 		)
 		.addStringOption((option) =>
-			option
-				.setName('reason')
-				.setDescription('The reason for the ban')
-				.setRequired(false)
+			option.setName('reason').setDescription('The reason for the ban').setRequired(false)
 		),
 	execute: async ({ interaction }) => {
 		const ephemeral = true;
@@ -82,14 +73,8 @@ const command: Command = {
 			}
 
 			const row = new MessageActionRow().addComponents(
-				new MessageButton()
-					.setCustomId('confirm')
-					.setEmoji('✔️')
-					.setStyle('SUCCESS'),
-				new MessageButton()
-					.setCustomId('abort')
-					.setEmoji('❌')
-					.setStyle('DANGER')
+				new MessageButton().setCustomId('confirm').setEmoji('✔️').setStyle('SUCCESS'),
+				new MessageButton().setCustomId('abort').setEmoji('❌').setStyle('DANGER')
 			);
 			const embed = new MessageEmbed()
 				.setColor('BLURPLE')
@@ -98,9 +83,7 @@ const command: Command = {
 					iconURL: interaction.user.displayAvatarURL({ dynamic: true })
 				})
 				.setTitle('Ban Confirmation')
-				.setDescription(
-					`Are you sure you want to ban ${memberNicknameMention(member.id)}?`
-				)
+				.setDescription(`Are you sure you want to ban ${memberNicknameMention(member.id)}?`)
 				.setTimestamp()
 				.setFooter({ text: `Version ${version}` });
 
@@ -115,8 +98,7 @@ const command: Command = {
 			})) as Message;
 			const collector = confirmation.createMessageComponentCollector({
 				filter: (i) =>
-					(i.customId === 'confirm' || i.customId === 'abort') &&
-					i.user.id === interaction.user.id,
+					(i.customId === 'confirm' || i.customId === 'abort') && i.user.id === interaction.user.id,
 				componentType: 'BUTTON',
 				time: 15 * 1000
 			});
@@ -127,9 +109,7 @@ const command: Command = {
 						.ban({ reason, days })
 						.then((user) => {
 							embed.setDescription(
-								`👍 ${memberNicknameMention(
-									user.id
-								)} has been banned from the server`
+								`👍 ${memberNicknameMention(user.id)} has been banned from the server`
 							);
 							i.update({ embeds: [embed], components: [] });
 						})
@@ -138,9 +118,7 @@ const command: Command = {
 							i.update({ embeds: [embed], components: [] });
 						});
 				} else {
-					embed.setDescription(
-						`The ban on ${memberNicknameMention(member.id)} has been aborted`
-					);
+					embed.setDescription(`The ban on ${memberNicknameMention(member.id)} has been aborted`);
 					i.update({ embeds: [embed], components: [] });
 				}
 
@@ -150,9 +128,7 @@ const command: Command = {
 				switch (reason) {
 					case 'time': {
 						embed.setDescription(
-							`The ban on ${memberNicknameMention(
-								member.id
-							)} has been aborted due to no response`
+							`The ban on ${memberNicknameMention(member.id)} has been aborted due to no response`
 						);
 						confirmation.edit({ embeds: [embed], components: [] });
 

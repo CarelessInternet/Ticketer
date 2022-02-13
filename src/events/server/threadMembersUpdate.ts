@@ -28,17 +28,11 @@ const event: Event = {
 			if (!member) return;
 
 			if (name === `ticket-${ticketUserId}`) {
-				if (
-					thread.members.cache.has(client.user!.id) &&
-					!thread.members.cache.has(ticketUserId)
-				) {
-					const [rows] = await conn.execute(
-						'SELECT * FROM TicketingManagers WHERE GuildID = ?',
-						[thread.guildId]
-					);
-					const record = (
-						rows as RowDataPacket[]
-					)[0] as Tables.TicketingManagers | null;
+				if (thread.members.cache.has(client.user!.id) && !thread.members.cache.has(ticketUserId)) {
+					const [rows] = await conn.execute('SELECT * FROM TicketingManagers WHERE GuildID = ?', [
+						thread.guildId
+					]);
+					const record = (rows as RowDataPacket[])[0] as Tables.TicketingManagers | null;
 
 					if (!record) return;
 
@@ -50,9 +44,7 @@ const event: Event = {
 							iconURL: user.displayAvatarURL({ dynamic: true })
 						})
 						.setTitle('Ticket Archived')
-						.setDescription(
-							`${memberNicknameMention(user.id)} left the support ticket!`
-						)
+						.setDescription(`${memberNicknameMention(user.id)} left the support ticket!`)
 						.setTimestamp()
 						.setFooter({ text: `Version ${version}` });
 
@@ -61,23 +53,16 @@ const event: Event = {
 
 					if (record.LogsChannel !== '0') {
 						embed.setDescription(
-							`${memberNicknameMention(
-								user.id
-							)} left their ticket! View it at ${channelMention(id)}`
+							`${memberNicknameMention(user.id)} left their ticket! View it at ${channelMention(
+								id
+							)}`
 						);
 						embed.addField('Name of Ticket', name);
 
-						const logsChannel = await thread.guild.channels.fetch(
-							record.LogsChannel
-						);
+						const logsChannel = await thread.guild.channels.fetch(record.LogsChannel);
 
 						if (!logsChannel?.isText()) return;
-						if (
-							!logsChannel
-								.permissionsFor(thread.guild.me!)
-								.has(['SEND_MESSAGES'])
-						)
-							return;
+						if (!logsChannel.permissionsFor(thread.guild.me!).has(['SEND_MESSAGES'])) return;
 
 						logsChannel.send({ embeds: [embed] });
 					}

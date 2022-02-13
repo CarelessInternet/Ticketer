@@ -1,7 +1,4 @@
-import {
-	memberNicknameMention,
-	SlashCommandBuilder
-} from '@discordjs/builders';
+import { memberNicknameMention, SlashCommandBuilder } from '@discordjs/builders';
 import {
 	type GuildMember,
 	type Message,
@@ -18,16 +15,10 @@ const command: Command = {
 		.setName('kick')
 		.setDescription('Kicks a user from the server')
 		.addUserOption((option) =>
-			option
-				.setName('user')
-				.setDescription('The desired user to be kicked')
-				.setRequired(true)
+			option.setName('user').setDescription('The desired user to be kicked').setRequired(true)
 		)
 		.addStringOption((option) =>
-			option
-				.setName('reason')
-				.setDescription('The reason for the kick')
-				.setRequired(false)
+			option.setName('reason').setDescription('The reason for the kick').setRequired(false)
 		),
 	execute: async ({ interaction }) => {
 		const ephemeral = true;
@@ -65,14 +56,8 @@ const command: Command = {
 			}
 
 			const row = new MessageActionRow().addComponents(
-				new MessageButton()
-					.setCustomId('confirm')
-					.setEmoji('✔️')
-					.setStyle('SUCCESS'),
-				new MessageButton()
-					.setCustomId('abort')
-					.setEmoji('❌')
-					.setStyle('DANGER')
+				new MessageButton().setCustomId('confirm').setEmoji('✔️').setStyle('SUCCESS'),
+				new MessageButton().setCustomId('abort').setEmoji('❌').setStyle('DANGER')
 			);
 			const embed = new MessageEmbed()
 				.setColor('BLURPLE')
@@ -96,8 +81,7 @@ const command: Command = {
 			})) as Message;
 			const collector = confirmation.createMessageComponentCollector({
 				filter: (i) =>
-					(i.customId === 'confirm' || i.customId === 'abort') &&
-					i.user.id === interaction.user.id,
+					(i.customId === 'confirm' || i.customId === 'abort') && i.user.id === interaction.user.id,
 				componentType: 'BUTTON',
 				time: 15 * 1000
 			});
@@ -108,9 +92,7 @@ const command: Command = {
 						.kick(reason)
 						.then((kickedMember) => {
 							embed.setDescription(
-								`👍 ${memberNicknameMention(
-									kickedMember.id
-								)} has been kicked from the server`
+								`👍 ${memberNicknameMention(kickedMember.id)} has been kicked from the server`
 							);
 
 							if (reason) {
@@ -120,9 +102,7 @@ const command: Command = {
 							i.update({ embeds: [embed], components: [] });
 						})
 						.catch(() => {
-							embed.setDescription(
-								`👎 Failed to kick due to an unknown reason`
-							);
+							embed.setDescription(`👎 Failed to kick due to an unknown reason`);
 							i.update({ embeds: [embed], components: [] });
 						});
 				} else {

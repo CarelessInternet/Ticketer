@@ -18,9 +18,7 @@ const manager = new ShardingManager(resolve(__dirname, './bot.js'), { token });
 
 manager.on('shardCreate', (shard) => {
 	console.log(
-		`${green('[Sharding]')} Created shard #${
-			shard.id
-		} at ${new Date().toLocaleString()}`
+		`${green('[Sharding]')} Created shard #${shard.id} at ${new Date().toLocaleString()}`
 	);
 });
 

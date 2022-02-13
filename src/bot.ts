@@ -14,17 +14,13 @@ const client = new Client({
 	],
 	shards: 'auto',
 	presence: {
-		activities: [
-			{ name: '🎳 | /help', type: Constants.ActivityTypes.COMPETING }
-		],
+		activities: [{ name: '🎳 | /help', type: Constants.ActivityTypes.COMPETING }],
 		status: PresenceUpdateStatus.Online
 	}
 });
 
 ['commands', 'events'].forEach(async (handler) => {
-	const { default: file }: { default: Handler } = await import(
-		`./handlers/${handler}`
-	);
+	const { default: file }: { default: Handler } = await import(`./handlers/${handler}`);
 	file(client);
 });
 

@@ -10,23 +10,17 @@ const event: Event = {
 			const { guild, guildId } = thread;
 			const { id: parentId, lastMessage, name } = thread.parent!;
 
-			const [rows] = await conn.execute(
-				'SELECT * FROM TicketingManagers WHERE GuildID = ?',
-				[guildId]
-			);
-			const record = (
-				rows as RowDataPacket[]
-			)[0] as Tables.TicketingManagers | null;
+			const [rows] = await conn.execute('SELECT * FROM TicketingManagers WHERE GuildID = ?', [
+				guildId
+			]);
+			const record = (rows as RowDataPacket[])[0] as Tables.TicketingManagers | null;
 
 			if (
 				thread.permissionsFor(guild.me!).has(['MANAGE_MESSAGES']) &&
 				lastMessage?.system &&
 				lastMessage.author.id === client.user!.id
 			) {
-				if (
-					(record && record.SupportChannel === parentId) ||
-					name.toLowerCase() === 'support'
-				) {
+				if ((record && record.SupportChannel === parentId) || name.toLowerCase() === 'support') {
 					lastMessage.delete();
 				}
 			}

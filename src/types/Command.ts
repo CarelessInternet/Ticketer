@@ -1,11 +1,5 @@
-import type {
-	SlashCommandBuilder,
-	SlashCommandSubcommandsOnlyBuilder
-} from '@discordjs/builders';
-import type {
-	CommandInteraction,
-	MessageComponentInteraction
-} from 'discord.js';
+import type { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from '@discordjs/builders';
+import type { CommandInteraction, MessageComponentInteraction } from 'discord.js';
 import type { Client } from '.';
 
 type Awaitable<T> = T | PromiseLike<T>;

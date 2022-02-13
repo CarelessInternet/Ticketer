@@ -8,16 +8,13 @@ const event: Event = {
 	name: Constants.Events.GUILD_CREATE,
 	execute: (client, guild: Guild) => {
 		if (!guild.systemChannel) return;
-		if (!guild.systemChannel.permissionsFor(guild.me!).has(['SEND_MESSAGES']))
-			return;
+		if (!guild.systemChannel.permissionsFor(guild.me!).has(['SEND_MESSAGES'])) return;
 
 		const embed = new MessageEmbed()
 			.setColor('RANDOM')
 			.setTitle('Hello!')
 			.setDescription(
-				`Thank you for inviting me! To view all of the commands, use ${inlineCode(
-					'/help'
-				)}`
+				`Thank you for inviting me! To view all of the commands, use ${inlineCode('/help')}`
 			)
 			.addField(
 				'Support Server',
@@ -28,16 +25,11 @@ const event: Event = {
 			)
 			.addField(
 				'Invite Link',
-				`Invite ${hyperlink(
-					'the bot',
-					links.inviteLink(client)
-				)} to another server!`
+				`Invite ${hyperlink('the bot', links.inviteLink(client))} to another server!`
 			)
 			.addField(
 				'Getting Started',
-				`Use the command ${inlineCode(
-					'/getting-started'
-				)} for information about getting started`
+				`Use the command ${inlineCode('/getting-started')} for information about getting started`
 			)
 			.setTimestamp()
 			.setFooter({ text: `Version ${version}` });

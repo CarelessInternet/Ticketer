@@ -11,10 +11,7 @@ const command: Command = {
 		.setName('eval')
 		.setDescription('Evaluates some code and returns result')
 		.addStringOption((option) =>
-			option
-				.setName('code')
-				.setDescription('The code to evaluate')
-				.setRequired(true)
+			option.setName('code').setDescription('The code to evaluate').setRequired(true)
 		)
 		.addBooleanOption((option) =>
 			option

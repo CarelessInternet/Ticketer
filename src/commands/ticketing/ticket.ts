@@ -23,13 +23,10 @@ const command: Command = {
 				});
 			}
 
-			const [rows] = await conn.execute(
-				'SELECT * FROM TicketingManagers WHERE GuildID = ?',
-				[interaction.guildId]
-			);
-			const record = (
-				rows as RowDataPacket[]
-			)[0] as Tables.TicketingManagers | null;
+			const [rows] = await conn.execute('SELECT * FROM TicketingManagers WHERE GuildID = ?', [
+				interaction.guildId
+			]);
+			const record = (rows as RowDataPacket[])[0] as Tables.TicketingManagers | null;
 
 			if (!record) {
 				return interaction.reply({

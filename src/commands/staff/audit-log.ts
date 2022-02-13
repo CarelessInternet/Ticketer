@@ -1,18 +1,11 @@
-import {
-	inlineCode,
-	memberNicknameMention,
-	SlashCommandBuilder,
-	time
-} from '@discordjs/builders';
+import { inlineCode, memberNicknameMention, SlashCommandBuilder, time } from '@discordjs/builders';
 import { MessageEmbed } from 'discord.js';
 import { version } from '../../../package.json';
 import type { Command } from '../../types';
 
 const command: Command = {
 	category: 'Staff',
-	data: new SlashCommandBuilder()
-		.setName('audit-log')
-		.setDescription('Displays the audit log'),
+	data: new SlashCommandBuilder().setName('audit-log').setDescription('Displays the audit log'),
 	execute: async ({ interaction }) => {
 		try {
 			if (!interaction.memberPermissions!.has(['VIEW_AUDIT_LOG'])) {

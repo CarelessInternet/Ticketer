@@ -8,12 +8,7 @@ import {
 	MessageActionRow,
 	MessageButton
 } from 'discord.js';
-import {
-	channelMention,
-	memberNicknameMention,
-	roleMention,
-	time
-} from '@discordjs/builders';
+import { channelMention, memberNicknameMention, roleMention, time } from '@discordjs/builders';
 import { version } from '../../package.json';
 import type { Tables, TicketChannel } from '../types';
 
@@ -32,16 +27,12 @@ export const handleTicketCreation = async (
 		const name = `ticket-${interaction.user.id}`;
 
 		const supportChannelWithoutRecord = interaction.guild!.channels.cache.find(
-			(channel) =>
-				channel.name.toLowerCase() === 'support' &&
-				channel.type === 'GUILD_TEXT'
+			(channel) => channel.name.toLowerCase() === 'support' && channel.type === 'GUILD_TEXT'
 		) as TextChannel | null;
 		const supportChannel =
 			record.SupportChannel === '0'
 				? supportChannelWithoutRecord
-				: <TextChannel | null>(
-						await interaction.guild!.channels.fetch(record.SupportChannel)
-				  );
+				: <TextChannel | null>await interaction.guild!.channels.fetch(record.SupportChannel);
 
 		// for text channel based ticketing
 		if (record.SupportCategory !== '0' && record.UseTextChannels) {
@@ -111,21 +102,15 @@ export const handleTicketCreation = async (
 				])
 			) {
 				return interaction.reply({
-					content:
-						'I need all thread permissions and manage messages to create tickets',
+					content: 'I need all thread permissions and manage messages to create tickets',
 					ephemeral: true
 				});
 			}
 
 			const channel = supportChannel;
-			if (
-				channel!.threads.cache.find(
-					(thread) => thread.name === name && !thread.archived
-				)
-			) {
+			if (channel!.threads.cache.find((thread) => thread.name === name && !thread.archived)) {
 				return interaction.reply({
-					content:
-						'You must close your previous ticket before opening a new one',
+					content: 'You must close your previous ticket before opening a new one',
 					ephemeral: true
 				});
 			}
@@ -133,9 +118,7 @@ export const handleTicketCreation = async (
 			const thread = await channel.threads.create({
 				name,
 				autoArchiveDuration: 'MAX',
-				type: interaction.guild!.features.find(
-					(feature) => feature === 'PRIVATE_THREADS'
-				)
+				type: interaction.guild!.features.find((feature) => feature === 'PRIVATE_THREADS')
 					? 'GUILD_PRIVATE_THREAD'
 					: 'GUILD_PUBLIC_THREAD',
 				invitable: false
@@ -164,9 +147,7 @@ const handleRest = async (
 		const onlineManagers = managers.members.filter(
 			(manager) => manager.presence?.status === 'online'
 		);
-		const presences = onlineManagers.map(
-			(manager) => `🟢 ${memberNicknameMention(manager.id)}`
-		);
+		const presences = onlineManagers.map((manager) => `🟢 ${memberNicknameMention(manager.id)}`);
 
 		const channelEmbed = new MessageEmbed()
 			.setColor('DARK_GREEN')
@@ -175,17 +156,9 @@ const handleRest = async (
 				iconURL: interaction.user.displayAvatarURL({ dynamic: true })
 			})
 			.setTitle('Support Ticket')
-			.setDescription(
-				`${memberNicknameMention(
-					interaction.user.id
-				)} created a new support ticket`
-			)
+			.setDescription(`${memberNicknameMention(interaction.user.id)} created a new support ticket`)
 			.addField('Subject', subject)
-			.addField(
-				'Available Managers',
-				presences?.length ? presences.join('\n') : 'Unknown',
-				true
-			)
+			.addField('Available Managers', presences?.length ? presences.join('\n') : 'Unknown', true)
 			.addField('Ticket Date', time(channel.createdAt, 'R'), true)
 			.setTimestamp();
 
@@ -266,17 +239,10 @@ const handleRest = async (
 				)} has created a ticket! View it at ${channelMention(channel.id)}`
 			);
 
-			const logsChannel = await interaction.guild!.channels.fetch(
-				record.LogsChannel
-			)!;
+			const logsChannel = await interaction.guild!.channels.fetch(record.LogsChannel)!;
 
 			if (!logsChannel?.isText()) return;
-			if (
-				!logsChannel
-					.permissionsFor(interaction.guild!.me!)
-					.has(['SEND_MESSAGES'])
-			)
-				return;
+			if (!logsChannel.permissionsFor(interaction.guild!.me!).has(['SEND_MESSAGES'])) return;
 
 			logsChannel.send({ embeds: [ticketEmbed] });
 		}

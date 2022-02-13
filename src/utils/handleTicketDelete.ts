@@ -154,7 +154,7 @@ export const handleTicketDelete = async (
 
 const fetchMessages = async (
 	channel: TextChannel | ThreadChannel,
-	messages: Message[],
+	messages: Message[] = [],
 	messageId?: Snowflake
 ): Promise<Message[]> => {
 	// limit is 100: https://discord.com/developers/docs/resources/channel#get-channel-messages

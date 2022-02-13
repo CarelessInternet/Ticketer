@@ -98,7 +98,7 @@ export const handleTicketDelete = async (
 				if (!logsChannel?.isText()) return;
 				if (!logsChannel.permissionsFor(interaction.guild!.me!).has(['SEND_MESSAGES'])) return;
 
-				const allMessages = await fetchMessages(interaction.channel, []);
+				const allMessages = await fetchMessages(interaction.channel);
 				const messages = allMessages.map((msg) => {
 					if (msg.author.id !== interaction.client.user!.id) {
 						return `${msg.author.tag}: ${msg.content}\n`;

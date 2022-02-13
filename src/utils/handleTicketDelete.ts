@@ -2,9 +2,12 @@ import { memberNicknameMention } from '@discordjs/builders';
 import {
 	MessageAttachment,
 	MessageEmbed,
+	type Snowflake,
 	TextChannel,
+	type ThreadChannel,
 	type CommandInteraction,
-	type MessageComponentInteraction
+	type MessageComponentInteraction,
+	type Message
 } from 'discord.js';
 import { version } from '../../package.json';
 import type { Tables } from '../types';
@@ -95,21 +98,18 @@ export const handleTicketDelete = async (
 				if (!logsChannel?.isText()) return;
 				if (!logsChannel.permissionsFor(interaction.guild!.me!).has(['SEND_MESSAGES'])) return;
 
-				const { cache } = interaction.channel.messages;
-				const messages = cache.map((msg) => {
-					if (msg.author?.id !== interaction.client.user!.id) {
-						const user = msg.author?.tag ?? 'Unknown';
-						const content = msg.content ?? 'No message content';
-
-						return `${user}: ${content}\n`;
+				const allMessages = await fetchMessages(interaction.channel, []);
+				const messages = allMessages.map((msg) => {
+					if (msg.author.id !== interaction.client.user!.id) {
+						return `${msg.author.tag}: ${msg.content}\n`;
 					}
 				});
 
-				const pin = cache.first();
+				const firstMessage = allMessages[0];
 				const subject =
-					pin?.author.id === interaction.client.user!.id
-						? pin.embeds?.[0]?.fields?.[0]?.value
-						: 'Not Found';
+					firstMessage?.author.id === interaction.client.user!.id
+						? firstMessage.embeds?.[0]?.fields?.[0]?.value
+						: 'Unknown';
 
 				const content = `Subject: ${subject}\n\n` + messages.join('');
 				const attachment = new MessageAttachment(
@@ -134,6 +134,7 @@ export const handleTicketDelete = async (
 							interaction.guild!.name
 						}`
 					);
+
 					user.send({ embeds: [embed], files: [attachment] });
 				}
 			}
@@ -149,4 +150,29 @@ export const handleTicketDelete = async (
 	} catch (err) {
 		console.error(err);
 	}
+};
+
+const fetchMessages = async (
+	channel: TextChannel | ThreadChannel,
+	messages: Message[],
+	messageId?: Snowflake
+): Promise<Message[]> => {
+	// limit is 100: https://discord.com/developers/docs/resources/channel#get-channel-messages
+	const limit = 100;
+
+	const fetchedMessages = await channel.messages.fetch(
+		{
+			limit,
+			...(messageId && { before: messageId })
+		},
+		{ cache: false, force: true }
+	);
+	const allMessages = [...messages, ...fetchedMessages.map((msg) => msg)];
+
+	// don't fetch more than 1000 messages for rate limit reasons
+	if (fetchedMessages.size === limit && messages.length < 1_000 - limit) {
+		return fetchMessages(channel, allMessages, fetchedMessages.lastKey());
+	}
+
+	return allMessages.sort((a, b) => a.createdTimestamp - b.createdTimestamp);
 };

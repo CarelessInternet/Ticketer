@@ -1,8 +1,4 @@
-import {
-	hyperlink,
-	inlineCode,
-	SlashCommandBuilder
-} from '@discordjs/builders';
+import { hyperlink, inlineCode, SlashCommandBuilder } from '@discordjs/builders';
 import { MessageEmbed } from 'discord.js';
 import { version } from '../../../package.json';
 import { fetchCommands, links } from '../../utils';
@@ -16,18 +12,14 @@ const command: Command = {
 		.addBooleanOption((option) =>
 			option
 				.setName('hidden')
-				.setDescription(
-					'Whether the message should be shown to you or everybody'
-				)
+				.setDescription('Whether the message should be shown to you or everybody')
 				.setRequired(false)
 		),
 	execute: async ({ client, interaction }) => {
 		const commands = await fetchCommands();
 
 		// returns a list of unique categories
-		const categories = [
-			...new Set(commands.map((command) => command.category))
-		].reverse();
+		const categories = [...new Set(commands.map((command) => command.category))].reverse();
 
 		const embed = new MessageEmbed()
 			.setColor('RANDOM')
@@ -41,9 +33,7 @@ const command: Command = {
 			.setFooter({ text: `Version ${version}` });
 
 		for (const category of categories) {
-			const commandsInCategory = commands.filter(
-				(command) => command.category === category
-			);
+			const commandsInCategory = commands.filter((command) => command.category === category);
 			const fieldValue = commandsInCategory
 				.reduce((acc: string[], curr) => {
 					acc.push(inlineCode(`/${curr.data.name}`));

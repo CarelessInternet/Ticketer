@@ -6,10 +6,8 @@ import type { Client } from '../types';
  */
 export const links = {
 	support: 'https://discord.gg/kswKHpJeqC',
-	privacyPolicy:
-		'https://github.com/CarelessInternet/Ticketer/blob/main/privacy_policy.md',
-	termsOfService:
-		'https://github.com/CarelessInternet/Ticketer/blob/main/terms_of_service.md',
+	privacyPolicy: 'https://github.com/CarelessInternet/Ticketer/blob/main/privacy_policy.md',
+	termsOfService: 'https://github.com/CarelessInternet/Ticketer/blob/main/terms_of_service.md',
 	topGGVote: `https://top.gg/bot/${process.env.DISCORD_CLIENT_ID}/vote`,
 	inviteLink: (client: Client) =>
 		client.generateInvite({

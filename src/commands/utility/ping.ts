@@ -8,9 +8,7 @@ const command: Command = {
 	category: 'Utility',
 	data: new SlashCommandBuilder()
 		.setName('ping')
-		.setDescription(
-			"Sends a response back with the bot's current average response time"
-		),
+		.setDescription("Sends a response back with the bot's current average response time"),
 	execute: async ({ client, interaction }) => {
 		const embed = new MessageEmbed()
 			.setColor('RANDOM')
@@ -33,11 +31,7 @@ const command: Command = {
 			embed.setTitle('Result:');
 			embed.addField('Ping', `⌛ ${client.ws.ping}ms`, true);
 			embed.addField('Latency', `🏓 Roughly ${time}ms`, true);
-			embed.addField(
-				'Shard Status',
-				`⚙️ ${inlineCode(shardStatus(client.ws.status))}`,
-				true
-			);
+			embed.addField('Shard Status', `⚙️ ${inlineCode(shardStatus(client.ws.status))}`, true);
 
 			interaction.editReply({ embeds: [embed] });
 		} catch (err) {

@@ -1,8 +1,4 @@
-import {
-	Client as BotClient,
-	type ClientOptions,
-	Collection
-} from 'discord.js';
+import { Client as BotClient, type ClientOptions, Collection } from 'discord.js';
 import { Command } from '.';
 
 export class Client extends BotClient {

@@ -10,9 +10,7 @@ const command: Command = {
 		.setName('purge-servers')
 		.setDescription('Purges servers where bots outnumber the amount of users')
 		.addBooleanOption((option) =>
-			option
-				.setName('fake')
-				.setDescription('Whether to imitate purging servers')
+			option.setName('fake').setDescription('Whether to imitate purging servers')
 		),
 	execute: async ({ client, interaction }) => {
 		try {
@@ -27,9 +25,7 @@ const command: Command = {
 						let botCount = 0;
 						let userCount = 0;
 
-						guild.members.cache.forEach((member) =>
-							member.user.bot ? botCount++ : userCount++
-						);
+						guild.members.cache.forEach((member) => (member.user.bot ? botCount++ : userCount++));
 
 						// if there are more than 3 bots per user, leave the guild
 						const shouldLeave = userCount / botCount < 1 / 3;
@@ -73,11 +69,7 @@ const command: Command = {
 				.setTitle('Purge Servers')
 				.addField('Purged Servers', purgedServers.toLocaleString(), true)
 				.addField('Servers Left', leftServers.toLocaleString(), true)
-				.addField(
-					'Amount of Servers Before',
-					(purgedServers + leftServers).toLocaleString(),
-					true
-				)
+				.addField('Amount of Servers Before', (purgedServers + leftServers).toLocaleString(), true)
 				.setTimestamp()
 				.setFooter({ text: `Version ${version}` });
 

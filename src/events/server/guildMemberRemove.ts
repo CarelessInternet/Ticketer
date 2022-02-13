@@ -9,13 +9,10 @@ const event: Event = {
 	name: Constants.Events.GUILD_MEMBER_REMOVE,
 	execute: async (_client, member: GuildMember) => {
 		try {
-			const [rows] = await conn.execute(
-				'SELECT * FROM GuildMemberEvent WHERE GuildID = ?',
-				[member.guild.id]
-			);
-			const record = (
-				rows as RowDataPacket[]
-			)[0] as Tables.GuildMemberEvent | null;
+			const [rows] = await conn.execute('SELECT * FROM GuildMemberEvent WHERE GuildID = ?', [
+				member.guild.id
+			]);
+			const record = (rows as RowDataPacket[])[0] as Tables.GuildMemberEvent | null;
 
 			if (!record) return;
 
@@ -23,21 +20,14 @@ const event: Event = {
 			if (Enabled && ChannelID !== '0') {
 				const channel = await member.guild.channels.fetch(ChannelID);
 
-				if (!channel?.permissionsFor(member.guild.me!).has(['SEND_MESSAGES']))
-					return;
+				if (!channel?.permissionsFor(member.guild.me!).has(['SEND_MESSAGES'])) return;
 				if (!channel.isText()) return;
 
 				const embed = new MessageEmbed()
 					.setColor('RED')
 					.setTitle(`Bye ${member.user.tag}!`)
-					.setDescription(
-						`${memberNicknameMention(member.id)} has left the server.`
-					)
-					.addField(
-						'Account Creation Date',
-						time(member.user.createdAt, 'R'),
-						true
-					)
+					.setDescription(`${memberNicknameMention(member.id)} has left the server.`)
+					.addField('Account Creation Date', time(member.user.createdAt, 'R'), true)
 					.addField('Leave Date', time(new Date(), 'R'), true)
 					.setThumbnail(member.displayAvatarURL({ dynamic: true }))
 					.setTimestamp()

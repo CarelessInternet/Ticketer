@@ -16,12 +16,7 @@ export const handleTicketArchive = async (
 			return;
 		}
 
-		if (
-			!interaction.guild!.me!.permissions.has([
-				'MANAGE_THREADS',
-				'SEND_MESSAGES_IN_THREADS'
-			])
-		) {
+		if (!interaction.guild!.me!.permissions.has(['MANAGE_THREADS', 'SEND_MESSAGES_IN_THREADS'])) {
 			return interaction.reply({
 				content:
 					'I need the manage threads and send messages in threads permission to run this command',
@@ -45,13 +40,9 @@ export const handleTicketArchive = async (
 			const managers = await interaction.guild!.roles.fetch(record.RoleID);
 			const name = `ticket-${interaction.user.id}`;
 
-			if (
-				name !== interaction.channel.name &&
-				!managers?.members.has(interaction.user.id)
-			) {
+			if (name !== interaction.channel.name && !managers?.members.has(interaction.user.id)) {
 				return interaction.reply({
-					content:
-						'You may not archive this thread, you are not the original author nor a manager',
+					content: 'You may not archive this thread, you are not the original author nor a manager',
 					ephemeral: true
 				});
 			}
@@ -63,11 +54,7 @@ export const handleTicketArchive = async (
 					iconURL: interaction.user.displayAvatarURL({ dynamic: true })
 				})
 				.setTitle('Ticket Archived')
-				.setDescription(
-					`${memberNicknameMention(
-						interaction.user.id
-					)} archived the support ticket`
-				)
+				.setDescription(`${memberNicknameMention(interaction.user.id)} archived the support ticket`)
 				.setTimestamp()
 				.setFooter({ text: `Version ${version}` });
 
@@ -78,23 +65,14 @@ export const handleTicketArchive = async (
 				embed.setDescription(
 					`${memberNicknameMention(
 						interaction.user.id
-					)} archived a ticket! View it at ${channelMention(
-						interaction.channelId
-					)}`
+					)} archived a ticket! View it at ${channelMention(interaction.channelId)}`
 				);
 				embed.addField('Name of Ticket', interaction.channel.name);
 
-				const logsChannel = await interaction.guild!.channels.fetch(
-					record.LogsChannel
-				);
+				const logsChannel = await interaction.guild!.channels.fetch(record.LogsChannel);
 
 				if (!logsChannel?.isText()) return;
-				if (
-					!logsChannel
-						.permissionsFor(interaction.guild!.me!)
-						.has(['SEND_MESSAGES'])
-				)
-					return;
+				if (!logsChannel.permissionsFor(interaction.guild!.me!).has(['SEND_MESSAGES'])) return;
 
 				logsChannel.send({ embeds: [embed] });
 			}

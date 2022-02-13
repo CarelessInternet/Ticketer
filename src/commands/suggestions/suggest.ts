@@ -11,10 +11,7 @@ const command: Command = {
 		.setName('suggest')
 		.setDescription('Suggest an idea, feature, or anything!')
 		.addStringOption((option) =>
-			option
-				.setName('title')
-				.setDescription('The title of the suggestion')
-				.setRequired(true)
+			option.setName('title').setDescription('The title of the suggestion').setRequired(true)
 		)
 		.addStringOption((option) =>
 			option
@@ -24,10 +21,9 @@ const command: Command = {
 		),
 	execute: async ({ interaction }) => {
 		try {
-			const [rows] = await conn.execute(
-				'SELECT * FROM Suggestions WHERE GuildID = ?',
-				[interaction.guildId]
-			);
+			const [rows] = await conn.execute('SELECT * FROM Suggestions WHERE GuildID = ?', [
+				interaction.guildId
+			]);
 			const record = (rows as RowDataPacket[])[0] as Tables.Suggestions | null;
 
 			if (!record) {
@@ -50,9 +46,7 @@ const command: Command = {
 				});
 			}
 
-			const suggestionsChannel = interaction.guild!.channels.resolve(
-				record.SuggestionsChannel
-			);
+			const suggestionsChannel = interaction.guild!.channels.resolve(record.SuggestionsChannel);
 
 			if (!suggestionsChannel) {
 				return interaction.reply({
@@ -104,9 +98,7 @@ const command: Command = {
 					})
 					.setTitle('Suggestion Sent!')
 					.setDescription(
-						`Your suggestion has been sent! View it at ${channelMention(
-							suggestionsChannel.id
-						)}`
+						`Your suggestion has been sent! View it at ${channelMention(suggestionsChannel.id)}`
 					)
 					.setTimestamp()
 					.setFooter({ text: `Version ${version}` });

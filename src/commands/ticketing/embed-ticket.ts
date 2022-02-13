@@ -1,10 +1,5 @@
 import type { RowDataPacket } from 'mysql2';
-import {
-	MessageActionRow,
-	MessageButton,
-	MessageEmbed,
-	type TextChannel
-} from 'discord.js';
+import { MessageActionRow, MessageButton, MessageEmbed, type TextChannel } from 'discord.js';
 import { inlineCode, SlashCommandBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord-api-types/v9';
 import { conn, handleTicketCreation } from '../../utils';
@@ -14,9 +9,7 @@ const command: Command = {
 	category: 'Ticketing',
 	data: new SlashCommandBuilder()
 		.setName('embed-ticket')
-		.setDescription(
-			'Send an embed with buttons to create a ticket in a specified channel'
-		)
+		.setDescription('Send an embed with buttons to create a ticket in a specified channel')
 		.addChannelOption((option) =>
 			option
 				.setName('channel')
@@ -26,23 +19,17 @@ const command: Command = {
 		),
 	execute: async function ({ interaction }) {
 		try {
-			if (
-				!interaction.memberPermissions?.has(['MANAGE_CHANNELS', 'MANAGE_GUILD'])
-			) {
+			if (!interaction.memberPermissions?.has(['MANAGE_CHANNELS', 'MANAGE_GUILD'])) {
 				return interaction.reply({
-					content:
-						'You need the manage channels and guild permission to run this command',
+					content: 'You need the manage channels and guild permission to run this command',
 					ephemeral: true
 				});
 			}
 
-			const [rows] = await conn.execute(
-				'SELECT * FROM TicketingManagers WHERE GuildID = ?',
-				[interaction.guildId]
-			);
-			const record = (
-				rows as RowDataPacket[]
-			)[0] as Tables.TicketingManagers | null;
+			const [rows] = await conn.execute('SELECT * FROM TicketingManagers WHERE GuildID = ?', [
+				interaction.guildId
+			]);
+			const record = (rows as RowDataPacket[])[0] as Tables.TicketingManagers | null;
 
 			if (!record) {
 				return interaction.reply({
@@ -53,9 +40,7 @@ const command: Command = {
 
 			const channel = interaction.options.getChannel('channel')! as TextChannel;
 
-			if (
-				!channel.permissionsFor(interaction.guild!.me!).has(['SEND_MESSAGES'])
-			) {
+			if (!channel.permissionsFor(interaction.guild!.me!).has(['SEND_MESSAGES'])) {
 				return interaction.reply({
 					content: 'I need the send messages permission for that channel',
 					ephemeral: true
@@ -101,14 +86,10 @@ const command: Command = {
 					ephemeral: true
 				});
 			} else {
-				const supportChannelWithoutRecord =
-					interaction.guild!.channels.cache.find(
-						(channel) =>
-							channel.name === 'support' && channel.type === 'GUILD_TEXT'
-					);
-				const supportChannelWithRecord = interaction.guild!.channels.resolve(
-					record.SupportChannel
+				const supportChannelWithoutRecord = interaction.guild!.channels.cache.find(
+					(channel) => channel.name === 'support' && channel.type === 'GUILD_TEXT'
 				);
+				const supportChannelWithRecord = interaction.guild!.channels.resolve(record.SupportChannel);
 
 				// thread based ticketing
 				if (supportChannelWithRecord || supportChannelWithoutRecord) {
@@ -141,13 +122,10 @@ const command: Command = {
 		customIds: ['button_create_ticket'],
 		execute: async ({ interaction }) => {
 			try {
-				const [rows] = await conn.execute(
-					'SELECT * FROM TicketingManagers WHERE GuildID = ?',
-					[interaction.guildId]
-				);
-				const record = (
-					rows as RowDataPacket[]
-				)[0] as Tables.TicketingManagers | null;
+				const [rows] = await conn.execute('SELECT * FROM TicketingManagers WHERE GuildID = ?', [
+					interaction.guildId
+				]);
+				const record = (rows as RowDataPacket[])[0] as Tables.TicketingManagers | null;
 
 				if (!record) {
 					return interaction.reply({

@@ -1,9 +1,4 @@
-import {
-	MessageEmbed,
-	type NewsChannel,
-	type TextChannel,
-	type ThreadChannel
-} from 'discord.js';
+import { MessageEmbed, type NewsChannel, type TextChannel, type ThreadChannel } from 'discord.js';
 import { inlineCode, SlashCommandBuilder } from '@discordjs/builders';
 import { version } from '../../../package.json';
 import type { Command } from '../../types';
@@ -27,8 +22,7 @@ const command: Command = {
 		try {
 			if (!interaction.memberPermissions!.has(['MANAGE_MESSAGES'])) {
 				return interaction.reply({
-					content:
-						'You need the manage messages permission to run this command',
+					content: 'You need the manage messages permission to run this command',
 					ephemeral
 				});
 			}
@@ -41,10 +35,7 @@ const command: Command = {
 
 			const amount = interaction.options.getInteger('amount')!;
 
-			const channel = interaction.channel as
-				| TextChannel
-				| NewsChannel
-				| ThreadChannel;
+			const channel = interaction.channel as TextChannel | NewsChannel | ThreadChannel;
 			const deleted = await channel.bulkDelete(amount);
 
 			const embed = new MessageEmbed()
@@ -54,11 +45,7 @@ const command: Command = {
 					iconURL: interaction.user.displayAvatarURL({ dynamic: true })
 				})
 				.setTitle('Successfully Deleted Messages')
-				.setDescription(
-					`Successfully deleted ${inlineCode(
-						deleted.size.toString()
-					)} messages!`
-				)
+				.setDescription(`Successfully deleted ${inlineCode(deleted.size.toString())} messages!`)
 				.setTimestamp()
 				.setFooter({ text: `Version ${version}` });
 

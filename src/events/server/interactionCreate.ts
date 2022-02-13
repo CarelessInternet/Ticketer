@@ -12,14 +12,10 @@ const event: Event = {
 				});
 			}
 
-			const cmd = interaction.isCommand()
-				? interaction.commandName
-				: interaction.customId;
+			const cmd = interaction.isCommand() ? interaction.commandName : interaction.customId;
 			const command =
 				client.commands.get(cmd) ||
-				client.commands.find(
-					(comm) => comm.components?.customIds?.includes(cmd) ?? false
-				);
+				client.commands.find((comm) => comm.components?.customIds?.includes(cmd) ?? false);
 
 			if (!command) return;
 

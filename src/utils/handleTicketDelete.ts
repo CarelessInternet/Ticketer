@@ -14,10 +14,7 @@ export const handleTicketDelete = async (
 	record?: Tables.TicketingManagers
 ) => {
 	try {
-		if (
-			!interaction.channel!.isThread() &&
-			!(interaction.channel instanceof TextChannel)
-		) {
+		if (!interaction.channel!.isThread() && !(interaction.channel instanceof TextChannel)) {
 			return interaction.reply({
 				content: 'You must use this command in a support ticket',
 				ephemeral: true
@@ -49,9 +46,7 @@ export const handleTicketDelete = async (
 		let isSupportTicket = false;
 		const authorId = interaction.channel.name.split('-').at(-1)!;
 		const hasAuthorInName = interaction.channel.isThread()
-			? await interaction.channel.members
-					.fetch(authorId, { force: true })
-					.catch(() => false)
+			? await interaction.channel.members.fetch(authorId, { force: true }).catch(() => false)
 			: interaction.channel.members.has(authorId);
 
 		// messy code but it works
@@ -88,28 +83,17 @@ export const handleTicketDelete = async (
 					iconURL: interaction.user.displayAvatarURL({ dynamic: true })
 				})
 				.setTitle('Ticket Deleted')
-				.setDescription(
-					`${memberNicknameMention(
-						interaction.user.id
-					)} deleted the support ticket`
-				)
+				.setDescription(`${memberNicknameMention(interaction.user.id)} deleted the support ticket`)
 				.setTimestamp()
 				.setFooter({ text: `Version ${version}` });
 
 			await interaction.reply({ embeds: [embed] });
 
 			if (record.LogsChannel !== '0') {
-				const logsChannel = await interaction.guild!.channels.fetch(
-					record.LogsChannel
-				);
+				const logsChannel = await interaction.guild!.channels.fetch(record.LogsChannel);
 
 				if (!logsChannel?.isText()) return;
-				if (
-					!logsChannel
-						.permissionsFor(interaction.guild!.me!)
-						.has(['SEND_MESSAGES'])
-				)
-					return;
+				if (!logsChannel.permissionsFor(interaction.guild!.me!).has(['SEND_MESSAGES'])) return;
 
 				const { cache } = interaction.channel.messages;
 				const messages = cache.map((msg) => {
@@ -133,9 +117,7 @@ export const handleTicketDelete = async (
 					`Ticketer-${Date.now()}.txt`
 				);
 
-				embed.setDescription(
-					`${memberNicknameMention(interaction.user.id)} deleted a ticket`
-				);
+				embed.setDescription(`${memberNicknameMention(interaction.user.id)} deleted a ticket`);
 				embed.addField('Name of Ticket', interaction.channel.name);
 				embed.addField(
 					'Message History',
@@ -148,9 +130,9 @@ export const handleTicketDelete = async (
 
 				if (user && !managers.members.has(user.id)) {
 					embed.setDescription(
-						`${memberNicknameMention(
-							interaction.user.id
-						)} deleted your support ticket in ${interaction.guild!.name}`
+						`${memberNicknameMention(interaction.user.id)} deleted your support ticket in ${
+							interaction.guild!.name
+						}`
 					);
 					user.send({ embeds: [embed], files: [attachment] });
 				}

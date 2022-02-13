@@ -7,18 +7,13 @@ const command: Command = {
 	category: 'Ticketing',
 	data: new SlashCommandBuilder()
 		.setName('delete')
-		.setDescription(
-			'Deletes the support ticket, messages might be saved if logs are on'
-		),
+		.setDescription('Deletes the support ticket, messages might be saved if logs are on'),
 	execute: async ({ interaction }) => {
 		try {
-			const [rows] = await conn.execute(
-				'SELECT * FROM TicketingManagers WHERE GuildID = ?',
-				[interaction.guildId]
-			);
-			const record = (rows as RowDataPacket[])[0] as
-				| Tables.TicketingManagers
-				| undefined;
+			const [rows] = await conn.execute('SELECT * FROM TicketingManagers WHERE GuildID = ?', [
+				interaction.guildId
+			]);
+			const record = (rows as RowDataPacket[])[0] as Tables.TicketingManagers | undefined;
 
 			handleTicketDelete(interaction, record);
 		} catch (err) {
@@ -28,13 +23,10 @@ const command: Command = {
 	components: {
 		customIds: ['button_ticket_delete'],
 		execute: async ({ interaction }) => {
-			const [rows] = await conn.execute(
-				'SELECT * FROM TicketingManagers WHERE GuildID = ?',
-				[interaction.guildId]
-			);
-			const record = (rows as RowDataPacket[])[0] as
-				| Tables.TicketingManagers
-				| undefined;
+			const [rows] = await conn.execute('SELECT * FROM TicketingManagers WHERE GuildID = ?', [
+				interaction.guildId
+			]);
+			const record = (rows as RowDataPacket[])[0] as Tables.TicketingManagers | undefined;
 
 			handleTicketDelete(interaction, record);
 		}

@@ -19,18 +19,13 @@ const command: Command = {
 		.addSubcommandGroup((group) =>
 			group
 				.setName('users')
-				.setDescription(
-					'Block or unblock a user from using suggestions commands'
-				)
+				.setDescription('Block or unblock a user from using suggestions commands')
 				.addSubcommand((subcommand) =>
 					subcommand
 						.setName('block')
 						.setDescription('Block a user from using suggestions commands')
 						.addUserOption((option) =>
-							option
-								.setName('user')
-								.setDescription('The user to block')
-								.setRequired(true)
+							option.setName('user').setDescription('The user to block').setRequired(true)
 						)
 				)
 				.addSubcommand((subcommand) =>
@@ -38,10 +33,7 @@ const command: Command = {
 						.setName('unblock')
 						.setDescription('Unblock a user from using suggestions commands')
 						.addUserOption((option) =>
-							option
-								.setName('user')
-								.setDescription('The user to unblock')
-								.setRequired(true)
+							option.setName('user').setDescription('The user to unblock').setRequired(true)
 						)
 				)
 		)
@@ -60,9 +52,7 @@ const command: Command = {
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('target')
-				.setDescription(
-					'The amount of upvotes to reach to get pinned in the channel'
-				)
+				.setDescription('The amount of upvotes to reach to get pinned in the channel')
 				.addIntegerOption((option) =>
 					option
 						.setName('amount')
@@ -75,24 +65,20 @@ const command: Command = {
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('reply-embed')
-				.setDescription(
-					"Toggle to have the 'suggestion sent' message hidden or not"
-				)
+				.setDescription("Toggle to have the 'suggestion sent' message hidden or not")
 		),
 	execute: async ({ interaction }) => {
 		try {
 			if (!interaction.memberPermissions?.has(['MANAGE_CHANNELS'])) {
 				return interaction.reply({
-					content:
-						'You need the manage channels permission to run these commands',
+					content: 'You need the manage channels permission to run these commands',
 					ephemeral: true
 				});
 			}
 
-			const [rows] = await conn.execute(
-				'SELECT * FROM Suggestions WHERE GuildID = ?',
-				[interaction.guildId]
-			);
+			const [rows] = await conn.execute('SELECT * FROM Suggestions WHERE GuildID = ?', [
+				interaction.guildId
+			]);
 			const record = (rows as RowDataPacket[])[0] as Tables.Suggestions | null;
 
 			const embed = new MessageEmbed()
@@ -133,15 +119,13 @@ const command: Command = {
 						blockedUsers.push(user.id);
 						blockedUsers = [...new Set(blockedUsers)];
 
-						conn.execute(
-							'UPDATE Suggestions SET BlockedUsers = ? WHERE GuildID = ?',
-							[JSON.stringify(blockedUsers), interaction.guildId]
-						);
+						conn.execute('UPDATE Suggestions SET BlockedUsers = ? WHERE GuildID = ?', [
+							JSON.stringify(blockedUsers),
+							interaction.guildId
+						]);
 						embed.setTitle('Updated Blocked Users');
 						embed.setDescription(
-							`${memberNicknameMention(
-								user.id
-							)} has been blocked from using suggestion commands`
+							`${memberNicknameMention(user.id)} has been blocked from using suggestion commands`
 						);
 
 						return interaction.reply({ embeds: [embed] });
@@ -157,15 +141,13 @@ const command: Command = {
 
 						blockedUsers = blockedUsers.filter((id) => id !== user.id);
 
-						await conn.execute(
-							'UPDATE Suggestions SET BlockedUsers = ? WHERE GuildID = ?',
-							[JSON.stringify(blockedUsers), interaction.guildId]
-						);
+						await conn.execute('UPDATE Suggestions SET BlockedUsers = ? WHERE GuildID = ?', [
+							JSON.stringify(blockedUsers),
+							interaction.guildId
+						]);
 						embed.setTitle('Updated Blocked Users');
 						embed.setDescription(
-							`${memberNicknameMention(
-								user.id
-							)} has been unblocked from using suggestion commands`
+							`${memberNicknameMention(user.id)} has been unblocked from using suggestion commands`
 						);
 
 						return interaction.reply({ embeds: [embed] });
@@ -192,9 +174,7 @@ const command: Command = {
 
 						embed.setTitle('Changed Suggestions Channel');
 						embed.setDescription(
-							`The suggestions channel has been updated to ${channelMention(
-								channel.id
-							)}`
+							`The suggestions channel has been updated to ${channelMention(channel.id)}`
 						);
 
 						return interaction.reply({ embeds: [embed] });
@@ -234,15 +214,13 @@ const command: Command = {
 						}
 
 						const opposite = !record.ReplyEmbed;
-						await conn.execute(
-							'UPDATE Suggestions SET ReplyEmbed = ? WHERE GuildID = ?',
-							[opposite, interaction.guildId]
-						);
+						await conn.execute('UPDATE Suggestions SET ReplyEmbed = ? WHERE GuildID = ?', [
+							opposite,
+							interaction.guildId
+						]);
 
 						embed.setTitle('Changed Reply Embed Option');
-						embed.setDescription(
-							`Changed reply embeds to ${opposite ? 'shown' : 'hidden'}`
-						);
+						embed.setDescription(`Changed reply embeds to ${opposite ? 'shown' : 'hidden'}`);
 
 						return interaction.reply({ embeds: [embed] });
 					}

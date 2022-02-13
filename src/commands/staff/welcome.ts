@@ -1,10 +1,6 @@
 import type { RowDataPacket } from 'mysql2';
 import { MessageEmbed, type TextChannel } from 'discord.js';
-import {
-	channelMention,
-	inlineCode,
-	SlashCommandBuilder
-} from '@discordjs/builders';
+import { channelMention, inlineCode, SlashCommandBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord-api-types/v9';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
@@ -14,15 +10,11 @@ const command: Command = {
 	category: 'Staff',
 	data: new SlashCommandBuilder()
 		.setName('welcome')
-		.setDescription(
-			'Enables welcome and goodbye messages in a specific channel'
-		)
+		.setDescription('Enables welcome and goodbye messages in a specific channel')
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('configure')
-				.setDescription(
-					'Adds/edits welcome and goodbye messages to a specific channel'
-				)
+				.setDescription('Adds/edits welcome and goodbye messages to a specific channel')
 				.addChannelOption((option) =>
 					option
 						.setName('channel')
@@ -38,23 +30,17 @@ const command: Command = {
 		),
 	execute: async ({ interaction }) => {
 		try {
-			if (
-				!interaction.memberPermissions?.has(['MANAGE_GUILD', 'MANAGE_CHANNELS'])
-			) {
+			if (!interaction.memberPermissions?.has(['MANAGE_GUILD', 'MANAGE_CHANNELS'])) {
 				return interaction.reply({
-					content:
-						'You need the manage server and channels permission to run this command',
+					content: 'You need the manage server and channels permission to run this command',
 					ephemeral: true
 				});
 			}
 
-			const [rows] = await conn.execute(
-				'SELECT * FROM GuildMemberEvent WHERE GuildID = ?',
-				[interaction.guildId]
-			);
-			const record = (
-				rows as RowDataPacket[]
-			)[0] as Tables.GuildMemberEvent | null;
+			const [rows] = await conn.execute('SELECT * FROM GuildMemberEvent WHERE GuildID = ?', [
+				interaction.guildId
+			]);
+			const record = (rows as RowDataPacket[])[0] as Tables.GuildMemberEvent | null;
 
 			const embed = new MessageEmbed()
 				.setColor('DARK_GREEN')
@@ -68,31 +54,27 @@ const command: Command = {
 
 			switch (interaction.options.getSubcommand()) {
 				case 'configure': {
-					const channel = interaction.options.getChannel(
-						'channel'
-					) as TextChannel;
+					const channel = interaction.options.getChannel('channel') as TextChannel;
 
 					if (!record) {
-						await conn.execute(
-							'INSERT INTO GuildMemberEvent (GuildID, ChannelID) VALUES (?, ?)',
-							[interaction.guildId, channel.id]
-						);
+						await conn.execute('INSERT INTO GuildMemberEvent (GuildID, ChannelID) VALUES (?, ?)', [
+							interaction.guildId,
+							channel.id
+						]);
 						embed.setDescription(
-							`Successfully created welcome/goodbye messages in ${channelMention(
-								channel.id
-							)}`
+							`Successfully created welcome/goodbye messages in ${channelMention(channel.id)}`
 						);
 
 						return interaction.reply({ embeds: [embed] });
 					} else {
-						await conn.execute(
-							'UPDATE GuildMemberEvent SET ChannelID = ? WHERE GuildID = ?',
-							[channel.id, interaction.guildId]
-						);
+						await conn.execute('UPDATE GuildMemberEvent SET ChannelID = ? WHERE GuildID = ?', [
+							channel.id,
+							interaction.guildId
+						]);
 						embed.setDescription(
-							`Successfully updated from ${channelMention(
-								record.ChannelID
-							)} to ${channelMention(channel.id)}`
+							`Successfully updated from ${channelMention(record.ChannelID)} to ${channelMention(
+								channel.id
+							)}`
 						);
 
 						return interaction.reply({ embeds: [embed] });
@@ -101,16 +83,15 @@ const command: Command = {
 				case 'toggle': {
 					if (!record) {
 						return interaction.reply({
-							content:
-								'Create the configuration for the welcome/goodbye messages first',
+							content: 'Create the configuration for the welcome/goodbye messages first',
 							ephemeral: true
 						});
 					}
 
-					await conn.execute(
-						'UPDATE GuildMemberEvent SET Enabled = ? WHERE GuildID = ?',
-						[!record.Enabled, interaction.guildId]
-					);
+					await conn.execute('UPDATE GuildMemberEvent SET Enabled = ? WHERE GuildID = ?', [
+						!record.Enabled,
+						interaction.guildId
+					]);
 					embed.setDescription(
 						`Successfully updated from messages ${inlineCode(
 							record.Enabled ? 'on' : 'off'

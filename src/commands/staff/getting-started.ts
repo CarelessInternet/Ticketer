@@ -32,9 +32,7 @@ const command: Command = {
 	
 			1. Give the bot all thread permissions and manage messages
 			2. Add the managers via ${inlineCode('ticket-config managers')}
-			3. Create a text channel named ${inlineCode(
-				'support'
-			)}, or specify a channel via ${inlineCode(
+			3. Create a text channel named ${inlineCode('support')}, or specify a channel via ${inlineCode(
 					'ticket-config support-channel'
 				)}
 			`

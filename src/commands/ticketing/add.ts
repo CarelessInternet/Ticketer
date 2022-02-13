@@ -1,8 +1,5 @@
 import type { RowDataPacket } from 'mysql2';
-import {
-	memberNicknameMention,
-	SlashCommandBuilder
-} from '@discordjs/builders';
+import { memberNicknameMention, SlashCommandBuilder } from '@discordjs/builders';
 import { type GuildMember, MessageEmbed, TextChannel } from 'discord.js';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
@@ -14,10 +11,7 @@ const command: Command = {
 		.setName('add')
 		.setDescription('Add a user to the ticket')
 		.addUserOption((option) =>
-			option
-				.setName('user')
-				.setDescription('The user to add to the ticket')
-				.setRequired(true)
+			option.setName('user').setDescription('The user to add to the ticket').setRequired(true)
 		),
 	execute: async ({ interaction }) => {
 		try {
@@ -27,32 +21,19 @@ const command: Command = {
 					ephemeral: true
 				});
 			}
-			if (
-				!interaction.guild!.me!.permissions.has([
-					'MANAGE_ROLES',
-					'MANAGE_CHANNELS'
-				])
-			) {
+			if (!interaction.guild!.me!.permissions.has(['MANAGE_ROLES', 'MANAGE_CHANNELS'])) {
 				return interaction.reply({
-					content:
-						'I need the manage role and channels permission to run this command',
+					content: 'I need the manage role and channels permission to run this command',
 					ephemeral: true
 				});
 			}
 
-			const [rows] = await conn.execute(
-				'SELECT * FROM TicketingManagers WHERE GuildID = ?',
-				[interaction.guildId]
-			);
-			const record = (
-				rows as RowDataPacket[]
-			)[0] as Tables.TicketingManagers | null;
+			const [rows] = await conn.execute('SELECT * FROM TicketingManagers WHERE GuildID = ?', [
+				interaction.guildId
+			]);
+			const record = (rows as RowDataPacket[])[0] as Tables.TicketingManagers | null;
 
-			if (
-				!record ||
-				!record.UseTextChannels ||
-				record.SupportCategory === '0'
-			) {
+			if (!record || !record.UseTextChannels || record.SupportCategory === '0') {
 				return interaction.reply({
 					content:
 						'No record, ticket channel type set to threads, or support category channel could be found',

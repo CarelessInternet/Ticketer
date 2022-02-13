@@ -9,14 +9,10 @@ config();
 
 	for (const [i, command] of commands.entries()) {
 		if (!command.data?.name) {
-			throw new SyntaxError(
-				`Missing a name property for the command file: ${commands[i]}.ts`
-			);
+			throw new SyntaxError(`Missing a name property for the command file: ${commands[i]}.ts`);
 		}
 		if (!command.category) {
-			throw new SyntaxError(
-				`Missing a category for the command: ${commands[i]}`
-			);
+			throw new SyntaxError(`Missing a category for the command: ${commands[i]}`);
 		}
 		if (!command.execute) {
 			throw new SyntaxError(
@@ -24,11 +20,7 @@ config();
 			);
 		}
 
-		console.log(
-			`✅ ${magenta('(' + command.category + ')')} ${greenBright(
-				command.data.name
-			)}`
-		);
+		console.log(`✅ ${magenta('(' + command.category + ')')} ${greenBright(command.data.name)}`);
 	}
 
 	process.exit(0);

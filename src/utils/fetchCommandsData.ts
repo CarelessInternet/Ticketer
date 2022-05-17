@@ -1,27 +1,24 @@
-import fg from 'fast-glob';
 import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v9';
-import { resolve } from 'path';
-import type { Command } from '../types';
+import { fetchCommands } from '.';
 
 /**
  * Fetches the slash command builder data for each command and returns global commands array and owner commands array in an array
  */
-export const fetchCommandsData = async (): Promise<RESTPostAPIApplicationCommandsJSONBody[][]> => {
-	const files = await fg(resolve(__dirname, '../commands/**/*.js'));
+export const fetchCommandsData = async () => {
+	const commands = await fetchCommands();
 
 	// add each command data into an array, owner only commands go into a seperate array
-	const ownerGuildCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
-	const globalCommands = await files.reduce(
-		async (acc: Promise<RESTPostAPIApplicationCommandsJSONBody[]>, file: string) => {
-			const accumulator = await acc;
-			const { default: command }: { default: Command } = await import(file);
-			const data = command.data.toJSON();
+	const [ownerGuildCommands, globalCommands]: RESTPostAPIApplicationCommandsJSONBody[][] = [[], []];
 
-			command.privateGuildAndOwnerOnly ? ownerGuildCommands.push(data) : accumulator.push(data);
-			return acc;
-		},
-		Promise.resolve([])
-	);
+	for (const command of commands) {
+		const data = command.data.toJSON();
+
+		if (command.privateGuildAndOwnerOnly) {
+			ownerGuildCommands.push(data);
+		} else {
+			globalCommands.push(data);
+		}
+	}
 
 	return [globalCommands, ownerGuildCommands];
 };

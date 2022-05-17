@@ -6,7 +6,7 @@ import {
 	type Snowflake,
 	type ThreadMember
 } from 'discord.js';
-import { channelMention, memberNicknameMention } from '@discordjs/builders';
+import { channelMention, userMention } from '@discordjs/builders';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
 import type { Event, Tables } from '../../types';
@@ -44,7 +44,7 @@ const event: Event = {
 							iconURL: user.displayAvatarURL({ dynamic: true })
 						})
 						.setTitle('Ticket Archived')
-						.setDescription(`${memberNicknameMention(user.id)} left the support ticket!`)
+						.setDescription(`${userMention(user.id)} left the support ticket!`)
 						.setTimestamp()
 						.setFooter({ text: `Version ${version}` });
 
@@ -53,9 +53,7 @@ const event: Event = {
 
 					if (record.LogsChannel !== '0') {
 						embed.setDescription(
-							`${memberNicknameMention(user.id)} left their ticket! View it at ${channelMention(
-								id
-							)}`
+							`${userMention(user.id)} left their ticket! View it at ${channelMention(id)}`
 						);
 						embed.addField('Name of Ticket', name);
 

@@ -13,8 +13,8 @@
 # Ticketer
 
 Welcome to the official GitHub page for the Ticketer bot! You can find all of the source code right here!<br>
-The source code is mainly for educational and demonstration purposes on building a Discord bot.<br>
-I advise you to only clone this repository for making pull requests, or making your own private version of the bot.
+I advise you to only clone this repository for making pull requests, or making your own private version of the bot.<br>
+Do not make a public clone of the bot.
 
 ## Support
 
@@ -43,16 +43,15 @@ In order to do anything with the bot, create a file named `.env` and add all nec
 Don't forget to enable the Server Members, Presence Intent, and Message Content Intent for your bot.<br>
 Template:
 ```env
-DISCORD_BOT_TOKEN="bots_token"
-DISCORD_CLIENT_ID="bots_client ID"
-DISCORD_GUILD_ID="main_server ID"
-DISCORD_OWNER_ID="Owner's ID - your ID"
-TOP_GG_TOKEN="get from top.gg (not required unless running in production)"
-DB_HOST="Host URL of the database"
-DB_USER="DB username"
-DB_PASSWORD="DB password"
-DB_DATABASE="Name of the DB"
-DB_PORT="usually 3306"
+DISCORD_BOT_TOKEN=
+DISCORD_CLIENT_ID=
+DISCORD_GUILD_ID=
+DISCORD_OWNER_ID=
+DB_HOST=
+DB_USER=
+DB_PASSWORD=
+DB_DATABASE=
+DB_PORT=
 ```
 
 #### Installing Dependencies

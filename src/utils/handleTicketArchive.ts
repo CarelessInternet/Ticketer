@@ -1,4 +1,4 @@
-import { channelMention, memberNicknameMention } from '@discordjs/builders';
+import { channelMention, userMention } from '@discordjs/builders';
 import {
 	MessageEmbed,
 	type CommandInteraction,
@@ -54,7 +54,7 @@ export const handleTicketArchive = async (
 					iconURL: interaction.user.displayAvatarURL({ dynamic: true })
 				})
 				.setTitle('Ticket Archived')
-				.setDescription(`${memberNicknameMention(interaction.user.id)} archived the support ticket`)
+				.setDescription(`${userMention(interaction.user.id)} archived the support ticket`)
 				.setTimestamp()
 				.setFooter({ text: `Version ${version}` });
 
@@ -63,9 +63,9 @@ export const handleTicketArchive = async (
 
 			if (record.LogsChannel !== '0') {
 				embed.setDescription(
-					`${memberNicknameMention(
-						interaction.user.id
-					)} archived a ticket! View it at ${channelMention(interaction.channelId)}`
+					`${userMention(interaction.user.id)} archived a ticket! View it at ${channelMention(
+						interaction.channelId
+					)}`
 				);
 				embed.addField('Name of Ticket', interaction.channel.name);
 

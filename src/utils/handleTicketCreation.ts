@@ -8,7 +8,7 @@ import {
 	MessageActionRow,
 	MessageButton
 } from 'discord.js';
-import { channelMention, memberNicknameMention, roleMention, time } from '@discordjs/builders';
+import { channelMention, userMention, roleMention, time } from '@discordjs/builders';
 import { version } from '../../package.json';
 import type { Tables, TicketChannel } from '../types';
 
@@ -147,7 +147,7 @@ const handleRest = async (
 		const onlineManagers = managers.members.filter(
 			(manager) => manager.presence?.status === 'online'
 		);
-		const presences = onlineManagers.map((manager) => `🟢 ${memberNicknameMention(manager.id)}`);
+		const presences = onlineManagers.map((manager) => `🟢 ${userMention(manager.id)}`);
 
 		const channelEmbed = new MessageEmbed()
 			.setColor('DARK_GREEN')
@@ -156,15 +156,15 @@ const handleRest = async (
 				iconURL: interaction.user.displayAvatarURL({ dynamic: true })
 			})
 			.setTitle('Support Ticket')
-			.setDescription(`${memberNicknameMention(interaction.user.id)} created a new support ticket`)
+			.setDescription(`${userMention(interaction.user.id)} created a new support ticket`)
 			.addField('Subject', subject)
 			.addField('Available Managers', presences?.length ? presences.join('\n') : 'Unknown', true)
-			.addField('Ticket Date', time(channel.createdAt, 'R'), true)
+			.addField('Ticket Date', time(channel.createdAt ?? new Date(), 'R'), true)
 			.setTimestamp();
 
 		if (record.LogsChannel !== '0') {
 			channelEmbed.setFooter({
-				text: `Message logs are on, please be careful of what you say! Version ${version}`
+				text: `Message logs are on, be cautious of what you say! Version ${version}`
 			});
 		} else {
 			channelEmbed.setFooter({ text: `Version ${version}` });
@@ -234,9 +234,9 @@ const handleRest = async (
 
 		if (record.LogsChannel !== '0') {
 			ticketEmbed.setDescription(
-				`${memberNicknameMention(
-					interaction.user.id
-				)} has created a ticket! View it at ${channelMention(channel.id)}`
+				`${userMention(interaction.user.id)} has created a ticket! View it at ${channelMention(
+					channel.id
+				)}`
 			);
 
 			const logsChannel = await interaction.guild!.channels.fetch(record.LogsChannel)!;

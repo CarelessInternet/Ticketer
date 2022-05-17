@@ -1,4 +1,4 @@
-import { memberNicknameMention, SlashCommandBuilder } from '@discordjs/builders';
+import { userMention, SlashCommandBuilder } from '@discordjs/builders';
 import {
 	type GuildMember,
 	type Message,
@@ -67,7 +67,7 @@ const command: Command = {
 				})
 				.setTitle('Kick Confirmation')
 				.setDescription(
-					`Are you sure you want to kick ${memberNicknameMention(user.id)}${
+					`Are you sure you want to kick ${userMention(user.id)}${
 						reason ? ' for the following reason: ' + reason : ''
 					}?`
 				)
@@ -92,7 +92,7 @@ const command: Command = {
 						.kick(reason)
 						.then((kickedMember) => {
 							embed.setDescription(
-								`👍 ${memberNicknameMention(kickedMember.id)} has been kicked from the server`
+								`👍 ${userMention(kickedMember.id)} has been kicked from the server`
 							);
 
 							if (reason) {

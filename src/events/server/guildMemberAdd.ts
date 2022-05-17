@@ -1,6 +1,6 @@
 import type { RowDataPacket } from 'mysql2';
 import { Constants, type GuildMember, MessageEmbed } from 'discord.js';
-import { memberNicknameMention, time } from '@discordjs/builders';
+import { userMention, time } from '@discordjs/builders';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
 import type { Event, Tables } from '../../types';
@@ -27,9 +27,7 @@ const event: Event = {
 					.setColor('DARK_GREEN')
 					.setTitle(`Welcome ${member.user.tag}!`)
 					.setDescription(
-						`${memberNicknameMention(member.id)} Thanks for joining ${
-							member.guild.name
-						}! Enjoy it here!`
+						`${userMention(member.id)} Thanks for joining ${member.guild.name}! Enjoy it here!`
 					)
 					.addField('Account Creation Date', time(member.user.createdAt, 'R'), true)
 					.addField('Join Date', time(new Date(), 'R'), true)

@@ -1,4 +1,4 @@
-import { inlineCode, memberNicknameMention, SlashCommandBuilder, time } from '@discordjs/builders';
+import { inlineCode, userMention, SlashCommandBuilder, time } from '@discordjs/builders';
 import { MessageEmbed } from 'discord.js';
 import { version } from '../../../package.json';
 import type { Command } from '../../types';
@@ -27,7 +27,7 @@ const command: Command = {
 			const changes = entries.map((log) => {
 				const { createdAt, executor } = log;
 				const action = inlineCode(log.action);
-				const user = executor ? memberNicknameMention(executor.id) : 'Unknown';
+				const user = executor ? userMention(executor.id) : 'Unknown';
 				const timestamp = time(createdAt, 'R');
 
 				return `${user}: ${action} ${timestamp}`;

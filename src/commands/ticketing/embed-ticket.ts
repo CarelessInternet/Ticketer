@@ -15,7 +15,7 @@ const command: Command = {
 				.setName('channel')
 				.setDescription('The channel where the ticket embed will be in')
 				.setRequired(true)
-				.addChannelType(ChannelType.GuildText)
+				.addChannelTypes(ChannelType.GuildText)
 		),
 	execute: async function ({ interaction }) {
 		try {

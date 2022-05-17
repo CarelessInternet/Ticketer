@@ -1,4 +1,4 @@
-import { memberNicknameMention } from '@discordjs/builders';
+import { userMention } from '@discordjs/builders';
 import {
 	MessageAttachment,
 	MessageEmbed,
@@ -86,7 +86,7 @@ export const handleTicketDelete = async (
 					iconURL: interaction.user.displayAvatarURL({ dynamic: true })
 				})
 				.setTitle('Ticket Deleted')
-				.setDescription(`${memberNicknameMention(interaction.user.id)} deleted the support ticket`)
+				.setDescription(`${userMention(interaction.user.id)} deleted the support ticket`)
 				.setTimestamp()
 				.setFooter({ text: `Version ${version}` });
 
@@ -117,7 +117,7 @@ export const handleTicketDelete = async (
 					`Ticketer-${Date.now()}.txt`
 				);
 
-				embed.setDescription(`${memberNicknameMention(interaction.user.id)} deleted a ticket`);
+				embed.setDescription(`${userMention(interaction.user.id)} deleted a ticket`);
 				embed.addField('Name of Ticket', interaction.channel.name);
 				embed.addField(
 					'Message History',
@@ -130,7 +130,7 @@ export const handleTicketDelete = async (
 
 				if (user && !managers.members.has(user.id)) {
 					embed.setDescription(
-						`${memberNicknameMention(interaction.user.id)} deleted your support ticket in ${
+						`${userMention(interaction.user.id)} deleted your support ticket in ${
 							interaction.guild!.name
 						}`
 					);

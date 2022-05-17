@@ -1,4 +1,4 @@
-import { memberNicknameMention, SlashCommandBuilder } from '@discordjs/builders';
+import { userMention, SlashCommandBuilder } from '@discordjs/builders';
 import {
 	type GuildMember,
 	type Message,
@@ -21,16 +21,8 @@ const command: Command = {
 			option
 				.setName('days')
 				.setDescription('Number of days of messages to delete')
-				.addChoices([
-					['0', 0],
-					['1', 1],
-					['2', 2],
-					['3', 3],
-					['4', 4],
-					['5', 5],
-					['6', 6],
-					['7', 7]
-				])
+				.setMinValue(0)
+				.setMaxValue(7)
 				.setRequired(true)
 		)
 		.addStringOption((option) =>
@@ -83,7 +75,7 @@ const command: Command = {
 					iconURL: interaction.user.displayAvatarURL({ dynamic: true })
 				})
 				.setTitle('Ban Confirmation')
-				.setDescription(`Are you sure you want to ban ${memberNicknameMention(member.id)}?`)
+				.setDescription(`Are you sure you want to ban ${userMention(member.id)}?`)
 				.setTimestamp()
 				.setFooter({ text: `Version ${version}` });
 
@@ -108,9 +100,7 @@ const command: Command = {
 					member
 						.ban({ reason, days })
 						.then((user) => {
-							embed.setDescription(
-								`👍 ${memberNicknameMention(user.id)} has been banned from the server`
-							);
+							embed.setDescription(`👍 ${userMention(user.id)} has been banned from the server`);
 							i.update({ embeds: [embed], components: [] });
 						})
 						.catch(() => {
@@ -118,7 +108,7 @@ const command: Command = {
 							i.update({ embeds: [embed], components: [] });
 						});
 				} else {
-					embed.setDescription(`The ban on ${memberNicknameMention(member.id)} has been aborted`);
+					embed.setDescription(`The ban on ${userMention(member.id)} has been aborted`);
 					i.update({ embeds: [embed], components: [] });
 				}
 
@@ -128,7 +118,7 @@ const command: Command = {
 				switch (reason) {
 					case 'time': {
 						embed.setDescription(
-							`The ban on ${memberNicknameMention(member.id)} has been aborted due to no response`
+							`The ban on ${userMention(member.id)} has been aborted due to no response`
 						);
 						confirmation.edit({ embeds: [embed], components: [] });
 

@@ -1,6 +1,6 @@
 import type { RowDataPacket } from 'mysql2';
 import { Constants, type GuildMember, MessageEmbed } from 'discord.js';
-import { memberNicknameMention, time } from '@discordjs/builders';
+import { userMention, time } from '@discordjs/builders';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
 import type { Event, Tables } from '../../types';
@@ -26,7 +26,7 @@ const event: Event = {
 				const embed = new MessageEmbed()
 					.setColor('RED')
 					.setTitle(`Bye ${member.user.tag}!`)
-					.setDescription(`${memberNicknameMention(member.id)} has left the server.`)
+					.setDescription(`${userMention(member.id)} has left the server.`)
 					.addField('Account Creation Date', time(member.user.createdAt, 'R'), true)
 					.addField('Leave Date', time(new Date(), 'R'), true)
 					.setThumbnail(member.displayAvatarURL({ dynamic: true }))

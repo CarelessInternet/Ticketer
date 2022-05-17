@@ -1,11 +1,6 @@
 import type { RowDataPacket } from 'mysql2';
 import { type GuildMember, MessageEmbed } from 'discord.js';
-import {
-	SlashCommandBuilder,
-	memberNicknameMention,
-	inlineCode,
-	channelMention
-} from '@discordjs/builders';
+import { SlashCommandBuilder, userMention, inlineCode, channelMention } from '@discordjs/builders';
 import { ChannelType } from 'discord-api-types/v9';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
@@ -46,7 +41,7 @@ const command: Command = {
 						.setName('channel')
 						.setDescription('The channel for suggestions')
 						.setRequired(true)
-						.addChannelType(ChannelType.GuildText)
+						.addChannelTypes(ChannelType.GuildText)
 				)
 		)
 		.addSubcommand((subcommand) =>
@@ -125,7 +120,7 @@ const command: Command = {
 						]);
 						embed.setTitle('Updated Blocked Users');
 						embed.setDescription(
-							`${memberNicknameMention(user.id)} has been blocked from using suggestion commands`
+							`${userMention(user.id)} has been blocked from using suggestion commands`
 						);
 
 						return interaction.reply({ embeds: [embed] });
@@ -147,7 +142,7 @@ const command: Command = {
 						]);
 						embed.setTitle('Updated Blocked Users');
 						embed.setDescription(
-							`${memberNicknameMention(user.id)} has been unblocked from using suggestion commands`
+							`${userMention(user.id)} has been unblocked from using suggestion commands`
 						);
 
 						return interaction.reply({ embeds: [embed] });

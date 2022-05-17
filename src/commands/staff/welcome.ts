@@ -20,7 +20,7 @@ const command: Command = {
 						.setName('channel')
 						.setDescription('The channel for the messages to be sent in')
 						.setRequired(true)
-						.addChannelType(ChannelType.GuildText)
+						.addChannelTypes(ChannelType.GuildText)
 				)
 		)
 		.addSubcommand((subcommand) =>

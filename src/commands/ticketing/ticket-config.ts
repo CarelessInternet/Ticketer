@@ -2,7 +2,7 @@ import type { RowDataPacket } from 'mysql2';
 import {
 	channelMention,
 	inlineCode,
-	memberNicknameMention,
+	userMention,
 	roleMention,
 	SlashCommandBuilder
 } from '@discordjs/builders';
@@ -38,7 +38,7 @@ const command: Command = {
 						.setName('channel')
 						.setDescription('The channel for creating tickets')
 						.setRequired(true)
-						.addChannelType(ChannelType.GuildText)
+						.addChannelTypes(ChannelType.GuildText)
 				)
 		)
 		.addSubcommand((subcommand) =>
@@ -50,7 +50,7 @@ const command: Command = {
 						.setName('channel')
 						.setDescription('The channel for posting logs')
 						.setRequired(true)
-						.addChannelType(ChannelType.GuildText)
+						.addChannelTypes(ChannelType.GuildText)
 				)
 		)
 		.addSubcommand((subcommand) =>
@@ -64,7 +64,7 @@ const command: Command = {
 						.setName('channel')
 						.setDescription('The channel for creating text-based tickets under')
 						.setRequired(true)
-						.addChannelType(ChannelType.GuildCategory)
+						.addChannelTypes(ChannelType.GuildCategory)
 				)
 		)
 		.addSubcommand((subcommand) =>
@@ -126,15 +126,13 @@ const command: Command = {
 
 					if (record && record.RoleID !== '0') {
 						embed.setDescription(
-							`${memberNicknameMention(interaction.user.id)} changed managers from ${roleMention(
+							`${userMention(interaction.user.id)} changed managers from ${roleMention(
 								record.RoleID
 							)} to ${roleMention(role.id)}`
 						);
 					} else {
 						embed.setDescription(
-							`${memberNicknameMention(interaction.user.id)} changed managers to ${roleMention(
-								role.id
-							)}`
+							`${userMention(interaction.user.id)} changed managers to ${roleMention(role.id)}`
 						);
 					}
 
@@ -158,7 +156,7 @@ const command: Command = {
 
 					if (record.SupportChannel !== '0') {
 						embed.setDescription(
-							`${memberNicknameMention(
+							`${userMention(
 								interaction.user.id
 							)} changed the support channel from ${channelMention(
 								record.SupportChannel
@@ -166,9 +164,9 @@ const command: Command = {
 						);
 					} else {
 						embed.setDescription(
-							`${memberNicknameMention(
-								interaction.user.id
-							)} changed the support channel to ${channelMention(channel.id)}`
+							`${userMention(interaction.user.id)} changed the support channel to ${channelMention(
+								channel.id
+							)}`
 						);
 					}
 
@@ -192,17 +190,15 @@ const command: Command = {
 
 					if (record.LogsChannel !== '0') {
 						embed.setDescription(
-							`${memberNicknameMention(
-								interaction.user.id
-							)} changed the logs channel from ${channelMention(
+							`${userMention(interaction.user.id)} changed the logs channel from ${channelMention(
 								record.LogsChannel
 							)} to ${channelMention(channel.id)}`
 						);
 					} else {
 						embed.setDescription(
-							`${memberNicknameMention(
-								interaction.user.id
-							)} changed the logs channel to ${channelMention(channel.id)}`
+							`${userMention(interaction.user.id)} changed the logs channel to ${channelMention(
+								channel.id
+							)}`
 						);
 					}
 
@@ -225,7 +221,7 @@ const command: Command = {
 					embed.setTitle('Changed Support Category');
 					if (record.SupportCategory !== '0') {
 						embed.setDescription(
-							`${memberNicknameMention(
+							`${userMention(
 								interaction.user.id
 							)} changed the support category channel from ${channelMention(
 								record.SupportCategory
@@ -233,7 +229,7 @@ const command: Command = {
 						);
 					} else {
 						embed.setDescription(
-							`${memberNicknameMention(
+							`${userMention(
 								interaction.user.id
 							)} changed the support category channel to ${channelMention(channel.id)}`
 						);
@@ -263,9 +259,7 @@ const command: Command = {
 
 					embed.setTitle('Changed Ticket Channel Type');
 					embed.setDescription(
-						`${memberNicknameMention(
-							interaction.user.id
-						)} changed ticket channel type to ${inlineCode(
+						`${userMention(interaction.user.id)} changed ticket channel type to ${inlineCode(
 							!record.UseTextChannels ? 'text channels' : 'threads'
 						)}`
 					);
@@ -287,7 +281,7 @@ const command: Command = {
 
 					embed.setTitle('Changed Reply Embed Option');
 					embed.setDescription(
-						`${memberNicknameMention(interaction.user.id)} changed reply embeds to ${inlineCode(
+						`${userMention(interaction.user.id)} changed reply embeds to ${inlineCode(
 							!record.ReplyEmbed ? 'shown' : 'hidden'
 						)}`
 					);

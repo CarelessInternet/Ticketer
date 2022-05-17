@@ -1,5 +1,5 @@
 import type { RowDataPacket } from 'mysql2';
-import { memberNicknameMention, SlashCommandBuilder } from '@discordjs/builders';
+import { userMention, SlashCommandBuilder } from '@discordjs/builders';
 import { type GuildMember, MessageEmbed, TextChannel } from 'discord.js';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
@@ -74,9 +74,9 @@ const command: Command = {
 					})
 					.setTitle('Added User to Ticket')
 					.setDescription(
-						`${memberNicknameMention(
-							interaction.user.id
-						)} added a user to the ticket: ${memberNicknameMention(user.id)}`
+						`${userMention(interaction.user.id)} added a user to the ticket: ${userMention(
+							user.id
+						)}`
 					)
 					.setTimestamp()
 					.setFooter({ text: `Version ${version}` });

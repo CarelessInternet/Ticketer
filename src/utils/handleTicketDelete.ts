@@ -28,12 +28,13 @@ export const handleTicketDelete = async (
 			!interaction.guild!.me!.permissions.has([
 				'MANAGE_THREADS',
 				'SEND_MESSAGES_IN_THREADS',
-				'READ_MESSAGE_HISTORY'
+				'READ_MESSAGE_HISTORY',
+				'VIEW_CHANNEL'
 			])
 		) {
 			return interaction.reply({
 				content:
-					'I need the manage threads, send messages in threads permission, and read message history to run this command',
+					'I need the manage threads, send messages in threads, read message history, and view channel permission to run this command',
 				ephemeral: true
 			});
 		}
@@ -126,16 +127,16 @@ export const handleTicketDelete = async (
 
 				logsChannel.send({ embeds: [embed], files: [attachment] });
 
-				const user = interaction.guild!.members.resolve(authorId);
+				const member = interaction.guild!.members.resolve(authorId);
 
-				if (user && !managers.members.has(user.id)) {
+				if (member && !managers.members.has(member.id) && member.user) {
 					embed.setDescription(
 						`${userMention(interaction.user.id)} deleted your support ticket in ${
 							interaction.guild!.name
 						}`
 					);
 
-					user.send({ embeds: [embed], files: [attachment] });
+					member.send({ embeds: [embed], files: [attachment] }).catch(() => false);
 				}
 			}
 

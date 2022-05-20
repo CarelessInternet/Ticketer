@@ -11,6 +11,7 @@ const client = new Client({
 		Intents.FLAGS.GUILD_PRESENCES,
 		Intents.FLAGS.GUILD_BANS
 	],
+	partials: [Constants.PartialTypes.MESSAGE, Constants.PartialTypes.REACTION],
 	shards: 'auto',
 	presence: {
 		activities: [{ name: '🎳 | /help', type: Constants.ActivityTypes.COMPETING }],

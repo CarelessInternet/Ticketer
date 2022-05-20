@@ -7,6 +7,10 @@ const event: Event = {
 	name: Constants.Events.MESSAGE_REACTION_ADD,
 	execute: async (client, reaction: MessageReaction) => {
 		try {
+			if (reaction.partial) {
+				await reaction.fetch();
+			}
+
 			const [rows] = await conn.execute('SELECT * FROM Suggestions WHERE GuildID = ?', [
 				reaction.message.guildId!
 			]);

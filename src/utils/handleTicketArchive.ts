@@ -12,7 +12,7 @@ export const handleTicketArchive = async (
 	record?: Tables.TicketingManagers
 ) => {
 	try {
-		if (!interaction.channel?.isThread()) {
+		if (!interaction.channel?.isThread() || interaction.channel.archived) {
 			return;
 		}
 

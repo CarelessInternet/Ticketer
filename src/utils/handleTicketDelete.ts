@@ -136,7 +136,7 @@ export const handleTicketDelete = async (
 						}`
 					);
 
-					member.send({ embeds: [embed], files: [attachment] }).catch(() => {});
+					member.send({ embeds: [embed], files: [attachment] }).catch(() => false);
 				}
 			}
 

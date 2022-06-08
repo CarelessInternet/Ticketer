@@ -1,5 +1,13 @@
 import type { RowDataPacket } from 'mysql2';
-import { MessageActionRow, MessageButton, MessageEmbed, type TextChannel } from 'discord.js';
+import {
+	MessageActionRow,
+	MessageButton,
+	MessageEmbed,
+	Modal,
+	TextInputComponent,
+	type ModalActionRowComponent,
+	type TextChannel
+} from 'discord.js';
 import { inlineCode, SlashCommandBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord-api-types/v9';
 import { conn, handleTicketCreation } from '../../utils';
@@ -49,7 +57,6 @@ const command: Command = {
 
 			const notes = [
 				'You can only have one ticket opened at a time',
-				'By using the button, the bot will not be able to provide the subject of the ticket',
 				'You can use the buttons in the ticket channel to delete (and archive if in a thread) the ticket'
 			].map((txt) => `- ${txt}`);
 
@@ -66,7 +73,7 @@ const command: Command = {
 				.setTimestamp();
 			const row = new MessageActionRow().addComponents(
 				new MessageButton()
-					.setCustomId(this.components!.customIds![0])
+					.setCustomId(this.components!.customIds[0])
 					.setStyle('PRIMARY')
 					.setEmoji('🎟️')
 					.setLabel('Create Ticket')
@@ -120,7 +127,32 @@ const command: Command = {
 	},
 	components: {
 		customIds: ['button_create_ticket'],
-		execute: async ({ interaction }) => {
+		execute: ({ interaction }) => {
+			try {
+				const subject = new MessageActionRow<ModalActionRowComponent>().addComponents(
+					new TextInputComponent()
+						.setCustomId(command.modals!.customIds[1])
+						.setLabel('Subject')
+						.setPlaceholder('Enter the description of the support ticket.')
+						.setStyle('PARAGRAPH')
+						.setMaxLength(300)
+						.setRequired(true)
+				);
+
+				const modal = new Modal()
+					.setCustomId(command.modals!.customIds[0])
+					.setTitle('Support Ticket')
+					.addComponents(subject);
+
+				interaction.showModal(modal);
+			} catch (err) {
+				console.error(err);
+			}
+		}
+	},
+	modals: {
+		customIds: ['modal_ticket', 'modal_ticket_subject'],
+		execute: async function ({ interaction }) {
 			try {
 				const [rows] = await conn.execute('SELECT * FROM TicketingManagers WHERE GuildID = ?', [
 					interaction.guildId
@@ -129,11 +161,18 @@ const command: Command = {
 
 				if (!record) {
 					return interaction.reply({
-						content: 'No ticket record could be found, please create one',
+						content: 'I am missing the config for tickets',
+						ephemeral: true
+					});
+				}
+				if (record.RoleID === '0') {
+					return interaction.reply({
+						content: 'Missing the managers, please add them via ticket-config',
 						ephemeral: true
 					});
 				}
 
+				const subject = interaction.fields.getTextInputValue(this.customIds[1]);
 				const managers = await interaction.guild!.roles.fetch(record.RoleID);
 
 				if (!managers) {
@@ -143,7 +182,7 @@ const command: Command = {
 					});
 				}
 
-				handleTicketCreation(interaction, managers, record);
+				handleTicketCreation(interaction, managers, record, subject);
 			} catch (err) {
 				console.error(err);
 			}

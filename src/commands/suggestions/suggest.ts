@@ -1,5 +1,11 @@
 import type { RowDataPacket } from 'mysql2';
-import { MessageEmbed } from 'discord.js';
+import {
+	MessageActionRow,
+	MessageEmbed,
+	Modal,
+	TextInputComponent,
+	type ModalActionRowComponent
+} from 'discord.js';
 import { SlashCommandBuilder, channelMention } from '@discordjs/builders';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
@@ -9,17 +15,8 @@ const command: Command = {
 	category: 'Suggestions',
 	data: new SlashCommandBuilder()
 		.setName('suggest')
-		.setDescription('Suggest an idea, feature, or anything!')
-		.addStringOption((option) =>
-			option.setName('title').setDescription('The title of the suggestion').setRequired(true)
-		)
-		.addStringOption((option) =>
-			option
-				.setName('description')
-				.setDescription('The message/description of the suggestion')
-				.setRequired(true)
-		),
-	execute: async ({ interaction }) => {
+		.setDescription('Suggest an idea, feature, or anything!'),
+	execute: async function ({ interaction }) {
 		try {
 			const [rows] = await conn.execute('SELECT * FROM Suggestions WHERE GuildID = ?', [
 				interaction.guildId
@@ -46,70 +43,115 @@ const command: Command = {
 				});
 			}
 
-			const suggestionsChannel = interaction.guild!.channels.resolve(record.SuggestionsChannel);
+			const title = new MessageActionRow<ModalActionRowComponent>().addComponents(
+				new TextInputComponent()
+					.setCustomId(this.modals!.customIds[1])
+					.setLabel('Title')
+					.setPlaceholder('Enter the title of the suggestion.')
+					.setStyle('SHORT')
+					.setMaxLength(100)
+					.setRequired(true)
+			);
+			const description = new MessageActionRow<ModalActionRowComponent>().addComponents(
+				new TextInputComponent()
+					.setCustomId(this.modals!.customIds[2])
+					.setLabel('Description')
+					.setPlaceholder('Enter the description of the suggestion.')
+					.setStyle('PARAGRAPH')
+					.setMaxLength(4000)
+					.setRequired(true)
+			);
 
-			if (!suggestionsChannel) {
-				return interaction.reply({
-					content: 'Missing the suggestions channel',
-					ephemeral: true
-				});
-			}
-			if (suggestionsChannel.isText()) {
-				if (
-					!suggestionsChannel
-						.permissionsFor(interaction.guild!.me!)
-						.has(['SEND_MESSAGES', 'ADD_REACTIONS'])
-				) {
+			const modal = new Modal()
+				.setCustomId(this.modals!.customIds[0])
+				.setTitle('Suggestion')
+				.addComponents(title, description);
+
+			interaction.showModal(modal);
+		} catch (err) {
+			console.error(err);
+		}
+	},
+	modals: {
+		customIds: ['modal_suggest', 'modal_suggest_title', 'modal_suggest_description'],
+		execute: async function ({ interaction }) {
+			try {
+				const [rows] = await conn.execute('SELECT * FROM Suggestions WHERE GuildID = ?', [
+					interaction.guildId
+				]);
+				const record = (rows as RowDataPacket[])[0] as Tables.Suggestions | null;
+
+				if (!record) {
 					return interaction.reply({
-						content:
-							'I need the send messages and add reactions permission in the suggestions channel',
+						content: 'Missing configuration for suggestions',
 						ephemeral: true
 					});
 				}
 
-				const [title, description] = [
-					interaction.options.getString('title')!,
-					interaction.options.getString('description')!
-				];
+				const suggestionsChannel = interaction.guild!.channels.resolve(record.SuggestionsChannel);
 
-				const embed = new MessageEmbed()
-					.setColor('RANDOM')
-					.setAuthor({
-						name: interaction.user.tag,
-						iconURL: interaction.user.displayAvatarURL({ dynamic: true })
-					})
-					.setTitle(title)
-					.setDescription(description)
-					.setTimestamp()
-					.setFooter({ text: `Version ${version}` });
+				if (!suggestionsChannel) {
+					return interaction.reply({
+						content: 'Missing the suggestions channel',
+						ephemeral: true
+					});
+				}
 
-				const suggestionMessage = await suggestionsChannel.send({
-					embeds: [embed]
-				});
+				if (suggestionsChannel.isText()) {
+					if (
+						!suggestionsChannel
+							.permissionsFor(interaction.guild!.me!)
+							.has(['SEND_MESSAGES', 'ADD_REACTIONS'])
+					) {
+						return interaction.reply({
+							content:
+								'I need the send messages and add reactions permission in the suggestions channel',
+							ephemeral: true
+						});
+					}
 
-				suggestionMessage.react('👍');
-				suggestionMessage.react('👎');
+					const title = interaction.fields.getTextInputValue(this.customIds[1]);
+					const description = interaction.fields.getTextInputValue(this.customIds[2]);
 
-				const sentEmbed = new MessageEmbed()
-					.setColor('DARK_GREEN')
-					.setAuthor({
-						name: interaction.user.tag,
-						iconURL: interaction.user.displayAvatarURL({ dynamic: true })
-					})
-					.setTitle('Suggestion Sent!')
-					.setDescription(
-						`Your suggestion has been sent! View it at ${channelMention(suggestionsChannel.id)}`
-					)
-					.setTimestamp()
-					.setFooter({ text: `Version ${version}` });
+					const embed = new MessageEmbed()
+						.setColor('RANDOM')
+						.setAuthor({
+							name: interaction.user.tag,
+							iconURL: interaction.user.displayAvatarURL({ dynamic: true })
+						})
+						.setTitle(title)
+						.setDescription(description)
+						.setTimestamp()
+						.setFooter({ text: `Version ${version}` });
 
-				interaction.reply({
-					embeds: [sentEmbed],
-					ephemeral: !record.ReplyEmbed
-				});
+					const suggestionMessage = await suggestionsChannel.send({
+						embeds: [embed]
+					});
+
+					await suggestionMessage.react('👍');
+					await suggestionMessage.react('👎');
+
+					const sentEmbed = new MessageEmbed()
+						.setColor('DARK_GREEN')
+						.setAuthor({
+							name: interaction.user.tag,
+							iconURL: interaction.user.displayAvatarURL({ dynamic: true })
+						})
+						.setTitle('Suggestion Sent!')
+						.setDescription(
+							`Your suggestion has been sent! View it at ${channelMention(suggestionsChannel.id)}`
+						)
+						.setTimestamp()
+						.setFooter({ text: `Version ${version}` });
+
+					interaction.reply({
+						embeds: [sentEmbed],
+						ephemeral: !record.ReplyEmbed
+					});
+				}
+			} catch (err) {
+				console.error(err);
 			}
-		} catch (err) {
-			console.error(err);
 		}
 	}
 };

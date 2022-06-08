@@ -6,24 +6,22 @@ import {
 	type CategoryChannel,
 	type MessageComponentInteraction,
 	MessageActionRow,
-	MessageButton
+	MessageButton,
+	type ModalSubmitInteraction
 } from 'discord.js';
 import { channelMention, userMention, roleMention, time } from '@discordjs/builders';
 import { version } from '../../package.json';
 import type { Tables, TicketChannel } from '../types';
 
 export const handleTicketCreation = async (
-	interaction: CommandInteraction | MessageComponentInteraction,
+	interaction: CommandInteraction | MessageComponentInteraction | ModalSubmitInteraction,
 	managers: Role,
 	record: Tables.TicketingManagers,
-	initialSubject = 'Unknown'
+	subject: string
 ) => {
 	try {
-		// 1024 is max length of embed field value
-		const subject =
-			initialSubject.length >= 1024
-				? `${initialSubject.substring(0, 1024 - 3)}...`
-				: initialSubject;
+		// 300 is our specified max length of tickets' subjects
+		subject = subject.length >= 300 ? `${subject.substring(0, 300 - 3)}...` : subject;
 		const name = `ticket-${interaction.user.id}`;
 
 		const supportChannelWithoutRecord = interaction.guild!.channels.cache.find(
@@ -137,7 +135,7 @@ export const handleTicketCreation = async (
 };
 
 const handleRest = async (
-	interaction: CommandInteraction | MessageComponentInteraction,
+	interaction: CommandInteraction | MessageComponentInteraction | ModalSubmitInteraction,
 	channel: TicketChannel,
 	managers: Role,
 	record: Tables.TicketingManagers,
@@ -227,7 +225,7 @@ const handleRest = async (
 
 		interaction.reply({
 			embeds: [ticketEmbed],
-			...((!record.ReplyEmbed || interaction.isMessageComponent()) && {
+			...((!record.ReplyEmbed || interaction.isModalSubmit()) && {
 				ephemeral: true
 			})
 		});

@@ -14,6 +14,7 @@ export interface TicketingManagers {
 	 */
 	SupportCategory: Snowflake;
 	UseTextChannels: boolean;
+	TextChannelPing: boolean;
 	ReplyEmbed: boolean;
 }
 
@@ -31,7 +32,7 @@ export interface Suggestions {
 	Target: number;
 	ReplyEmbed: boolean;
 	/**
-	 * Might have to convert it to array via JSON.parse() first
+	 * Might require converting it to an array with JSON.parse() first
 	 */
 	BlockedUsers: Snowflake[];
 }

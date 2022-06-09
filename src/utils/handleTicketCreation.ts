@@ -191,7 +191,7 @@ const handleRest = async (
 		const msg = await channel.send({
 			embeds: [channelEmbed],
 			components: [row],
-			...(channel.isThread() && {
+			...((channel.isThread() || record.TextChannelPing) && {
 				content: roleMention(managers.id),
 				allowedMentions: { roles: [managers.id] }
 			})

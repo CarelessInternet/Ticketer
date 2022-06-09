@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS TicketingManagers (
   LogsChannel bigint(20) DEFAULT 0,
   SupportCategory bigint(20) DEFAULT 0,
   UseTextChannels boolean DEFAULT 0,
+  TextChannelPing boolean DEFAULT 0,
   ReplyEmbed boolean DEFAULT 1,
   PRIMARY KEY (ID)
 )

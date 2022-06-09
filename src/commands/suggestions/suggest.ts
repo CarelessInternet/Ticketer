@@ -6,7 +6,7 @@ import {
 	TextInputComponent,
 	type ModalActionRowComponent
 } from 'discord.js';
-import { SlashCommandBuilder, channelMention } from '@discordjs/builders';
+import { SlashCommandBuilder, channelMention, hyperlink } from '@discordjs/builders';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
 import type { Command, Tables } from '../../types';
@@ -124,12 +124,12 @@ const command: Command = {
 						.setTimestamp()
 						.setFooter({ text: `Version ${version}` });
 
-					const suggestionMessage = await suggestionsChannel.send({
+					const message = await suggestionsChannel.send({
 						embeds: [embed]
 					});
 
-					await suggestionMessage.react('👍');
-					await suggestionMessage.react('👎');
+					await message.react('👍');
+					await message.react('👎');
 
 					const sentEmbed = new MessageEmbed()
 						.setColor('DARK_GREEN')
@@ -139,7 +139,10 @@ const command: Command = {
 						})
 						.setTitle('Suggestion Sent!')
 						.setDescription(
-							`Your suggestion has been sent! View it at ${channelMention(suggestionsChannel.id)}`
+							`Your suggestion has been sent! View it ${hyperlink(
+								'here',
+								message.url
+							)} (${channelMention(suggestionsChannel.id)}).`
 						)
 						.setTimestamp()
 						.setFooter({ text: `Version ${version}` });

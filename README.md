@@ -12,20 +12,21 @@
 
 # Ticketer
 
-Welcome to the official GitHub page for the Ticketer bot! You can find all of the source code right here!<br>
+Welcome to the official GitHub page for the Ticketer bot! All of the source code is right here!<br>
 I advise you to only clone this repository for making pull requests, or making your own private version of the bot.<br>
+Consider starring the repository, all stars and forks are appreciated!<br>
 Do not make a public clone of the bot.
 
 ## Support
 
-Have questions or anything related to the bot? Join the [Discord Server](https://discord.gg/kswKHpJeqC)
+Have questions or anything related to the bot? Join the [Discord server](https://discord.gg/kswKHpJeqC)
 
 ## Versioning
 
-Ticketer uses its own versioning system, inspired by semantic versioning.<br>
-Major releases are for language rewrites (e.g javascript -> typescript) or multiple code and client-side breaking changes.<br>
-Minor releases are for client-side breaking changes (e.g renaming a command) or new client-side commands.<br>
-Patches are for bug fixes, performance enhances, chores, refactors, etc. Non bug-fixed patches can be released if they are 3+ of them.
+Ticketer uses its own versioning system, inspired by semantic versioning.
+  - Major releases are for language rewrites (e.g javascript -> typescript) or multiple code and client-side breaking changes.
+  - Minor releases are for client-side breaking changes (e.g renaming a command) or new client-side commands.
+  - Patches are for bug fixes, performance enhances, chores, refactors, etc. Non bug-fixed patches can be released if they are 3+ of them.
 
 ## Setup
 
@@ -73,8 +74,7 @@ If you are adding new commands, run this command when you have done so.
 
 #### Running the Bot
 
-Run the command `npm start` to run the bot in a development environment.<br>
-Run the command `npm run production` for a production environment (same as development but bot must be in top.gg).
+Run the command `npm start` to run the bot.
 
 ## Issues
 

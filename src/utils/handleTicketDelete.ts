@@ -129,7 +129,7 @@ export const handleTicketDelete = async (
 
 				const member = interaction.guild!.members.resolve(authorId);
 
-				if (member && !managers.members.has(member.id) && member.user) {
+				if (member && !managers.members.has(member.id)) {
 					embed.setDescription(
 						`${userMention(interaction.user.id)} deleted your support ticket in ${
 							interaction.guild!.name

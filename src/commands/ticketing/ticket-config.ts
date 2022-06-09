@@ -6,7 +6,14 @@ import {
 	roleMention,
 	SlashCommandBuilder
 } from '@discordjs/builders';
-import { MessageEmbed, type Role } from 'discord.js';
+import {
+	MessageActionRow,
+	MessageEmbed,
+	Modal,
+	TextInputComponent,
+	type ModalActionRowComponent,
+	type Role
+} from 'discord.js';
 import { ChannelType } from 'discord-api-types/v9';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
@@ -39,6 +46,13 @@ const command: Command = {
 						.setDescription('The channel for creating tickets')
 						.setRequired(true)
 						.addChannelTypes(ChannelType.GuildText)
+				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName('notes')
+				.setDescription(
+					'Adds another embed which shows additional information inside the ticket message'
 				)
 		)
 		.addSubcommand((subcommand) =>
@@ -82,7 +96,7 @@ const command: Command = {
 				.setName('reply-embed')
 				.setDescription("Toggle to have the 'ticket created' message hidden or not")
 		),
-	execute: async ({ interaction }) => {
+	execute: async function ({ interaction }) {
 		try {
 			if (!interaction.memberPermissions?.has(['MANAGE_GUILD'])) {
 				return interaction.reply({
@@ -176,6 +190,24 @@ const command: Command = {
 					}
 
 					return interaction.reply({ embeds: [embed] });
+				}
+				case 'notes': {
+					const description = new MessageActionRow<ModalActionRowComponent>().addComponents(
+						new TextInputComponent()
+							.setCustomId(this.modals!.customIds[1])
+							.setLabel('Description')
+							.setPlaceholder('Enter the description of the notes.')
+							.setStyle('PARAGRAPH')
+							.setMaxLength(2500)
+							.setRequired(true)
+					);
+
+					const modal = new Modal()
+						.setCustomId(this.modals!.customIds[0])
+						.setTitle('Notes')
+						.addComponents(description);
+
+					return interaction.showModal(modal);
 				}
 				case 'logs-channel': {
 					const channel = interaction.options.getChannel('channel')!;
@@ -320,6 +352,55 @@ const command: Command = {
 			}
 		} catch (err) {
 			console.error(err);
+		}
+	},
+	modals: {
+		customIds: ['modal_ticket-config_notes', 'modal_ticket-config_notes_description'],
+		execute: async function ({ interaction }) {
+			try {
+				const [rows] = await conn.execute('SELECT * FROM TicketingManagers WHERE GuildID = ?', [
+					interaction.guildId
+				]);
+				const record = (rows as RowDataPacket[])[0] as Tables.TicketingManagers | null;
+
+				if (!record) {
+					return interaction.reply({
+						content: 'You need to create the managers first before editing this config',
+						ephemeral: true
+					});
+				}
+
+				const description = interaction.fields.getTextInputValue(this.customIds[1]);
+
+				await conn.execute('UPDATE TicketingManagers SET Notes = ? WHERE GuildID = ?', [
+					description,
+					interaction.guildId
+				]);
+
+				const embed = new MessageEmbed()
+					.setColor('DARK_GREEN')
+					.setAuthor({
+						name: interaction.user.tag,
+						iconURL: interaction.user.displayAvatarURL({ dynamic: true })
+					})
+					.setTitle('Updated the Notes')
+					.setDescription(
+						`${userMention(
+							interaction.user.id
+						)} has updated the notes for tickets. The notes are shown below.`
+					)
+					.setTimestamp()
+					.setFooter({ text: `Version ${version}` });
+
+				const notesEmbed = new MessageEmbed()
+					.setColor('BLURPLE')
+					.setTitle('Notes')
+					.setDescription(description);
+
+				interaction.reply({ embeds: [embed, notesEmbed] });
+			} catch (err) {
+				console.error(err);
+			}
 		}
 	}
 };

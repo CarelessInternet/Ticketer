@@ -147,6 +147,8 @@ const handleRest = async (
 		);
 		const presences = onlineManagers.map((manager) => `🟢 ${userMention(manager.id)}`);
 
+		const embeds: MessageEmbed[] = [];
+
 		const channelEmbed = new MessageEmbed()
 			.setColor('DARK_GREEN')
 			.setAuthor({
@@ -166,6 +168,14 @@ const handleRest = async (
 			});
 		} else {
 			channelEmbed.setFooter({ text: `Version ${version}` });
+		}
+
+		embeds.push(channelEmbed);
+
+		if (record.Notes) {
+			embeds.push(
+				new MessageEmbed().setColor('BLURPLE').setTitle('Notes').setDescription(record.Notes)
+			);
 		}
 
 		const row = new MessageActionRow();
@@ -189,7 +199,7 @@ const handleRest = async (
 		);
 
 		const msg = await channel.send({
-			embeds: [channelEmbed],
+			embeds,
 			components: [row],
 			...((channel.isThread() || record.TextChannelPing) && {
 				content: roleMention(managers.id),

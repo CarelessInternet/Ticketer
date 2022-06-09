@@ -31,9 +31,9 @@ const command: Command = {
 				)} Don't change the name of support tickets, the bot won't be able to close the ticket properly
 	
 			1. Give the bot all thread permissions and manage messages
-			2. Add the managers via ${inlineCode('ticket-config managers')}
+			2. Add the managers via ${inlineCode('/ticket-config managers')}
 			3. Create a text channel named ${inlineCode('support')}, or specify a channel via ${inlineCode(
-					'ticket-config support-channel'
+					'/ticket-config support-channel'
 				)}
 			`
 			)

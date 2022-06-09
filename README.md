@@ -74,7 +74,7 @@ If you are adding new commands, run this command when you have done so.
 
 #### Running the Bot
 
-Run the command `npm start` to run the bot.<br>
+Run the command `npm start` to run the bot.
 
 ## Issues
 

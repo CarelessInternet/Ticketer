@@ -16,12 +16,12 @@ import type { Command, Tables } from '../../types';
 const command: Command = {
 	category: 'Ticketing',
 	data: new SlashCommandBuilder()
-		.setName('embed-ticket')
-		.setDescription('Send an embed with buttons to create a ticket in a specified channel')
+		.setName('panel')
+		.setDescription('Send a panel (embed) with a button to create a ticket')
 		.addChannelOption((option) =>
 			option
 				.setName('channel')
-				.setDescription('The channel where the ticket embed will be in')
+				.setDescription('The channel where the ticket panel will be in')
 				.setRequired(true)
 				.addChannelTypes(ChannelType.GuildText)
 		),
@@ -89,7 +89,7 @@ const command: Command = {
 				}
 
 				interaction.reply({
-					content: 'Ticket embed successfully sent!',
+					content: 'Ticket panel sent successfully!',
 					ephemeral: true
 				});
 			} else {
@@ -111,12 +111,12 @@ const command: Command = {
 					}
 
 					interaction.reply({
-						content: 'Ticket embed successfully sent!',
+						content: 'Ticket panel sent successfully!',
 						ephemeral: true
 					});
 				} else {
 					interaction.reply({
-						content: 'Please specify a channel or category for tickets',
+						content: 'Please create a channel or channel category for tickets',
 						ephemeral: true
 					});
 				}

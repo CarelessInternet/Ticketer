@@ -50,7 +50,7 @@ export const handleTicketDelete = async (
 		let isValidTicket = false;
 		const authorId = interaction.channel.name.split('-').at(-1)!;
 
-		// we have to force fetch members for threads because they can't be found in the cache
+		// we have to force fetch the member for threads because they can't be found in the cache
 		const hasAuthorInName = interaction.channel.isThread()
 			? await interaction.channel.members.fetch(authorId, { force: true }).catch(() => false)
 			: interaction.channel.members.has(authorId);

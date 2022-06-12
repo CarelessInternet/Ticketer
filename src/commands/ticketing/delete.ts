@@ -7,7 +7,7 @@ const command: Command = {
 	category: 'Ticketing',
 	data: new SlashCommandBuilder()
 		.setName('delete')
-		.setDescription('Deletes the support ticket, messages might be saved if logs are on'),
+		.setDescription('Deletes the support ticket, messages may be saved if logs are on'),
 	execute: async ({ interaction }) => {
 		try {
 			const [rows] = await conn.execute('SELECT * FROM TicketingManagers WHERE GuildID = ?', [

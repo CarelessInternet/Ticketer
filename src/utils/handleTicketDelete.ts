@@ -47,8 +47,10 @@ export const handleTicketDelete = async (
 			});
 		}
 
-		let isSupportTicket = false;
+		let isValidTicket = false;
 		const authorId = interaction.channel.name.split('-').at(-1)!;
+
+		// we have to force fetch members for threads because they can't be found in the cache
 		const hasAuthorInName = interaction.channel.isThread()
 			? await interaction.channel.members.fetch(authorId, { force: true }).catch(() => false)
 			: interaction.channel.members.has(authorId);
@@ -57,7 +59,7 @@ export const handleTicketDelete = async (
 		if (hasAuthorInName) {
 			if (record.UseTextChannels) {
 				if (interaction.channel.parentId === record.SupportCategory) {
-					isSupportTicket = true;
+					isValidTicket = true;
 				}
 			} else {
 				if (
@@ -65,12 +67,12 @@ export const handleTicketDelete = async (
 					(interaction.channel.parent!.name.toLowerCase() === 'support' &&
 						record.SupportChannel === '0')
 				) {
-					isSupportTicket = true;
+					isValidTicket = true;
 				}
 			}
 		}
 
-		if (isSupportTicket) {
+		if (isValidTicket) {
 			const managers = await interaction.guild!.roles.fetch(record.RoleID);
 
 			if (!managers?.members.has(interaction.user.id)) {

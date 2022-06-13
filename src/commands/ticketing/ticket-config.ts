@@ -204,7 +204,7 @@ const command: Command = {
 							.setPlaceholder('Enter the description of the notes.')
 							.setStyle('PARAGRAPH')
 							.setMaxLength(2500)
-							.setRequired(true)
+							.setRequired(false)
 					);
 
 					const modal = new Modal()
@@ -222,7 +222,7 @@ const command: Command = {
 							.setPlaceholder('Enter the text to be used inside panels.')
 							.setStyle('PARAGRAPH')
 							.setMaxLength(2500)
-							.setRequired(true)
+							.setRequired(false)
 					);
 
 					const modal = new Modal()
@@ -420,7 +420,7 @@ const command: Command = {
 						embed.setDescription(
 							`${userMention(
 								interaction.user.id
-							)} has updated the notes for tickets. The notes look like the below embed.`
+							)} has updated the notes for tickets. The notes look like the embed below. If there isn't one, the description is empty.`
 						);
 
 						const notesEmbed = new MessageEmbed()
@@ -428,7 +428,7 @@ const command: Command = {
 							.setTitle('Notes')
 							.setDescription(description);
 
-						return interaction.reply({ embeds: [embed, notesEmbed] });
+						return interaction.reply({ embeds: [embed, ...(description ? [notesEmbed] : [])] });
 					}
 					case this.customIds[2]: {
 						const description = interaction.fields.getTextInputValue(this.customIds[3]);
@@ -442,7 +442,7 @@ const command: Command = {
 						embed.setDescription(
 							`${userMention(
 								interaction.user.id
-							)} has updated the ticket panel. The panel looks like the below embed.`
+							)} has updated the ticket panel. The panel looks like the embed below. If there isn't one, the information is empty.`
 						);
 
 						const panelEmbed = new MessageEmbed()
@@ -450,7 +450,7 @@ const command: Command = {
 							.setTitle('Panel')
 							.setDescription(description);
 
-						return interaction.reply({ embeds: [embed, panelEmbed] });
+						return interaction.reply({ embeds: [embed, ...(description ? [panelEmbed] : [])] });
 					}
 					default:
 						break;

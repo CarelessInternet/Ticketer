@@ -19,7 +19,7 @@ Do not make a public clone of the bot.
 
 ## Support
 
-Have questions or anything related to the bot? Join the [Discord server](https://discord.gg/kswKHpJeqC)
+Have questions or anything related to the bot? Join the [Discord server](https://discord.gg/kswKHpJeqC).
 
 ## Versioning
 

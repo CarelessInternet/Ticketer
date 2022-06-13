@@ -57,6 +57,11 @@ const command: Command = {
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
+				.setName('panel-information')
+				.setDescription('Sets the text inside panels for custom information')
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
 				.setName('logs-channel')
 				.setDescription('Specifies the logs channel, the bot sends a message on ticket activity')
 				.addChannelOption((option) =>
@@ -209,6 +214,24 @@ const command: Command = {
 
 					return interaction.showModal(modal);
 				}
+				case 'panel-information': {
+					const description = new MessageActionRow<ModalActionRowComponent>().addComponents(
+						new TextInputComponent()
+							.setCustomId(this.modals!.customIds[3])
+							.setLabel('Description')
+							.setPlaceholder('Enter the text to be used inside panels.')
+							.setStyle('PARAGRAPH')
+							.setMaxLength(2500)
+							.setRequired(true)
+					);
+
+					const modal = new Modal()
+						.setCustomId(this.modals!.customIds[2])
+						.setTitle('Panel Information')
+						.addComponents(description);
+
+					return interaction.showModal(modal);
+				}
 				case 'logs-channel': {
 					const channel = interaction.options.getChannel('channel')!;
 
@@ -355,7 +378,12 @@ const command: Command = {
 		}
 	},
 	modals: {
-		customIds: ['modal_ticket-config_notes', 'modal_ticket-config_notes_description'],
+		customIds: [
+			'modal_ticket-config_notes',
+			'modal_ticket-config_notes_description',
+			'modal_ticket-config_panel-information',
+			'modal_ticket-config_panel-information_description'
+		],
 		execute: async function ({ interaction }) {
 			try {
 				const [rows] = await conn.execute('SELECT * FROM TicketingManagers WHERE GuildID = ?', [
@@ -370,34 +398,63 @@ const command: Command = {
 					});
 				}
 
-				const description = interaction.fields.getTextInputValue(this.customIds[1]);
-
-				await conn.execute('UPDATE TicketingManagers SET Notes = ? WHERE GuildID = ?', [
-					description,
-					interaction.guildId
-				]);
-
 				const embed = new MessageEmbed()
 					.setColor('DARK_GREEN')
 					.setAuthor({
 						name: interaction.user.tag,
 						iconURL: interaction.user.displayAvatarURL({ dynamic: true })
 					})
-					.setTitle('Updated the Notes')
-					.setDescription(
-						`${userMention(
-							interaction.user.id
-						)} has updated the notes for tickets. The notes are shown below.`
-					)
 					.setTimestamp()
 					.setFooter({ text: `Version ${version}` });
 
-				const notesEmbed = new MessageEmbed()
-					.setColor('BLURPLE')
-					.setTitle('Notes')
-					.setDescription(description);
+				switch (interaction.customId) {
+					case this.customIds[0]: {
+						const description = interaction.fields.getTextInputValue(this.customIds[1]);
 
-				interaction.reply({ embeds: [embed, notesEmbed] });
+						await conn.execute('UPDATE TicketingManagers SET Notes = ? WHERE GuildID = ?', [
+							description,
+							interaction.guildId
+						]);
+
+						embed.setTitle('Updated the Notes');
+						embed.setDescription(
+							`${userMention(
+								interaction.user.id
+							)} has updated the notes for tickets. The notes look like the below.`
+						);
+
+						const notesEmbed = new MessageEmbed()
+							.setColor('BLURPLE')
+							.setTitle('Notes')
+							.setDescription(description);
+
+						return interaction.reply({ embeds: [embed, notesEmbed] });
+					}
+					case this.customIds[2]: {
+						const description = interaction.fields.getTextInputValue(this.customIds[3]);
+
+						await conn.execute(
+							'UPDATE TicketingManagers SET PanelInformation = ? WHERE GuildID = ?',
+							[description, interaction.guildId]
+						);
+
+						embed.setTitle('Updated the Panel');
+						embed.setDescription(
+							`${userMention(
+								interaction.user.id
+							)} has updated the ticket panel. The panel looks like the below.`
+						);
+
+						const panelEmbed = new MessageEmbed()
+							.setColor('RANDOM')
+							.setTitle('Panel')
+							.setDescription(description);
+
+						return interaction.reply({ embeds: [embed, panelEmbed] });
+					}
+					default:
+						break;
+				}
 			} catch (err) {
 				console.error(err);
 			}

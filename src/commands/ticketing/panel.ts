@@ -10,6 +10,7 @@ import {
 } from 'discord.js';
 import { inlineCode, SlashCommandBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord-api-types/v9';
+import { version } from '../../../package.json';
 import { conn, handleTicketCreation } from '../../utils';
 import type { Command, Tables } from '../../types';
 
@@ -55,22 +56,29 @@ const command: Command = {
 				});
 			}
 
-			const notes = [
-				'You can only have one ticket opened at a time',
-				'You can use the buttons in the ticket channel to delete (and archive if in a thread) the ticket'
-			].map((txt) => `- ${txt}`);
-
 			const embed = new MessageEmbed()
 				.setColor('RANDOM')
 				.setTitle('Create Support Ticket')
-				.addField(
+				.setTimestamp()
+				.setFooter({ text: `Version ${version}` });
+
+			if (record.PanelInformation) {
+				embed.setDescription(record.PanelInformation);
+			} else {
+				const notes = [
+					'You can only have one ticket opened at a time',
+					'You can use the buttons in the ticket channel to delete (and archive if in a thread) the ticket'
+				].map((txt) => `- ${txt}`);
+
+				embed.addField(
 					'Usage',
 					`Create a support ticket by either clicking the button below, or by using the command ${inlineCode(
 						'/ticket'
 					)}`
-				)
-				.addField('Notes', notes.join('\n'))
-				.setTimestamp();
+				);
+				embed.addField('Notes', notes.join('\n'));
+			}
+
 			const row = new MessageActionRow().addComponents(
 				new MessageButton()
 					.setCustomId(this.components!.customIds[0])

@@ -9,6 +9,7 @@ export interface TicketingManagers {
 	 */
 	SupportChannel: Snowflake;
 	Notes: string | null;
+	PanelInformation: string | null;
 	LogsChannel: Snowflake;
 	/**
 	 * For text channel based ticketing

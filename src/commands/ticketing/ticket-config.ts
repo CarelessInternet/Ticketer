@@ -420,7 +420,7 @@ const command: Command = {
 						embed.setDescription(
 							`${userMention(
 								interaction.user.id
-							)} has updated the notes for tickets. The notes look like the below.`
+							)} has updated the notes for tickets. The notes look like the below embed.`
 						);
 
 						const notesEmbed = new MessageEmbed()
@@ -442,7 +442,7 @@ const command: Command = {
 						embed.setDescription(
 							`${userMention(
 								interaction.user.id
-							)} has updated the ticket panel. The panel looks like the below.`
+							)} has updated the ticket panel. The panel looks like the below embed.`
 						);
 
 						const panelEmbed = new MessageEmbed()

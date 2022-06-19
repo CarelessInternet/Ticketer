@@ -38,7 +38,6 @@ CREATE TABLE IF NOT EXISTS Suggestions (
   SuggestionsChannel bigint(20) NOT NULL,
   Target smallint NOT NULL DEFAULT 10,
   ReplyEmbed boolean NOT NULL DEFAULT 1,
-  BlockedUsers JSON NOT NULL DEFAULT (JSON_ARRAY()),
   PRIMARY KEY (ID)
 )
 `;

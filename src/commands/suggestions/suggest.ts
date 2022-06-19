@@ -30,19 +30,6 @@ const command: Command = {
 				});
 			}
 
-			const blockedUsers = (
-				typeof record.BlockedUsers === 'string'
-					? JSON.parse(record.BlockedUsers as unknown as string)
-					: record.BlockedUsers
-			) as Tables.Suggestions['BlockedUsers'];
-
-			if (blockedUsers.some((id) => id === interaction.user.id)) {
-				return interaction.reply({
-					content: 'You are blocked from using suggestions commands',
-					ephemeral: true
-				});
-			}
-
 			const title = new MessageActionRow<ModalActionRowComponent>().addComponents(
 				new TextInputComponent()
 					.setCustomId(this.modals!.customIds[1])

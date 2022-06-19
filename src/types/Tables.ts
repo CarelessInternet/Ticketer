@@ -33,8 +33,4 @@ export interface Suggestions {
 	SuggestionsChannel: Snowflake;
 	Target: number;
 	ReplyEmbed: boolean;
-	/**
-	 * Might require converting it to an array with JSON.parse() first
-	 */
-	BlockedUsers: Snowflake[];
 }

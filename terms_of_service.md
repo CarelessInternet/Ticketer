@@ -1,6 +1,6 @@
 # Terms of Service
 
-Last Updated: 09 June, 2022
+Last Updated: 20 June, 2022
 
 Looking for the [privacy policy](https://github.com/CarelessInternet/Ticketer/blob/main/privacy_policy.md)?
 
@@ -10,9 +10,9 @@ By using Ticketer, you are agreeing to both the privacy policy and terms of serv
 
 Message logs are created when ticket logs are toggled on. These message logs are sent to the ticket author and the logs channel when the ticket gets deleted through the `delete` command. Ticketer does not verify nor filter content in support tickets. You, the user, are responsible for any content delivered by you in support tickets, including message log histories. Ticketer cannot remove content in the message logs after they have been posted. Please be careful of what you post in support tickets.
 
-## Ticket Notes
+## Ticket Notes and Panels
 
-The same idea for message logs applies here. You are responsible for the content you created for in ticket notes. Ticketer doesn't filter nor verify the content posted.
+The same idea for message logs applies here. You are responsible for the content you created for in ticket notes and panels. Ticketer doesn't filter nor verify the content posted.
 
 ## Suggestions
 

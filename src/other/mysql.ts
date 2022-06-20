@@ -26,7 +26,6 @@ CREATE TABLE IF NOT EXISTS TicketingManagers (
   SupportCategory bigint(20) DEFAULT 0,
   UseTextChannels boolean DEFAULT 0,
   TextChannelPing boolean DEFAULT 0,
-  ReplyEmbed boolean DEFAULT 1,
   PRIMARY KEY (ID)
 )
 `;
@@ -36,8 +35,8 @@ CREATE TABLE IF NOT EXISTS Suggestions (
   ID int NOT NULL AUTO_INCREMENT,
   GuildID bigint(20) NOT NULL UNIQUE,
   SuggestionsChannel bigint(20) NOT NULL,
+  PanelInformation text(2500),
   Target smallint NOT NULL DEFAULT 10,
-  ReplyEmbed boolean NOT NULL DEFAULT 1,
   PRIMARY KEY (ID)
 )
 `;

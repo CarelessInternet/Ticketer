@@ -4,7 +4,6 @@ import {
 	type Role,
 	TextChannel,
 	type CategoryChannel,
-	type MessageComponentInteraction,
 	MessageActionRow,
 	MessageButton,
 	type ModalSubmitInteraction
@@ -14,7 +13,7 @@ import { version } from '../../package.json';
 import type { Tables, TicketChannel } from '../types';
 
 export const handleTicketCreation = async (
-	interaction: CommandInteraction | MessageComponentInteraction | ModalSubmitInteraction,
+	interaction: CommandInteraction | ModalSubmitInteraction,
 	managers: Role,
 	record: Tables.TicketingManagers,
 	subject: string
@@ -135,7 +134,7 @@ export const handleTicketCreation = async (
 };
 
 const handleRest = async (
-	interaction: CommandInteraction | MessageComponentInteraction | ModalSubmitInteraction,
+	interaction: CommandInteraction | ModalSubmitInteraction,
 	channel: TicketChannel,
 	managers: Role,
 	record: Tables.TicketingManagers,
@@ -235,9 +234,7 @@ const handleRest = async (
 
 		interaction.reply({
 			embeds: [ticketEmbed],
-			...((!record.ReplyEmbed || interaction.isModalSubmit()) && {
-				ephemeral: true
-			})
+			ephemeral: true
 		});
 
 		if (record.LogsChannel !== '0') {

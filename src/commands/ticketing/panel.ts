@@ -11,7 +11,7 @@ import {
 import { inlineCode, SlashCommandBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord-api-types/v9';
 import { version } from '../../../package.json';
-import { conn, handleTicketCreation } from '../../utils';
+import { conn } from '../../utils';
 import type { Command, Tables } from '../../types';
 
 const command: Command = {
@@ -139,7 +139,7 @@ const command: Command = {
 			try {
 				const subject = new MessageActionRow<ModalActionRowComponent>().addComponents(
 					new TextInputComponent()
-						.setCustomId(command.modals!.customIds[1])
+						.setCustomId('modal_ticket_subject')
 						.setLabel('Subject')
 						.setPlaceholder('Enter the description of the support ticket.')
 						.setStyle('PARAGRAPH')
@@ -148,49 +148,11 @@ const command: Command = {
 				);
 
 				const modal = new Modal()
-					.setCustomId(command.modals!.customIds[0])
+					.setCustomId('modal_ticket')
 					.setTitle('Support Ticket')
 					.addComponents(subject);
 
 				interaction.showModal(modal);
-			} catch (err) {
-				console.error(err);
-			}
-		}
-	},
-	modals: {
-		customIds: ['modal_ticket', 'modal_ticket_subject'],
-		execute: async function ({ interaction }) {
-			try {
-				const [rows] = await conn.execute('SELECT * FROM TicketingManagers WHERE GuildID = ?', [
-					interaction.guildId
-				]);
-				const record = (rows as RowDataPacket[])[0] as Tables.TicketingManagers | null;
-
-				if (!record) {
-					return interaction.reply({
-						content: 'I am missing the config for tickets',
-						ephemeral: true
-					});
-				}
-				if (record.RoleID === '0') {
-					return interaction.reply({
-						content: 'Missing the managers, please add them via ticket-config',
-						ephemeral: true
-					});
-				}
-
-				const subject = interaction.fields.getTextInputValue(this.customIds[1]);
-				const managers = await interaction.guild!.roles.fetch(record.RoleID);
-
-				if (!managers) {
-					return interaction.reply({
-						content: 'No manager role could be found',
-						ephemeral: true
-					});
-				}
-
-				handleTicketCreation(interaction, managers, record, subject);
 			} catch (err) {
 				console.error(err);
 			}

@@ -1,6 +1,12 @@
 import type { RowDataPacket } from 'mysql2';
-import { type GuildMember, MessageEmbed } from 'discord.js';
-import { SlashCommandBuilder, userMention, inlineCode, channelMention } from '@discordjs/builders';
+import {
+	MessageEmbed,
+	MessageActionRow,
+	type ModalActionRowComponent,
+	TextInputComponent,
+	Modal
+} from 'discord.js';
+import { SlashCommandBuilder, inlineCode, channelMention, userMention } from '@discordjs/builders';
 import { ChannelType } from 'discord-api-types/v9';
 import { version } from '../../../package.json';
 import { conn } from '../../utils';
@@ -25,6 +31,11 @@ const command: Command = {
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
+				.setName('panel-information')
+				.setDescription('Sets the text inside the panel for custom information')
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
 				.setName('target')
 				.setDescription('The amount of upvotes to reach to get pinned in the channel')
 				.addIntegerOption((option) =>
@@ -35,13 +46,8 @@ const command: Command = {
 						.setMinValue(0)
 						.setMaxValue(32_767)
 				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('reply-embed')
-				.setDescription("Toggle to have the 'suggestion sent' message hidden or not")
 		),
-	execute: async ({ interaction }) => {
+	execute: async function ({ interaction }) {
 		try {
 			if (!interaction.memberPermissions?.has(['MANAGE_CHANNELS'])) {
 				return interaction.reply({
@@ -87,6 +93,24 @@ const command: Command = {
 
 					return interaction.reply({ embeds: [embed] });
 				}
+				case 'panel-information': {
+					const description = new MessageActionRow<ModalActionRowComponent>().addComponents(
+						new TextInputComponent()
+							.setCustomId(this.modals!.customIds[1])
+							.setLabel('Description')
+							.setPlaceholder('Enter the text to be used inside panels.')
+							.setStyle('PARAGRAPH')
+							.setMaxLength(2500)
+							.setRequired(false)
+					);
+
+					const modal = new Modal()
+						.setCustomId(this.modals!.customIds[0])
+						.setTitle('Suggestion Panel Information')
+						.addComponents(description);
+
+					return interaction.showModal(modal);
+				}
 				case 'target': {
 					if (!record) {
 						return interaction.reply({
@@ -113,30 +137,60 @@ const command: Command = {
 
 					return interaction.reply({ embeds: [embed] });
 				}
-				case 'reply-embed': {
-					if (!record) {
-						return interaction.reply({
-							content: 'Please specify a suggestions channel first',
-							ephemeral: true
-						});
-					}
-
-					const opposite = !record.ReplyEmbed;
-					await conn.execute('UPDATE Suggestions SET ReplyEmbed = ? WHERE GuildID = ?', [
-						opposite,
-						interaction.guildId
-					]);
-
-					embed.setTitle('Changed Reply Embed Option');
-					embed.setDescription(`Changed reply embeds to ${opposite ? 'shown' : 'hidden'}`);
-
-					return interaction.reply({ embeds: [embed] });
-				}
 				default:
 					break;
 			}
 		} catch (err) {
 			console.error(err);
+		}
+	},
+	modals: {
+		customIds: [
+			'modal_suggest-config_panel-information',
+			'modal_suggest-config_panel-information_description'
+		],
+		execute: async function ({ interaction }) {
+			const [rows] = await conn.execute('SELECT * FROM Suggestions WHERE GuildID = ?', [
+				interaction.guildId
+			]);
+			const record = (rows as RowDataPacket[])[0] as Tables.Suggestions | null;
+
+			if (!record) {
+				return interaction.reply({
+					content: 'You need to specify the suggestions channel first',
+					ephemeral: true
+				});
+			}
+
+			const description = interaction.fields.getTextInputValue(this.customIds[1]);
+
+			await conn.execute('UPDATE Suggestions SET PanelInformation = ? WHERE GuildID = ?', [
+				description,
+				interaction.guildId
+			]);
+
+			const embed = new MessageEmbed()
+				.setColor('DARK_GREEN')
+				.setAuthor({
+					name: interaction.user.tag,
+					iconURL: interaction.user.displayAvatarURL({ dynamic: true })
+				})
+				.setTitle('Updated the Panel')
+
+				.setDescription(
+					`${userMention(
+						interaction.user.id
+					)} has updated the suggestions panel. The panel looks like the embed below. If there isn't one, the information is empty.`
+				)
+				.setTimestamp()
+				.setFooter({ text: `Version ${version}` });
+
+			const panelEmbed = new MessageEmbed()
+				.setColor('RANDOM')
+				.setTitle('Panel')
+				.setDescription(description);
+
+			return interaction.reply({ embeds: [embed, ...(description ? [panelEmbed] : [])] });
 		}
 	}
 };

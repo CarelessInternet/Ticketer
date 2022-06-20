@@ -136,7 +136,7 @@ const command: Command = {
 
 					interaction.reply({
 						embeds: [sentEmbed],
-						ephemeral: !record.ReplyEmbed
+						ephemeral: true
 					});
 				}
 			} catch (err) {

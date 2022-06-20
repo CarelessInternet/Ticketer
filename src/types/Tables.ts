@@ -17,7 +17,6 @@ export interface TicketingManagers {
 	SupportCategory: Snowflake;
 	UseTextChannels: boolean;
 	TextChannelPing: boolean;
-	ReplyEmbed: boolean;
 }
 
 export interface GuildMemberEvent {
@@ -31,6 +30,6 @@ export interface Suggestions {
 	ID: number;
 	GuildID: Snowflake;
 	SuggestionsChannel: Snowflake;
+	PanelInformation: string | null;
 	Target: number;
-	ReplyEmbed: boolean;
 }

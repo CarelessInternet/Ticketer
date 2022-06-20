@@ -95,11 +95,6 @@ const command: Command = {
 			subcommand
 				.setName('text-channel-ping')
 				.setDescription('Toggle to ping the managers when a ticket is created in a text channel')
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('reply-embed')
-				.setDescription("Toggle to have the 'ticket created' message hidden or not")
 		),
 	execute: async function ({ interaction }) {
 		try {
@@ -227,7 +222,7 @@ const command: Command = {
 
 					const modal = new Modal()
 						.setCustomId(this.modals!.customIds[2])
-						.setTitle('Panel Information')
+						.setTitle('Ticket Panel Information')
 						.addComponents(description);
 
 					return interaction.showModal(modal);
@@ -343,28 +338,6 @@ const command: Command = {
 					embed.setDescription(
 						`${userMention(interaction.user.id)} changed text channel pinging to ${inlineCode(
 							!record.TextChannelPing ? 'on' : 'off'
-						)}`
-					);
-
-					return interaction.reply({ embeds: [embed] });
-				}
-				case 'reply-embed': {
-					if (!record) {
-						return interaction.reply({
-							content: 'You need to create the managers first before editing this config',
-							ephemeral: true
-						});
-					}
-
-					await conn.execute('UPDATE TicketingManagers SET ReplyEmbed = ? WHERE GuildID = ?', [
-						!record.ReplyEmbed,
-						interaction.guildId
-					]);
-
-					embed.setTitle('Changed Reply Embed Option');
-					embed.setDescription(
-						`${userMention(interaction.user.id)} changed reply embeds to ${inlineCode(
-							!record.ReplyEmbed ? 'shown' : 'hidden'
 						)}`
 					);
 

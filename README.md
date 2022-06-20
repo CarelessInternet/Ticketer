@@ -78,10 +78,9 @@ Run the command `npm start` to run the bot.
 
 ## Issues
 
-If you can't get the bot to run, join the [support server](https://discord.gg/kswKHpJeqC) and create a support ticket in `#support`.<br>
+If you can't get the bot to run, join the [support server](https://discord.gg/kswKHpJeqC) and create a support ticket.<br>
 For any bug reports, suggestions or general feedback, please submit an issue or join the support server.
 
 ## Pull Requests
 
-If you found any bug and created code to solve it, or updated anything important, feel free to submit a pull request so I can merge it into the main branch.<br>
-You can also submit a pull request if you made a new command and want it to be a part of the bot.
+If you updated or created anything that benefits the bot, feel free to submit a pull request to be merged into the main branch.

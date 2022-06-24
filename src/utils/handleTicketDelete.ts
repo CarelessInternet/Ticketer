@@ -18,7 +18,9 @@ export const handleTicketDelete = async (
 ) => {
 	try {
 		// users on mobile can still interact with buttons and the archived thread isn't fetched on startup
-		if (!interaction.channel) return;
+		if (!interaction.channel) {
+			return;
+		}
 
 		if (!interaction.channel.isThread() && !(interaction.channel instanceof TextChannel)) {
 			return interaction.reply({

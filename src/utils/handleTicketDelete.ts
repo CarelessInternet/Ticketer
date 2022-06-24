@@ -17,7 +17,12 @@ export const handleTicketDelete = async (
 	record?: Tables.TicketingManagers
 ) => {
 	try {
-		if (!interaction.channel!.isThread() && !(interaction.channel instanceof TextChannel)) {
+		// users on mobile can still interact with buttons and the archived thread isn't fetched on startup
+		if (!interaction.channel) {
+			return;
+		}
+
+		if (!interaction.channel.isThread() && !(interaction.channel instanceof TextChannel)) {
 			return interaction.reply({
 				content: 'You must use this command in a support ticket',
 				ephemeral: true

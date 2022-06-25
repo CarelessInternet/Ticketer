@@ -22,6 +22,14 @@ export const handleTicketDelete = async (
 			return;
 		}
 
+		if (
+			interaction.channel.isThread() &&
+			interaction.channel.archived &&
+			interaction.channel.unarchivable
+		) {
+			await interaction.channel.setArchived(false);
+		}
+
 		if (!interaction.channel.isThread() && !(interaction.channel instanceof TextChannel)) {
 			return interaction.reply({
 				content: 'You must use this command in a support ticket',

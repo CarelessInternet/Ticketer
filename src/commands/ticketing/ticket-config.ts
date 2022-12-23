@@ -95,6 +95,11 @@ const command: Command = {
 			subcommand
 				.setName('text-channel-ping')
 				.setDescription('Toggle to ping the managers when a ticket is created in a text channel')
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName('private-threads')
+				.setDescription('Toggle between using public and private threads')
 		),
 	execute: async function ({ interaction }) {
 		try {
@@ -338,6 +343,30 @@ const command: Command = {
 					embed.setDescription(
 						`${userMention(interaction.user.id)} changed text channel pinging to ${inlineCode(
 							!record.TextChannelPing ? 'on' : 'off'
+						)}`
+					);
+
+					return interaction.reply({ embeds: [embed] });
+				}
+				case 'private-threads': {
+					if (!record) {
+						return interaction.reply({
+							content: 'You need to create the managers first before editing this config',
+							ephemeral: true
+						});
+					}
+
+					await conn.execute('UPDATE TicketingManagers SET PrivateThreads = ? WHERE GuildID = ?', [
+						!record.PrivateThreads,
+						interaction.guildId
+					]);
+
+					embed.setTitle('Changed Visibility for Ticket Threads');
+					embed.setDescription(
+						`${userMention(
+							interaction.user.id
+						)} changed the visibility of ticket threads to ${inlineCode(
+							!record.PrivateThreads ? 'private' : 'public'
 						)}`
 					);
 

@@ -17,6 +17,7 @@ export interface TicketingManagers {
 	SupportCategory: Snowflake;
 	UseTextChannels: boolean;
 	TextChannelPing: boolean;
+	PrivateThreads: boolean;
 }
 
 export interface GuildMemberEvent {

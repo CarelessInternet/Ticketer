@@ -1,6 +1,6 @@
 {
 	"name": "ticketer",
-	"version": "2.8.2",
+	"version": "2.9.0",
 	"description": "Ticketing bot using threads and text channels!",
 	"main": "./dist/src/index.js",
 	"types": "./dist/src/index.d.ts",

@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS TicketingManagers (
   SupportCategory bigint(20) DEFAULT 0,
   UseTextChannels boolean DEFAULT 0,
   TextChannelPing boolean DEFAULT 0,
-  PrivateThreads boolean DEFAULT 0,
+  PrivateThreads boolean DEFAULT 1,
   PRIMARY KEY (ID)
 )
 `;

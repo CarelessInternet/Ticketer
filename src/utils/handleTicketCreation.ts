@@ -115,7 +115,7 @@ export const handleTicketCreation = async (
 			const thread = await channel.threads.create({
 				name,
 				autoArchiveDuration: 'MAX',
-				type: 'GUILD_PRIVATE_THREAD',
+				type: record.PrivateThreads ? 'GUILD_PRIVATE_THREAD' : 'GUILD_PUBLIC_THREAD',
 				invitable: false
 			});
 

@@ -8,6 +8,7 @@ const event: Event = {
 	execute: async (client, thread: ThreadChannel) => {
 		try {
 			const { guild, guildId } = thread;
+			// @ts-ignore: lastMessage does not exist in forums but we aren't using them yet.
 			const { id: parentId, lastMessage, name } = thread.parent!;
 
 			const [rows] = await conn.execute('SELECT * FROM TicketingManagers WHERE GuildID = ?', [

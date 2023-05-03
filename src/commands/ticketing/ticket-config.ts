@@ -398,7 +398,7 @@ const command: Command = {
 						channel.id,
 						interaction.guildId
 					]);
-					embed.setTitle('Changed NotificationChannel Channel');
+					embed.setTitle('Changed Notification Channel');
 
 					if (record.NotificationChannel !== '0') {
 						embed.setDescription(

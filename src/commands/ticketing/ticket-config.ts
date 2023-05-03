@@ -100,6 +100,18 @@ const command: Command = {
 			subcommand
 				.setName('private-threads')
 				.setDescription('Toggle between using public and private threads')
+		)
+		.addSubcommand((subcommand) =>
+		subcommand
+			.setName('notification-channel')
+			.setDescription('Specifies the notification channel, the bot sends a message on ticket creation')
+			.addChannelOption((option) =>
+				option
+					.setName('channel')
+					.setDescription('The channel for posting notifications')
+					.setRequired(true)
+					.addChannelTypes(ChannelType.GuildText)
+			)
 		),
 	execute: async function ({ interaction }) {
 		try {
@@ -369,6 +381,38 @@ const command: Command = {
 							!record.PrivateThreads ? 'private' : 'public'
 						)}`
 					);
+
+					return interaction.reply({ embeds: [embed] });
+				}
+				case 'notification-channel': {
+					const channel = interaction.options.getChannel('channel')!;
+
+					if (!record) {
+						return interaction.reply({
+							content: 'You need to create the managers first before editing this config',
+							ephemeral: true
+						});
+					}
+
+					await conn.execute('UPDATE TicketingManagers SET NotificationChannel = ? WHERE GuildID = ?', [
+						channel.id,
+						interaction.guildId
+					]);
+					embed.setTitle('Changed NotificationChannel Channel');
+
+					if (record.NotificationChannel !== '0') {
+						embed.setDescription(
+							`${userMention(interaction.user.id)} changed the notification channel from ${channelMention(
+								record.LogsChannel
+							)} to ${channelMention(channel.id)}`
+						);
+					} else {
+						embed.setDescription(
+							`${userMention(interaction.user.id)} changed the notification channel to ${channelMention(
+								channel.id
+							)}`
+						);
+					}
 
 					return interaction.reply({ embeds: [embed] });
 				}

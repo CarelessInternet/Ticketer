@@ -11,6 +11,7 @@ export interface TicketingManagers {
 	Notes: string | null;
 	PanelInformation: string | null;
 	LogsChannel: Snowflake;
+	NotificationChannel: Snowflake;
 	/**
 	 * For text channel based ticketing
 	 */

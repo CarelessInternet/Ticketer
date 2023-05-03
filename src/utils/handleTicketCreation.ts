@@ -249,6 +249,15 @@ const handleRest = async (
 
 			logsChannel.send({ embeds: [ticketEmbed] });
 		}
+
+		if (record.NotificationChannel !== '0') {
+			const notificationChannel = await interaction.guild!.channels.fetch(record.NotificationChannel)!;
+
+			if (!notificationChannel?.isText()) return;
+			if (!notificationChannel.permissionsFor(interaction.guild!.me!).has(['SEND_MESSAGES'])) return;
+
+			notificationChannel.send({ embeds: [ticketEmbed] });
+		}
 	} catch (err) {
 		console.error(err);
 	}

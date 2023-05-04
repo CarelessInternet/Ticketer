@@ -21,7 +21,7 @@ const event: Event = {
 				lastMessage?.system &&
 				lastMessage.author.id === client.user!.id
 			) {
-				if (!record.ThreadNotification) {
+				if (!record.ThreadNotifications) {
 					if ((record && record.SupportChannel === parentId) || name.toLowerCase() === 'support') {
 						lastMessage.delete();
 					}

@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS TicketingManagers (
   TextChannelPing boolean DEFAULT 0,
   PrivateThreads boolean DEFAULT 1,
   NotificationChannel bigint(20) DEFAULT 0,
+  ThreadNotifications boolean DEFAULT 1,
   PRIMARY KEY (ID)
 )
 `;

@@ -112,6 +112,11 @@ const command: Command = {
 					.setRequired(true)
 					.addChannelTypes(ChannelType.GuildText)
 			)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName('thread-notification')
+				.setDescription('Toggle between showing the new thread notification')
 		),
 	execute: async function ({ interaction }) {
 		try {
@@ -413,6 +418,30 @@ const command: Command = {
 							)}`
 						);
 					}
+
+					return interaction.reply({ embeds: [embed] });
+				}
+				case 'thread-notification': {
+					if (!record) {
+						return interaction.reply({
+							content: 'You need to create the managers first before editing this config',
+							ephemeral: true
+						});
+					}
+
+					await conn.execute('UPDATE TicketingManagers SET ThreadNotifications = ? WHERE GuildID = ?', [
+						!record.ThreadNotifications,
+						interaction.guildId
+					]);
+
+					embed.setTitle('Changed Visibility of "New Thread Notification"');
+					embed.setDescription(
+						`${userMention(
+							interaction.user.id
+						)} changed the visibility of new thread notifications to ${inlineCode(
+							!record.ThreadNotifications ? 'show' : 'hide'
+						)}`
+					);
 
 					return interaction.reply({ embeds: [embed] });
 				}

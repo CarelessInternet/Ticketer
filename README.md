@@ -36,7 +36,8 @@ Obviously, you're gonna need the files to run anything. Get them by running `git
 
 #### Installing MySQL
 
-You're gonna need MySQL to run this bot, please use [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04) or similar to setup MySQL.
+You're gonna need MySQL to run this bot, please use [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04) or similar to setup MySQL.<br>
+You only need the MySQL server, the client is not necessary.
 
 #### Creating `.env` File
 
@@ -75,6 +76,10 @@ If you are adding new commands, run this command when you have done so.
 #### Running the Bot
 
 Run the command `npm start` to run the bot.
+
+##### Windows
+
+If you are using Windows to run the bot, install the `win-node-env` package through the command `npm install -g win-node-env` before running the command above.
 
 ## Issues
 

@@ -139,11 +139,6 @@ const handleRest = async (
 	subject: string
 ) => {
 	try {
-		const onlineManagers = managers.members.filter(
-			(manager) => manager.presence?.status === 'online'
-		);
-		const presences = onlineManagers.map((manager) => `🟢 ${userMention(manager.id)}`);
-
 		const embeds: MessageEmbed[] = [];
 
 		const channelEmbed = new MessageEmbed()
@@ -155,8 +150,7 @@ const handleRest = async (
 			.setTitle('Support Ticket')
 			.setDescription(`${userMention(interaction.user.id)} created a new support ticket`)
 			.addField('Subject', subject)
-			.addField('Available Managers', presences?.length ? presences.join('\n') : 'Unknown', true)
-			.addField('Ticket Date', time(channel.createdAt ?? new Date(), 'R'), true)
+			.addField('Ticket Date', time(channel.createdAt ?? new Date(), 'R'))
 			.setTimestamp();
 
 		if (record.LogsChannel !== '0') {

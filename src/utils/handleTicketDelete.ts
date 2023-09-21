@@ -144,28 +144,3 @@ export const handleTicketDelete = async (
 		console.error(err);
 	}
 };
-
-const fetchMessages = async (
-	channel: TextChannel | ThreadChannel,
-	messages: Message[] = [],
-	messageId?: Snowflake
-): Promise<Message[]> => {
-	// limit is 100: https://discord.com/developers/docs/resources/channel#get-channel-messages
-	const limit = 100;
-
-	const fetchedMessages = await channel.messages.fetch(
-		{
-			limit,
-			...(messageId && { before: messageId })
-		},
-		{ cache: false, force: true }
-	);
-	const allMessages = [...messages, ...fetchedMessages.map((msg) => msg)];
-
-	// don't fetch more than 1000 messages for rate limit reasons
-	if (fetchedMessages.size === limit && messages.length < 1_000 - limit) {
-		return fetchMessages(channel, allMessages, fetchedMessages.lastKey());
-	}
-
-	return allMessages.sort((a, b) => a.createdTimestamp - b.createdTimestamp);
-};

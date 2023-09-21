@@ -1,13 +1,9 @@
 import { userMention } from '@discordjs/builders';
 import {
-	MessageAttachment,
 	MessageEmbed,
-	type Snowflake,
 	TextChannel,
-	type ThreadChannel,
 	type CommandInteraction,
-	type MessageComponentInteraction,
-	type Message
+	type MessageComponentInteraction
 } from 'discord.js';
 import { version } from '../../package.json';
 import type { Tables } from '../types';

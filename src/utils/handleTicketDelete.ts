@@ -1,13 +1,9 @@
 import { userMention } from '@discordjs/builders';
 import {
-	MessageAttachment,
 	MessageEmbed,
-	type Snowflake,
 	TextChannel,
-	type ThreadChannel,
 	type CommandInteraction,
-	type MessageComponentInteraction,
-	type Message
+	type MessageComponentInteraction
 } from 'discord.js';
 import { version } from '../../package.json';
 import type { Tables } from '../types';
@@ -114,33 +110,10 @@ export const handleTicketDelete = async (
 				if (!logsChannel?.isText()) return;
 				if (!logsChannel.permissionsFor(interaction.guild!.me!).has(['SEND_MESSAGES'])) return;
 
-				const allMessages = await fetchMessages(interaction.channel);
-				const messages = allMessages.map((msg) => {
-					if (msg.author.id !== interaction.client.user!.id) {
-						return `${msg.author.tag}: ${msg.content}\n`;
-					}
-				});
-
-				const firstMessage = allMessages[0];
-				const subject =
-					firstMessage?.author.id === interaction.client.user!.id
-						? firstMessage.embeds?.[0]?.fields?.[0]?.value
-						: 'Unknown';
-
-				const content = `Subject: ${subject}\n\n` + messages.join('');
-				const attachment = new MessageAttachment(
-					Buffer.from(content, 'utf8'),
-					`Ticketer-${Date.now()}.txt`
-				);
-
 				embed.setDescription(`${userMention(interaction.user.id)} deleted a ticket`);
 				embed.addField('Name of Ticket', interaction.channel.name);
-				embed.addField(
-					'Message History',
-					'The message history can be found in the attachment above'
-				);
 
-				logsChannel.send({ embeds: [embed], files: [attachment] });
+				logsChannel.send({ embeds: [embed] });
 
 				const member = interaction.guild!.members.resolve(authorId);
 
@@ -151,7 +124,7 @@ export const handleTicketDelete = async (
 						}`
 					);
 
-					member.send({ embeds: [embed], files: [attachment] }).catch(() => false);
+					member.send({ embeds: [embed] }).catch(() => false);
 				}
 			}
 
@@ -166,29 +139,4 @@ export const handleTicketDelete = async (
 	} catch (err) {
 		console.error(err);
 	}
-};
-
-const fetchMessages = async (
-	channel: TextChannel | ThreadChannel,
-	messages: Message[] = [],
-	messageId?: Snowflake
-): Promise<Message[]> => {
-	// limit is 100: https://discord.com/developers/docs/resources/channel#get-channel-messages
-	const limit = 100;
-
-	const fetchedMessages = await channel.messages.fetch(
-		{
-			limit,
-			...(messageId && { before: messageId })
-		},
-		{ cache: false, force: true }
-	);
-	const allMessages = [...messages, ...fetchedMessages.map((msg) => msg)];
-
-	// don't fetch more than 1000 messages for rate limit reasons
-	if (fetchedMessages.size === limit && messages.length < 1_000 - limit) {
-		return fetchMessages(channel, allMessages, fetchedMessages.lastKey());
-	}
-
-	return allMessages.sort((a, b) => a.createdTimestamp - b.createdTimestamp);
 };

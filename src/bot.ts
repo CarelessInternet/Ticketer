@@ -5,10 +5,8 @@ import { Client, type Handler } from './types';
 const client = new Client({
 	intents: [
 		Intents.FLAGS.GUILDS,
-		Intents.FLAGS.GUILD_MESSAGES,
 		Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
 		Intents.FLAGS.GUILD_MEMBERS,
-		Intents.FLAGS.GUILD_PRESENCES,
 		Intents.FLAGS.GUILD_BANS
 	],
 	partials: [Constants.PartialTypes.MESSAGE, Constants.PartialTypes.REACTION],

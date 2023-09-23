@@ -1,14 +1,10 @@
 # Terms of Service
 
-Last Updated: 20 June, 2022
+Last Updated: 23 September, 2023
 
 Looking for the [privacy policy](https://github.com/CarelessInternet/Ticketer/blob/main/privacy_policy.md)?
 
 By using Ticketer, you are agreeing to both the privacy policy and terms of service. These terms of service may be changed at any moment without notice. You are also agreeing that you are over 13 years old, or the minimum age to use Discord in your country, whichever is higher.
-
-## Message Logs
-
-Message logs are created when ticket logs are toggled on. These message logs are sent to the ticket author and the logs channel when the ticket gets deleted through the `delete` command. Ticketer does not verify nor filter content in support tickets. You, the user, are responsible for any content delivered by you in support tickets, including message log histories. Ticketer cannot remove content in the message logs after they have been posted. Please be careful of what you post in support tickets.
 
 ## Ticket Notes and Panels
 

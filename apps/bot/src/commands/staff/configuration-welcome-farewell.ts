@@ -1,0 +1,446 @@
+import {
+	ActionRowBuilder,
+	ChannelSelectMenuBuilder,
+	ChannelType,
+	ModalBuilder,
+	PermissionFlagsBits,
+	RoleSelectMenuBuilder,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
+	TextInputBuilder,
+	TextInputStyle,
+	channelMention,
+	inlineCode,
+	roleMention,
+	userMention,
+} from 'discord.js';
+import { Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
+import { capitalise, farewellEmbed, welcomeEmbed } from '@/utils';
+import { database, eq, sql, welcomeAndFarewell } from '@ticketer/database';
+
+type InsertWithoutGuildId = Omit<typeof welcomeAndFarewell.$inferInsert, 'guildId'>;
+
+export default class extends Command.Interaction {
+	public readonly data = super.SlashBuilder.setName('configuration-welcome-farewell')
+		.setDescription('Edit the configuration for welcome and farewell messages.')
+		.setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild | PermissionFlagsBits.ManageChannels)
+		.addSubcommand((subcommand) =>
+			subcommand.setName('settings').setDescription('Edit the settings of welcome and farewell messages.'),
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName('overview')
+				.setDescription('View the current configuration for welcome and farewell messages.'),
+		);
+
+	@DeferReply(false)
+	public async execute({ interaction }: Command.Context<'chat'>) {
+		switch (interaction.options.getSubcommand(true)) {
+			case 'settings': {
+				const welcomeSelectMenu = new StringSelectMenuBuilder()
+					.setCustomId('welcome_configuration')
+					.setMinValues(1)
+					.setMaxValues(1)
+					.setPlaceholder('Edit one of the following welcome options:')
+					.addOptions(
+						new StringSelectMenuOptionBuilder()
+							.setEmoji('#️⃣')
+							.setLabel('Channel')
+							.setDescription('Change the channel where welcome messages get sent.')
+							.setValue('channel'),
+						new StringSelectMenuOptionBuilder()
+							.setEmoji('📘')
+							.setLabel('Title')
+							.setDescription('Change the title used in welcome messages.')
+							.setValue('title'),
+						new StringSelectMenuOptionBuilder()
+							.setEmoji('📜')
+							.setLabel('Message')
+							.setDescription('Change the message used in welcome messages.')
+							.setValue('message'),
+						new StringSelectMenuOptionBuilder()
+							.setEmoji('🛡️')
+							.setLabel('Roles')
+							.setDescription('Give new members specific roles.')
+							.setValue('roles'),
+						new StringSelectMenuOptionBuilder()
+							.setEmoji('🔌')
+							.setLabel('Enabled/Disabled')
+							.setDescription('Toggle between turning welcome messages on and off.')
+							.setValue('enabled'),
+					);
+
+				const farewellSelectMenu = new StringSelectMenuBuilder()
+					.setCustomId('farewell_configuration')
+					.setMinValues(1)
+					.setMaxValues(1)
+					.setPlaceholder('Edit one of the following farewell options:')
+					.addOptions(
+						new StringSelectMenuOptionBuilder()
+							.setEmoji('#️⃣')
+							.setLabel('Channel')
+							.setDescription('Change the channel where farewell messages get sent.')
+							.setValue('channel'),
+						new StringSelectMenuOptionBuilder()
+							.setEmoji('📘')
+							.setLabel('Title')
+							.setDescription('Change the title used in farewell messages.')
+							.setValue('title'),
+						new StringSelectMenuOptionBuilder()
+							.setEmoji('📜')
+							.setLabel('Message')
+							.setDescription('Change the message used in farewell messages.')
+							.setValue('message'),
+						new StringSelectMenuOptionBuilder()
+							.setEmoji('🔌')
+							.setLabel('Enabled/Disabled')
+							.setDescription('Toggle between turning farewell messages on and off.')
+							.setValue('enabled'),
+					);
+
+				const welcomeRow = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(welcomeSelectMenu);
+				const farewellRow = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(farewellSelectMenu);
+
+				return interaction.editReply({ components: [welcomeRow, farewellRow] });
+			}
+			case 'overview': {
+				const guildId = BigInt(interaction.guildId);
+				const table = await database
+					.select()
+					.from(welcomeAndFarewell)
+					.where(eq(welcomeAndFarewell.guildId, guildId))
+					.limit(1);
+				const result = table.at(0);
+
+				if (!result) {
+					return interaction.editReply({
+						embeds: [
+							super
+								.userEmbedError(interaction.user)
+								.setDescription('No welcome/farewell configuration could be found.'),
+						],
+					});
+				}
+
+				const generalEmbed = super
+					.userEmbed(interaction.user)
+					.setTitle('General Welcome/Farewell Settings')
+					.setDescription(
+						'This embed shows the configuration for welcome and farewell messages. The next two embeds show examples of the configured welcome and farewell messages.',
+					)
+					.setFields(
+						{
+							name: 'Welcome Channel',
+							value: result.welcomeChannelId ? channelMention(result.welcomeChannelId.toString()) : 'None',
+							inline: true,
+						},
+						{
+							name: 'Welcome Messages',
+							value: result.welcomeEnabled ? 'Enabled' : 'Disabled',
+							inline: true,
+						},
+						{
+							name: 'New Member Roles',
+							value:
+								result.welcomeNewMemberRoles.length > 0
+									? result.welcomeNewMemberRoles.map((role) => roleMention(role)).join(', ')
+									: 'None',
+							inline: true,
+						},
+						{
+							name: '\u200B',
+							value: '\u200B',
+						},
+						{
+							name: 'Farewell Channel',
+							value: result.farewellChannelId ? channelMention(result.farewellChannelId.toString()) : 'None',
+							inline: true,
+						},
+						{
+							name: 'Farewell Messages',
+							value: result.farewellEnabled ? 'Enabled' : 'Disabled',
+							inline: true,
+						},
+					);
+
+				const welcomeEmbedExample = welcomeEmbed({
+					data: { welcomeTitle: result.welcomeTitle, welcomeMessage: result.welcomeMessage },
+					embed: super.embed,
+					locale: interaction.guildLocale,
+					user: interaction.user,
+				});
+
+				const farewellEmbedExample = farewellEmbed({
+					data: { farewellTitle: result.farewellTitle, farewellMessage: result.farewellMessage },
+					embed: super.embed,
+					locale: interaction.guildLocale,
+					user: interaction.user,
+				});
+
+				return interaction.editReply({ embeds: [generalEmbed, welcomeEmbedExample, farewellEmbedExample] });
+			}
+			default: {
+				return interaction.editReply({
+					embeds: [super.userEmbedError(interaction.user).setDescription('The subcommand could not be found.')],
+				});
+			}
+		}
+	}
+}
+
+export class ComponentInteraction extends Component.Interaction {
+	public readonly customIds = [
+		'welcome_configuration',
+		'welcome_configuration_channel',
+		'welcome_configuration_roles',
+		'farewell_configuration',
+		'farewell_configuration_channel',
+	];
+
+	public execute({ interaction }: Component.Context<'channel' | 'string'>) {
+		switch (interaction.customId) {
+			case 'welcome_configuration':
+			case 'farewell_configuration': {
+				return interaction.isStringSelectMenu() && this.welcomeAndFarewellConfiguration({ interaction });
+			}
+			case 'welcome_configuration_channel':
+			case 'farewell_configuration_channel': {
+				return interaction.isChannelSelectMenu() && this.welcomeAndFarewellConfigurationChannel({ interaction });
+			}
+			case 'welcome_configuration_roles': {
+				return interaction.isRoleSelectMenu() && this.welcomeConfigurationRoles({ interaction });
+			}
+			default: {
+				return interaction.reply({
+					embeds: [super.userEmbedError(interaction.user).setDescription('The select menu ID could not be found.')],
+					ephemeral: true,
+				});
+			}
+		}
+	}
+
+	private async welcomeAndFarewellConfiguration({ interaction }: Component.Context<'string'>) {
+		const type = interaction.customId.includes('welcome_configuration') ? 'welcome' : 'farewell';
+		const value = interaction.values.at(0);
+
+		switch (value) {
+			case 'channel': {
+				const channelSelectMenu = new ChannelSelectMenuBuilder()
+					.setCustomId(`${type}_configuration_channel`)
+					.setMinValues(1)
+					.setMaxValues(1)
+					.setPlaceholder(`Choose a channel for ${type} messages.`)
+					.setChannelTypes(ChannelType.GuildText);
+
+				const channelRow = new ActionRowBuilder<ChannelSelectMenuBuilder>().setComponents(channelSelectMenu);
+
+				return interaction.reply({ components: [channelRow] });
+			}
+			case 'title': {
+				const titleInput = new TextInputBuilder()
+					.setCustomId('title')
+					.setLabel('Title')
+					.setRequired(false)
+					.setMinLength(1)
+					.setMaxLength(100)
+					.setStyle(TextInputStyle.Short)
+					.setPlaceholder('Write "{member}" to mention the user in the title.');
+
+				const titleRow = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
+				const titleModal = new ModalBuilder()
+					.setCustomId(`${type}_title`)
+					.setTitle(`${capitalise(type)} Title`)
+					.setComponents(titleRow);
+
+				return interaction.showModal(titleModal);
+			}
+			case 'message': {
+				const messageInput = new TextInputBuilder()
+					.setCustomId('message')
+					.setLabel('Message')
+					.setRequired(false)
+					.setMinLength(1)
+					.setMaxLength(500)
+					.setStyle(TextInputStyle.Paragraph)
+					.setPlaceholder('Write "{member}" to mention the user in the message.');
+
+				const messageRow = new ActionRowBuilder<TextInputBuilder>().setComponents(messageInput);
+				const messageModal = new ModalBuilder()
+					.setCustomId(`${type}_message`)
+					.setTitle(`${capitalise(type)} Message`)
+					.setComponents(messageRow);
+
+				return interaction.showModal(messageModal);
+			}
+			case 'roles': {
+				const rolesSelectMenu = new RoleSelectMenuBuilder()
+					.setCustomId('welcome_configuration_roles')
+					.setMinValues(0)
+					.setMaxValues(10)
+					.setPlaceholder('Choose the roles that new members receive.');
+
+				const rolesRow = new ActionRowBuilder<RoleSelectMenuBuilder>().setComponents(rolesSelectMenu);
+
+				return interaction.reply({ components: [rolesRow] });
+			}
+			case 'enabled': {
+				return this.welcomeAndFarewellConfigurationEnabled({ interaction });
+			}
+			default: {
+				return interaction.editReply({
+					embeds: [
+						super.userEmbedError(interaction.user).setDescription(`The selected ${type} option could not be found.`),
+					],
+				});
+			}
+		}
+	}
+
+	@DeferUpdate
+	private async welcomeAndFarewellConfigurationChannel({ interaction }: Component.Context<'channel'>) {
+		const guildId = BigInt(interaction.guildId);
+		const channelId = BigInt(interaction.channels.at(0)!.id);
+
+		const type = interaction.customId.includes('welcome') ? 'welcome' : 'farewell';
+		const channelDatabaseValue: InsertWithoutGuildId =
+			type === 'welcome' ? { welcomeChannelId: channelId } : { farewellChannelId: channelId };
+
+		await database
+			.insert(welcomeAndFarewell)
+			.values({ guildId, ...channelDatabaseValue })
+			.onDuplicateKeyUpdate({
+				set: channelDatabaseValue,
+			});
+
+		const embed = super
+			.userEmbed(interaction.user)
+			.setTitle('Updated the Welcome/Farewell Configuration')
+			.setDescription(
+				`${userMention(interaction.user.id)} updated the ${type} channel to ${channelMention(channelId.toString())}`,
+			);
+
+		return interaction.editReply({ embeds: [embed], components: [] });
+	}
+
+	@DeferReply(false)
+	private async welcomeAndFarewellConfigurationEnabled({ interaction }: Component.Context<'string'>) {
+		const type = interaction.customId.includes('welcome_configuration') ? 'welcome' : 'farewell';
+		const guildId = BigInt(interaction.guildId);
+		const { farewellEnabled, welcomeEnabled } = welcomeAndFarewell;
+
+		await database
+			.insert(welcomeAndFarewell)
+			.values({
+				guildId,
+				...(type === 'welcome'
+					? { welcomeEnabled: !welcomeEnabled.default }
+					: { farewellEnabled: !farewellEnabled.default }),
+			})
+			.onDuplicateKeyUpdate({
+				set:
+					type === 'welcome'
+						? { welcomeEnabled: sql.raw(`NOT ${welcomeEnabled.name}`) }
+						: { farewellEnabled: sql.raw(`NOT ${farewellEnabled.name}`) },
+			});
+
+		const embed = super
+			.userEmbed(interaction.user)
+			.setTitle('Updated the Welcome/Farewell Configuration')
+			.setDescription(`${userMention(interaction.user.id)} has toggled the ${type} enabled option.`);
+
+		return interaction.editReply({ embeds: [embed] });
+	}
+
+	@DeferUpdate
+	private async welcomeConfigurationRoles({ interaction }: Component.Context<'role'>) {
+		const guildId = BigInt(interaction.guildId);
+		const welcomeNewMemberRoles = interaction.roles.map((role) => role.id);
+
+		await database
+			.insert(welcomeAndFarewell)
+			.values({ guildId, welcomeNewMemberRoles })
+			.onDuplicateKeyUpdate({ set: { welcomeNewMemberRoles } });
+
+		const roles = welcomeNewMemberRoles.map((id) => roleMention(id)).join(', ');
+		const embed = super
+			.userEmbed(interaction.user)
+			.setTitle('Updated the Welcome Configuration')
+			.setDescription(
+				`${userMention(interaction.user.id)} updated the roles given to new members: ${
+					welcomeNewMemberRoles ? roles : 'none'
+				}`,
+			);
+
+		return interaction.editReply({ embeds: [embed], components: [] });
+	}
+}
+
+export class ModalInteraction extends Modal.Interaction {
+	public readonly customIds = ['welcome_title', 'welcome_message', 'farewell_title', 'farewell_message'];
+
+	@DeferReply(false)
+	public async execute({ interaction }: Modal.Context) {
+		const type = interaction.customId.includes('welcome') ? 'welcome' : 'farewell';
+		const modalType = interaction.customId.includes('title')
+			? 'title'
+			: interaction.customId.includes('message')
+			  ? 'message'
+			  : undefined;
+
+		switch (modalType) {
+			case 'title': {
+				const guildId = BigInt(interaction.guildId);
+				// eslint-disable-next-line unicorn/no-null
+				const title = interaction.fields.getTextInputValue('title') || null;
+				const titleDatabaseValue: InsertWithoutGuildId =
+					type === 'welcome' ? { welcomeTitle: title } : { farewellTitle: title };
+
+				await database
+					.insert(welcomeAndFarewell)
+					.values({ guildId, ...titleDatabaseValue })
+					.onDuplicateKeyUpdate({ set: titleDatabaseValue });
+
+				const embed = super
+					.userEmbed(interaction.user)
+					.setTitle('Updated the Welcome/Farewell Configuration')
+					.setDescription(
+						`${userMention(interaction.user.id)} updated the ${type} title to` +
+							(title ? `:\n\n${inlineCode(title)}` : ' the default title.'),
+					);
+
+				return interaction.editReply({ embeds: [embed] });
+			}
+			case 'message': {
+				const guildId = BigInt(interaction.guildId);
+				// eslint-disable-next-line unicorn/no-null
+				const message = interaction.fields.getTextInputValue('message') || null;
+				const messageDatabaseValue: InsertWithoutGuildId =
+					type === 'welcome' ? { welcomeMessage: message } : { farewellMessage: message };
+
+				await database
+					.insert(welcomeAndFarewell)
+					.values({ guildId, ...messageDatabaseValue })
+					.onDuplicateKeyUpdate({ set: messageDatabaseValue });
+
+				const embed = super
+					.userEmbed(interaction.user)
+					.setTitle('Updated the Welcome/Farewell Configuration')
+					.setDescription(
+						`${userMention(interaction.user.id)} updated the ${type} message to` +
+							(message ? `:\n\n${inlineCode(message)}` : ' the default message.'),
+					);
+
+				return interaction.editReply({ embeds: [embed] });
+			}
+			default: {
+				return interaction.editReply({
+					embeds: [
+						super
+							.userEmbedError(interaction.user)
+							.setDescription('The selected welcome/farewell modal could not be found.'),
+					],
+				});
+			}
+		}
+	}
+}

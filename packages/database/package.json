@@ -1,0 +1,25 @@
+{
+	"name": "@ticketer/database",
+	"version": "0.1.0",
+	"private": true,
+	"main": "./src/index.ts",
+	"types": "./src/index.ts",
+	"type": "module",
+	"scripts": {
+		"lint": "eslint .",
+		"drizzle:studio:development": "dotenv -e ../../.env.database.development.local drizzle-kit studio --port 3001",
+		"migrations:generate": "drizzle-kit generate:mysql",
+		"migrations:drop": "drizzle-kit drop",
+		"migrations:push:development": "dotenv -e ../../.env.database.development.local drizzle-kit push:mysql"
+	},
+	"dependencies": {
+		"@ticketer/env": "workspace:*",
+		"drizzle-orm": "^0.29.0",
+		"mysql2": "^3.6.5"
+	},
+	"devDependencies": {
+		"@ticketer/eslint-config": "workspace:*",
+		"dotenv-cli": "^7.3.0",
+		"drizzle-kit": "^0.20.6"
+	}
+}

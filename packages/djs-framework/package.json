@@ -1,0 +1,22 @@
+{
+	"name": "@ticketer/djs-framework",
+	"version": "0.1.0",
+	"private": true,
+	"main": "./src/index.ts",
+	"types": "./src/index.ts",
+	"type": "module",
+	"scripts": {
+		"lint": "eslint .",
+		"prepare": "pnpm root"
+	},
+	"dependencies": {
+		"fast-glob": "^3.3.2"
+	},
+	"peerDependencies": {
+		"discord.js": "^14"
+	},
+	"devDependencies": {
+		"@ticketer/eslint-config": "workspace:*",
+		"@types/node": "^20.10.0"
+	}
+}

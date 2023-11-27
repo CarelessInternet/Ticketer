@@ -1,0 +1,116 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "id": "76d749a6-a79d-477d-872c-6e9b37bf7ec2",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "welcomeAndFarewell": {
+      "name": "welcomeAndFarewell",
+      "columns": {
+        "guildId": {
+          "name": "guildId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "welcomeChannelId": {
+          "name": "welcomeChannelId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "welcomeTitle": {
+          "name": "welcomeTitle",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "welcomeMessage": {
+          "name": "welcomeMessage",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "welcomeNewMemberRoles": {
+          "name": "welcomeNewMemberRoles",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "('[]')"
+        },
+        "welcomeEnabled": {
+          "name": "welcomeEnabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "farewellChannelId": {
+          "name": "farewellChannelId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "farewellTitle": {
+          "name": "farewellTitle",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "farewellMessage": {
+          "name": "farewellMessage",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "farewellEnabled": {
+          "name": "farewellEnabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "welcomeAndFarewell_guildId": {
+          "name": "welcomeAndFarewell_guildId",
+          "columns": [
+            "guildId"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "welcomeAndFarewell_welcomeChannelId_unique": {
+          "name": "welcomeAndFarewell_welcomeChannelId_unique",
+          "columns": [
+            "welcomeChannelId"
+          ]
+        },
+        "welcomeAndFarewell_farewellChannelId_unique": {
+          "name": "welcomeAndFarewell_farewellChannelId_unique",
+          "columns": [
+            "farewellChannelId"
+          ]
+        }
+      }
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

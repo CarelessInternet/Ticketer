@@ -6,8 +6,7 @@
 	"types": "./src/index.ts",
 	"type": "module",
 	"scripts": {
-		"lint": "eslint .",
-		"prepare": "pnpm root"
+		"lint": "eslint ."
 	},
 	"dependencies": {
 		"fast-glob": "^3.3.2"
@@ -17,6 +16,6 @@
 	},
 	"devDependencies": {
 		"@ticketer/eslint-config": "workspace:*",
-		"@types/node": "^20.10.0"
+		"@types/node": "^20.10.2"
 	}
 }

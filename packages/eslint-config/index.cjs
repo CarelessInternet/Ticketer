@@ -5,10 +5,11 @@ module.exports = {
 		'eslint:recommended',
 		'plugin:@typescript-eslint/recommended',
 		'plugin:@typescript-eslint/stylistic',
+		'plugin:drizzle/recommended',
 		'plugin:unicorn/recommended',
 		'plugin:prettier/recommended',
 	],
-	plugins: ['@typescript-eslint', 'prettier'],
+	plugins: ['@typescript-eslint', 'drizzle', 'prettier'],
 	settings: {
 		react: {
 			version: 'detect',

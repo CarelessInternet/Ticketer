@@ -1,3 +1,12 @@
+CREATE TABLE `ticketForumsConfiguration` (
+	`guildId` bigint unsigned NOT NULL,
+	`channelId` bigint unsigned NOT NULL,
+	`managers` json NOT NULL DEFAULT ('[]'),
+	`openingMessageTitle` varchar(100),
+	`openingMessageDescription` varchar(500),
+	CONSTRAINT `ticketForumsConfiguration_guildId` PRIMARY KEY(`guildId`)
+);
+--> statement-breakpoint
 CREATE TABLE `ticketThreadsCategories` (
 	`id` int unsigned AUTO_INCREMENT NOT NULL,
 	`guildId` bigint unsigned NOT NULL,
@@ -31,13 +40,13 @@ CREATE TABLE `ticketsThreads` (
 CREATE TABLE `welcomeAndFarewell` (
 	`guildId` bigint unsigned NOT NULL,
 	`welcomeChannelId` bigint unsigned,
-	`welcomeTitle` varchar(100),
-	`welcomeMessage` varchar(500),
+	`welcomeMessageTitle` varchar(100),
+	`welcomeMessageDescription` varchar(500),
 	`welcomeNewMemberRoles` json NOT NULL DEFAULT ('[]'),
 	`welcomeEnabled` boolean NOT NULL DEFAULT true,
 	`farewellChannelId` bigint unsigned,
-	`farewellTitle` varchar(100),
-	`farewellMessage` varchar(500),
+	`farewellMessageTitle` varchar(100),
+	`farewellMessageDescription` varchar(500),
 	`farewellEnabled` boolean NOT NULL DEFAULT true,
 	CONSTRAINT `welcomeAndFarewell_guildId` PRIMARY KEY(`guildId`),
 	CONSTRAINT `welcomeAndFarewell_welcomeChannelId_unique` UNIQUE(`welcomeChannelId`),

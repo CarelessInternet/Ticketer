@@ -29,16 +29,16 @@ export interface Context<T extends ComponentTypes = undefined> {
 	interaction: T extends 'button'
 		? ButtonInteraction<'cached'>
 		: T extends 'string'
-		  ? StringSelectMenuInteraction<'cached'>
-		  : T extends 'user'
-		    ? UserSelectMenuInteraction<'cached'>
-		    : T extends 'role'
-		      ? RoleSelectMenuInteraction<'cached'>
-		      : T extends 'mentionable'
-		        ? MentionableSelectMenuInteraction<'cached'>
-		        : T extends 'channel'
-		          ? ChannelSelectMenuInteraction<'cached'>
-		          : MessageComponentInteraction<'cached'>;
+			? StringSelectMenuInteraction<'cached'>
+			: T extends 'user'
+				? UserSelectMenuInteraction<'cached'>
+				: T extends 'role'
+					? RoleSelectMenuInteraction<'cached'>
+					: T extends 'mentionable'
+						? MentionableSelectMenuInteraction<'cached'>
+						: T extends 'channel'
+							? ChannelSelectMenuInteraction<'cached'>
+							: MessageComponentInteraction<'cached'>;
 }
 
 export type CustomIds = string[];

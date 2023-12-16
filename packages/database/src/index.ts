@@ -10,7 +10,6 @@ const connection = await mysql.createConnection({ uri: DB_URL, supportBigNumbers
 
 export const database = drizzle(connection, {
 	schema,
-	// TODO: remove soon, https://planetscale.com/blog/announcing-vitess-18#foreign-key-constraints
 	mode: usingPlanetscale ? 'planetscale' : 'default',
 });
 

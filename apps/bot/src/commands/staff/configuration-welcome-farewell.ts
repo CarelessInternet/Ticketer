@@ -50,14 +50,14 @@ export default class extends Command.Interaction {
 							.setValue('channel'),
 						new StringSelectMenuOptionBuilder()
 							.setEmoji('📘')
-							.setLabel('Title')
+							.setLabel('Message Title')
 							.setDescription('Change the title used in welcome messages.')
 							.setValue('title'),
 						new StringSelectMenuOptionBuilder()
 							.setEmoji('📜')
-							.setLabel('Message')
-							.setDescription('Change the message used in welcome messages.')
-							.setValue('message'),
+							.setLabel('Message Description')
+							.setDescription('Change the description used in welcome messages.')
+							.setValue('description'),
 						new StringSelectMenuOptionBuilder()
 							.setEmoji('🛡️')
 							.setLabel('Roles')
@@ -83,14 +83,14 @@ export default class extends Command.Interaction {
 							.setValue('channel'),
 						new StringSelectMenuOptionBuilder()
 							.setEmoji('📘')
-							.setLabel('Title')
+							.setLabel('Message Title')
 							.setDescription('Change the title used in farewell messages.')
 							.setValue('title'),
 						new StringSelectMenuOptionBuilder()
 							.setEmoji('📜')
-							.setLabel('Message')
-							.setDescription('Change the message used in farewell messages.')
-							.setValue('message'),
+							.setLabel('Message Description')
+							.setDescription('Change the description used in farewell messages.')
+							.setValue('description'),
 						new StringSelectMenuOptionBuilder()
 							.setEmoji('🔌')
 							.setLabel('Enabled/Disabled')
@@ -164,14 +164,20 @@ export default class extends Command.Interaction {
 					);
 
 				const welcomeEmbedExample = welcomeEmbed({
-					data: { welcomeTitle: result.welcomeTitle, welcomeMessage: result.welcomeMessage },
+					data: {
+						welcomeMessageTitle: result.welcomeMessageTitle,
+						welcomeMessageDescription: result.welcomeMessageDescription,
+					},
 					embed: super.embed,
 					locale: interaction.guildLocale,
 					user: interaction.user,
 				});
 
 				const farewellEmbedExample = farewellEmbed({
-					data: { farewellTitle: result.farewellTitle, farewellMessage: result.farewellMessage },
+					data: {
+						farewellMessageTitle: result.farewellMessageTitle,
+						farewellMessageDescription: result.farewellMessageDescription,
+					},
 					embed: super.embed,
 					locale: interaction.guildLocale,
 					user: interaction.user,
@@ -238,8 +244,8 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			case 'title': {
 				const titleInput = new TextInputBuilder()
-					.setCustomId('title')
-					.setLabel('Title')
+					.setCustomId('message_title')
+					.setLabel('Message Title')
 					.setRequired(false)
 					.setMinLength(1)
 					.setMaxLength(100)
@@ -248,29 +254,29 @@ export class ComponentInteraction extends Component.Interaction {
 
 				const titleRow = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
 				const titleModal = new ModalBuilder()
-					.setCustomId(`${type}_title`)
-					.setTitle(`${capitalise(type)} Title`)
+					.setCustomId(`${type}_message_title`)
+					.setTitle(`${capitalise(type)} Message Title`)
 					.setComponents(titleRow);
 
 				return interaction.showModal(titleModal);
 			}
-			case 'message': {
-				const messageInput = new TextInputBuilder()
-					.setCustomId('message')
-					.setLabel('Message')
+			case 'description': {
+				const descriptionInput = new TextInputBuilder()
+					.setCustomId('message_description')
+					.setLabel('Message Description')
 					.setRequired(false)
 					.setMinLength(1)
 					.setMaxLength(500)
 					.setStyle(TextInputStyle.Paragraph)
-					.setPlaceholder('Write "{member}" to mention the user in the message.');
+					.setPlaceholder('Write "{member}" to mention the user in the description.');
 
-				const messageRow = new ActionRowBuilder<TextInputBuilder>().setComponents(messageInput);
-				const messageModal = new ModalBuilder()
-					.setCustomId(`${type}_message`)
-					.setTitle(`${capitalise(type)} Message`)
-					.setComponents(messageRow);
+				const descriptionRow = new ActionRowBuilder<TextInputBuilder>().setComponents(descriptionInput);
+				const descriptionModal = new ModalBuilder()
+					.setCustomId(`${type}_message_description`)
+					.setTitle(`${capitalise(type)} Message Description`)
+					.setComponents(descriptionRow);
 
-				return interaction.showModal(messageModal);
+				return interaction.showModal(descriptionModal);
 			}
 			case 'roles': {
 				const rolesSelectMenu = new RoleSelectMenuBuilder()
@@ -287,7 +293,7 @@ export class ComponentInteraction extends Component.Interaction {
 				return this.welcomeAndFarewellConfigurationEnabled({ interaction });
 			}
 			default: {
-				return interaction.editReply({
+				return interaction.reply({
 					embeds: [
 						super.userEmbedError(interaction.user).setDescription(`The selected ${type} option could not be found.`),
 					],
@@ -376,24 +382,29 @@ export class ComponentInteraction extends Component.Interaction {
 }
 
 export class ModalInteraction extends Modal.Interaction {
-	public readonly customIds = ['welcome_title', 'welcome_message', 'farewell_title', 'farewell_message'];
+	public readonly customIds = [
+		'welcome_message_title',
+		'welcome_message_description',
+		'farewell_message_title',
+		'farewell_message_description',
+	];
 
 	@DeferReply(false)
 	public async execute({ interaction }: Modal.Context) {
 		const type = interaction.customId.includes('welcome') ? 'welcome' : 'farewell';
 		const modalType = interaction.customId.includes('title')
 			? 'title'
-			: interaction.customId.includes('message')
-			  ? 'message'
-			  : undefined;
+			: interaction.customId.includes('description')
+				? 'description'
+				: undefined;
 
 		switch (modalType) {
 			case 'title': {
 				const guildId = BigInt(interaction.guildId);
 				// eslint-disable-next-line unicorn/no-null
-				const title = interaction.fields.getTextInputValue('title') || null;
+				const title = interaction.fields.getTextInputValue('message_title') || null;
 				const titleDatabaseValue: InsertWithoutGuildId =
-					type === 'welcome' ? { welcomeTitle: title } : { farewellTitle: title };
+					type === 'welcome' ? { welcomeMessageTitle: title } : { farewellMessageTitle: title };
 
 				await database
 					.insert(welcomeAndFarewell)
@@ -404,30 +415,30 @@ export class ModalInteraction extends Modal.Interaction {
 					.userEmbed(interaction.user)
 					.setTitle('Updated the Welcome/Farewell Configuration')
 					.setDescription(
-						`${userMention(interaction.user.id)} updated the ${type} title to` +
+						`${userMention(interaction.user.id)} updated the ${type} message title to` +
 							(title ? `:\n\n${inlineCode(title)}` : ' the default title.'),
 					);
 
 				return interaction.editReply({ embeds: [embed] });
 			}
-			case 'message': {
+			case 'description': {
 				const guildId = BigInt(interaction.guildId);
 				// eslint-disable-next-line unicorn/no-null
-				const message = interaction.fields.getTextInputValue('message') || null;
-				const messageDatabaseValue: InsertWithoutGuildId =
-					type === 'welcome' ? { welcomeMessage: message } : { farewellMessage: message };
+				const description = interaction.fields.getTextInputValue('message_description') || null;
+				const descriptionDatabaseValue: InsertWithoutGuildId =
+					type === 'welcome' ? { welcomeMessageDescription: description } : { farewellMessageDescription: description };
 
 				await database
 					.insert(welcomeAndFarewell)
-					.values({ guildId, ...messageDatabaseValue })
-					.onDuplicateKeyUpdate({ set: messageDatabaseValue });
+					.values({ guildId, ...descriptionDatabaseValue })
+					.onDuplicateKeyUpdate({ set: descriptionDatabaseValue });
 
 				const embed = super
 					.userEmbed(interaction.user)
 					.setTitle('Updated the Welcome/Farewell Configuration')
 					.setDescription(
-						`${userMention(interaction.user.id)} updated the ${type} message to` +
-							(message ? `:\n\n${inlineCode(message)}` : ' the default message.'),
+						`${userMention(interaction.user.id)} updated the ${type} message description to` +
+							(description ? `:\n\n${inlineCode(description)}` : ' the default description.'),
 					);
 
 				return interaction.editReply({ embeds: [embed] });

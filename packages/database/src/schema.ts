@@ -26,18 +26,19 @@ const jsonWithParsing = <Data>(name: string) =>
 		},
 	})(name).notNull();
 
+// TODO: change mode to 'string' when available: https://github.com/drizzle-team/drizzle-orm/issues/813
 const snowflake = (name: string) => bigint(name, { mode: 'bigint', unsigned: true });
 
 export const welcomeAndFarewell = mysqlTable('welcomeAndFarewell', {
 	guildId: snowflake('guildId').primaryKey(),
 	welcomeChannelId: snowflake('welcomeChannelId').unique(),
-	welcomeTitle: varchar('welcomeTitle', { length: 100 }),
-	welcomeMessage: varchar('welcomeMessage', { length: 500 }),
+	welcomeMessageTitle: varchar('welcomeMessageTitle', { length: 100 }),
+	welcomeMessageDescription: varchar('welcomeMessageDescription', { length: 500 }),
 	welcomeNewMemberRoles: jsonWithParsing('welcomeNewMemberRoles').$type<string[]>().default([]),
 	welcomeEnabled: boolean('welcomeEnabled').notNull().default(true),
 	farewellChannelId: snowflake('farewellChannelId').unique(),
-	farewellTitle: varchar('farewellTitle', { length: 100 }),
-	farewellMessage: varchar('farewellMessage', { length: 500 }),
+	farewellMessageTitle: varchar('farewellMessageTitle', { length: 100 }),
+	farewellMessageDescription: varchar('farewellMessageDescription', { length: 500 }),
 	farewellEnabled: boolean('farewellEnabled').notNull().default(true),
 });
 
@@ -91,6 +92,14 @@ export const ticketsThreads = mysqlTable(
 		}),
 	}),
 );
+
+export const ticketForumsConfiguration = mysqlTable('ticketForumsConfiguration', {
+	guildId: snowflake('guildId').primaryKey(),
+	channelId: snowflake('channelId').notNull(),
+	managers: jsonWithParsing('managers').$type<string[]>().default([]),
+	openingMessageTitle: varchar('openingMessageTitle', { length: 100 }),
+	openingMessageDescription: varchar('openingMessageDescription', { length: 500 }),
+});
 
 /**
  * The Planned Tables:

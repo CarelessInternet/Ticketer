@@ -1,9 +1,61 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "6c30c944-5183-4862-bf8d-e8171894ab6b",
+  "id": "896fae1c-bddb-461b-9144-449600c4104a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
+    "ticketForumsConfiguration": {
+      "name": "ticketForumsConfiguration",
+      "columns": {
+        "guildId": {
+          "name": "guildId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "channelId": {
+          "name": "channelId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "managers": {
+          "name": "managers",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "('[]')"
+        },
+        "openingMessageTitle": {
+          "name": "openingMessageTitle",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "openingMessageDescription": {
+          "name": "openingMessageDescription",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "ticketForumsConfiguration_guildId": {
+          "name": "ticketForumsConfiguration_guildId",
+          "columns": [
+            "guildId"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
     "ticketThreadsCategories": {
       "name": "ticketThreadsCategories",
       "columns": {
@@ -259,15 +311,15 @@
           "notNull": false,
           "autoincrement": false
         },
-        "welcomeTitle": {
-          "name": "welcomeTitle",
+        "welcomeMessageTitle": {
+          "name": "welcomeMessageTitle",
           "type": "varchar(100)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "welcomeMessage": {
-          "name": "welcomeMessage",
+        "welcomeMessageDescription": {
+          "name": "welcomeMessageDescription",
           "type": "varchar(500)",
           "primaryKey": false,
           "notNull": false,
@@ -296,15 +348,15 @@
           "notNull": false,
           "autoincrement": false
         },
-        "farewellTitle": {
-          "name": "farewellTitle",
+        "farewellMessageTitle": {
+          "name": "farewellMessageTitle",
           "type": "varchar(100)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "farewellMessage": {
-          "name": "farewellMessage",
+        "farewellMessageDescription": {
+          "name": "farewellMessageDescription",
           "type": "varchar(500)",
           "primaryKey": false,
           "notNull": false,

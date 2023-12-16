@@ -56,10 +56,10 @@ export interface Context<T extends Types = undefined> {
 	interaction: T extends 'chat'
 		? ChatInputCommandInteraction<'cached'>
 		: T extends 'message'
-		  ? MessageContextMenuCommandInteraction<'cached'>
-		  : T extends 'user'
-		    ? UserContextMenuCommandInteraction<'cached'>
-		    : CommandInteraction<'cached'>;
+			? MessageContextMenuCommandInteraction<'cached'>
+			: T extends 'user'
+				? UserContextMenuCommandInteraction<'cached'>
+				: CommandInteraction<'cached'>;
 }
 
 export type Constructable = new (...arguments_: ConstructorParameters<typeof Interaction>) => Interaction;

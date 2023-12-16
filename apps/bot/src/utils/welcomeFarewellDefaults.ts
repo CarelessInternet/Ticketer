@@ -10,35 +10,35 @@ interface BaseWelcomeAndFarewellOptions {
 
 interface TitleOptions extends BaseWelcomeAndFarewellOptions {
 	displayName: User['displayName'];
-	title: Columns['welcomeTitle'] | Columns['farewellTitle'];
+	title: Columns['welcomeMessageTitle'] | Columns['farewellMessageTitle'];
 }
 
 interface MessageOptions extends BaseWelcomeAndFarewellOptions {
 	userId: Snowflake;
-	message: Columns['welcomeMessage'] | Columns['farewellMessage'];
+	description: Columns['welcomeMessageDescription'] | Columns['farewellMessageDescription'];
 }
 
 const replaceMember = (text: string, user: string) => text.replaceAll('{member}', user);
 
 // Use the user-defined texts if possible, otherwise use the inbuilt localised texts.
-const welcomeTitle = ({ locale, displayName, title }: TitleOptions) =>
+const welcomeMessageTitle = ({ locale, displayName, title }: TitleOptions) =>
 	title
 		? replaceMember(title, displayName)
 		: translate(locale).events.guildMemberAdd.welcome.title({ member: displayName });
 
-const welcomeMessage = ({ locale, message, userId }: MessageOptions) =>
-	message
-		? replaceMember(message, userMention(userId))
+const welcomeMessageDescription = ({ description, locale, userId }: MessageOptions) =>
+	description
+		? replaceMember(description, userMention(userId))
 		: translate(locale).events.guildMemberAdd.welcome.message({ member: userMention(userId) });
 
-const farewellTitle = ({ locale, displayName, title }: TitleOptions) =>
+const farewellMessageTitle = ({ locale, displayName, title }: TitleOptions) =>
 	title
 		? replaceMember(title, displayName)
 		: translate(locale).events.guildMemberAdd.farewell.title({ member: displayName });
 
-const farewellMessage = ({ locale, message, userId }: MessageOptions) =>
-	message
-		? replaceMember(message, userMention(userId))
+const farewellMessageDescription = ({ description, locale, userId }: MessageOptions) =>
+	description
+		? replaceMember(description, userMention(userId))
 		: translate(locale).events.guildMemberAdd.farewell.message({ member: userMention(userId) });
 
 interface BaseWelcomeAndFarewellEmbedOptions {
@@ -48,23 +48,25 @@ interface BaseWelcomeAndFarewellEmbedOptions {
 }
 
 interface WelcomeEmbedOptions extends BaseWelcomeAndFarewellEmbedOptions {
-	data: Pick<Columns, 'welcomeTitle' | 'welcomeMessage'>;
+	data: Pick<Columns, 'welcomeMessageTitle' | 'welcomeMessageDescription'>;
 }
 
 interface FarewellEmbedOptions extends BaseWelcomeAndFarewellEmbedOptions {
-	data: Pick<Columns, 'farewellTitle' | 'farewellMessage'>;
+	data: Pick<Columns, 'farewellMessageTitle' | 'farewellMessageDescription'>;
 }
 
 export const welcomeEmbed = ({ data, embed, locale, user }: WelcomeEmbedOptions) =>
 	embed
 		.setColor(Colors.DarkBlue)
-		.setTitle(welcomeTitle({ displayName: user.displayName, locale, title: data.welcomeTitle }))
-		.setDescription(welcomeMessage({ locale, message: data.welcomeMessage, userId: user.id }))
+		.setTitle(welcomeMessageTitle({ displayName: user.displayName, locale, title: data.welcomeMessageTitle }))
+		.setDescription(welcomeMessageDescription({ description: data.welcomeMessageDescription, locale, userId: user.id }))
 		.setThumbnail(user.displayAvatarURL());
 
 export const farewellEmbed = ({ data, embed, locale, user }: FarewellEmbedOptions) =>
 	embed
 		.setColor(Colors.Purple)
-		.setTitle(farewellTitle({ displayName: user.displayName, locale, title: data.farewellTitle }))
-		.setDescription(farewellMessage({ locale, message: data.farewellMessage, userId: user.id }))
+		.setTitle(farewellMessageTitle({ displayName: user.displayName, locale, title: data.farewellMessageTitle }))
+		.setDescription(
+			farewellMessageDescription({ description: data.farewellMessageDescription, locale, userId: user.id }),
+		)
 		.setThumbnail(user.displayAvatarURL());

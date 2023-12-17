@@ -93,19 +93,32 @@ export const ticketsThreads = mysqlTable(
 	}),
 );
 
-export const ticketForumsConfiguration = mysqlTable('ticketForumsConfiguration', {
-	guildId: snowflake('guildId').primaryKey(),
-	channelId: snowflake('channelId').notNull(),
-	managers: jsonWithParsing('managers').$type<string[]>().default([]),
-	openingMessageTitle: varchar('openingMessageTitle', { length: 100 }),
-	openingMessageDescription: varchar('openingMessageDescription', { length: 500 }),
-});
+export const ticketForumsConfigurations = mysqlTable(
+	'ticketForumsConfigurations',
+	{
+		guildId: snowflake('guildId').notNull(),
+		channelId: snowflake('channelId').notNull(),
+		managers: jsonWithParsing('managers').$type<string[]>().default([]),
+		openingMessageTitle: varchar('openingMessageTitle', { length: 100 }),
+		openingMessageDescription: varchar('openingMessageDescription', { length: 500 }),
+	},
+	(table) => ({
+		guildIdIndex: index('guildId_index').on(table.guildId),
+		channelIdIndex: index('channelId_index').on(table.channelId),
+	}),
+);
 
-/**
- * The Planned Tables:
- * 	Welcome and Farewell Config
- * 	Ticket Config (Threads)
- * 	Tickets (Threads)
- * 	Ticket Config (Forums)
- * 	Tickets (Forums)
- */
+export const automaticThreadsConfigurations = mysqlTable(
+	'automaticThreadsConfigurations',
+	{
+		guildId: snowflake('guildId').notNull(),
+		channelId: snowflake('channelId').notNull(),
+		managers: jsonWithParsing('managers').$type<string[]>().default([]),
+		openingMessageTitle: varchar('openingMessageTitle', { length: 100 }),
+		openingMessageDescription: varchar('openingMessageDescription', { length: 500 }),
+	},
+	(table) => ({
+		guildIdIndex: index('guildId_index').on(table.guildId),
+		channelIdIndex: index('channelId_index').on(table.channelId),
+	}),
+);

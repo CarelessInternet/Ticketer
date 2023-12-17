@@ -1,11 +1,11 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "896fae1c-bddb-461b-9144-449600c4104a",
+  "id": "33c1919b-1490-4510-ae9e-dd222c20b738",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "ticketForumsConfiguration": {
-      "name": "ticketForumsConfiguration",
+    "automaticThreadsConfigurations": {
+      "name": "automaticThreadsConfigurations",
       "columns": {
         "guildId": {
           "name": "guildId",
@@ -44,16 +44,84 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "ticketForumsConfiguration_guildId": {
-          "name": "ticketForumsConfiguration_guildId",
+      "indexes": {
+        "guildId_index": {
+          "name": "guildId_index",
           "columns": [
             "guildId"
-          ]
+          ],
+          "isUnique": false
+        },
+        "channelId_index": {
+          "name": "channelId_index",
+          "columns": [
+            "channelId"
+          ],
+          "isUnique": false
         }
       },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "ticketForumsConfigurations": {
+      "name": "ticketForumsConfigurations",
+      "columns": {
+        "guildId": {
+          "name": "guildId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "channelId": {
+          "name": "channelId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "managers": {
+          "name": "managers",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "('[]')"
+        },
+        "openingMessageTitle": {
+          "name": "openingMessageTitle",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "openingMessageDescription": {
+          "name": "openingMessageDescription",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "guildId_index": {
+          "name": "guildId_index",
+          "columns": [
+            "guildId"
+          ],
+          "isUnique": false
+        },
+        "channelId_index": {
+          "name": "channelId_index",
+          "columns": [
+            "channelId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "ticketThreadsCategories": {

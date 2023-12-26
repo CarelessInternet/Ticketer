@@ -7,7 +7,7 @@ export default class extends Event.Handler {
 	public readonly name = Event.Name.GuildMemberRemove;
 
 	public async execute([member]: Event.ArgumentsOf<this['name']>) {
-		const guildId = BigInt(member.guild.id);
+		const { channels, id: guildId, members, preferredLocale } = member.guild;
 		const table = await database.select().from(welcomeAndFarewell).where(eq(welcomeAndFarewell.guildId, guildId));
 		const data = table.at(0);
 
@@ -15,13 +15,13 @@ export default class extends Event.Handler {
 			return;
 		}
 
-		const channel = await member.guild.channels.fetch(data.farewellChannelId.toString());
+		const channel = await channels.fetch(data.farewellChannelId.toString());
 
 		if (!channel?.isTextBased()) {
 			return;
 		}
 
-		const me = await member.guild.members.fetchMe();
+		const me = await members.fetchMe();
 
 		if (!channel.permissionsFor(me).has(PermissionFlagsBits.SendMessages)) {
 			return;
@@ -29,11 +29,11 @@ export default class extends Event.Handler {
 
 		const embed = farewellEmbed({
 			data: {
-				farewellTitle: data.farewellTitle,
-				farewellMessage: data.farewellMessage,
+				farewellMessageTitle: data.farewellMessageTitle,
+				farewellMessageDescription: data.farewellMessageDescription,
 			},
 			embed: super.embed,
-			locale: member.guild.preferredLocale,
+			locale: preferredLocale,
 			user: member.user,
 		});
 

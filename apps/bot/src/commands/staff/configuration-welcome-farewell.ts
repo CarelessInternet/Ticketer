@@ -104,7 +104,7 @@ export default class extends Command.Interaction {
 				return interaction.editReply({ components: [welcomeRow, farewellRow] });
 			}
 			case 'overview': {
-				const guildId = BigInt(interaction.guildId);
+				const { guildId, guildLocale, user } = interaction;
 				const table = await database
 					.select()
 					.from(welcomeAndFarewell)
@@ -114,16 +114,12 @@ export default class extends Command.Interaction {
 
 				if (!result) {
 					return interaction.editReply({
-						embeds: [
-							super
-								.userEmbedError(interaction.user)
-								.setDescription('No welcome/farewell configuration could be found.'),
-						],
+						embeds: [super.userEmbedError(user).setDescription('No welcome/farewell configuration could be found.')],
 					});
 				}
 
 				const generalEmbed = super
-					.userEmbed(interaction.user)
+					.userEmbed(user)
 					.setTitle('General Welcome/Farewell Settings')
 					.setDescription(
 						'This embed shows the configuration for welcome and farewell messages. The next two embeds show examples of the configured welcome and farewell messages.',
@@ -169,8 +165,8 @@ export default class extends Command.Interaction {
 						welcomeMessageDescription: result.welcomeMessageDescription,
 					},
 					embed: super.embed,
-					locale: interaction.guildLocale,
-					user: interaction.user,
+					locale: guildLocale,
+					user,
 				});
 
 				const farewellEmbedExample = farewellEmbed({
@@ -179,8 +175,8 @@ export default class extends Command.Interaction {
 						farewellMessageDescription: result.farewellMessageDescription,
 					},
 					embed: super.embed,
-					locale: interaction.guildLocale,
-					user: interaction.user,
+					locale: guildLocale,
+					user,
 				});
 
 				return interaction.editReply({ embeds: [generalEmbed, welcomeEmbedExample, farewellEmbedExample] });
@@ -203,7 +199,7 @@ export class ComponentInteraction extends Component.Interaction {
 		'farewell_configuration_channel',
 	];
 
-	public execute({ interaction }: Component.Context<'channel' | 'string'>) {
+	public execute({ interaction }: Component.Context) {
 		switch (interaction.customId) {
 			case 'welcome_configuration':
 			case 'farewell_configuration': {
@@ -304,10 +300,10 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private async welcomeAndFarewellConfigurationChannel({ interaction }: Component.Context<'channel'>) {
-		const guildId = BigInt(interaction.guildId);
-		const channelId = BigInt(interaction.channels.at(0)!.id);
+		const { channels, customId, guildId, user } = interaction;
+		const channelId = channels.at(0)!.id;
 
-		const type = interaction.customId.includes('welcome') ? 'welcome' : 'farewell';
+		const type = customId.includes('welcome') ? 'welcome' : 'farewell';
 		const channelDatabaseValue: InsertWithoutGuildId =
 			type === 'welcome' ? { welcomeChannelId: channelId } : { farewellChannelId: channelId };
 
@@ -319,11 +315,9 @@ export class ComponentInteraction extends Component.Interaction {
 			});
 
 		const embed = super
-			.userEmbed(interaction.user)
+			.userEmbed(user)
 			.setTitle('Updated the Welcome/Farewell Configuration')
-			.setDescription(
-				`${userMention(interaction.user.id)} updated the ${type} channel to ${channelMention(channelId.toString())}`,
-			);
+			.setDescription(`${userMention(user.id)} updated the ${type} channel to ${channelMention(channelId.toString())}`);
 
 		return interaction.editReply({ embeds: [embed], components: [] });
 	}
@@ -331,7 +325,7 @@ export class ComponentInteraction extends Component.Interaction {
 	@DeferReply(false)
 	private async welcomeAndFarewellConfigurationEnabled({ interaction }: Component.Context<'string'>) {
 		const type = interaction.customId.includes('welcome_configuration') ? 'welcome' : 'farewell';
-		const guildId = BigInt(interaction.guildId);
+		const { guildId, user } = interaction;
 		const { farewellEnabled, welcomeEnabled } = welcomeAndFarewell;
 
 		await database
@@ -350,16 +344,16 @@ export class ComponentInteraction extends Component.Interaction {
 			});
 
 		const embed = super
-			.userEmbed(interaction.user)
+			.userEmbed(user)
 			.setTitle('Updated the Welcome/Farewell Configuration')
-			.setDescription(`${userMention(interaction.user.id)} has toggled the ${type} enabled option.`);
+			.setDescription(`${userMention(user.id)} has toggled the ${type} enabled option.`);
 
 		return interaction.editReply({ embeds: [embed] });
 	}
 
 	@DeferUpdate
 	private async welcomeConfigurationRoles({ interaction }: Component.Context<'role'>) {
-		const guildId = BigInt(interaction.guildId);
+		const { guildId, user } = interaction;
 		const welcomeNewMemberRoles = interaction.roles.map((role) => role.id);
 
 		await database
@@ -369,12 +363,10 @@ export class ComponentInteraction extends Component.Interaction {
 
 		const roles = welcomeNewMemberRoles.map((id) => roleMention(id)).join(', ');
 		const embed = super
-			.userEmbed(interaction.user)
+			.userEmbed(user)
 			.setTitle('Updated the Welcome Configuration')
 			.setDescription(
-				`${userMention(interaction.user.id)} updated the roles given to new members: ${
-					welcomeNewMemberRoles ? roles : 'none'
-				}`,
+				`${userMention(user.id)} updated the roles given to new members: ${welcomeNewMemberRoles ? roles : 'none'}`,
 			);
 
 		return interaction.editReply({ embeds: [embed], components: [] });
@@ -400,9 +392,8 @@ export class ModalInteraction extends Modal.Interaction {
 
 		switch (modalType) {
 			case 'title': {
-				const guildId = BigInt(interaction.guildId);
-				// eslint-disable-next-line unicorn/no-null
-				const title = interaction.fields.getTextInputValue('message_title') || null;
+				const { fields, guildId, user } = interaction;
+				const title = fields.getTextInputValue('message_title') || undefined;
 				const titleDatabaseValue: InsertWithoutGuildId =
 					type === 'welcome' ? { welcomeMessageTitle: title } : { farewellMessageTitle: title };
 
@@ -412,19 +403,18 @@ export class ModalInteraction extends Modal.Interaction {
 					.onDuplicateKeyUpdate({ set: titleDatabaseValue });
 
 				const embed = super
-					.userEmbed(interaction.user)
+					.userEmbed(user)
 					.setTitle('Updated the Welcome/Farewell Configuration')
 					.setDescription(
-						`${userMention(interaction.user.id)} updated the ${type} message title to` +
+						`${userMention(user.id)} updated the ${type} message title to` +
 							(title ? `:\n\n${inlineCode(title)}` : ' the default title.'),
 					);
 
 				return interaction.editReply({ embeds: [embed] });
 			}
 			case 'description': {
-				const guildId = BigInt(interaction.guildId);
-				// eslint-disable-next-line unicorn/no-null
-				const description = interaction.fields.getTextInputValue('message_description') || null;
+				const { fields, guildId, user } = interaction;
+				const description = fields.getTextInputValue('message_description') || undefined;
 				const descriptionDatabaseValue: InsertWithoutGuildId =
 					type === 'welcome' ? { welcomeMessageDescription: description } : { farewellMessageDescription: description };
 
@@ -434,10 +424,10 @@ export class ModalInteraction extends Modal.Interaction {
 					.onDuplicateKeyUpdate({ set: descriptionDatabaseValue });
 
 				const embed = super
-					.userEmbed(interaction.user)
+					.userEmbed(user)
 					.setTitle('Updated the Welcome/Farewell Configuration')
 					.setDescription(
-						`${userMention(interaction.user.id)} updated the ${type} message description to` +
+						`${userMention(user.id)} updated the ${type} message description to` +
 							(description ? `:\n\n${inlineCode(description)}` : ' the default description.'),
 					);
 

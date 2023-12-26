@@ -11,16 +11,17 @@
 		"migrations:check": "drizzle-kit check:mysql",
 		"migrations:drop": "drizzle-kit drop",
 		"migrations:generate": "drizzle-kit generate:mysql",
-		"migrations:push:development": "dotenv -e ../../.env.database.development.local drizzle-kit push:mysql"
+		"migrations:push:development": "dotenv -e ../../.env.database.development.local drizzle-kit push:mysql",
+		"migrations:up": "drizzle-kit up:mysql"
 	},
 	"dependencies": {
 		"@ticketer/env": "workspace:*",
-		"drizzle-orm": "^0.29.1",
+		"drizzle-orm": "^0.29.2",
 		"mysql2": "^3.6.5"
 	},
 	"devDependencies": {
 		"@ticketer/eslint-config": "workspace:*",
 		"dotenv-cli": "^7.3.0",
-		"drizzle-kit": "^0.20.6"
+		"drizzle-kit": "^0.20.8"
 	}
 }

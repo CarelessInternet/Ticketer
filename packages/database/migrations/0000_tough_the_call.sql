@@ -18,21 +18,21 @@ CREATE TABLE `ticketThreadsCategories` (
 	`id` int unsigned AUTO_INCREMENT NOT NULL,
 	`guildId` bigint unsigned NOT NULL,
 	`categoryEmoji` char,
-	`categoryTitle` varchar(100),
+	`categoryTitle` varchar(100) NOT NULL,
 	`categoryDescription` varchar(100),
 	`channelId` bigint unsigned,
 	`logsChannelId` bigint unsigned,
 	`managers` json NOT NULL DEFAULT ('[]'),
+	`openingMessageTitle` varchar(100),
+	`openingMessageDescription` varchar(500),
 	`privateThreads` boolean NOT NULL DEFAULT true,
-	`ticketTitle` varchar(100),
-	`ticketDescription` varchar(500),
+	`threadNotifications` boolean NOT NULL DEFAULT false,
 	CONSTRAINT `ticketThreadsCategories_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `ticketThreadsConfiguration` (
 	`guildId` bigint unsigned NOT NULL,
 	`activeTickets` tinyint unsigned NOT NULL DEFAULT 1,
-	`threadNotifications` boolean NOT NULL DEFAULT false,
 	CONSTRAINT `ticketThreadsConfiguration_guildId` PRIMARY KEY(`guildId`)
 );
 --> statement-breakpoint

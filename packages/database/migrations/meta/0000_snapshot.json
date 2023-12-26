@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "33c1919b-1490-4510-ae9e-dd222c20b738",
+  "id": "4e00340c-5955-4f85-9b05-0e16841f4340",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "automaticThreadsConfigurations": {
@@ -152,7 +152,7 @@
           "name": "categoryTitle",
           "type": "varchar(100)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "categoryDescription": {
@@ -184,6 +184,20 @@
           "autoincrement": false,
           "default": "('[]')"
         },
+        "openingMessageTitle": {
+          "name": "openingMessageTitle",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "openingMessageDescription": {
+          "name": "openingMessageDescription",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "privateThreads": {
           "name": "privateThreads",
           "type": "boolean",
@@ -192,19 +206,13 @@
           "autoincrement": false,
           "default": true
         },
-        "ticketTitle": {
-          "name": "ticketTitle",
-          "type": "varchar(100)",
+        "threadNotifications": {
+          "name": "threadNotifications",
+          "type": "boolean",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "ticketDescription": {
-          "name": "ticketDescription",
-          "type": "varchar(500)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
         }
       },
       "indexes": {
@@ -258,14 +266,6 @@
           "notNull": true,
           "autoincrement": false,
           "default": 1
-        },
-        "threadNotifications": {
-          "name": "threadNotifications",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": false
         }
       },
       "indexes": {},

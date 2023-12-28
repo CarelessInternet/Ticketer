@@ -4,46 +4,42 @@ import type { welcomeAndFarewell } from '@ticketer/database';
 
 type Columns = typeof welcomeAndFarewell.$inferSelect;
 
-interface BaseWelcomeAndFarewellOptions {
+interface BaseOptions {
 	locale: Locale;
 }
 
-interface TitleOptions extends BaseWelcomeAndFarewellOptions {
+interface TitleOptions extends BaseOptions {
 	displayName: User['displayName'];
 	title: Columns['welcomeMessageTitle'] | Columns['farewellMessageTitle'];
 }
 
-interface MessageOptions extends BaseWelcomeAndFarewellOptions {
+interface DescriptionOptions extends BaseOptions {
 	userId: Snowflake;
 	description: Columns['welcomeMessageDescription'] | Columns['farewellMessageDescription'];
 }
 
 const replaceMember = (text: string, user: string) => text.replaceAll('{member}', user);
+const translations = (locale: BaseOptions['locale']) => translate(locale).events.guildMemberAdd;
 
 // Use the user-defined texts if possible, otherwise use the inbuilt localised texts.
 const welcomeMessageTitle = ({ locale, displayName, title }: TitleOptions) =>
-	title
-		? replaceMember(title, displayName)
-		: translate(locale).events.guildMemberAdd.welcome.title({ member: displayName });
+	title ? replaceMember(title, displayName) : translations(locale).welcome.title({ member: displayName });
 
-const welcomeMessageDescription = ({ description, locale, userId }: MessageOptions) =>
+const welcomeMessageDescription = ({ description, locale, userId }: DescriptionOptions) =>
 	description
 		? replaceMember(description, userMention(userId))
-		: translate(locale).events.guildMemberAdd.welcome.message({ member: userMention(userId) });
+		: translations(locale).welcome.message({ member: userMention(userId) });
 
 const farewellMessageTitle = ({ locale, displayName, title }: TitleOptions) =>
-	title
-		? replaceMember(title, displayName)
-		: translate(locale).events.guildMemberAdd.farewell.title({ member: displayName });
+	title ? replaceMember(title, displayName) : translations(locale).farewell.title({ member: displayName });
 
-const farewellMessageDescription = ({ description, locale, userId }: MessageOptions) =>
+const farewellMessageDescription = ({ description, locale, userId }: DescriptionOptions) =>
 	description
 		? replaceMember(description, userMention(userId))
-		: translate(locale).events.guildMemberAdd.farewell.message({ member: userMention(userId) });
+		: translations(locale).farewell.message({ member: userMention(userId) });
 
-interface BaseWelcomeAndFarewellEmbedOptions {
+interface BaseWelcomeAndFarewellEmbedOptions extends BaseOptions {
 	embed: EmbedBuilder;
-	locale: Locale;
 	user: User;
 }
 

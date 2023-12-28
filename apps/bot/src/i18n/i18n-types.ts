@@ -230,6 +230,23 @@ type RootTranslation = {
 			}
 		}
 	}
+	tickets: {
+		threads: {
+			categories: {
+				/**
+				 * {​c​a​t​e​g​o​r​y​}​:​ ​N​e​w​ ​S​u​p​p​o​r​t​ ​T​i​c​k​e​t
+				 * @param {string} category
+				 */
+				messageTitle: RequiredParams<'category'>
+				/**
+				 * {​m​e​m​b​e​r​}​ ​c​r​e​a​t​e​d​ ​a​ ​n​e​w​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​i​n​ ​t​h​e​ ​{​c​a​t​e​g​o​r​y​}​ ​c​a​t​e​g​o​r​y​!
+				 * @param {string} category
+				 * @param {string} member
+				 */
+				messageDescription: RequiredParams<'category' | 'member'>
+			}
+		}
+	}
 }
 
 export type TranslationFunctions = {
@@ -436,6 +453,20 @@ export type TranslationFunctions = {
 				 * {member} has left the server.
 				 */
 				message: (arg: { member: string }) => LocalizedString
+			}
+		}
+	}
+	tickets: {
+		threads: {
+			categories: {
+				/**
+				 * {category}: New Support Ticket
+				 */
+				messageTitle: (arg: { category: string }) => LocalizedString
+				/**
+				 * {member} created a new support ticket in the {category} category!
+				 */
+				messageDescription: (arg: { category: string, member: string }) => LocalizedString
 			}
 		}
 	}

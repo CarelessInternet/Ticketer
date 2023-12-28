@@ -1,4 +1,4 @@
-import { Colors, EmbedBuilder, User } from 'discord.js';
+import { Colors, EmbedBuilder, type User } from 'discord.js';
 import type { Client } from '.';
 import { env } from 'node:process';
 
@@ -59,7 +59,7 @@ export abstract class Base {
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	protected customId<T>(id: string, dynamicValue?: T) {
-		return dynamicValue ? `{${dynamicValue}}_${id}` : id;
+		return dynamicValue !== undefined && dynamicValue !== null ? `{${dynamicValue}}_${id}` : id;
 	}
 
 	// The return type is `any` because the function should be able to return anything or nothing.

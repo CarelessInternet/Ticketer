@@ -108,6 +108,14 @@ const en_GB = {
 			},
 		},
 	},
+	tickets: {
+		threads: {
+			categories: {
+				messageTitle: '{category:string}: New Support Ticket',
+				messageDescription: '{member:string} created a new support ticket in the {category:string} category!',
+			},
+		},
+	},
 } satisfies BaseTranslation;
 
 export default en_GB;

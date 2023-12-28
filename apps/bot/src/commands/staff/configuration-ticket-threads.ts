@@ -2,6 +2,7 @@ import {
 	ActionRowBuilder,
 	ChannelSelectMenuBuilder,
 	ChannelType,
+	type Locale,
 	ModalBuilder,
 	PermissionFlagsBits,
 	RoleSelectMenuBuilder,
@@ -9,6 +10,7 @@ import {
 	StringSelectMenuOptionBuilder,
 	TextInputBuilder,
 	TextInputStyle,
+	type User,
 	channelMention,
 	roleMention,
 	userMention,
@@ -24,17 +26,26 @@ import {
 } from '@ticketer/djs-framework';
 import {
 	and,
+	asc,
 	count,
 	database,
 	eq,
 	like,
 	not,
+	sql,
 	ticketThreadsCategories,
 	ticketThreadsConfigurations,
 } from '@ticketer/database';
-import { extractEmoji } from '@/utils';
+import {
+	extractEmoji,
+	messageWithPagination,
+	openingMessageDescription,
+	openingMessageTitle,
+	withPagination,
+} from '@/utils';
 
 const MAXIMUM_CATEGORY_AMOUNT = 10;
+const CATEGORY_PAGE_SIZE = 2;
 
 function HasGlobalConfiguration(_: object, __: string, descriptor: PropertyDescriptor) {
 	const original = descriptor.value as () => void;
@@ -47,13 +58,15 @@ function HasGlobalConfiguration(_: object, __: string, descriptor: PropertyDescr
 				.where(eq(ticketThreadsConfigurations.guildId, interaction.guildId));
 
 			if (!row || row.amount <= 0) {
-				return interaction.editReply({
-					embeds: [
-						this.userEmbedError(interaction.user).setDescription(
-							'Please create a global thread ticket configuration before creating categories.',
-						),
-					],
-				});
+				const embed = this.userEmbedError(interaction.user).setDescription(
+					'Please create a global thread ticket configuration before creating categories.',
+				);
+
+				return interaction.deferred
+					? interaction.editReply({
+							embeds: [embed],
+						})
+					: interaction.reply({ embeds: [embed], ephemeral: true });
 			}
 		}
 
@@ -61,6 +74,103 @@ function HasGlobalConfiguration(_: object, __: string, descriptor: PropertyDescr
 	};
 
 	return descriptor;
+}
+
+function categoryViewEmbed(
+	user: User,
+	locale: Locale,
+	embed: BaseInteraction.Interaction['userEmbed'],
+	categories: (typeof ticketThreadsCategories.$inferSelect)[],
+) {
+	return categories.map((category) =>
+		embed(user)
+			.setTitle(`${category.categoryEmoji} ${category.categoryTitle}`)
+			.setDescription(category.categoryDescription)
+			.setFields(
+				{
+					name: 'Category Channel',
+					value: category.channelId ? channelMention(category.channelId) : 'None',
+					inline: true,
+				},
+				{
+					name: 'Logs Channel',
+					value: category.logsChannelId ? channelMention(category.logsChannelId) : 'None',
+					inline: true,
+				},
+				{
+					name: 'Ticket Managers',
+					value: category.managers.length > 0 ? category.managers.map((id) => roleMention(id)).join(', ') : 'None',
+					inline: true,
+				},
+				{
+					name: '\u200B',
+					value: '\u200B',
+				},
+				{
+					name: 'Opening Message Title',
+					value: openingMessageTitle({
+						categoryTitle: category.categoryTitle,
+						displayName: user.displayName,
+						locale,
+						title: category.openingMessageTitle,
+					}),
+					inline: true,
+				},
+				{
+					name: 'Opening Message Description',
+					value: openingMessageDescription({
+						categoryTitle: category.categoryTitle,
+						description: category.openingMessageDescription,
+						locale,
+						userId: user.id,
+					}),
+					inline: true,
+				},
+				{
+					name: '\u200B',
+					value: '\u200B',
+				},
+				{
+					name: 'Private Threads',
+					value: category.privateThreads ? 'Enabled' : 'Disabled',
+					inline: true,
+				},
+				{
+					name: 'Thread Notifications',
+					value: category.threadNotifications ? 'Enabled' : 'Disabled',
+					inline: true,
+				},
+			),
+	);
+}
+
+async function getCategories(
+	{ interaction }: Command.Context | Component.Context,
+	embed: BaseInteraction.Interaction['userEmbed'],
+	customId: BaseInteraction.Interaction['customId'],
+	page: number,
+) {
+	const categories = await withPagination({
+		page,
+		pageSize: CATEGORY_PAGE_SIZE,
+		query: database
+			.select()
+			.from(ticketThreadsCategories)
+			.where(eq(ticketThreadsCategories.guildId, interaction.guildId))
+			.orderBy(asc(ticketThreadsCategories.id))
+			.$dynamic(),
+	});
+
+	const embeds = categoryViewEmbed(interaction.user, interaction.guildLocale, embed, categories);
+	const components = messageWithPagination({
+		previous: { customId: customId('ticket_threads_category_view_previous', page), disabled: page === 0 },
+		next: {
+			customId: customId('ticket_threads_category_view_next', page),
+			disabled: categories.length < CATEGORY_PAGE_SIZE,
+		},
+	});
+
+	return interaction.editReply({ components, embeds });
 }
 
 function categoryFieldsModal<T>(
@@ -244,10 +354,10 @@ export default class extends Command.Interaction {
 		return interaction.editReply({ embeds: [embed] });
 	}
 
-	private async categoriesGroup({ interaction }: Command.Context<'chat'>) {
+	private categoriesGroup({ interaction }: Command.Context<'chat'>) {
 		switch (interaction.options.getSubcommand(true)) {
 			case 'view': {
-				return;
+				return this.categoryViewConfiguration({ interaction });
 			}
 			case 'create': {
 				return categoryFieldsModal(super.customId, { interaction });
@@ -256,7 +366,7 @@ export default class extends Command.Interaction {
 				return this.categoryConfiguration({ interaction });
 			}
 			case 'delete': {
-				return;
+				return this.categoryDelete({ interaction });
 			}
 			default: {
 				return interaction.reply({
@@ -265,6 +375,13 @@ export default class extends Command.Interaction {
 				});
 			}
 		}
+	}
+
+	@DeferReply(false)
+	private async categoryViewConfiguration({ interaction }: Command.Context) {
+		const page = 0;
+
+		return getCategories({ interaction }, super.userEmbed.bind(this), super.customId.bind(this), page);
 	}
 
 	@DeferReply(false)
@@ -319,6 +436,26 @@ export default class extends Command.Interaction {
 
 		return interaction.editReply({ components: [row] });
 	}
+
+	@DeferReply(false)
+	@HasGlobalConfiguration
+	private async categoryDelete({ interaction }: Command.Context<'chat'>) {
+		const id = Number.parseInt(interaction.options.getString('title', true));
+		// TODO: When the MariaDB driver gets released, change the query to use the RETURNING clause.
+		const query = await database
+			.delete(ticketThreadsCategories)
+			.where(sql`${ticketThreadsCategories.id} = ${id} RETURNING ${ticketThreadsCategories.categoryTitle}`);
+
+		const title = (query[0] as unknown as Pick<typeof ticketThreadsCategories.$inferSelect, 'categoryTitle'>[]).at(0)
+			?.categoryTitle;
+
+		const embed = super
+			.userEmbed(interaction.user)
+			.setTitle('Deleted the Thread Ticket Category')
+			.setDescription(`${userMention(interaction.user.id)} deleted the category with the following title: ${title}.`);
+
+		return interaction.editReply({ embeds: [embed] });
+	}
 }
 
 export class AutocompleteInteraction extends Autocomplete.Interaction {
@@ -352,6 +489,8 @@ export class ComponentInteraction extends Component.Interaction {
 		super.dynamicCustomId('ticket_threads_category_configuration_channel'),
 		super.dynamicCustomId('ticket_threads_category_configuration_logs_channel'),
 		super.dynamicCustomId('ticket_threads_category_configuration_managers'),
+		super.dynamicCustomId('ticket_threads_category_view_previous'),
+		super.dynamicCustomId('ticket_threads_category_view_next'),
 	];
 
 	@HasGlobalConfiguration
@@ -368,6 +507,10 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			case super.dynamicCustomId('ticket_threads_category_configuration_managers'): {
 				return interaction.isRoleSelectMenu() && this.categoryManagers({ interaction });
+			}
+			case super.dynamicCustomId('ticket_threads_category_view_previous'):
+			case super.dynamicCustomId('ticket_threads_category_view_next'): {
+				return interaction.isButton() && this.categoryView({ interaction });
 			}
 			default: {
 				return interaction.reply({
@@ -519,22 +662,22 @@ export class ComponentInteraction extends Component.Interaction {
 
 		const titleInput = (row.title ? new TextInputBuilder().setValue(row.title) : new TextInputBuilder())
 			.setCustomId('title')
-			.setLabel('Title')
+			.setLabel('Message Title')
 			.setRequired(true)
 			.setMinLength(1)
 			.setMaxLength(100)
 			.setStyle(TextInputStyle.Short)
-			.setPlaceholder('Write the message title to be used for the category.');
+			.setPlaceholder('Write "{category}" and "{member}" to mention them.');
 		const descriptionInput = (
 			row.description ? new TextInputBuilder().setValue(row.description) : new TextInputBuilder()
 		)
 			.setCustomId('description')
-			.setLabel('Description')
+			.setLabel('Message Description')
 			.setRequired(true)
 			.setMinLength(1)
 			.setMaxLength(500)
 			.setStyle(TextInputStyle.Paragraph)
-			.setPlaceholder('Write the message description to be used for the category.');
+			.setPlaceholder('Write "{category}" and "{member}" to mention them.');
 
 		const row1 = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
 		const row2 = new ActionRowBuilder<TextInputBuilder>().setComponents(descriptionInput);
@@ -568,6 +711,15 @@ export class ComponentInteraction extends Component.Interaction {
 
 		return interaction.editReply({ embeds: [embed] });
 	}
+
+	@DeferUpdate
+	private async categoryView({ interaction }: Component.Context<'button'>) {
+		const { customId, dynamicValue } = super.extractCustomId(interaction.customId);
+		const type = customId.includes('previous') ? 'previous' : 'next';
+		const page = Number.parseInt(dynamicValue!) + (type === 'next' ? 1 : -1);
+
+		return getCategories({ interaction }, super.userEmbed.bind(this), super.customId.bind(this), page);
+	}
 }
 
 export class ModalInteraction extends Modal.Interaction {
@@ -577,6 +729,7 @@ export class ModalInteraction extends Modal.Interaction {
 		super.dynamicCustomId('ticket_threads_category_message'),
 	];
 
+	@DeferReply(false)
 	@HasGlobalConfiguration
 	public async execute({ interaction }: Modal.Context) {
 		const { customId } = super.extractCustomId(interaction.customId);
@@ -598,7 +751,6 @@ export class ModalInteraction extends Modal.Interaction {
 		}
 	}
 
-	@DeferReply(false)
 	private async categoryFields({ interaction }: Modal.Context) {
 		const { customId, fields, guildId, user } = interaction;
 		const { dynamicValue } = super.extractCustomId(customId);
@@ -671,7 +823,6 @@ export class ModalInteraction extends Modal.Interaction {
 		});
 	}
 
-	@DeferReply(false)
 	private async categoryMessageTitleDescription({ interaction }: Modal.Context) {
 		const { customId, fields, user } = interaction;
 		const { dynamicValue } = super.extractCustomId(customId);

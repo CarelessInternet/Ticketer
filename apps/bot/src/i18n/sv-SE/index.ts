@@ -108,6 +108,14 @@ const sv_SE = {
 			},
 		},
 	},
+	tickets: {
+		threads: {
+			categories: {
+				messageTitle: '{category}: Nytt Supportärende',
+				messageDescription: '{member} skapade ett nytt supportärende i {category} kategorin!',
+			},
+		},
+	},
 } satisfies Translation;
 
 export default sv_SE;

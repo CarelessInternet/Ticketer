@@ -21,4 +21,5 @@ export function migrate() {
 }
 
 export * from 'drizzle-orm';
+export type { MySqlSelect } from 'drizzle-orm/mysql-core';
 export * from './schema';

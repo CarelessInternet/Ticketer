@@ -13,7 +13,7 @@ export function DeferUpdate(_: object, __: string, descriptor: PropertyDescripto
 			await interaction.deferUpdate();
 		}
 
-		return await Reflect.apply(original, this, arguments);
+		return Reflect.apply(original, this, arguments);
 	};
 
 	return descriptor;

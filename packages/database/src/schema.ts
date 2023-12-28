@@ -54,7 +54,7 @@ export const welcomeAndFarewell = mysqlTable('welcomeAndFarewell', {
 	farewellEnabled: boolean('farewellEnabled').notNull().default(true),
 });
 
-export const ticketThreadsConfiguration = mysqlTable('ticketThreadsConfiguration', {
+export const ticketThreadsConfigurations = mysqlTable('ticketThreadsConfigurations', {
 	guildId: snowflake('guildId').primaryKey(),
 	activeTickets: tinyint('activeTickets', { unsigned: true }).notNull().default(1),
 });
@@ -64,9 +64,9 @@ export const ticketThreadsCategories = mysqlTable(
 	{
 		id: int('id', { unsigned: true }).autoincrement().primaryKey(),
 		guildId: snowflake('guildId').notNull(),
-		categoryEmoji: char('categoryEmoji'),
+		categoryEmoji: char('categoryEmoji').notNull(),
 		categoryTitle: varchar('categoryTitle', { length: 100 }).notNull(),
-		categoryDescription: varchar('categoryDescription', { length: 100 }),
+		categoryDescription: varchar('categoryDescription', { length: 100 }).notNull(),
 		channelId: snowflake('channelId'),
 		logsChannelId: snowflake('logsChannelId'),
 		managers: jsonWithParsing('managers').$type<string[]>().default([]),
@@ -79,7 +79,7 @@ export const ticketThreadsCategories = mysqlTable(
 		guildIdIndex: index('guildId_index').on(table.guildId),
 		references: foreignKey({
 			columns: [table.guildId],
-			foreignColumns: [ticketThreadsConfiguration.guildId],
+			foreignColumns: [ticketThreadsConfigurations.guildId],
 			name: 'ticket_threads_categories_fk',
 		}),
 	}),

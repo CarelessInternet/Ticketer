@@ -12,7 +12,7 @@ export function DeferReply(ephemeral: boolean) {
 				await interaction.deferReply({ ephemeral });
 			}
 
-			return await Reflect.apply(original, this, arguments);
+			return Reflect.apply(original, this, arguments);
 		};
 
 		return descriptor;

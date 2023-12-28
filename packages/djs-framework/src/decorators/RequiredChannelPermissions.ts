@@ -30,7 +30,7 @@ export function RequiredChannelPermissions(...permissions: PermissionFlagsValues
 					: interaction.reply({ embeds: [embed], ephemeral: true });
 			}
 
-			return await Reflect.apply(original, this, arguments);
+			return Reflect.apply(original, this, arguments);
 		};
 
 		return descriptor;

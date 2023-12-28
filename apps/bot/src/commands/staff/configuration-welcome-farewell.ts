@@ -16,7 +16,7 @@ import {
 } from 'discord.js';
 import { Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
 import { capitalise, farewellEmbed, welcomeEmbed } from '@/utils';
-import { database, eq, sql, welcomeAndFarewell } from '@ticketer/database';
+import { database, eq, not, welcomeAndFarewell } from '@ticketer/database';
 
 type InsertWithoutGuildId = Omit<typeof welcomeAndFarewell.$inferInsert, 'guildId'>;
 
@@ -192,24 +192,26 @@ export default class extends Command.Interaction {
 
 export class ComponentInteraction extends Component.Interaction {
 	public readonly customIds = [
-		'welcome_configuration',
-		'welcome_configuration_channel',
-		'welcome_configuration_roles',
-		'farewell_configuration',
-		'farewell_configuration_channel',
+		super.customId('welcome_configuration'),
+		super.customId('welcome_configuration_channel'),
+		super.customId('welcome_configuration_roles'),
+		super.customId('farewell_configuration'),
+		super.customId('farewell_configuration_channel'),
 	];
 
 	public execute({ interaction }: Component.Context) {
-		switch (interaction.customId) {
-			case 'welcome_configuration':
-			case 'farewell_configuration': {
+		const { customId } = super.extractCustomId(interaction.customId);
+
+		switch (customId) {
+			case super.customId('welcome_configuration'):
+			case super.customId('farewell_configuration'): {
 				return interaction.isStringSelectMenu() && this.welcomeAndFarewellConfiguration({ interaction });
 			}
-			case 'welcome_configuration_channel':
-			case 'farewell_configuration_channel': {
+			case super.customId('welcome_configuration_channel'):
+			case super.customId('farewell_configuration_channel'): {
 				return interaction.isChannelSelectMenu() && this.welcomeAndFarewellConfigurationChannel({ interaction });
 			}
-			case 'welcome_configuration_roles': {
+			case super.customId('welcome_configuration_roles'): {
 				return interaction.isRoleSelectMenu() && this.welcomeConfigurationRoles({ interaction });
 			}
 			default: {
@@ -222,13 +224,14 @@ export class ComponentInteraction extends Component.Interaction {
 	}
 
 	private async welcomeAndFarewellConfiguration({ interaction }: Component.Context<'string'>) {
-		const type = interaction.customId.includes('welcome_configuration') ? 'welcome' : 'farewell';
+		const { customId } = super.extractCustomId(interaction.customId);
+		const type = customId.includes('welcome_configuration') ? 'welcome' : 'farewell';
 		const value = interaction.values.at(0);
 
 		switch (value) {
 			case 'channel': {
 				const channelSelectMenu = new ChannelSelectMenuBuilder()
-					.setCustomId(`${type}_configuration_channel`)
+					.setCustomId(super.customId(`${type}_configuration_channel`))
 					.setMinValues(1)
 					.setMaxValues(1)
 					.setPlaceholder(`Choose a channel for ${type} messages.`)
@@ -240,7 +243,7 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			case 'title': {
 				const titleInput = new TextInputBuilder()
-					.setCustomId('message_title')
+					.setCustomId(super.customId('message_title'))
 					.setLabel('Message Title')
 					.setRequired(false)
 					.setMinLength(1)
@@ -250,7 +253,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 				const titleRow = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
 				const titleModal = new ModalBuilder()
-					.setCustomId(`${type}_message_title`)
+					.setCustomId(super.customId(`${type}_message_title`))
 					.setTitle(`${capitalise(type)} Message Title`)
 					.setComponents(titleRow);
 
@@ -258,7 +261,7 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			case 'description': {
 				const descriptionInput = new TextInputBuilder()
-					.setCustomId('message_description')
+					.setCustomId(super.customId('message_description'))
 					.setLabel('Message Description')
 					.setRequired(false)
 					.setMinLength(1)
@@ -268,7 +271,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 				const descriptionRow = new ActionRowBuilder<TextInputBuilder>().setComponents(descriptionInput);
 				const descriptionModal = new ModalBuilder()
-					.setCustomId(`${type}_message_description`)
+					.setCustomId(super.customId(`${type}_message_description`))
 					.setTitle(`${capitalise(type)} Message Description`)
 					.setComponents(descriptionRow);
 
@@ -276,7 +279,7 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			case 'roles': {
 				const rolesSelectMenu = new RoleSelectMenuBuilder()
-					.setCustomId('welcome_configuration_roles')
+					.setCustomId(super.customId('welcome_configuration_roles'))
 					.setMinValues(0)
 					.setMaxValues(10)
 					.setPlaceholder('Choose the roles that new members receive.');
@@ -286,7 +289,7 @@ export class ComponentInteraction extends Component.Interaction {
 				return interaction.reply({ components: [rolesRow] });
 			}
 			case 'enabled': {
-				return this.welcomeAndFarewellConfigurationEnabled({ interaction });
+				return this.welcomeAndFarewellConfigurationToggle({ interaction });
 			}
 			default: {
 				return interaction.reply({
@@ -300,7 +303,8 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private async welcomeAndFarewellConfigurationChannel({ interaction }: Component.Context<'channel'>) {
-		const { channels, customId, guildId, user } = interaction;
+		const { channels, customId: id, guildId, user } = interaction;
+		const { customId } = super.extractCustomId(id);
 		const channelId = channels.at(0)!.id;
 
 		const type = customId.includes('welcome') ? 'welcome' : 'farewell';
@@ -323,10 +327,11 @@ export class ComponentInteraction extends Component.Interaction {
 	}
 
 	@DeferReply(false)
-	private async welcomeAndFarewellConfigurationEnabled({ interaction }: Component.Context<'string'>) {
-		const type = interaction.customId.includes('welcome_configuration') ? 'welcome' : 'farewell';
-		const { guildId, user } = interaction;
+	private async welcomeAndFarewellConfigurationToggle({ interaction }: Component.Context<'string'>) {
 		const { farewellEnabled, welcomeEnabled } = welcomeAndFarewell;
+		const { customId: id, guildId, user } = interaction;
+		const { customId } = super.extractCustomId(id);
+		const type = customId.includes('welcome_configuration') ? 'welcome' : 'farewell';
 
 		await database
 			.insert(welcomeAndFarewell)
@@ -337,10 +342,7 @@ export class ComponentInteraction extends Component.Interaction {
 					: { farewellEnabled: !farewellEnabled.default }),
 			})
 			.onDuplicateKeyUpdate({
-				set:
-					type === 'welcome'
-						? { welcomeEnabled: sql.raw(`NOT ${welcomeEnabled.name}`) }
-						: { farewellEnabled: sql.raw(`NOT ${farewellEnabled.name}`) },
+				set: type === 'welcome' ? { welcomeEnabled: not(welcomeEnabled) } : { farewellEnabled: not(farewellEnabled) },
 			});
 
 		const embed = super
@@ -366,7 +368,9 @@ export class ComponentInteraction extends Component.Interaction {
 			.userEmbed(user)
 			.setTitle('Updated the Welcome Configuration')
 			.setDescription(
-				`${userMention(user.id)} updated the roles given to new members: ${welcomeNewMemberRoles ? roles : 'none'}`,
+				`${userMention(user.id)} updated the roles given to new members: ${
+					welcomeNewMemberRoles.length > 0 ? roles : 'none'
+				}`,
 			);
 
 		return interaction.editReply({ embeds: [embed], components: [] });
@@ -375,18 +379,19 @@ export class ComponentInteraction extends Component.Interaction {
 
 export class ModalInteraction extends Modal.Interaction {
 	public readonly customIds = [
-		'welcome_message_title',
-		'welcome_message_description',
-		'farewell_message_title',
-		'farewell_message_description',
+		super.customId('welcome_message_title'),
+		super.customId('welcome_message_description'),
+		super.customId('farewell_message_title'),
+		super.customId('farewell_message_description'),
 	];
 
 	@DeferReply(false)
 	public async execute({ interaction }: Modal.Context) {
-		const type = interaction.customId.includes('welcome') ? 'welcome' : 'farewell';
-		const modalType = interaction.customId.includes('title')
+		const { customId } = super.extractCustomId(interaction.customId);
+		const type = customId.includes('welcome') ? 'welcome' : 'farewell';
+		const modalType = customId.includes('title')
 			? 'title'
-			: interaction.customId.includes('description')
+			: customId.includes('description')
 				? 'description'
 				: undefined;
 

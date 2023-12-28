@@ -18,5 +18,5 @@ export interface Context {
 	interaction: ModalSubmitInteraction<'cached'>;
 }
 
-export type CustomIds = string[];
+export type CustomIds = BaseInteraction.CustomIds;
 export type Constructable = new (...arguments_: ConstructorParameters<typeof Interaction>) => Interaction;

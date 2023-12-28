@@ -41,5 +41,5 @@ export interface Context<T extends ComponentTypes = undefined> {
 							: MessageComponentInteraction<'cached'>;
 }
 
-export type CustomIds = string[];
+export type CustomIds = BaseInteraction.CustomIds;
 export type Constructable = new (...arguments_: ConstructorParameters<typeof Interaction>) => Interaction;

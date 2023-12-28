@@ -3,7 +3,7 @@ import { Base } from '..';
 
 /**
  * Provides the base layer for all interactions. Interactions are separated based on the interaction type.
- * @description Make sure interactions are in cached guilds (@see {@link BaseInteraction.inCachedGuild}).
+ * @description Make sure the interactions are in cached guilds (@see {@link BaseInteraction.inCachedGuild}).
  * @see {@link https://discord.js.org/#/docs/discord.js/main/class/BaseInteraction}
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InteractionType}
  */
@@ -20,4 +20,5 @@ export interface Context {
 	interaction: BaseInteraction<'cached'>;
 }
 
+export type CustomIds = string[];
 export type Constructable = new (...arguments_: ConstructorParameters<typeof Interaction>) => Interaction;

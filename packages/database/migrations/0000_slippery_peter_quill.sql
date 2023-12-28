@@ -17,9 +17,9 @@ CREATE TABLE `ticketForumsConfigurations` (
 CREATE TABLE `ticketThreadsCategories` (
 	`id` int unsigned AUTO_INCREMENT NOT NULL,
 	`guildId` bigint unsigned NOT NULL,
-	`categoryEmoji` char,
+	`categoryEmoji` char NOT NULL,
 	`categoryTitle` varchar(100) NOT NULL,
-	`categoryDescription` varchar(100),
+	`categoryDescription` varchar(100) NOT NULL,
 	`channelId` bigint unsigned,
 	`logsChannelId` bigint unsigned,
 	`managers` json NOT NULL DEFAULT ('[]'),
@@ -30,10 +30,10 @@ CREATE TABLE `ticketThreadsCategories` (
 	CONSTRAINT `ticketThreadsCategories_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-CREATE TABLE `ticketThreadsConfiguration` (
+CREATE TABLE `ticketThreadsConfigurations` (
 	`guildId` bigint unsigned NOT NULL,
 	`activeTickets` tinyint unsigned NOT NULL DEFAULT 1,
-	CONSTRAINT `ticketThreadsConfiguration_guildId` PRIMARY KEY(`guildId`)
+	CONSTRAINT `ticketThreadsConfigurations_guildId` PRIMARY KEY(`guildId`)
 );
 --> statement-breakpoint
 CREATE TABLE `ticketsThreads` (
@@ -68,5 +68,5 @@ CREATE INDEX `guildId_index` ON `ticketThreadsCategories` (`guildId`);--> statem
 CREATE INDEX `authorId_index` ON `ticketsThreads` (`authorId`);--> statement-breakpoint
 CREATE INDEX `categoryId_index` ON `ticketsThreads` (`categoryId`);--> statement-breakpoint
 CREATE INDEX `guildId_index` ON `ticketsThreads` (`guildId`);--> statement-breakpoint
-ALTER TABLE `ticketThreadsCategories` ADD CONSTRAINT `ticket_threads_categories_fk` FOREIGN KEY (`guildId`) REFERENCES `ticketThreadsConfiguration`(`guildId`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `ticketThreadsCategories` ADD CONSTRAINT `ticket_threads_categories_fk` FOREIGN KEY (`guildId`) REFERENCES `ticketThreadsConfigurations`(`guildId`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `ticketsThreads` ADD CONSTRAINT `tickets_threads_fk` FOREIGN KEY (`guildId`,`categoryId`) REFERENCES `ticketThreadsCategories`(`guildId`,`id`) ON DELETE no action ON UPDATE no action;

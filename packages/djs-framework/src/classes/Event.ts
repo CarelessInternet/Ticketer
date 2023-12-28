@@ -6,7 +6,7 @@ import type { ClientEvents } from 'discord.js';
  */
 export abstract class Handler extends Base {
 	public readonly once: boolean = false;
-	// Would use the Events enum, but the <Client>.on event only takes in "keyof ClientEvents."
+	// Would use the Events enum, but the <Client>.on event only takes in "keyof ClientEvents".
 	public abstract readonly name: keyof ClientEvents;
 }
 

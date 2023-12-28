@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "4e00340c-5955-4f85-9b05-0e16841f4340",
+  "id": "97ab8d31-e2f3-469c-9966-c7bdc1cc774e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "automaticThreadsConfigurations": {
@@ -145,7 +145,7 @@
           "name": "categoryEmoji",
           "type": "char",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "categoryTitle": {
@@ -159,7 +159,7 @@
           "name": "categoryDescription",
           "type": "varchar(100)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "channelId": {
@@ -228,7 +228,7 @@
         "ticket_threads_categories_fk": {
           "name": "ticket_threads_categories_fk",
           "tableFrom": "ticketThreadsCategories",
-          "tableTo": "ticketThreadsConfiguration",
+          "tableTo": "ticketThreadsConfigurations",
           "columnsFrom": [
             "guildId"
           ],
@@ -249,8 +249,8 @@
       },
       "uniqueConstraints": {}
     },
-    "ticketThreadsConfiguration": {
-      "name": "ticketThreadsConfiguration",
+    "ticketThreadsConfigurations": {
+      "name": "ticketThreadsConfigurations",
       "columns": {
         "guildId": {
           "name": "guildId",
@@ -271,8 +271,8 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "ticketThreadsConfiguration_guildId": {
-          "name": "ticketThreadsConfiguration_guildId",
+        "ticketThreadsConfigurations_guildId": {
+          "name": "ticketThreadsConfigurations_guildId",
           "columns": [
             "guildId"
           ]

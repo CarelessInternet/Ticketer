@@ -23,7 +23,8 @@ export default class extends Event.Handler {
 			}
 
 			if (interaction.isMessageComponent()) {
-				return this.client.components.get(interaction.customId)?.execute({ interaction });
+				const { customId } = super.extractCustomId(interaction.customId);
+				return this.client.components.get(customId)?.execute({ interaction });
 			}
 
 			if (interaction.isAutocomplete()) {
@@ -31,7 +32,8 @@ export default class extends Event.Handler {
 			}
 
 			if (interaction.isModalSubmit()) {
-				return this.client.modals.get(interaction.customId)?.execute({ interaction });
+				const { customId } = super.extractCustomId(interaction.customId);
+				return this.client.modals.get(customId)?.execute({ interaction });
 			}
 		}
 	}

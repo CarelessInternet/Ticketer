@@ -1,5 +1,7 @@
 import type { BaseTranslation } from '../i18n-types.js';
 
+const ERROR_TITLE = 'An Error Occured';
+
 const en_GB = {
 	commands: {
 		help: {
@@ -90,6 +92,12 @@ const en_GB = {
 				],
 			},
 		},
+		ticket: {
+			data: {
+				name: 'ticket',
+				description: 'Create a support ticket within a category.',
+			},
+		},
 	},
 	events: {
 		interactionCreate: {
@@ -111,8 +119,34 @@ const en_GB = {
 	tickets: {
 		threads: {
 			categories: {
-				messageTitle: '{category:string}: New Support Ticket',
-				messageDescription: '{member:string} created a new support ticket in the {category:string} category!',
+				configuration: {
+					openingMessage: {
+						title: '{category:string}: New Support Ticket',
+						description: '{member:string} created a new support ticket in the {category:string} category!',
+					},
+				},
+				categoryList: {
+					placeholder: 'Select a category to create a ticket within.',
+				},
+				createModal: {
+					title: {
+						label: 'Title',
+						placeholder: 'Write a title to be used in the ticket.',
+					},
+					description: {
+						label: 'Description',
+						placeholder: 'Write a description to be used in the ticket.',
+					},
+					modalTitle: 'Ticket Title & Description',
+				},
+				createTicket: {
+					errors: {
+						invalidId: {
+							title: ERROR_TITLE,
+							description: 'The category ID is not valid.',
+						},
+					},
+				},
 			},
 		},
 	},

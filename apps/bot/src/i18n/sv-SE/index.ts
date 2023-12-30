@@ -1,5 +1,7 @@
 import type { Translation } from '../i18n-types.js';
 
+const ERROR_TITLE = 'Ett Fel Uppstod';
+
 const sv_SE = {
 	commands: {
 		help: {
@@ -90,6 +92,12 @@ const sv_SE = {
 				],
 			},
 		},
+		ticket: {
+			data: {
+				name: 'biljett',
+				description: 'Skapa en stödbiljett inom en kategori.',
+			},
+		},
 	},
 	events: {
 		interactionCreate: {
@@ -111,8 +119,34 @@ const sv_SE = {
 	tickets: {
 		threads: {
 			categories: {
-				messageTitle: '{category}: Nytt Supportärende',
-				messageDescription: '{member} skapade ett nytt supportärende i {category} kategorin!',
+				configuration: {
+					openingMessage: {
+						title: '{category}: Nytt Supportärende',
+						description: '{member} skapade ett nytt supportärende i {category} kategorin!',
+					},
+				},
+				categoryList: {
+					placeholder: 'Välj en kategori för att skapa en stödjbiljett i.',
+				},
+				createModal: {
+					title: {
+						label: 'Titel',
+						placeholder: 'Skriv en titel som ska användas i stödbiljetten.',
+					},
+					description: {
+						label: 'Beskrivning',
+						placeholder: 'Skrive en beskrivning som ska användas i stödbiljetten.',
+					},
+					modalTitle: 'Stödbiljett Titel & Beskrivning',
+				},
+				createTicket: {
+					errors: {
+						invalidId: {
+							title: ERROR_TITLE,
+							description: 'Kategori-ID:t är inte giltigt.',
+						},
+					},
+				},
 			},
 		},
 	},

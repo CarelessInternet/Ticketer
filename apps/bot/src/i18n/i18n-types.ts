@@ -193,6 +193,18 @@ type RootTranslation = {
 				}
 			}
 		}
+		ticket: {
+			data: {
+				/**
+				 * t​i​c​k​e​t
+				 */
+				name: string
+				/**
+				 * C​r​e​a​t​e​ ​a​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​w​i​t​h​i​n​ ​a​ ​c​a​t​e​g​o​r​y​.
+				 */
+				description: string
+			}
+		}
 	}
 	events: {
 		interactionCreate: {
@@ -233,17 +245,67 @@ type RootTranslation = {
 	tickets: {
 		threads: {
 			categories: {
-				/**
-				 * {​c​a​t​e​g​o​r​y​}​:​ ​N​e​w​ ​S​u​p​p​o​r​t​ ​T​i​c​k​e​t
-				 * @param {string} category
-				 */
-				messageTitle: RequiredParams<'category'>
-				/**
-				 * {​m​e​m​b​e​r​}​ ​c​r​e​a​t​e​d​ ​a​ ​n​e​w​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​i​n​ ​t​h​e​ ​{​c​a​t​e​g​o​r​y​}​ ​c​a​t​e​g​o​r​y​!
-				 * @param {string} category
-				 * @param {string} member
-				 */
-				messageDescription: RequiredParams<'category' | 'member'>
+				configuration: {
+					openingMessage: {
+						/**
+						 * {​c​a​t​e​g​o​r​y​}​:​ ​N​e​w​ ​S​u​p​p​o​r​t​ ​T​i​c​k​e​t
+						 * @param {string} category
+						 */
+						title: RequiredParams<'category'>
+						/**
+						 * {​m​e​m​b​e​r​}​ ​c​r​e​a​t​e​d​ ​a​ ​n​e​w​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​i​n​ ​t​h​e​ ​{​c​a​t​e​g​o​r​y​}​ ​c​a​t​e​g​o​r​y​!
+						 * @param {string} category
+						 * @param {string} member
+						 */
+						description: RequiredParams<'category' | 'member'>
+					}
+				}
+				categoryList: {
+					/**
+					 * S​e​l​e​c​t​ ​a​ ​c​a​t​e​g​o​r​y​ ​t​o​ ​c​r​e​a​t​e​ ​a​ ​t​i​c​k​e​t​ ​w​i​t​h​i​n​.
+					 */
+					placeholder: string
+				}
+				createModal: {
+					title: {
+						/**
+						 * T​i​t​l​e
+						 */
+						label: string
+						/**
+						 * W​r​i​t​e​ ​a​ ​t​i​t​l​e​ ​t​o​ ​b​e​ ​u​s​e​d​ ​i​n​ ​t​h​e​ ​t​i​c​k​e​t​.
+						 */
+						placeholder: string
+					}
+					description: {
+						/**
+						 * D​e​s​c​r​i​p​t​i​o​n
+						 */
+						label: string
+						/**
+						 * W​r​i​t​e​ ​a​ ​d​e​s​c​r​i​p​t​i​o​n​ ​t​o​ ​b​e​ ​u​s​e​d​ ​i​n​ ​t​h​e​ ​t​i​c​k​e​t​.
+						 */
+						placeholder: string
+					}
+					/**
+					 * T​i​c​k​e​t​ ​T​i​t​l​e​ ​&​ ​D​e​s​c​r​i​p​t​i​o​n
+					 */
+					modalTitle: string
+				}
+				createTicket: {
+					errors: {
+						invalidId: {
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 */
+							title: string
+							/**
+							 * T​h​e​ ​c​a​t​e​g​o​r​y​ ​I​D​ ​i​s​ ​n​o​t​ ​v​a​l​i​d​.
+							 */
+							description: string
+						}
+					}
+				}
 			}
 		}
 	}
@@ -423,6 +485,18 @@ export type TranslationFunctions = {
 				}
 			}
 		}
+		ticket: {
+			data: {
+				/**
+				 * ticket
+				 */
+				name: () => LocalizedString
+				/**
+				 * Create a support ticket within a category.
+				 */
+				description: () => LocalizedString
+			}
+		}
 	}
 	events: {
 		interactionCreate: {
@@ -459,14 +533,64 @@ export type TranslationFunctions = {
 	tickets: {
 		threads: {
 			categories: {
-				/**
-				 * {category}: New Support Ticket
-				 */
-				messageTitle: (arg: { category: string }) => LocalizedString
-				/**
-				 * {member} created a new support ticket in the {category} category!
-				 */
-				messageDescription: (arg: { category: string, member: string }) => LocalizedString
+				configuration: {
+					openingMessage: {
+						/**
+						 * {category}: New Support Ticket
+						 */
+						title: (arg: { category: string }) => LocalizedString
+						/**
+						 * {member} created a new support ticket in the {category} category!
+						 */
+						description: (arg: { category: string, member: string }) => LocalizedString
+					}
+				}
+				categoryList: {
+					/**
+					 * Select a category to create a ticket within.
+					 */
+					placeholder: () => LocalizedString
+				}
+				createModal: {
+					title: {
+						/**
+						 * Title
+						 */
+						label: () => LocalizedString
+						/**
+						 * Write a title to be used in the ticket.
+						 */
+						placeholder: () => LocalizedString
+					}
+					description: {
+						/**
+						 * Description
+						 */
+						label: () => LocalizedString
+						/**
+						 * Write a description to be used in the ticket.
+						 */
+						placeholder: () => LocalizedString
+					}
+					/**
+					 * Ticket Title & Description
+					 */
+					modalTitle: () => LocalizedString
+				}
+				createTicket: {
+					errors: {
+						invalidId: {
+							/**
+							 * An Error Occured
+							 */
+							title: () => LocalizedString
+							/**
+							 * The category ID is not valid.
+							 */
+							description: () => LocalizedString
+						}
+					}
+				}
 			}
 		}
 	}

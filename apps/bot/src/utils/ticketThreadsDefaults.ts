@@ -41,18 +41,21 @@ const replaceMessageTitle = ({ categoryTitle, messageTitle, displayName }: Repla
 const replaceMessageDescription = ({ categoryTitle, messageDescription, user }: ReplaceDescriptionOptions) =>
 	replaceMember(replaceMessageCategory(messageDescription, categoryTitle), userMention(user));
 
-const translations = (locale: BaseOptions['locale']) => translate(locale).tickets.threads.categories;
+const translations = (locale: BaseOptions['locale']) => translate(locale).tickets.threads.categories.configuration;
 
 // Use the user-defined texts if possible, otherwise use the inbuilt localised texts.
 export const openingMessageTitle = ({ categoryTitle, displayName, locale, title }: MessageTitleOptions) =>
 	title
 		? replaceMessageTitle({ categoryTitle, displayName, messageTitle: title })
-		: translations(locale).messageTitle({ category: categoryTitle });
+		: translations(locale).openingMessage.title({ category: categoryTitle });
 
 export const openingMessageDescription = ({ categoryTitle, description, locale, userId }: MessageDescriptionOptions) =>
 	description
 		? replaceMessageDescription({ categoryTitle, messageDescription: description, user: userId })
-		: translations(locale).messageDescription({ category: inlineCode(categoryTitle), member: userMention(userId) });
+		: translations(locale).openingMessage.description({
+				category: inlineCode(categoryTitle),
+				member: userMention(userId),
+			});
 
 interface MessageEmbedOptions extends BaseOptions, BaseMessageOptions {
 	description: MessageDescriptionOptions['description'];

@@ -145,6 +145,47 @@ const en_GB = {
 							title: ERROR_TITLE,
 							description: 'The category ID is not valid.',
 						},
+						noConfiguration: {
+							title: ERROR_TITLE,
+							description: 'The global or category configuration could not be found.',
+						},
+						noManagers: {
+							title: ERROR_TITLE,
+							description: 'There are no managers to add to the support ticket.',
+						},
+						invalidChannel: {
+							title: ERROR_TITLE,
+							description: 'The ticket channel does not exist or is not a text channel.',
+						},
+						noPermissions: {
+							title: ERROR_TITLE,
+							description:
+								"I don't have the required permissions in the channel to create a ticket: {permissions:string}.",
+						},
+						tooManyTickets: {
+							title: ERROR_TITLE,
+							description: 'You have too many tickets, you may not have more than {amount:number}.',
+						},
+					},
+					buttons: {
+						lock: {
+							label: 'Lock',
+						},
+						close: {
+							label: 'Close',
+						},
+						delete: {
+							label: 'Delete',
+						},
+					},
+					ticketCreated: {
+						title: 'Ticket Created!',
+						user: {
+							description: 'Your support ticket has been created! View it at {channel:string}.',
+						},
+						logs: {
+							description: '{member:string} has created a ticket! View it at {channel:string}.',
+						},
 					},
 				},
 			},

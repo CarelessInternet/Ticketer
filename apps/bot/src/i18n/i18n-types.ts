@@ -304,6 +304,99 @@ type RootTranslation = {
 							 */
 							description: string
 						}
+						noConfiguration: {
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 */
+							title: string
+							/**
+							 * T​h​e​ ​g​l​o​b​a​l​ ​o​r​ ​c​a​t​e​g​o​r​y​ ​c​o​n​f​i​g​u​r​a​t​i​o​n​ ​c​o​u​l​d​ ​n​o​t​ ​b​e​ ​f​o​u​n​d​.
+							 */
+							description: string
+						}
+						noManagers: {
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 */
+							title: string
+							/**
+							 * T​h​e​r​e​ ​a​r​e​ ​n​o​ ​m​a​n​a​g​e​r​s​ ​t​o​ ​a​d​d​ ​t​o​ ​t​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​.
+							 */
+							description: string
+						}
+						invalidChannel: {
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 */
+							title: string
+							/**
+							 * T​h​e​ ​t​i​c​k​e​t​ ​c​h​a​n​n​e​l​ ​d​o​e​s​ ​n​o​t​ ​e​x​i​s​t​ ​o​r​ ​i​s​ ​n​o​t​ ​a​ ​t​e​x​t​ ​c​h​a​n​n​e​l​.
+							 */
+							description: string
+						}
+						noPermissions: {
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 */
+							title: string
+							/**
+							 * I​ ​d​o​n​'​t​ ​h​a​v​e​ ​t​h​e​ ​r​e​q​u​i​r​e​d​ ​p​e​r​m​i​s​s​i​o​n​s​ ​i​n​ ​t​h​e​ ​c​h​a​n​n​e​l​ ​t​o​ ​c​r​e​a​t​e​ ​a​ ​t​i​c​k​e​t​:​ ​{​p​e​r​m​i​s​s​i​o​n​s​}​.
+							 * @param {string} permissions
+							 */
+							description: RequiredParams<'permissions'>
+						}
+						tooManyTickets: {
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 */
+							title: string
+							/**
+							 * Y​o​u​ ​h​a​v​e​ ​t​o​o​ ​m​a​n​y​ ​t​i​c​k​e​t​s​,​ ​y​o​u​ ​m​a​y​ ​n​o​t​ ​h​a​v​e​ ​m​o​r​e​ ​t​h​a​n​ ​{​a​m​o​u​n​t​}​.
+							 * @param {number} amount
+							 */
+							description: RequiredParams<'amount'>
+						}
+					}
+					buttons: {
+						lock: {
+							/**
+							 * L​o​c​k
+							 */
+							label: string
+						}
+						close: {
+							/**
+							 * C​l​o​s​e
+							 */
+							label: string
+						}
+						'delete': {
+							/**
+							 * D​e​l​e​t​e
+							 */
+							label: string
+						}
+					}
+					ticketCreated: {
+						/**
+						 * T​i​c​k​e​t​ ​C​r​e​a​t​e​d​!
+						 */
+						title: string
+						user: {
+							/**
+							 * Y​o​u​r​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​h​a​s​ ​b​e​e​n​ ​c​r​e​a​t​e​d​!​ ​V​i​e​w​ ​i​t​ ​a​t​ ​{​c​h​a​n​n​e​l​}​.
+							 * @param {string} channel
+							 */
+							description: RequiredParams<'channel'>
+						}
+						logs: {
+							/**
+							 * {​m​e​m​b​e​r​}​ ​h​a​s​ ​c​r​e​a​t​e​d​ ​a​ ​t​i​c​k​e​t​!​ ​V​i​e​w​ ​i​t​ ​a​t​ ​{​c​h​a​n​n​e​l​}​.
+							 * @param {string} channel
+							 * @param {string} member
+							 */
+							description: RequiredParams<'channel' | 'member'>
+						}
 					}
 				}
 			}
@@ -588,6 +681,94 @@ export type TranslationFunctions = {
 							 * The category ID is not valid.
 							 */
 							description: () => LocalizedString
+						}
+						noConfiguration: {
+							/**
+							 * An Error Occured
+							 */
+							title: () => LocalizedString
+							/**
+							 * The global or category configuration could not be found.
+							 */
+							description: () => LocalizedString
+						}
+						noManagers: {
+							/**
+							 * An Error Occured
+							 */
+							title: () => LocalizedString
+							/**
+							 * There are no managers to add to the support ticket.
+							 */
+							description: () => LocalizedString
+						}
+						invalidChannel: {
+							/**
+							 * An Error Occured
+							 */
+							title: () => LocalizedString
+							/**
+							 * The ticket channel does not exist or is not a text channel.
+							 */
+							description: () => LocalizedString
+						}
+						noPermissions: {
+							/**
+							 * An Error Occured
+							 */
+							title: () => LocalizedString
+							/**
+							 * I don't have the required permissions in the channel to create a ticket: {permissions}.
+							 */
+							description: (arg: { permissions: string }) => LocalizedString
+						}
+						tooManyTickets: {
+							/**
+							 * An Error Occured
+							 */
+							title: () => LocalizedString
+							/**
+							 * You have too many tickets, you may not have more than {amount}.
+							 */
+							description: (arg: { amount: number }) => LocalizedString
+						}
+					}
+					buttons: {
+						lock: {
+							/**
+							 * Lock
+							 */
+							label: () => LocalizedString
+						}
+						close: {
+							/**
+							 * Close
+							 */
+							label: () => LocalizedString
+						}
+						'delete': {
+							/**
+							 * Delete
+							 */
+							label: () => LocalizedString
+						}
+					}
+					ticketCreated: {
+						/**
+						 * Ticket Created!
+						 */
+						title: () => LocalizedString
+						user: {
+							/**
+							 * Your support ticket has been created! View it at {channel}.
+							 */
+							description: (arg: { channel: string }) => LocalizedString
+						}
+						logs: {
+							/**
+							 * {member} has created a ticket! View it at {channel}.
+							 */
+							description: (arg: { channel: string, member: string }) => LocalizedString
 						}
 					}
 				}

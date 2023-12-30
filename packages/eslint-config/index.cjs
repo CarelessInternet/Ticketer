@@ -18,6 +18,12 @@ module.exports = {
 	ignorePatterns: ['node_modules/'],
 	rules: {
 		'@typescript-eslint/consistent-type-imports': 'error',
+		'drizzle/enforce-delete-with-where': [
+			'error',
+			{
+				drizzleObjectName: ['database'],
+			},
+		],
 		'no-warning-comments': 'warn',
 		'prefer-rest-params': 'off',
 		'prettier/prettier': 'error',

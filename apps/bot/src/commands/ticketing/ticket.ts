@@ -49,38 +49,63 @@ export default class extends Command.Interaction {
 }
 
 export class ComponentInteraction extends Component.Interaction {
-	public readonly customIds = [super.customId('ticket_threads_categories_create_list')];
+	public readonly customIds = [
+		super.customId('ticket_threads_categories_create_list'),
+		super.customId('ticket_threads_category_create_rename_title'),
+		super.customId('ticket_threads_category_create_lock'),
+		super.customId('ticket_threads_category_create_close'),
+		super.customId('ticket_threads_category_create_delete'),
+	];
 
 	public execute({ interaction }: Component.Context<'string'>) {
-		const translations = translate(interaction.locale).tickets.threads.categories.createModal;
-		const id = interaction.values.at(0)!;
+		const baseTranslations = translate(interaction.locale).tickets.threads.categories;
 
-		const titleInput = new TextInputBuilder()
-			.setCustomId('title')
-			.setLabel(translations.title.label())
-			.setRequired(true)
-			.setMinLength(1)
-			.setMaxLength(200)
-			.setStyle(TextInputStyle.Short)
-			.setPlaceholder(translations.title.placeholder());
-		const descriptonInput = new TextInputBuilder()
-			.setCustomId('description')
-			.setLabel(translations.description.label())
-			.setRequired(true)
-			.setMinLength(1)
-			.setMaxLength(2000)
-			.setStyle(TextInputStyle.Paragraph)
-			.setPlaceholder(translations.description.placeholder());
+		switch (interaction.customId) {
+			case super.customId('ticket_threads_categories_create_list'): {
+				const translations = baseTranslations.createModal;
+				const id = interaction.values.at(0)!;
 
-		const titleRow = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
-		const descriptionRow = new ActionRowBuilder<TextInputBuilder>().setComponents(descriptonInput);
+				const titleInput = new TextInputBuilder()
+					.setCustomId('title')
+					.setLabel(translations.title.label())
+					.setRequired(true)
+					.setMinLength(1)
+					.setMaxLength(200)
+					.setStyle(TextInputStyle.Short)
+					.setPlaceholder(translations.title.placeholder());
+				const descriptonInput = new TextInputBuilder()
+					.setCustomId('description')
+					.setLabel(translations.description.label())
+					.setRequired(true)
+					.setMinLength(1)
+					.setMaxLength(2000)
+					.setStyle(TextInputStyle.Paragraph)
+					.setPlaceholder(translations.description.placeholder());
 
-		const modal = new ModalBuilder()
-			.setCustomId(super.customId('ticket_threads_categories_create_ticket', id))
-			.setTitle(translations.modalTitle())
-			.setComponents(titleRow, descriptionRow);
+				const titleRow = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
+				const descriptionRow = new ActionRowBuilder<TextInputBuilder>().setComponents(descriptonInput);
 
-		return interaction.showModal(modal);
+				const modal = new ModalBuilder()
+					.setCustomId(super.customId('ticket_threads_categories_create_ticket', id))
+					.setTitle(translations.modalTitle())
+					.setComponents(titleRow, descriptionRow);
+
+				return interaction.showModal(modal);
+			}
+			default: {
+				const translations = baseTranslations.createModal.errors.invalidCustomId;
+
+				return interaction.reply({
+					embeds: [
+						super
+							.userEmbedError(interaction.user)
+							.setTitle(translations.title())
+							.setDescription(translations.description()),
+					],
+					ephemeral: true,
+				});
+			}
+		}
 	}
 }
 
@@ -186,14 +211,18 @@ export class ModalInteraction extends Modal.Interaction {
 			.from(ticketsThreads)
 			.where(and(eq(ticketsThreads.authorId, user.id), eq(ticketsThreads.guildId, guildId)));
 
-		if (result!.amount > configuration.ticketThreadsConfigurations.activeTickets) {
+		if (result!.amount >= configuration.ticketThreadsConfigurations.activeTickets) {
 			return interaction.editReply({
 				components: [],
 				embeds: [
 					super
 						.userEmbedError(user)
 						.setTitle(translations.errors.tooManyTickets.title())
-						.setDescription(translations.errors.tooManyTickets.description({ amount: result!.amount })),
+						.setDescription(
+							translations.errors.tooManyTickets.description({
+								amount: configuration.ticketThreadsConfigurations.activeTickets,
+							}),
+						),
 				],
 			});
 		}
@@ -220,6 +249,11 @@ export class ModalInteraction extends Modal.Interaction {
 		});
 		const ticketEmbed = super.userEmbed(user).setColor(Colors.Green).setTitle(title).setDescription(description);
 
+		const renameTitleButton = new ButtonBuilder()
+			.setCustomId(super.customId('ticket_threads_category_create_rename_title'))
+			.setEmoji('📝')
+			.setLabel(translations.buttons.renameTitle.label())
+			.setStyle(ButtonStyle.Secondary);
 		const lockButton = new ButtonBuilder()
 			.setCustomId(super.customId('ticket_threads_category_create_lock'))
 			.setEmoji('🔐')
@@ -236,7 +270,12 @@ export class ModalInteraction extends Modal.Interaction {
 			.setLabel(translations.buttons.delete.label())
 			.setStyle(ButtonStyle.Danger);
 
-		const buttonRow = new ActionRowBuilder<ButtonBuilder>().setComponents(lockButton, closeButton, deleteButton);
+		const buttonRow = new ActionRowBuilder<ButtonBuilder>().setComponents(
+			renameTitleButton,
+			lockButton,
+			closeButton,
+			deleteButton,
+		);
 
 		const initialMessage = await thread.send({
 			allowedMentions: { roles: configuration.ticketThreadsCategories.managers },

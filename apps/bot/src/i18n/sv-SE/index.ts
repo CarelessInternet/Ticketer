@@ -129,6 +129,12 @@ const sv_SE = {
 					placeholder: 'Välj en kategori för att skapa en stödbiljett i.',
 				},
 				createModal: {
+					errors: {
+						invalidCustomId: {
+							title: ERROR_TITLE,
+							description: 'Kategori-ID:t kunde inte hittas.',
+						},
+					},
 					title: {
 						label: 'Titel',
 						placeholder: 'Skriv en titel som ska användas i stödbiljetten.',
@@ -168,6 +174,9 @@ const sv_SE = {
 						},
 					},
 					buttons: {
+						renameTitle: {
+							label: 'Ändra Titeln',
+						},
 						lock: {
 							label: 'Låsa',
 						},

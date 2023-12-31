@@ -129,6 +129,12 @@ const en_GB = {
 					placeholder: 'Select a category to create a ticket within.',
 				},
 				createModal: {
+					errors: {
+						invalidCustomId: {
+							title: ERROR_TITLE,
+							description: 'The custom ID could not be found.',
+						},
+					},
 					title: {
 						label: 'Title',
 						placeholder: 'Write a title to be used in the ticket.',
@@ -168,6 +174,9 @@ const en_GB = {
 						},
 					},
 					buttons: {
+						renameTitle: {
+							label: 'Rename Title',
+						},
 						lock: {
 							label: 'Lock',
 						},

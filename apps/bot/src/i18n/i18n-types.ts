@@ -267,6 +267,18 @@ type RootTranslation = {
 					placeholder: string
 				}
 				createModal: {
+					errors: {
+						invalidCustomId: {
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 */
+							title: string
+							/**
+							 * T​h​e​ ​c​u​s​t​o​m​ ​I​D​ ​c​o​u​l​d​ ​n​o​t​ ​b​e​ ​f​o​u​n​d​.
+							 */
+							description: string
+						}
+					}
 					title: {
 						/**
 						 * T​i​t​l​e
@@ -358,6 +370,12 @@ type RootTranslation = {
 						}
 					}
 					buttons: {
+						renameTitle: {
+							/**
+							 * R​e​n​a​m​e​ ​T​i​t​l​e
+							 */
+							label: string
+						}
 						lock: {
 							/**
 							 * L​o​c​k
@@ -645,6 +663,18 @@ export type TranslationFunctions = {
 					placeholder: () => LocalizedString
 				}
 				createModal: {
+					errors: {
+						invalidCustomId: {
+							/**
+							 * An Error Occured
+							 */
+							title: () => LocalizedString
+							/**
+							 * The custom ID could not be found.
+							 */
+							description: () => LocalizedString
+						}
+					}
 					title: {
 						/**
 						 * Title
@@ -734,6 +764,12 @@ export type TranslationFunctions = {
 						}
 					}
 					buttons: {
+						renameTitle: {
+							/**
+							 * Rename Title
+							 */
+							label: () => LocalizedString
+						}
 						lock: {
 							/**
 							 * Lock

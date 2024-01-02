@@ -33,19 +33,17 @@ export default class extends Event.Handler {
 				.sort((a, b) => b.position - a.position)
 				.at(0);
 
-			if (!highestRoleWithManageRoles) {
-				return;
+			if (highestRoleWithManageRoles) {
+				const serverRoles = await roles.fetch();
+				const notBotRoles = [...serverRoles.filter((role) => !role.tags).values()];
+				const commonRoles = notBotRoles.filter((role) => data.welcomeNewMemberRoles.includes(role.id));
+
+				// https://discordjs.dev/docs/packages/discord.js/main/RoleManager:Class#comparePositions
+				// You can only add roles that are lower than the highest one (with the manage roles permission) that you have.
+				const addableRoles = commonRoles.filter((role) => roles.comparePositions(role, highestRoleWithManageRoles) < 0);
+
+				await member.roles.add(addableRoles);
 			}
-
-			const serverRoles = await roles.fetch();
-			const notBotRoles = [...serverRoles.filter((role) => !role.tags).values()];
-			const commonRoles = notBotRoles.filter((role) => data.welcomeNewMemberRoles.includes(role.id));
-
-			// https://discordjs.dev/docs/packages/discord.js/main/RoleManager:Class#comparePositions
-			// You can only add roles that are lower than the highest one (with the manage roles permission) that you have.
-			const addableRoles = commonRoles.filter((role) => roles.comparePositions(role, highestRoleWithManageRoles) < 0);
-
-			await member.roles.add(addableRoles);
 		}
 
 		const embed = welcomeEmbed({

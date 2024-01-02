@@ -193,6 +193,18 @@ type RootTranslation = {
 				}
 			}
 		}
+		'rename-title': {
+			data: {
+				/**
+				 * r​e​n​a​m​e​-​t​i​t​l​e
+				 */
+				name: string
+				/**
+				 * R​e​n​a​m​e​ ​t​h​e​ ​t​i​t​l​e​ ​o​f​ ​t​h​e​ ​t​h​r​e​a​d​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​.
+				 */
+				description: string
+			}
+		}
 		ticket: {
 			data: {
 				/**
@@ -421,12 +433,23 @@ type RootTranslation = {
 									 * T​i​c​k​e​t​ ​R​e​n​a​m​e​d
 									 */
 									title: string
-									/**
-									 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​h​a​s​ ​b​e​e​n​ ​r​e​n​a​m​e​d​ ​f​r​o​m​ ​"​{​o​l​d​T​i​t​l​e​}​"​ ​t​o​ ​{​n​e​w​T​i​t​l​e​}​.
-									 * @param {string} newTitle
-									 * @param {string} oldTitle
-									 */
-									description: RequiredParams<'newTitle' | 'oldTitle'>
+									user: {
+										/**
+										 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​h​a​s​ ​b​e​e​n​ ​r​e​n​a​m​e​d​ ​f​r​o​m​ ​"​{​o​l​d​T​i​t​l​e​}​"​ ​t​o​ ​"​{​n​e​w​T​i​t​l​e​}​"​.
+										 * @param {string} newTitle
+										 * @param {string} oldTitle
+										 */
+										description: RequiredParams<'newTitle' | 'oldTitle'>
+									}
+									logs: {
+										/**
+										 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​a​t​ ​{​t​h​r​e​a​d​}​ ​h​a​s​ ​b​e​e​n​ ​r​e​n​a​m​e​d​ ​f​r​o​m​ ​"​{​o​l​d​T​i​t​l​e​}​"​ ​t​o​ ​"​{​n​e​w​T​i​t​l​e​}​"​.
+										 * @param {string} newTitle
+										 * @param {string} oldTitle
+										 * @param {string} thread
+										 */
+										description: RequiredParams<'newTitle' | 'oldTitle' | 'thread'>
+									}
 								}
 							}
 						}
@@ -656,6 +679,18 @@ export type TranslationFunctions = {
 				}
 			}
 		}
+		'rename-title': {
+			data: {
+				/**
+				 * rename-title
+				 */
+				name: () => LocalizedString
+				/**
+				 * Rename the title of the thread support ticket.
+				 */
+				description: () => LocalizedString
+			}
+		}
 		ticket: {
 			data: {
 				/**
@@ -875,10 +910,18 @@ export type TranslationFunctions = {
 									 * Ticket Renamed
 									 */
 									title: () => LocalizedString
-									/**
-									 * The support ticket has been renamed from "{oldTitle}" to {newTitle}.
-									 */
-									description: (arg: { newTitle: string, oldTitle: string }) => LocalizedString
+									user: {
+										/**
+										 * The support ticket has been renamed from "{oldTitle}" to "{newTitle}".
+										 */
+										description: (arg: { newTitle: string, oldTitle: string }) => LocalizedString
+									}
+									logs: {
+										/**
+										 * The support ticket at {thread} has been renamed from "{oldTitle}" to "{newTitle}".
+										 */
+										description: (arg: { newTitle: string, oldTitle: string, thread: string }) => LocalizedString
+									}
 								}
 							}
 						}

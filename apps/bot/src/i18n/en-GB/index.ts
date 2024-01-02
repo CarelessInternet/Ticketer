@@ -92,6 +92,12 @@ const en_GB = {
 				],
 			},
 		},
+		'rename-title': {
+			data: {
+				name: 'rename-title',
+				description: 'Rename the title of the thread support ticket.',
+			},
+		},
 		ticket: {
 			data: {
 				name: 'ticket',
@@ -198,7 +204,13 @@ const en_GB = {
 								},
 								success: {
 									title: 'Ticket Renamed',
-									description: 'The support ticket has been renamed from "{oldTitle:string}" to "{newTitle:string}".',
+									user: {
+										description: 'The support ticket has been renamed from "{oldTitle:string}" to "{newTitle:string}".',
+									},
+									logs: {
+										description:
+											'The support ticket at {thread:string} has been renamed from "{oldTitle:string}" to "{newTitle:string}".',
+									},
 								},
 							},
 						},

@@ -92,6 +92,12 @@ const sv_SE = {
 				],
 			},
 		},
+		'rename-title': {
+			data: {
+				name: 'ändra-titel',
+				description: 'Ändra titeln på trådstödbiljetten.',
+			},
+		},
 		ticket: {
 			data: {
 				name: 'biljett',
@@ -198,7 +204,12 @@ const sv_SE = {
 								},
 								success: {
 									title: 'Stödbiljett Ändrade Namn',
-									description: 'Stödbiljettens titel har ändrats från "{oldTitle}" till "{newTitle}".',
+									user: {
+										description: 'Stödbiljettens titel har ändrats från "{oldTitle}" till "{newTitle}".',
+									},
+									logs: {
+										description: 'Stödbiljetten vid {thread} har bytt namn från "{oldTitle}" till "{newTitle}".',
+									},
 								},
 							},
 						},

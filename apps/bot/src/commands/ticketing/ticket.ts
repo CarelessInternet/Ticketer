@@ -27,6 +27,7 @@ import {
 } from '@ticketer/database';
 import { categoryList, openingMessageEmbed } from '@/utils';
 import { getTranslations, translate } from '@/i18n';
+import { renameTitle } from '@/utils/ticketing';
 
 const dataTranslations = translate('en-GB').commands.ticket.data;
 
@@ -63,7 +64,8 @@ export class ComponentInteraction extends Component.Interaction {
 				return interaction.isStringSelectMenu() && this.ticketModal({ interaction });
 			}
 			case super.customId('ticket_threads_category_create_rename_title'): {
-				return this.renameTitle({ interaction });
+				void renameTitle.call(this, { interaction });
+				return;
 			}
 			default: {
 				const translations = translate(interaction.locale).tickets.threads.categories.createModal.errors
@@ -110,28 +112,6 @@ export class ComponentInteraction extends Component.Interaction {
 			.setCustomId(super.customId('ticket_threads_categories_create_ticket', id))
 			.setTitle(translations.modalTitle())
 			.setComponents(titleRow, descriptionRow);
-
-		return interaction.showModal(modal);
-	}
-
-	private async renameTitle({ interaction }: Component.Context) {
-		const translations = translate(interaction.locale).tickets.threads.categories.createTicket.buttons.renameTitle
-			.component;
-
-		const input = new TextInputBuilder()
-			.setCustomId(super.customId('title'))
-			.setLabel('Thread Title')
-			.setRequired(true)
-			.setMinLength(1)
-			.setMaxLength(100)
-			.setStyle(TextInputStyle.Short)
-			.setPlaceholder('Write the new title that should be used for the thread.');
-
-		const row = new ActionRowBuilder<TextInputBuilder>().setComponents(input);
-		const modal = new ModalBuilder()
-			.setCustomId(super.customId('ticket_threads_categories_create_rename_title_modal'))
-			.setTitle(translations.modalTitle())
-			.setComponents(row);
 
 		return interaction.showModal(modal);
 	}
@@ -440,7 +420,7 @@ export class ModalInteraction extends Modal.Interaction {
 			.userEmbed(user)
 			.setColor(Colors.DarkGreen)
 			.setTitle(successTranslations.title())
-			.setDescription(successTranslations.description({ oldTitle, newTitle }));
+			.setDescription(successTranslations.user.description({ oldTitle, newTitle }));
 
 		await channel.edit({ name: newTitle });
 		await interaction.editReply({
@@ -455,7 +435,11 @@ export class ModalInteraction extends Modal.Interaction {
 			if (!logsChannel.permissionsFor(me).has([PermissionFlagsBits.SendMessages])) return;
 
 			void logsChannel.send({
-				embeds: [embed],
+				embeds: [
+					embed.setDescription(
+						successTranslations.logs.description({ oldTitle, newTitle, thread: channelMention(channel.id) }),
+					),
+				],
 			});
 		}
 	}

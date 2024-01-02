@@ -37,12 +37,12 @@ export default class extends Command.Interaction {
 			{
 				name: translations.embeds[1].fields[2].name(),
 				value: translations.embeds[1].fields[2].value({
-					status: inlineCode(Status[interaction.client.ws.status] ?? 'Unavailable'),
+					status: inlineCode(Status[interaction.client.ws.status]),
 				}),
 				inline: true,
 			},
 		);
 
-		interaction.editReply({ embeds: [embed] });
+		void interaction.editReply({ embeds: [embed] });
 	}
 }

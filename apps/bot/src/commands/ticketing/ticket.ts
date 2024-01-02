@@ -57,43 +57,17 @@ export class ComponentInteraction extends Component.Interaction {
 		super.customId('ticket_threads_category_create_delete'),
 	];
 
-	public execute({ interaction }: Component.Context<'string'>) {
-		const baseTranslations = translate(interaction.locale).tickets.threads.categories;
-
+	public execute({ interaction }: Component.Context) {
 		switch (interaction.customId) {
 			case super.customId('ticket_threads_categories_create_list'): {
-				const translations = baseTranslations.createModal;
-				const id = interaction.values.at(0)!;
-
-				const titleInput = new TextInputBuilder()
-					.setCustomId('title')
-					.setLabel(translations.title.label())
-					.setRequired(true)
-					.setMinLength(1)
-					.setMaxLength(200)
-					.setStyle(TextInputStyle.Short)
-					.setPlaceholder(translations.title.placeholder());
-				const descriptonInput = new TextInputBuilder()
-					.setCustomId('description')
-					.setLabel(translations.description.label())
-					.setRequired(true)
-					.setMinLength(1)
-					.setMaxLength(2000)
-					.setStyle(TextInputStyle.Paragraph)
-					.setPlaceholder(translations.description.placeholder());
-
-				const titleRow = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
-				const descriptionRow = new ActionRowBuilder<TextInputBuilder>().setComponents(descriptonInput);
-
-				const modal = new ModalBuilder()
-					.setCustomId(super.customId('ticket_threads_categories_create_ticket', id))
-					.setTitle(translations.modalTitle())
-					.setComponents(titleRow, descriptionRow);
-
-				return interaction.showModal(modal);
+				return interaction.isStringSelectMenu() && this.ticketModal({ interaction });
+			}
+			case super.customId('ticket_threads_category_create_rename_title'): {
+				return this.renameTitle({ interaction });
 			}
 			default: {
-				const translations = baseTranslations.createModal.errors.invalidCustomId;
+				const translations = translate(interaction.locale).tickets.threads.categories.createModal.errors
+					.invalidCustomId;
 
 				return interaction.reply({
 					embeds: [
@@ -107,16 +81,100 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 		}
 	}
+
+	private ticketModal({ interaction }: Component.Context<'string'>) {
+		const translations = translate(interaction.locale).tickets.threads.categories.createModal;
+		const id = interaction.values.at(0);
+
+		const titleInput = new TextInputBuilder()
+			.setCustomId(super.customId('title'))
+			.setLabel(translations.title.label())
+			.setRequired(true)
+			.setMinLength(1)
+			.setMaxLength(200)
+			.setStyle(TextInputStyle.Short)
+			.setPlaceholder(translations.title.placeholder());
+		const descriptonInput = new TextInputBuilder()
+			.setCustomId(super.customId('description'))
+			.setLabel(translations.description.label())
+			.setRequired(true)
+			.setMinLength(1)
+			.setMaxLength(2000)
+			.setStyle(TextInputStyle.Paragraph)
+			.setPlaceholder(translations.description.placeholder());
+
+		const titleRow = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
+		const descriptionRow = new ActionRowBuilder<TextInputBuilder>().setComponents(descriptonInput);
+
+		const modal = new ModalBuilder()
+			.setCustomId(super.customId('ticket_threads_categories_create_ticket', id))
+			.setTitle(translations.modalTitle())
+			.setComponents(titleRow, descriptionRow);
+
+		return interaction.showModal(modal);
+	}
+
+	private async renameTitle({ interaction }: Component.Context) {
+		const translations = translate(interaction.locale).tickets.threads.categories.createTicket.buttons.renameTitle
+			.component;
+
+		const input = new TextInputBuilder()
+			.setCustomId(super.customId('title'))
+			.setLabel('Thread Title')
+			.setRequired(true)
+			.setMinLength(1)
+			.setMaxLength(100)
+			.setStyle(TextInputStyle.Short)
+			.setPlaceholder('Write the new title that should be used for the thread.');
+
+		const row = new ActionRowBuilder<TextInputBuilder>().setComponents(input);
+		const modal = new ModalBuilder()
+			.setCustomId(super.customId('ticket_threads_categories_create_rename_title_modal'))
+			.setTitle(translations.modalTitle())
+			.setComponents(row);
+
+		return interaction.showModal(modal);
+	}
 }
 
 export class ModalInteraction extends Modal.Interaction {
-	public readonly customIds = [super.dynamicCustomId('ticket_threads_categories_create_ticket')];
+	public readonly customIds = [
+		super.dynamicCustomId('ticket_threads_categories_create_ticket'),
+		super.customId('ticket_threads_categories_create_rename_title_modal'),
+	];
+
+	public async execute({ interaction }: Modal.Context) {
+		const { customId } = super.extractCustomId(interaction.customId);
+
+		switch (customId) {
+			case super.dynamicCustomId('ticket_threads_categories_create_ticket'): {
+				return this.ticketCreation({ interaction });
+			}
+			case super.customId('ticket_threads_categories_create_rename_title_modal'): {
+				return this.renameTitle({ interaction });
+			}
+			default: {
+				const translations = translate(interaction.locale).tickets.threads.categories.createModal.errors
+					.invalidCustomId;
+
+				return interaction.reply({
+					embeds: [
+						super
+							.userEmbedError(interaction.user)
+							.setTitle(translations.title())
+							.setDescription(translations.description()),
+					],
+					ephemeral: true,
+				});
+			}
+		}
+	}
 
 	@DeferUpdate
-	public async execute({ interaction }: Modal.Context) {
+	private async ticketCreation({ interaction }: Modal.Context) {
 		const { customId, fields, guild, guildId, guildLocale, locale, user } = interaction;
-		const { dynamicValue } = super.extractCustomId(customId);
-		const id = Number.parseInt(dynamicValue!);
+		const { dynamicValue } = super.extractCustomId(customId, true);
+		const id = Number.parseInt(dynamicValue);
 
 		const translations = translate(locale).tickets.threads.categories.createTicket;
 		const guildTranslations = translate(guildLocale).tickets.threads.categories.createTicket;
@@ -211,6 +269,7 @@ export class ModalInteraction extends Modal.Interaction {
 			.from(ticketsThreads)
 			.where(and(eq(ticketsThreads.authorId, user.id), eq(ticketsThreads.guildId, guildId)));
 
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		if (result!.amount >= configuration.ticketThreadsConfigurations.activeTickets) {
 			return interaction.editReply({
 				components: [],
@@ -252,22 +311,22 @@ export class ModalInteraction extends Modal.Interaction {
 		const renameTitleButton = new ButtonBuilder()
 			.setCustomId(super.customId('ticket_threads_category_create_rename_title'))
 			.setEmoji('📝')
-			.setLabel(translations.buttons.renameTitle.label())
+			.setLabel(translations.buttons.renameTitle.builder.label())
 			.setStyle(ButtonStyle.Secondary);
 		const lockButton = new ButtonBuilder()
 			.setCustomId(super.customId('ticket_threads_category_create_lock'))
 			.setEmoji('🔐')
-			.setLabel(translations.buttons.lock.label())
+			.setLabel(translations.buttons.lock.builder.label())
 			.setStyle(ButtonStyle.Primary);
 		const closeButton = new ButtonBuilder()
 			.setCustomId(super.customId('ticket_threads_category_create_close'))
 			.setEmoji('🗃')
-			.setLabel(translations.buttons.close.label())
+			.setLabel(translations.buttons.close.builder.label())
 			.setStyle(ButtonStyle.Success);
 		const deleteButton = new ButtonBuilder()
 			.setCustomId(super.customId('ticket_threads_category_create_delete'))
 			.setEmoji('🗑')
-			.setLabel(translations.buttons.delete.label())
+			.setLabel(translations.buttons.delete.builder.label())
 			.setStyle(ButtonStyle.Danger);
 
 		const buttonRow = new ActionRowBuilder<ButtonBuilder>().setComponents(
@@ -308,12 +367,12 @@ export class ModalInteraction extends Modal.Interaction {
 		await interaction.editReply({ components: [], embeds: [ticketCreatedEmbed] });
 
 		if (configuration.ticketThreadsCategories.logsChannelId) {
-			const logsChannel = await guild.channels.fetch(configuration.ticketThreadsCategories.logsChannelId ?? '');
+			const logsChannel = await guild.channels.fetch(configuration.ticketThreadsCategories.logsChannelId);
 
 			if (!logsChannel?.isTextBased()) return;
 			if (!logsChannel.permissionsFor(me).has([PermissionFlagsBits.SendMessages])) return;
 
-			logsChannel.send({
+			void logsChannel.send({
 				embeds: [
 					ticketCreatedEmbed.setDescription(
 						guildTranslations.ticketCreated.logs.description({
@@ -322,6 +381,81 @@ export class ModalInteraction extends Modal.Interaction {
 						}),
 					),
 				],
+			});
+		}
+	}
+
+	@DeferReply(true)
+	private async renameTitle({ interaction }: Modal.Context) {
+		const { channel, fields, guild, locale, member, user } = interaction;
+		const translations = translate(locale).tickets.threads.categories.createTicket.buttons;
+
+		if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
+			return interaction.editReply({
+				embeds: [
+					super
+						.userEmbedError(user)
+						.setTitle(translations._errorIfNotTicketChannel.title())
+						.setDescription(translations._errorIfNotTicketChannel.description()),
+				],
+			});
+		}
+
+		if (!channel.editable) {
+			return interaction.editReply({
+				embeds: [
+					super
+						.userEmbedError(user)
+						.setTitle(translations.renameTitle.modal.errors.notEditable.title())
+						.setDescription(translations.renameTitle.modal.errors.notEditable.description()),
+				],
+			});
+		}
+
+		const [row] = await database
+			.select({
+				authorId: ticketsThreads.authorId,
+				logsChannelId: ticketThreadsCategories.logsChannelId,
+				managers: ticketThreadsCategories.managers,
+			})
+			.from(ticketsThreads)
+			.where(eq(ticketsThreads.threadId, channel.id))
+			.leftJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id));
+
+		if (row?.authorId !== user.id && !row?.managers?.some((id) => member.roles.resolve(id))) {
+			return interaction.editReply({
+				embeds: [
+					super
+						.userEmbedError(user)
+						.setTitle(translations._errorIfNotTicketAuthorOrManager.title())
+						.setDescription(translations._errorIfNotTicketAuthorOrManager.description()),
+				],
+			});
+		}
+
+		const oldTitle = channel.name;
+		const newTitle = fields.getTextInputValue('title');
+		const successTranslations = translations.renameTitle.modal.success;
+		const embed = super
+			.userEmbed(user)
+			.setColor(Colors.DarkGreen)
+			.setTitle(successTranslations.title())
+			.setDescription(successTranslations.description({ oldTitle, newTitle }));
+
+		await channel.edit({ name: newTitle });
+		await interaction.editReply({
+			embeds: [embed],
+		});
+
+		if (row.logsChannelId) {
+			const me = await guild.members.fetchMe();
+			const logsChannel = await guild.channels.fetch(row.logsChannelId);
+
+			if (!logsChannel?.isTextBased()) return;
+			if (!logsChannel.permissionsFor(me).has([PermissionFlagsBits.SendMessages])) return;
+
+			void logsChannel.send({
+				embeds: [embed],
 			});
 		}
 	}

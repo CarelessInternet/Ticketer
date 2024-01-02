@@ -11,7 +11,7 @@ export default class extends Event.Handler {
 		const table = await database.select().from(welcomeAndFarewell).where(eq(welcomeAndFarewell.guildId, guildId));
 		const data = table.at(0);
 
-		if (!data || !data.farewellChannelId || !data.farewellEnabled) {
+		if (!data?.farewellChannelId || !data.farewellEnabled) {
 			return;
 		}
 
@@ -37,6 +37,6 @@ export default class extends Event.Handler {
 			user: member.user,
 		});
 
-		channel.send({ embeds: [embed] });
+		void channel.send({ embeds: [embed] });
 	}
 }

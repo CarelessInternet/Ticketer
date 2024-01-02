@@ -11,10 +11,11 @@ export function RequiredGlobalPermissions(...permissions: PermissionFlagsValues[
 			}
 
 			if (!interaction.appPermissions?.has(permissions)) {
-				const allPermissions = permissions.map((permission) => getPermissionByValue(permission)!);
+				const allPermissions = permissions.map((permission) => getPermissionByValue(permission));
 				// Changes the PascalCase strings to Split Pascal Case for better user readability.
 				const permissionsAsString = allPermissions
-					.map((permission) => permission.match(/[A-Z][a-z]+/g)?.join(' '))
+					.filter(Boolean)
+					.map((permission) => permission?.match(/[A-Z][a-z]+/g)?.join(' '))
 					.join(', ');
 
 				const embed = this.userEmbedError(interaction.user).setDescription(

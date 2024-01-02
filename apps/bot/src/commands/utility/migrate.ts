@@ -19,6 +19,6 @@ export default class extends Command.Interaction {
 		await migrate();
 
 		const translations = translate(interaction.locale).commands.migrate.command;
-		interaction.editReply({ content: translations.success() });
+		void interaction.editReply({ content: translations.success() });
 	}
 }

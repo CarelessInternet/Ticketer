@@ -7,7 +7,7 @@ export default class extends Event.Handler {
 	public readonly once = true;
 	public readonly name = Event.Name.ClientReady;
 
-	public async execute([client]: Event.ArgumentsOf<this['name']>) {
+	public execute([client]: Event.ArgumentsOf<this['name']>) {
 		client.user.setPresence({
 			activities: [{ name: `Playing 🏌️‍♂️ | Shard #${client.shard?.ids.at(0) ?? 0}`, type: ActivityType.Custom }],
 			status: PresenceUpdateStatus.Online,

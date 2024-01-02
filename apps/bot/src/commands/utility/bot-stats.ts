@@ -62,32 +62,34 @@ export default class extends Command.Interaction {
 			.setFields(
 				{
 					name: '👤 Cached Users',
-					value: userSize!.reduce((accumulator, size) => accumulator + size, 0).toLocaleString(),
+					value: userSize?.reduce((accumulator, size) => accumulator + size, 0).toLocaleString() ?? 'Unknown',
 					inline: true,
 				},
 				{
 					name: '📺 Channels + Threads',
-					value: channelSize!.reduce((accumulator, size) => accumulator + size, 0).toLocaleString(),
+					value: channelSize?.reduce((accumulator, size) => accumulator + size, 0).toLocaleString() ?? 'Unknown',
 					inline: true,
 				},
 				{
 					name: '💻 Channels - Threads',
-					value: channelSizeWithoutThreads!.reduce((accumulator, size) => accumulator + size, 0).toLocaleString(),
+					value:
+						channelSizeWithoutThreads?.reduce((accumulator, size) => accumulator + size, 0).toLocaleString() ??
+						'Unknown',
 					inline: true,
 				},
 				{
 					name: '💩 Emojis',
-					value: emojiSize!.reduce((accumulator, size) => accumulator + size, 0).toLocaleString(),
+					value: emojiSize?.reduce((accumulator, size) => accumulator + size, 0).toLocaleString() ?? 'Unknown',
 					inline: true,
 				},
 				{
 					name: '📊 Servers',
-					value: guildSize!.reduce((accumulator, size) => accumulator + size, 0).toLocaleString(),
+					value: guildSize?.reduce((accumulator, size) => accumulator + size, 0).toLocaleString() ?? 'Unknown',
 					inline: true,
 				},
 				{
 					name: '👥 Server Members',
-					value: memberSize!.reduce((accumulator, size) => accumulator + size, 0).toLocaleString(),
+					value: memberSize?.reduce((accumulator, size) => accumulator + size, 0).toLocaleString() ?? 'Unknown',
 					inline: true,
 				},
 			);

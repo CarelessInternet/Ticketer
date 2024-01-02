@@ -174,17 +174,48 @@ const en_GB = {
 						},
 					},
 					buttons: {
+						_errorIfNotTicketChannel: {
+							title: ERROR_TITLE,
+							description: 'The channel is not a valid ticket channel.',
+						},
+						_errorIfNotTicketAuthorOrManager: {
+							title: ERROR_TITLE,
+							description: 'You need to be the ticket author or manager to execute this button.',
+						},
 						renameTitle: {
-							label: 'Rename Title',
+							builder: {
+								label: 'Rename Title',
+							},
+							component: {
+								modalTitle: 'Rename Thread Title',
+							},
+							modal: {
+								errors: {
+									notEditable: {
+										title: ERROR_TITLE,
+										description: 'I do not have the permission to edit the title.',
+									},
+								},
+								success: {
+									title: 'Ticket Renamed',
+									description: 'The support ticket has been renamed from "{oldTitle:string}" to "{newTitle:string}".',
+								},
+							},
 						},
 						lock: {
-							label: 'Lock',
+							builder: {
+								label: 'Lock',
+							},
 						},
 						close: {
-							label: 'Close',
+							builder: {
+								label: 'Close',
+							},
 						},
 						delete: {
-							label: 'Delete',
+							builder: {
+								label: 'Delete',
+							},
 						},
 					},
 					ticketCreated: {

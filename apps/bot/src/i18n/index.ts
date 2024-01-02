@@ -15,12 +15,12 @@ export const getTranslations = <T extends Leaves<TranslationFunctions>>(key: T) 
 		let nestedTranslation = L[language];
 
 		for (const nestedKey of key.split('.')) {
-			// @ts-expect-error: Complaining about the any type.
-			nestedTranslation = nestedTranslation[nestedKey];
+			// @ts-expect-error: Easier to shut up the type checking than creating correct types.
+			nestedTranslation = nestedTranslation[nestedKey as keyof typeof nestedTranslation];
 		}
 
-		// @ts-expect-error: Complaining about the any type.
-		translations[language] = nestedTranslation();
+		// @ts-expect-error: Easier to shut up the type checking than creating correct types.
+		translations[language] = nestedTranslation() as string;
 	}
 
 	return translations as Record<Locales, string>;

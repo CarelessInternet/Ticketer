@@ -22,4 +22,4 @@ const commandsFolder = resolve(currentDirectory, './commands');
 
 await client.init(eventsFolder, commandsFolder);
 
-client.login(environment.DISCORD_BOT_TOKEN);
+void client.login(environment.DISCORD_BOT_TOKEN);

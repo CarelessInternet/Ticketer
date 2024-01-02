@@ -17,7 +17,9 @@ const sharder = new ShardingManager(botFilePath, {
 
 sharder.on('shardCreate', (shard) => {
 	console.log(chalk.green('[Sharding]'), `Created shard #${shard.id} at ${formatDate(new Date())}.`);
-	shard.once('ready', () => console.log(chalk.yellow(`[Shard #${shard.id}]`), 'This shard has become ready.'));
+	shard.once('ready', () => {
+		console.log(chalk.yellow(`[Shard #${shard.id}]`), 'This shard has become ready.');
+	});
 });
 
-sharder.spawn();
+void sharder.spawn();

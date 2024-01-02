@@ -70,7 +70,8 @@ function HasGlobalConfiguration(_: object, __: string, descriptor: PropertyDescr
 			}
 		}
 
-		return Reflect.apply(original, this, arguments);
+		// eslint-disable-next-line prefer-rest-params
+		return Reflect.apply(original, this, arguments) as () => unknown;
 	};
 
 	return descriptor;
@@ -179,7 +180,7 @@ function categoryFieldsModal<T>(
 	options?: { id?: T; emoji?: string; title?: string; description?: string },
 ) {
 	const emojiInput = (options?.emoji ? new TextInputBuilder().setValue(options.emoji) : new TextInputBuilder())
-		.setCustomId('emoji')
+		.setCustomId(customId('emoji'))
 		.setLabel('Emoji')
 		.setRequired(true)
 		.setMinLength(1)
@@ -188,7 +189,7 @@ function categoryFieldsModal<T>(
 		.setStyle(TextInputStyle.Short)
 		.setPlaceholder('Write an emoji to be used for the category.');
 	const titleInput = (options?.title ? new TextInputBuilder().setValue(options.title) : new TextInputBuilder())
-		.setCustomId('title')
+		.setCustomId(customId('title'))
 		.setLabel('Title')
 		.setRequired(true)
 		.setMinLength(1)
@@ -198,7 +199,7 @@ function categoryFieldsModal<T>(
 	const descriptionInput = (
 		options?.description ? new TextInputBuilder().setValue(options.description) : new TextInputBuilder()
 	)
-		.setCustomId('description')
+		.setCustomId(customId('description'))
 		.setLabel('Description')
 		.setRequired(true)
 		.setMinLength(1)
@@ -360,7 +361,7 @@ export default class extends Command.Interaction {
 				return this.categoryViewConfiguration({ interaction });
 			}
 			case 'create': {
-				return categoryFieldsModal(super.customId, { interaction });
+				return categoryFieldsModal(super.customId.bind(this), { interaction });
 			}
 			case 'edit': {
 				return this.categoryConfiguration({ interaction });
@@ -575,7 +576,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 	// It is not possible to defer modals...
 	private async categoryFieldsModalValues({ interaction }: Component.Context) {
-		const { dynamicValue: id } = super.extractCustomId(interaction.customId);
+		const { dynamicValue: id } = super.extractCustomId(interaction.customId, true);
 		const [row] = await database
 			.select({
 				emoji: ticketThreadsCategories.categoryEmoji,
@@ -583,7 +584,7 @@ export class ComponentInteraction extends Component.Interaction {
 				description: ticketThreadsCategories.categoryDescription,
 			})
 			.from(ticketThreadsCategories)
-			.where(eq(ticketThreadsCategories.id, Number.parseInt(id!)));
+			.where(eq(ticketThreadsCategories.id, Number.parseInt(id)));
 
 		if (!row) {
 			return interaction.reply({
@@ -593,14 +594,15 @@ export class ComponentInteraction extends Component.Interaction {
 			});
 		}
 
-		return categoryFieldsModal(super.customId, { interaction }, { id, ...row });
+		return categoryFieldsModal(super.customId.bind(this), { interaction }, { id, ...row });
 	}
 
 	@DeferUpdate
 	private async categoryChannel({ interaction }: Component.Context<'channel'>) {
-		const { customId, dynamicValue } = super.extractCustomId(interaction.customId);
+		const { customId, dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const type = customId.includes('logs') ? 'logs channel' : 'channel';
-		const id = Number.parseInt(dynamicValue!);
+		const id = Number.parseInt(dynamicValue);
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const channelId = interaction.channels.at(0)!.id;
 
 		await database
@@ -620,13 +622,13 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private async categoryManagers({ interaction }: Component.Context<'role'>) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId);
+		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const managers = interaction.roles.map((role) => role.id);
 
 		await database
 			.update(ticketThreadsCategories)
 			.set({ managers })
-			.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue!)));
+			.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue)));
 
 		const roles = managers.map((id) => roleMention(id)).join(', ');
 		const embed = super
@@ -643,14 +645,14 @@ export class ComponentInteraction extends Component.Interaction {
 
 	// It is not possible to defer modals...
 	private async categoryMessageTitleDescriptionValues({ interaction }: Component.Context) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId);
+		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const [row] = await database
 			.select({
 				title: ticketThreadsCategories.openingMessageTitle,
 				description: ticketThreadsCategories.openingMessageDescription,
 			})
 			.from(ticketThreadsCategories)
-			.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue!)));
+			.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue)));
 
 		if (!row) {
 			return interaction.reply({
@@ -661,7 +663,7 @@ export class ComponentInteraction extends Component.Interaction {
 		}
 
 		const titleInput = (row.title ? new TextInputBuilder().setValue(row.title) : new TextInputBuilder())
-			.setCustomId('title')
+			.setCustomId(super.customId('title'))
 			.setLabel('Message Title')
 			.setRequired(true)
 			.setMinLength(1)
@@ -671,7 +673,7 @@ export class ComponentInteraction extends Component.Interaction {
 		const descriptionInput = (
 			row.description ? new TextInputBuilder().setValue(row.description) : new TextInputBuilder()
 		)
-			.setCustomId('description')
+			.setCustomId(super.customId('description'))
 			.setLabel('Message Description')
 			.setRequired(true)
 			.setMinLength(1)
@@ -692,7 +694,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferReply(false)
 	private async categoryPrivateAndNotification({ interaction }: Component.Context<'string'>) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId);
+		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const type = interaction.values.at(0)?.includes('private') ? 'private threads' : 'thread notification';
 
 		await database
@@ -702,7 +704,7 @@ export class ComponentInteraction extends Component.Interaction {
 					? { privateThreads: not(ticketThreadsCategories.privateThreads) }
 					: { threadNotifications: not(ticketThreadsCategories.threadNotifications) },
 			)
-			.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue!)));
+			.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue)));
 
 		const embed = super
 			.userEmbed(interaction.user)
@@ -714,9 +716,9 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private async categoryView({ interaction }: Component.Context<'button'>) {
-		const { customId, dynamicValue } = super.extractCustomId(interaction.customId);
+		const { customId, dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const type = customId.includes('previous') ? 'previous' : 'next';
-		const page = Number.parseInt(dynamicValue!) + (type === 'next' ? 1 : -1);
+		const page = Number.parseInt(dynamicValue) + (type === 'next' ? 1 : -1);
 
 		return getCategories({ interaction }, super.userEmbed.bind(this), super.customId.bind(this), page);
 	}
@@ -770,7 +772,7 @@ export class ModalInteraction extends Modal.Interaction {
 			await database
 				.update(ticketThreadsCategories)
 				.set({ categoryDescription, categoryEmoji, categoryTitle })
-				.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue!)));
+				.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue)));
 		} else {
 			const [row] = await database
 				.select({ amount: count() })
@@ -825,7 +827,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 	private async categoryMessageTitleDescription({ interaction }: Modal.Context) {
 		const { customId, fields, user } = interaction;
-		const { dynamicValue } = super.extractCustomId(customId);
+		const { dynamicValue } = super.extractCustomId(customId, true);
 
 		const openingMessageTitle = fields.getTextInputValue('title');
 		const openingMessageDescription = fields.getTextInputValue('description');
@@ -833,7 +835,7 @@ export class ModalInteraction extends Modal.Interaction {
 		await database
 			.update(ticketThreadsCategories)
 			.set({ openingMessageTitle, openingMessageDescription })
-			.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue!)));
+			.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue)));
 
 		const embed = super
 			.userEmbed(user)

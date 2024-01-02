@@ -19,7 +19,7 @@ export default class extends Command.Interaction {
 				.setRequired(false),
 		);
 
-	public async execute({ interaction }: Command.Context<'chat'>) {
+	public execute({ interaction }: Command.Context<'chat'>) {
 		const ephemeral = interaction.options.getBoolean(dataTranslations.options[0].name()) ?? true;
 		const commandsArray: string[] = [];
 
@@ -63,6 +63,6 @@ export default class extends Command.Interaction {
 				value: linksAsString,
 			});
 
-		interaction.reply({ embeds: [embed], ephemeral });
+		void interaction.reply({ embeds: [embed], ephemeral });
 	}
 }

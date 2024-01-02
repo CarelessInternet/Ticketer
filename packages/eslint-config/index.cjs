@@ -3,7 +3,7 @@ module.exports = {
 	extends: [
 		'turbo',
 		'eslint:recommended',
-		'plugin:@typescript-eslint/recommended',
+		'plugin:@typescript-eslint/strict',
 		'plugin:@typescript-eslint/stylistic',
 		'plugin:drizzle/recommended',
 		'plugin:unicorn/recommended',

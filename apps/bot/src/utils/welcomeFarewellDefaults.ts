@@ -10,11 +10,13 @@ interface BaseOptions {
 
 interface TitleOptions extends BaseOptions {
 	displayName: User['displayName'];
+	// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 	title: Columns['welcomeMessageTitle'] | Columns['farewellMessageTitle'];
 }
 
 interface DescriptionOptions extends BaseOptions {
 	userId: Snowflake;
+	// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 	description: Columns['welcomeMessageDescription'] | Columns['farewellMessageDescription'];
 }
 

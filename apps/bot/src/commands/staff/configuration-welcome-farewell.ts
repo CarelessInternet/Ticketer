@@ -305,7 +305,7 @@ export class ComponentInteraction extends Component.Interaction {
 	private async welcomeAndFarewellConfigurationChannel({ interaction }: Component.Context<'channel'>) {
 		const { channels, customId: id, guildId, user } = interaction;
 		const { customId } = super.extractCustomId(id);
-		const channelId = channels.at(0)!.id;
+		const channelId = channels.at(0)?.id;
 
 		const type = customId.includes('welcome') ? 'welcome' : 'farewell';
 		const channelDatabaseValue: InsertWithoutGuildId =
@@ -321,7 +321,9 @@ export class ComponentInteraction extends Component.Interaction {
 		const embed = super
 			.userEmbed(user)
 			.setTitle('Updated the Welcome/Farewell Configuration')
-			.setDescription(`${userMention(user.id)} updated the ${type} channel to ${channelMention(channelId.toString())}`);
+			.setDescription(
+				`${userMention(user.id)} updated the ${type} channel to ${channelMention(channelId?.toString() ?? '')}`,
+			);
 
 		return interaction.editReply({ embeds: [embed], components: [] });
 	}

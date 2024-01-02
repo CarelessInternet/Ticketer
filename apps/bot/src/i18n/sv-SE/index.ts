@@ -174,17 +174,48 @@ const sv_SE = {
 						},
 					},
 					buttons: {
+						_errorIfNotTicketChannel: {
+							title: ERROR_TITLE,
+							description: 'Kanalen är inte en giltigt stödbiljettkanal.',
+						},
+						_errorIfNotTicketAuthorOrManager: {
+							title: ERROR_TITLE,
+							description: 'Du måste vara stödbiljettägaren eller stödbiljettansvarig för att köra den här knappen.',
+						},
 						renameTitle: {
-							label: 'Ändra Titeln',
+							builder: {
+								label: 'Ändra Titeln',
+							},
+							component: {
+								modalTitle: 'Ändra Trådtiteln',
+							},
+							modal: {
+								errors: {
+									notEditable: {
+										title: ERROR_TITLE,
+										description: 'Jag har inte behörighet att redigera titeln.',
+									},
+								},
+								success: {
+									title: 'Stödbiljett Ändrade Namn',
+									description: 'Stödbiljettens titel har ändrats från "{oldTitle}" till "{newTitle}".',
+								},
+							},
 						},
 						lock: {
-							label: 'Låsa',
+							builder: {
+								label: 'Låsa',
+							},
 						},
 						close: {
-							label: 'Stänga',
+							builder: {
+								label: 'Stänga',
+							},
 						},
 						delete: {
-							label: 'Radera',
+							builder: {
+								label: 'Radera',
+							},
 						},
 					},
 					ticketCreated: {

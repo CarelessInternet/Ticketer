@@ -25,9 +25,8 @@ import {
 	ticketThreadsConfigurations,
 	ticketsThreads,
 } from '@ticketer/database';
-import { categoryList, openingMessageEmbed } from '@/utils';
+import { categoryList, closeTicket, lockTicket, openingMessageEmbed, renameTitle } from '@/utils';
 import { getTranslations, translate } from '@/i18n';
-import { renameTitle } from '@/utils/ticketing';
 
 const dataTranslations = translate('en-GB').commands.ticket.data;
 
@@ -58,23 +57,31 @@ export class ComponentInteraction extends Component.Interaction {
 		super.customId('ticket_threads_category_create_delete'),
 	];
 
-	public execute({ interaction }: Component.Context) {
-		switch (interaction.customId) {
+	public execute(context: Component.Context) {
+		switch (context.interaction.customId) {
 			case super.customId('ticket_threads_categories_create_list'): {
-				return interaction.isStringSelectMenu() && this.ticketModal({ interaction });
+				return context.interaction.isStringSelectMenu() && this.ticketModal({ interaction: context.interaction });
 			}
 			case super.customId('ticket_threads_category_create_rename_title'): {
-				void renameTitle.call(this, { interaction });
+				void renameTitle.call(this, context);
+				return;
+			}
+			case super.customId('ticket_threads_category_create_lock'): {
+				void this.lockTicket(context);
+				return;
+			}
+			case super.customId('ticket_threads_category_create_close'): {
+				void this.closeTicket(context);
 				return;
 			}
 			default: {
-				const translations = translate(interaction.locale).tickets.threads.categories.createModal.errors
+				const translations = translate(context.interaction.locale).tickets.threads.categories.createModal.errors
 					.invalidCustomId;
 
-				return interaction.reply({
+				return context.interaction.reply({
 					embeds: [
 						super
-							.userEmbedError(interaction.user)
+							.userEmbedError(context.interaction.user)
 							.setTitle(translations.title())
 							.setDescription(translations.description()),
 					],
@@ -114,6 +121,16 @@ export class ComponentInteraction extends Component.Interaction {
 			.setComponents(titleRow, descriptionRow);
 
 		return interaction.showModal(modal);
+	}
+
+	@DeferReply(true)
+	private lockTicket(context: Component.Context) {
+		return lockTicket.call(this, context);
+	}
+
+	@DeferReply(true)
+	private closeTicket(context: Component.Context) {
+		return closeTicket.call(this, context);
 	}
 }
 
@@ -156,7 +173,7 @@ export class ModalInteraction extends Modal.Interaction {
 		const { dynamicValue } = super.extractCustomId(customId, true);
 		const id = Number.parseInt(dynamicValue);
 
-		const translations = translate(locale).tickets.threads.categories.createTicket;
+		const translations = translate(locale).tickets.threads.categories;
 		const guildTranslations = translate(guildLocale).tickets.threads.categories.createTicket;
 
 		if (Number.isNaN(id)) {
@@ -165,8 +182,8 @@ export class ModalInteraction extends Modal.Interaction {
 				embeds: [
 					super
 						.userEmbedError(user)
-						.setTitle(translations.errors.invalidId.title())
-						.setDescription(translations.errors.invalidId.description()),
+						.setTitle(translations.createTicket.errors.invalidId.title())
+						.setDescription(translations.createTicket.errors.invalidId.description()),
 				],
 			});
 		}
@@ -183,8 +200,8 @@ export class ModalInteraction extends Modal.Interaction {
 				embeds: [
 					super
 						.userEmbedError(user)
-						.setTitle(translations.errors.noConfiguration.title())
-						.setDescription(translations.errors.noConfiguration.description()),
+						.setTitle(translations.createTicket.errors.noConfiguration.title())
+						.setDescription(translations.createTicket.errors.noConfiguration.description()),
 				],
 			});
 		}
@@ -195,8 +212,8 @@ export class ModalInteraction extends Modal.Interaction {
 				embeds: [
 					super
 						.userEmbedError(user)
-						.setTitle(translations.errors.noManagers.title())
-						.setDescription(translations.errors.noManagers.description()),
+						.setTitle(translations.createTicket.errors.noManagers.title())
+						.setDescription(translations.createTicket.errors.noManagers.description()),
 				],
 			});
 		}
@@ -209,8 +226,8 @@ export class ModalInteraction extends Modal.Interaction {
 				embeds: [
 					super
 						.userEmbedError(user)
-						.setTitle(translations.errors.invalidChannel.title())
-						.setDescription(translations.errors.invalidChannel.description()),
+						.setTitle(translations.createTicket.errors.invalidChannel.title())
+						.setDescription(translations.createTicket.errors.invalidChannel.description()),
 				],
 			});
 		}
@@ -238,8 +255,8 @@ export class ModalInteraction extends Modal.Interaction {
 				embeds: [
 					super
 						.userEmbedError(user)
-						.setTitle(translations.errors.noPermissions.title())
-						.setDescription(translations.errors.noPermissions.description({ permissions })),
+						.setTitle(translations.createTicket.errors.noPermissions.title())
+						.setDescription(translations.createTicket.errors.noPermissions.description({ permissions })),
 				],
 			});
 		}
@@ -256,9 +273,9 @@ export class ModalInteraction extends Modal.Interaction {
 				embeds: [
 					super
 						.userEmbedError(user)
-						.setTitle(translations.errors.tooManyTickets.title())
+						.setTitle(translations.createTicket.errors.tooManyTickets.title())
 						.setDescription(
-							translations.errors.tooManyTickets.description({
+							translations.createTicket.errors.tooManyTickets.description({
 								amount: configuration.ticketThreadsConfigurations.activeTickets,
 							}),
 						),
@@ -341,8 +358,8 @@ export class ModalInteraction extends Modal.Interaction {
 		const ticketCreatedEmbed = super
 			.userEmbed(user)
 			.setColor(Colors.Green)
-			.setTitle(translations.ticketCreated.title())
-			.setDescription(translations.ticketCreated.user.description({ channel: threadAsMention }));
+			.setTitle(translations.createTicket.ticketCreated.title())
+			.setDescription(translations.createTicket.ticketCreated.user.description({ channel: threadAsMention }));
 
 		await interaction.editReply({ components: [], embeds: [ticketCreatedEmbed] });
 
@@ -368,7 +385,7 @@ export class ModalInteraction extends Modal.Interaction {
 	@DeferReply(true)
 	private async renameTitle({ interaction }: Modal.Context) {
 		const { channel, fields, guild, locale, member, user } = interaction;
-		const translations = translate(locale).tickets.threads.categories.createTicket.buttons;
+		const translations = translate(locale).tickets.threads.categories.buttons;
 
 		if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
 			return interaction.editReply({

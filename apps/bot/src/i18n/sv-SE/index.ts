@@ -4,6 +4,12 @@ const ERROR_TITLE = 'Ett Fel Uppstod';
 
 const sv_SE = {
 	commands: {
+		close: {
+			data: {
+				name: 'stäng',
+				description: 'Stänga/Arkivera trådstödbiljetten.',
+			},
+		},
 		help: {
 			data: {
 				name: 'hjälp',
@@ -31,6 +37,12 @@ const sv_SE = {
 						],
 					},
 				],
+			},
+		},
+		lock: {
+			data: {
+				name: 'låsa',
+				description: 'Låsa trådstödbiljetten.',
 			},
 		},
 		migrate: {
@@ -179,56 +191,6 @@ const sv_SE = {
 							description: 'Du har för många stödbiljetter, du får inte ha fler än {amount}.',
 						},
 					},
-					buttons: {
-						_errorIfNotTicketChannel: {
-							title: ERROR_TITLE,
-							description: 'Kanalen är inte en giltigt stödbiljettkanal.',
-						},
-						_errorIfNotTicketAuthorOrManager: {
-							title: ERROR_TITLE,
-							description: 'Du måste vara stödbiljettägaren eller stödbiljettansvarig för att köra den här knappen.',
-						},
-						renameTitle: {
-							builder: {
-								label: 'Ändra Titeln',
-							},
-							component: {
-								modalTitle: 'Ändra Trådtiteln',
-							},
-							modal: {
-								errors: {
-									notEditable: {
-										title: ERROR_TITLE,
-										description: 'Jag har inte behörighet att redigera titeln.',
-									},
-								},
-								success: {
-									title: 'Stödbiljett Ändrade Namn',
-									user: {
-										description: 'Stödbiljettens titel har ändrats från "{oldTitle}" till "{newTitle}".',
-									},
-									logs: {
-										description: 'Stödbiljetten vid {thread} har bytt namn från "{oldTitle}" till "{newTitle}".',
-									},
-								},
-							},
-						},
-						lock: {
-							builder: {
-								label: 'Låsa',
-							},
-						},
-						close: {
-							builder: {
-								label: 'Stänga',
-							},
-						},
-						delete: {
-							builder: {
-								label: 'Radera',
-							},
-						},
-					},
 					ticketCreated: {
 						title: 'Stödbiljett Skapats!',
 						user: {
@@ -236,6 +198,91 @@ const sv_SE = {
 						},
 						logs: {
 							description: '{member} har skapat en stödbiljett! Se den i {channel}.',
+						},
+					},
+				},
+				buttons: {
+					_errorIfNotTicketChannel: {
+						title: ERROR_TITLE,
+						description: 'Kanalen är inte en giltigt stödbiljettkanal.',
+					},
+					_errorIfNotTicketAuthorOrManager: {
+						title: ERROR_TITLE,
+						description:
+							'Du måste vara stödbiljettägaren eller stödbiljettansvarig för att köra den här knappen/kommandot.',
+					},
+					renameTitle: {
+						builder: {
+							label: 'Ändra Titeln',
+						},
+						component: {
+							modalTitle: 'Ändra Trådtiteln',
+						},
+						modal: {
+							errors: {
+								notEditable: {
+									title: ERROR_TITLE,
+									description: 'Jag har inte behörighet att redigera titeln.',
+								},
+							},
+							success: {
+								title: 'Stödbiljett Ändrade Namn',
+								user: {
+									description: 'Stödbiljettens titel har ändrats från "{oldTitle}" till "{newTitle}".',
+								},
+								logs: {
+									description: 'Stödbiljetten vid {thread} har bytt namn från "{oldTitle}" till "{newTitle}".',
+								},
+							},
+						},
+					},
+					lock: {
+						builder: {
+							label: 'Låsa',
+						},
+						execute: {
+							errors: {
+								notManageable: {
+									title: ERROR_TITLE,
+									description: 'Jag har inte de nödvändiga behörigheter för att låsa kanalen.',
+								},
+							},
+							success: {
+								title: 'Stödbiljett Låst',
+								user: {
+									description: 'Stödbiljetten var låst framgångsrikt!',
+								},
+								logs: {
+									description: 'Stödbiljetten vid {thread} har låsts av {member}.',
+								},
+							},
+						},
+					},
+					close: {
+						builder: {
+							label: 'Stänga',
+						},
+						execute: {
+							errors: {
+								notEditable: {
+									title: ERROR_TITLE,
+									description: 'Jag har inte behörighet att stänga stödbiljetten.',
+								},
+							},
+							success: {
+								title: 'Stödbiljett Stängt',
+								user: {
+									description: 'Stödbiljetten stängdes framgångsrikt!',
+								},
+								logs: {
+									description: 'Stödbiljetten vid {thread} har stängts av {member}.',
+								},
+							},
+						},
+					},
+					delete: {
+						builder: {
+							label: 'Radera',
 						},
 					},
 				},

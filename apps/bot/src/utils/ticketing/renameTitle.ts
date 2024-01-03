@@ -3,8 +3,7 @@ import type { BaseInteraction, Command, Component } from '@ticketer/djs-framewor
 import { translate } from '@/i18n';
 
 export function renameTitle(this: BaseInteraction.Interaction, { interaction }: Command.Context | Component.Context) {
-	const translations = translate(interaction.locale).tickets.threads.categories.createTicket.buttons.renameTitle
-		.component;
+	const translations = translate(interaction.locale).tickets.threads.categories.buttons.renameTitle.component;
 
 	const input = new TextInputBuilder()
 		.setCustomId(this.customId('title'))

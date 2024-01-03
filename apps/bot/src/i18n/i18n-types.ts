@@ -16,6 +16,18 @@ export type Translations = RootTranslation
 
 type RootTranslation = {
 	commands: {
+		close: {
+			data: {
+				/**
+				 * c​l​o​s​e
+				 */
+				name: string
+				/**
+				 * C​l​o​s​e​/​A​r​c​h​i​v​e​ ​t​h​e​ ​t​h​r​e​a​d​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​.
+				 */
+				description: string
+			}
+		}
 		help: {
 			data: {
 				/**
@@ -71,6 +83,18 @@ type RootTranslation = {
 						}
 					}
 				}
+			}
+		}
+		lock: {
+			data: {
+				/**
+				 * l​o​c​k
+				 */
+				name: string
+				/**
+				 * L​o​c​k​ ​t​h​e​ ​t​h​r​e​a​d​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​.
+				 */
+				description: string
 			}
 		}
 		migrate: {
@@ -381,103 +405,6 @@ type RootTranslation = {
 							description: RequiredParams<'amount'>
 						}
 					}
-					buttons: {
-						_errorIfNotTicketChannel: {
-							/**
-							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
-							 */
-							title: string
-							/**
-							 * T​h​e​ ​c​h​a​n​n​e​l​ ​i​s​ ​n​o​t​ ​a​ ​v​a​l​i​d​ ​t​i​c​k​e​t​ ​c​h​a​n​n​e​l​.
-							 */
-							description: string
-						}
-						_errorIfNotTicketAuthorOrManager: {
-							/**
-							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
-							 */
-							title: string
-							/**
-							 * Y​o​u​ ​n​e​e​d​ ​t​o​ ​b​e​ ​t​h​e​ ​t​i​c​k​e​t​ ​a​u​t​h​o​r​ ​o​r​ ​m​a​n​a​g​e​r​ ​t​o​ ​e​x​e​c​u​t​e​ ​t​h​i​s​ ​b​u​t​t​o​n​.
-							 */
-							description: string
-						}
-						renameTitle: {
-							builder: {
-								/**
-								 * R​e​n​a​m​e​ ​T​i​t​l​e
-								 */
-								label: string
-							}
-							component: {
-								/**
-								 * R​e​n​a​m​e​ ​T​h​r​e​a​d​ ​T​i​t​l​e
-								 */
-								modalTitle: string
-							}
-							modal: {
-								errors: {
-									notEditable: {
-										/**
-										 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
-										 */
-										title: string
-										/**
-										 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​p​e​r​m​i​s​s​i​o​n​ ​t​o​ ​e​d​i​t​ ​t​h​e​ ​t​i​t​l​e​.
-										 */
-										description: string
-									}
-								}
-								success: {
-									/**
-									 * T​i​c​k​e​t​ ​R​e​n​a​m​e​d
-									 */
-									title: string
-									user: {
-										/**
-										 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​h​a​s​ ​b​e​e​n​ ​r​e​n​a​m​e​d​ ​f​r​o​m​ ​"​{​o​l​d​T​i​t​l​e​}​"​ ​t​o​ ​"​{​n​e​w​T​i​t​l​e​}​"​.
-										 * @param {string} newTitle
-										 * @param {string} oldTitle
-										 */
-										description: RequiredParams<'newTitle' | 'oldTitle'>
-									}
-									logs: {
-										/**
-										 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​a​t​ ​{​t​h​r​e​a​d​}​ ​h​a​s​ ​b​e​e​n​ ​r​e​n​a​m​e​d​ ​f​r​o​m​ ​"​{​o​l​d​T​i​t​l​e​}​"​ ​t​o​ ​"​{​n​e​w​T​i​t​l​e​}​"​.
-										 * @param {string} newTitle
-										 * @param {string} oldTitle
-										 * @param {string} thread
-										 */
-										description: RequiredParams<'newTitle' | 'oldTitle' | 'thread'>
-									}
-								}
-							}
-						}
-						lock: {
-							builder: {
-								/**
-								 * L​o​c​k
-								 */
-								label: string
-							}
-						}
-						close: {
-							builder: {
-								/**
-								 * C​l​o​s​e
-								 */
-								label: string
-							}
-						}
-						'delete': {
-							builder: {
-								/**
-								 * D​e​l​e​t​e
-								 */
-								label: string
-							}
-						}
-					}
 					ticketCreated: {
 						/**
 						 * T​i​c​k​e​t​ ​C​r​e​a​t​e​d​!
@@ -500,6 +427,171 @@ type RootTranslation = {
 						}
 					}
 				}
+				buttons: {
+					_errorIfNotTicketChannel: {
+						/**
+						 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+						 */
+						title: string
+						/**
+						 * T​h​e​ ​c​h​a​n​n​e​l​ ​i​s​ ​n​o​t​ ​a​ ​v​a​l​i​d​ ​t​i​c​k​e​t​ ​c​h​a​n​n​e​l​.
+						 */
+						description: string
+					}
+					_errorIfNotTicketAuthorOrManager: {
+						/**
+						 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+						 */
+						title: string
+						/**
+						 * Y​o​u​ ​n​e​e​d​ ​t​o​ ​b​e​ ​t​h​e​ ​t​i​c​k​e​t​ ​a​u​t​h​o​r​ ​o​r​ ​m​a​n​a​g​e​r​ ​t​o​ ​e​x​e​c​u​t​e​ ​t​h​i​s​ ​b​u​t​t​o​n​/​c​o​m​m​a​n​d​.
+						 */
+						description: string
+					}
+					renameTitle: {
+						builder: {
+							/**
+							 * R​e​n​a​m​e​ ​T​i​t​l​e
+							 */
+							label: string
+						}
+						component: {
+							/**
+							 * R​e​n​a​m​e​ ​T​h​r​e​a​d​ ​T​i​t​l​e
+							 */
+							modalTitle: string
+						}
+						modal: {
+							errors: {
+								notEditable: {
+									/**
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+									 */
+									title: string
+									/**
+									 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​p​e​r​m​i​s​s​i​o​n​ ​t​o​ ​e​d​i​t​ ​t​h​e​ ​t​i​t​l​e​.
+									 */
+									description: string
+								}
+							}
+							success: {
+								/**
+								 * T​i​c​k​e​t​ ​R​e​n​a​m​e​d
+								 */
+								title: string
+								user: {
+									/**
+									 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​h​a​s​ ​b​e​e​n​ ​r​e​n​a​m​e​d​ ​f​r​o​m​ ​"​{​o​l​d​T​i​t​l​e​}​"​ ​t​o​ ​"​{​n​e​w​T​i​t​l​e​}​"​.
+									 * @param {string} newTitle
+									 * @param {string} oldTitle
+									 */
+									description: RequiredParams<'newTitle' | 'oldTitle'>
+								}
+								logs: {
+									/**
+									 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​a​t​ ​{​t​h​r​e​a​d​}​ ​h​a​s​ ​b​e​e​n​ ​r​e​n​a​m​e​d​ ​f​r​o​m​ ​"​{​o​l​d​T​i​t​l​e​}​"​ ​t​o​ ​"​{​n​e​w​T​i​t​l​e​}​"​.
+									 * @param {string} newTitle
+									 * @param {string} oldTitle
+									 * @param {string} thread
+									 */
+									description: RequiredParams<'newTitle' | 'oldTitle' | 'thread'>
+								}
+							}
+						}
+					}
+					lock: {
+						builder: {
+							/**
+							 * L​o​c​k
+							 */
+							label: string
+						}
+						execute: {
+							errors: {
+								notManageable: {
+									/**
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+									 */
+									title: string
+									/**
+									 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​n​e​c​e​s​s​a​r​y​ ​p​e​r​m​i​s​s​i​o​n​(​s​)​ ​t​o​ ​l​o​c​k​ ​t​h​e​ ​c​h​a​n​n​e​l​.
+									 */
+									description: string
+								}
+							}
+							success: {
+								/**
+								 * T​i​c​k​e​t​ ​L​o​c​k​e​d
+								 */
+								title: string
+								user: {
+									/**
+									 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​h​a​s​ ​b​e​e​n​ ​s​u​c​c​e​s​s​f​u​l​l​y​ ​l​o​c​k​e​d​!
+									 */
+									description: string
+								}
+								logs: {
+									/**
+									 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​a​t​ ​{​t​h​r​e​a​d​}​ ​h​a​s​ ​b​e​e​n​ ​l​o​c​k​e​d​ ​b​y​ ​{​m​e​m​b​e​r​}​.
+									 * @param {string} member
+									 * @param {string} thread
+									 */
+									description: RequiredParams<'member' | 'thread'>
+								}
+							}
+						}
+					}
+					close: {
+						builder: {
+							/**
+							 * C​l​o​s​e
+							 */
+							label: string
+						}
+						execute: {
+							errors: {
+								notEditable: {
+									/**
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+									 */
+									title: string
+									/**
+									 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​p​e​r​m​i​s​s​i​o​n​ ​t​o​ ​c​l​o​s​e​ ​t​h​e​ ​t​i​c​k​e​t​.
+									 */
+									description: string
+								}
+							}
+							success: {
+								/**
+								 * T​i​c​k​e​t​ ​C​l​o​s​e​d
+								 */
+								title: string
+								user: {
+									/**
+									 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​h​a​s​ ​b​e​e​n​ ​s​u​c​c​e​s​s​f​u​l​l​y​ ​c​l​o​s​e​d​!
+									 */
+									description: string
+								}
+								logs: {
+									/**
+									 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​a​t​ ​{​t​h​r​e​a​d​}​ ​h​a​s​ ​b​e​e​n​ ​c​l​o​s​e​d​ ​b​y​ ​{​m​e​m​b​e​r​}​.
+									 * @param {string} member
+									 * @param {string} thread
+									 */
+									description: RequiredParams<'member' | 'thread'>
+								}
+							}
+						}
+					}
+					'delete': {
+						builder: {
+							/**
+							 * D​e​l​e​t​e
+							 */
+							label: string
+						}
+					}
+				}
 			}
 		}
 	}
@@ -507,6 +599,18 @@ type RootTranslation = {
 
 export type TranslationFunctions = {
 	commands: {
+		close: {
+			data: {
+				/**
+				 * close
+				 */
+				name: () => LocalizedString
+				/**
+				 * Close/Archive the thread support ticket.
+				 */
+				description: () => LocalizedString
+			}
+		}
 		help: {
 			data: {
 				/**
@@ -561,6 +665,18 @@ export type TranslationFunctions = {
 						}
 					}
 				}
+			}
+		}
+		lock: {
+			data: {
+				/**
+				 * lock
+				 */
+				name: () => LocalizedString
+				/**
+				 * Lock the thread support ticket.
+				 */
+				description: () => LocalizedString
 			}
 		}
 		migrate: {
@@ -858,98 +974,6 @@ export type TranslationFunctions = {
 							description: (arg: { amount: number }) => LocalizedString
 						}
 					}
-					buttons: {
-						_errorIfNotTicketChannel: {
-							/**
-							 * An Error Occured
-							 */
-							title: () => LocalizedString
-							/**
-							 * The channel is not a valid ticket channel.
-							 */
-							description: () => LocalizedString
-						}
-						_errorIfNotTicketAuthorOrManager: {
-							/**
-							 * An Error Occured
-							 */
-							title: () => LocalizedString
-							/**
-							 * You need to be the ticket author or manager to execute this button.
-							 */
-							description: () => LocalizedString
-						}
-						renameTitle: {
-							builder: {
-								/**
-								 * Rename Title
-								 */
-								label: () => LocalizedString
-							}
-							component: {
-								/**
-								 * Rename Thread Title
-								 */
-								modalTitle: () => LocalizedString
-							}
-							modal: {
-								errors: {
-									notEditable: {
-										/**
-										 * An Error Occured
-										 */
-										title: () => LocalizedString
-										/**
-										 * I do not have the permission to edit the title.
-										 */
-										description: () => LocalizedString
-									}
-								}
-								success: {
-									/**
-									 * Ticket Renamed
-									 */
-									title: () => LocalizedString
-									user: {
-										/**
-										 * The support ticket has been renamed from "{oldTitle}" to "{newTitle}".
-										 */
-										description: (arg: { newTitle: string, oldTitle: string }) => LocalizedString
-									}
-									logs: {
-										/**
-										 * The support ticket at {thread} has been renamed from "{oldTitle}" to "{newTitle}".
-										 */
-										description: (arg: { newTitle: string, oldTitle: string, thread: string }) => LocalizedString
-									}
-								}
-							}
-						}
-						lock: {
-							builder: {
-								/**
-								 * Lock
-								 */
-								label: () => LocalizedString
-							}
-						}
-						close: {
-							builder: {
-								/**
-								 * Close
-								 */
-								label: () => LocalizedString
-							}
-						}
-						'delete': {
-							builder: {
-								/**
-								 * Delete
-								 */
-								label: () => LocalizedString
-							}
-						}
-					}
 					ticketCreated: {
 						/**
 						 * Ticket Created!
@@ -966,6 +990,162 @@ export type TranslationFunctions = {
 							 * {member} has created a ticket! View it at {channel}.
 							 */
 							description: (arg: { channel: string, member: string }) => LocalizedString
+						}
+					}
+				}
+				buttons: {
+					_errorIfNotTicketChannel: {
+						/**
+						 * An Error Occured
+						 */
+						title: () => LocalizedString
+						/**
+						 * The channel is not a valid ticket channel.
+						 */
+						description: () => LocalizedString
+					}
+					_errorIfNotTicketAuthorOrManager: {
+						/**
+						 * An Error Occured
+						 */
+						title: () => LocalizedString
+						/**
+						 * You need to be the ticket author or manager to execute this button/command.
+						 */
+						description: () => LocalizedString
+					}
+					renameTitle: {
+						builder: {
+							/**
+							 * Rename Title
+							 */
+							label: () => LocalizedString
+						}
+						component: {
+							/**
+							 * Rename Thread Title
+							 */
+							modalTitle: () => LocalizedString
+						}
+						modal: {
+							errors: {
+								notEditable: {
+									/**
+									 * An Error Occured
+									 */
+									title: () => LocalizedString
+									/**
+									 * I do not have the permission to edit the title.
+									 */
+									description: () => LocalizedString
+								}
+							}
+							success: {
+								/**
+								 * Ticket Renamed
+								 */
+								title: () => LocalizedString
+								user: {
+									/**
+									 * The support ticket has been renamed from "{oldTitle}" to "{newTitle}".
+									 */
+									description: (arg: { newTitle: string, oldTitle: string }) => LocalizedString
+								}
+								logs: {
+									/**
+									 * The support ticket at {thread} has been renamed from "{oldTitle}" to "{newTitle}".
+									 */
+									description: (arg: { newTitle: string, oldTitle: string, thread: string }) => LocalizedString
+								}
+							}
+						}
+					}
+					lock: {
+						builder: {
+							/**
+							 * Lock
+							 */
+							label: () => LocalizedString
+						}
+						execute: {
+							errors: {
+								notManageable: {
+									/**
+									 * An Error Occured
+									 */
+									title: () => LocalizedString
+									/**
+									 * I do not have the necessary permission(s) to lock the channel.
+									 */
+									description: () => LocalizedString
+								}
+							}
+							success: {
+								/**
+								 * Ticket Locked
+								 */
+								title: () => LocalizedString
+								user: {
+									/**
+									 * The support ticket has been successfully locked!
+									 */
+									description: () => LocalizedString
+								}
+								logs: {
+									/**
+									 * The support ticket at {thread} has been locked by {member}.
+									 */
+									description: (arg: { member: string, thread: string }) => LocalizedString
+								}
+							}
+						}
+					}
+					close: {
+						builder: {
+							/**
+							 * Close
+							 */
+							label: () => LocalizedString
+						}
+						execute: {
+							errors: {
+								notEditable: {
+									/**
+									 * An Error Occured
+									 */
+									title: () => LocalizedString
+									/**
+									 * I do not have the permission to close the ticket.
+									 */
+									description: () => LocalizedString
+								}
+							}
+							success: {
+								/**
+								 * Ticket Closed
+								 */
+								title: () => LocalizedString
+								user: {
+									/**
+									 * The support ticket has been successfully closed!
+									 */
+									description: () => LocalizedString
+								}
+								logs: {
+									/**
+									 * The support ticket at {thread} has been closed by {member}.
+									 */
+									description: (arg: { member: string, thread: string }) => LocalizedString
+								}
+							}
+						}
+					}
+					'delete': {
+						builder: {
+							/**
+							 * Delete
+							 */
+							label: () => LocalizedString
 						}
 					}
 				}

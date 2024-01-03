@@ -4,6 +4,12 @@ const ERROR_TITLE = 'An Error Occured';
 
 const en_GB = {
 	commands: {
+		close: {
+			data: {
+				name: 'close',
+				description: 'Close/Archive the thread support ticket.',
+			},
+		},
 		help: {
 			data: {
 				name: 'help',
@@ -31,6 +37,12 @@ const en_GB = {
 						],
 					},
 				],
+			},
+		},
+		lock: {
+			data: {
+				name: 'lock',
+				description: 'Lock the thread support ticket.',
 			},
 		},
 		migrate: {
@@ -179,57 +191,6 @@ const en_GB = {
 							description: 'You have too many tickets, you may not have more than {amount:number}.',
 						},
 					},
-					buttons: {
-						_errorIfNotTicketChannel: {
-							title: ERROR_TITLE,
-							description: 'The channel is not a valid ticket channel.',
-						},
-						_errorIfNotTicketAuthorOrManager: {
-							title: ERROR_TITLE,
-							description: 'You need to be the ticket author or manager to execute this button.',
-						},
-						renameTitle: {
-							builder: {
-								label: 'Rename Title',
-							},
-							component: {
-								modalTitle: 'Rename Thread Title',
-							},
-							modal: {
-								errors: {
-									notEditable: {
-										title: ERROR_TITLE,
-										description: 'I do not have the permission to edit the title.',
-									},
-								},
-								success: {
-									title: 'Ticket Renamed',
-									user: {
-										description: 'The support ticket has been renamed from "{oldTitle:string}" to "{newTitle:string}".',
-									},
-									logs: {
-										description:
-											'The support ticket at {thread:string} has been renamed from "{oldTitle:string}" to "{newTitle:string}".',
-									},
-								},
-							},
-						},
-						lock: {
-							builder: {
-								label: 'Lock',
-							},
-						},
-						close: {
-							builder: {
-								label: 'Close',
-							},
-						},
-						delete: {
-							builder: {
-								label: 'Delete',
-							},
-						},
-					},
 					ticketCreated: {
 						title: 'Ticket Created!',
 						user: {
@@ -237,6 +198,91 @@ const en_GB = {
 						},
 						logs: {
 							description: '{member:string} has created a ticket! View it at {channel:string}.',
+						},
+					},
+				},
+				buttons: {
+					_errorIfNotTicketChannel: {
+						title: ERROR_TITLE,
+						description: 'The channel is not a valid ticket channel.',
+					},
+					_errorIfNotTicketAuthorOrManager: {
+						title: ERROR_TITLE,
+						description: 'You need to be the ticket author or manager to execute this button/command.',
+					},
+					renameTitle: {
+						builder: {
+							label: 'Rename Title',
+						},
+						component: {
+							modalTitle: 'Rename Thread Title',
+						},
+						modal: {
+							errors: {
+								notEditable: {
+									title: ERROR_TITLE,
+									description: 'I do not have the permission to edit the title.',
+								},
+							},
+							success: {
+								title: 'Ticket Renamed',
+								user: {
+									description: 'The support ticket has been renamed from "{oldTitle:string}" to "{newTitle:string}".',
+								},
+								logs: {
+									description:
+										'The support ticket at {thread:string} has been renamed from "{oldTitle:string}" to "{newTitle:string}".',
+								},
+							},
+						},
+					},
+					lock: {
+						builder: {
+							label: 'Lock',
+						},
+						execute: {
+							errors: {
+								notManageable: {
+									title: ERROR_TITLE,
+									description: 'I do not have the necessary permission(s) to lock the channel.',
+								},
+							},
+							success: {
+								title: 'Ticket Locked',
+								user: {
+									description: 'The support ticket has been successfully locked!',
+								},
+								logs: {
+									description: 'The support ticket at {thread:string} has been locked by {member:string}.',
+								},
+							},
+						},
+					},
+					close: {
+						builder: {
+							label: 'Close',
+						},
+						execute: {
+							errors: {
+								notEditable: {
+									title: ERROR_TITLE,
+									description: 'I do not have the permission to close the ticket.',
+								},
+							},
+							success: {
+								title: 'Ticket Closed',
+								user: {
+									description: 'The support ticket has been successfully closed!',
+								},
+								logs: {
+									description: 'The support ticket at {thread:string} has been closed by {member:string}.',
+								},
+							},
+						},
+					},
+					delete: {
+						builder: {
+							label: 'Delete',
 						},
 					},
 				},

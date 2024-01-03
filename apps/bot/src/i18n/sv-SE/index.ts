@@ -10,6 +10,12 @@ const sv_SE = {
 				description: 'Stänga/Arkivera trådstödbiljetten.',
 			},
 		},
+		delete: {
+			data: {
+				name: 'radera',
+				description: 'Radera trådstödbiljetten.',
+			},
+		},
 		help: {
 			data: {
 				name: 'hjälp',
@@ -283,6 +289,24 @@ const sv_SE = {
 					delete: {
 						builder: {
 							label: 'Radera',
+						},
+						execute: {
+							errors: {
+								notManageable: {
+									title: ERROR_TITLE,
+									description: 'Jag har inte de nödvändiga behörigheter för att låsa kanalen.',
+								},
+							},
+							success: {
+								user: {
+									title: 'Raderar Stödbiljett...',
+									description: 'Jag försöker att radera stödbiljetten.',
+								},
+								logs: {
+									title: 'Stödbiljett Raderat',
+									description: 'Stödbiljetten med ID:t {threadId} och titeln "{title}" har raderats av {member}.',
+								},
+							},
 						},
 					},
 				},

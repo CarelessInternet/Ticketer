@@ -25,7 +25,7 @@ import {
 	ticketThreadsConfigurations,
 	ticketsThreads,
 } from '@ticketer/database';
-import { categoryList, closeTicket, lockTicket, openingMessageEmbed, renameTitle } from '@/utils';
+import { categoryList, closeTicket, deleteTicket, lockTicket, openingMessageEmbed, renameTitle } from '@/utils';
 import { getTranslations, translate } from '@/i18n';
 
 const dataTranslations = translate('en-GB').commands.ticket.data;
@@ -72,6 +72,10 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			case super.customId('ticket_threads_category_create_close'): {
 				void this.closeTicket(context);
+				return;
+			}
+			case super.customId('ticket_threads_category_create_delete'): {
+				void this.deleteTicket(context);
 				return;
 			}
 			default: {
@@ -131,6 +135,11 @@ export class ComponentInteraction extends Component.Interaction {
 	@DeferReply(true)
 	private closeTicket(context: Component.Context) {
 		return closeTicket.call(this, context);
+	}
+
+	@DeferReply(true)
+	private deleteTicket(context: Component.Context) {
+		return deleteTicket.call(this, context);
 	}
 }
 

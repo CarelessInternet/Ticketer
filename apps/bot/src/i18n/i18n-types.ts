@@ -28,6 +28,18 @@ type RootTranslation = {
 				description: string
 			}
 		}
+		'delete': {
+			data: {
+				/**
+				 * d​e​l​e​t​e
+				 */
+				name: string
+				/**
+				 * D​e​l​e​t​e​ ​t​h​e​ ​t​h​r​e​a​d​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​.
+				 */
+				description: string
+			}
+		}
 		help: {
 			data: {
 				/**
@@ -399,7 +411,7 @@ type RootTranslation = {
 							 */
 							title: string
 							/**
-							 * Y​o​u​ ​h​a​v​e​ ​t​o​o​ ​m​a​n​y​ ​t​i​c​k​e​t​s​,​ ​y​o​u​ ​m​a​y​ ​n​o​t​ ​h​a​v​e​ ​m​o​r​e​ ​t​h​a​n​ ​{​a​m​o​u​n​t​}​.
+							 * Y​o​u​ ​h​a​v​e​ ​t​o​o​ ​m​a​n​y​ ​a​c​t​i​v​e​ ​t​i​c​k​e​t​s​,​ ​y​o​u​ ​m​a​y​ ​n​o​t​ ​h​a​v​e​ ​m​o​r​e​ ​t​h​a​n​ ​{​a​m​o​u​n​t​}​.
 							 * @param {number} amount
 							 */
 							description: RequiredParams<'amount'>
@@ -590,6 +602,45 @@ type RootTranslation = {
 							 */
 							label: string
 						}
+						execute: {
+							errors: {
+								notManageable: {
+									/**
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+									 */
+									title: string
+									/**
+									 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​n​e​c​e​s​s​a​r​y​ ​p​e​r​m​i​s​s​i​o​n​(​s​)​ ​t​o​ ​l​o​c​k​ ​t​h​e​ ​c​h​a​n​n​e​l​.
+									 */
+									description: string
+								}
+							}
+							success: {
+								user: {
+									/**
+									 * D​e​l​e​t​i​n​g​ ​T​i​c​k​e​t​.​.​.
+									 */
+									title: string
+									/**
+									 * I​ ​a​m​ ​a​t​t​e​m​p​t​i​n​g​ ​t​o​ ​d​e​l​e​t​e​ ​t​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​.​.​.
+									 */
+									description: string
+								}
+								logs: {
+									/**
+									 * T​i​c​k​e​t​ ​D​e​l​e​t​e​d
+									 */
+									title: string
+									/**
+									 * T​h​e​ ​t​i​c​k​e​t​ ​w​i​t​h​ ​t​h​e​ ​I​D​ ​{​t​h​r​e​a​d​I​d​}​ ​a​n​d​ ​t​i​t​l​e​ ​"​{​t​i​t​l​e​}​"​ ​h​a​s​ ​b​e​e​n​ ​d​e​l​e​t​e​d​ ​b​y​ ​{​m​e​m​b​e​r​}​.
+									 * @param {string} member
+									 * @param {string} threadId
+									 * @param {string} title
+									 */
+									description: RequiredParams<'member' | 'threadId' | 'title'>
+								}
+							}
+						}
 					}
 				}
 			}
@@ -607,6 +658,18 @@ export type TranslationFunctions = {
 				name: () => LocalizedString
 				/**
 				 * Close/Archive the thread support ticket.
+				 */
+				description: () => LocalizedString
+			}
+		}
+		'delete': {
+			data: {
+				/**
+				 * delete
+				 */
+				name: () => LocalizedString
+				/**
+				 * Delete the thread support ticket.
 				 */
 				description: () => LocalizedString
 			}
@@ -969,7 +1032,7 @@ export type TranslationFunctions = {
 							 */
 							title: () => LocalizedString
 							/**
-							 * You have too many tickets, you may not have more than {amount}.
+							 * You have too many active tickets, you may not have more than {amount}.
 							 */
 							description: (arg: { amount: number }) => LocalizedString
 						}
@@ -1146,6 +1209,42 @@ export type TranslationFunctions = {
 							 * Delete
 							 */
 							label: () => LocalizedString
+						}
+						execute: {
+							errors: {
+								notManageable: {
+									/**
+									 * An Error Occured
+									 */
+									title: () => LocalizedString
+									/**
+									 * I do not have the necessary permission(s) to lock the channel.
+									 */
+									description: () => LocalizedString
+								}
+							}
+							success: {
+								user: {
+									/**
+									 * Deleting Ticket...
+									 */
+									title: () => LocalizedString
+									/**
+									 * I am attempting to delete the support ticket...
+									 */
+									description: () => LocalizedString
+								}
+								logs: {
+									/**
+									 * Ticket Deleted
+									 */
+									title: () => LocalizedString
+									/**
+									 * The ticket with the ID {threadId} and title "{title}" has been deleted by {member}.
+									 */
+									description: (arg: { member: string, threadId: string, title: string }) => LocalizedString
+								}
+							}
 						}
 					}
 				}

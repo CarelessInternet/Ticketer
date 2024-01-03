@@ -10,6 +10,12 @@ const en_GB = {
 				description: 'Close/Archive the thread support ticket.',
 			},
 		},
+		delete: {
+			data: {
+				name: 'delete',
+				description: 'Delete the thread support ticket.',
+			},
+		},
 		help: {
 			data: {
 				name: 'help',
@@ -283,6 +289,25 @@ const en_GB = {
 					delete: {
 						builder: {
 							label: 'Delete',
+						},
+						execute: {
+							errors: {
+								notManageable: {
+									title: ERROR_TITLE,
+									description: 'I do not have the necessary permission(s) to lock the channel.',
+								},
+							},
+							success: {
+								user: {
+									title: 'Deleting Ticket...',
+									description: 'I am attempting to delete the support ticket...',
+								},
+								logs: {
+									title: 'Ticket Deleted',
+									description:
+										'The ticket with the ID {threadId:string} and title "{title:string}" has been deleted by {member:string}.',
+								},
+							},
 						},
 					},
 				},

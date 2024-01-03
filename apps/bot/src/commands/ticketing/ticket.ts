@@ -264,7 +264,13 @@ export class ModalInteraction extends Modal.Interaction {
 		const [result] = await database
 			.select({ amount: count() })
 			.from(ticketsThreads)
-			.where(and(eq(ticketsThreads.authorId, user.id), eq(ticketsThreads.guildId, guildId)));
+			.where(
+				and(
+					eq(ticketsThreads.authorId, user.id),
+					eq(ticketsThreads.guildId, guildId),
+					eq(ticketsThreads.state, 'active'),
+				),
+			);
 
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		if (result!.amount >= configuration.ticketThreadsConfigurations.activeTickets) {
@@ -342,7 +348,10 @@ export class ModalInteraction extends Modal.Interaction {
 
 		await initialMessage.pin();
 
-		if (!configuration.ticketThreadsCategories.threadNotifications) {
+		if (
+			!configuration.ticketThreadsCategories.threadNotifications &&
+			!configuration.ticketThreadsCategories.privateThreads
+		) {
 			// Fetch because `channel.lastMessage` may not be cached and/or fall victim to race conditions.
 			const lastMessages = await channel.messages.fetch({ limit: 1 });
 			const latestMessage = lastMessages.at(0);

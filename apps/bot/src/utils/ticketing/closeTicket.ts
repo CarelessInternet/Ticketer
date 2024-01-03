@@ -58,6 +58,7 @@ export async function closeTicket(
 		.setDescription(translations.close.execute.success.user.description());
 
 	await channel.setArchived(true);
+	await database.update(ticketsThreads).set({ state: 'archived' }).where(eq(ticketsThreads.threadId, channel.id));
 	await interaction.editReply({ embeds: [embed] });
 
 	if (row.logsChannelId) {

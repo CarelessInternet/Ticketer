@@ -601,7 +601,7 @@ export class ComponentInteraction extends Component.Interaction {
 	@DeferUpdate
 	private async categoryChannel({ interaction }: Component.Context<'channel'>) {
 		const { customId, dynamicValue } = super.extractCustomId(interaction.customId, true);
-		const type = customId.includes('logs') ? 'logs channel' : 'channel';
+		const type = customId.includes('logs') ? 'logs channel' : 'ticket channel';
 		const id = Number.parseInt(dynamicValue);
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const channelId = interaction.channels.at(0)!.id;
@@ -609,14 +609,14 @@ export class ComponentInteraction extends Component.Interaction {
 		await database
 			.update(ticketThreadsCategories)
 			.set({
-				...(type === 'channel' ? { channelId } : { logsChannelId: channelId }),
+				...(type === 'ticket channel' ? { channelId } : { logsChannelId: channelId }),
 			})
 			.where(eq(ticketThreadsCategories.id, id));
 
 		const embed = super
 			.userEmbed(interaction.user)
 			.setTitle('Updated the Thread Ticket Category')
-			.setDescription(`${userMention(interaction.user.id)} updated the ${type} ID to ${channelMention(channelId)}.`);
+			.setDescription(`${userMention(interaction.user.id)} updated the ${type} to ${channelMention(channelId)}.`);
 
 		return interaction.editReply({ embeds: [embed], components: [] });
 	}

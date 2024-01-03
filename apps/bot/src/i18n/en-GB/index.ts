@@ -188,7 +188,7 @@ const en_GB = {
 						},
 						tooManyTickets: {
 							title: ERROR_TITLE,
-							description: 'You have too many tickets, you may not have more than {amount:number}.',
+							description: 'You have too many active tickets, you may not have more than {amount:number}.',
 						},
 					},
 					ticketCreated: {

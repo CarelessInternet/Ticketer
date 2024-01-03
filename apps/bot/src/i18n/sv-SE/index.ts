@@ -188,7 +188,7 @@ const sv_SE = {
 						},
 						tooManyTickets: {
 							title: ERROR_TITLE,
-							description: 'Du har för många stödbiljetter, du får inte ha fler än {amount}.',
+							description: 'Du har för många aktiva stödbiljetter, du får inte ha fler än {amount}.',
 						},
 					},
 					ticketCreated: {

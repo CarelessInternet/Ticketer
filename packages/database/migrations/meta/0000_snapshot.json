@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "97ab8d31-e2f3-469c-9966-c7bdc1cc774e",
+  "id": "c30857c1-e394-4068-a646-b16bd75ba009",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "automaticThreadsConfigurations": {
@@ -143,7 +143,7 @@
         },
         "categoryEmoji": {
           "name": "categoryEmoji",
-          "type": "char",
+          "type": "varchar(8)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -310,6 +310,14 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "state": {
+          "name": "state",
+          "type": "enum('active','archived','locked')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'active'"
         }
       },
       "indexes": {
@@ -331,6 +339,13 @@
           "name": "guildId_index",
           "columns": [
             "guildId"
+          ],
+          "isUnique": false
+        },
+        "state_index": {
+          "name": "state_index",
+          "columns": [
+            "state"
           ],
           "isUnique": false
         }

@@ -1,10 +1,10 @@
 import {
 	boolean,
-	char,
 	customType,
 	foreignKey,
 	index,
 	int,
+	mysqlEnum,
 	mysqlTable,
 	tinyint,
 	varchar,
@@ -64,7 +64,8 @@ export const ticketThreadsCategories = mysqlTable(
 	{
 		id: int('id', { unsigned: true }).autoincrement().primaryKey(),
 		guildId: snowflake('guildId').notNull(),
-		categoryEmoji: char('categoryEmoji').notNull(),
+		// This is not a char because one emoji can compose of several like 👨‍👩‍👦‍👦.
+		categoryEmoji: varchar('categoryEmoji', { length: 8 }).notNull(),
 		categoryTitle: varchar('categoryTitle', { length: 100 }).notNull(),
 		categoryDescription: varchar('categoryDescription', { length: 100 }).notNull(),
 		channelId: snowflake('channelId'),
@@ -92,11 +93,13 @@ export const ticketsThreads = mysqlTable(
 		authorId: snowflake('authorId').notNull(),
 		categoryId: int('categoryId', { unsigned: true }).notNull(),
 		guildId: snowflake('guildId').notNull(),
+		state: mysqlEnum('state', ['active', 'archived', 'locked']).notNull().default('active'),
 	},
 	(table) => ({
 		authorIdIndex: index('authorId_index').on(table.authorId),
 		categoryIdIndex: index('categoryId_index').on(table.categoryId),
 		guildIdIndex: index('guildId_index').on(table.guildId),
+		stateIndex: index('state_index').on(table.state),
 		references: foreignKey({
 			columns: [table.guildId, table.categoryId],
 			foreignColumns: [ticketThreadsCategories.guildId, ticketThreadsCategories.id],

@@ -51,6 +51,7 @@ export default class extends Command.Interaction {
 export class ComponentInteraction extends Component.Interaction {
 	public readonly customIds = [
 		super.customId('ticket_threads_categories_create_list'),
+		super.customId('ticket_threads_categories_create_panel_button'),
 		super.customId('ticket_threads_category_create_rename_title'),
 		super.customId('ticket_threads_category_create_lock'),
 		super.customId('ticket_threads_category_create_close'),
@@ -61,6 +62,9 @@ export class ComponentInteraction extends Component.Interaction {
 		switch (context.interaction.customId) {
 			case super.customId('ticket_threads_categories_create_list'): {
 				return context.interaction.isStringSelectMenu() && this.ticketModal({ interaction: context.interaction });
+			}
+			case super.customId('ticket_threads_categories_create_panel_button'): {
+				return context.interaction.isButton() && this.panelTicketModal(context);
 			}
 			case super.customId('ticket_threads_category_create_rename_title'): {
 				void renameTitle.call(this, context);
@@ -125,6 +129,17 @@ export class ComponentInteraction extends Component.Interaction {
 			.setComponents(titleRow, descriptionRow);
 
 		return interaction.showModal(modal);
+	}
+
+	@DeferReply(true)
+	private async panelTicketModal({ interaction }: Component.Context) {
+		const list = await categoryList(
+			super.customId('ticket_threads_categories_create_list'),
+			interaction.locale,
+			interaction.guildId,
+		);
+
+		return interaction.editReply({ components: [list] });
 	}
 
 	@DeferReply(true)

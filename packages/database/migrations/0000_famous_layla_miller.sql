@@ -26,6 +26,7 @@ CREATE TABLE `ticketThreadsCategories` (
 	`openingMessageTitle` varchar(100),
 	`openingMessageDescription` varchar(500),
 	`privateThreads` boolean NOT NULL DEFAULT true,
+	`silentPings` boolean NOT NULL DEFAULT true,
 	`threadNotifications` boolean NOT NULL DEFAULT false,
 	CONSTRAINT `ticketThreadsCategories_id` PRIMARY KEY(`id`)
 );

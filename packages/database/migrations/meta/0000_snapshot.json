@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "c30857c1-e394-4068-a646-b16bd75ba009",
+  "id": "7b4b6810-6e25-4b36-bd8c-7c0add64a1c7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "automaticThreadsConfigurations": {
@@ -200,6 +200,14 @@
         },
         "privateThreads": {
           "name": "privateThreads",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "silentPings": {
+          "name": "silentPings",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,

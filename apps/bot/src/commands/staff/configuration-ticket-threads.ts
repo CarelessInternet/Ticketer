@@ -427,6 +427,11 @@ export default class extends Command.Interaction {
 					.setDescription('Toggle whether the tickets are private.')
 					.setValue('private'),
 				new StringSelectMenuOptionBuilder()
+					.setEmoji('🔔')
+					.setLabel('Silent Pings')
+					.setDescription('Toggle whether managers get pinged (with noise) on ticket creation.')
+					.setValue('silent_pings'),
+				new StringSelectMenuOptionBuilder()
 					.setEmoji('📣')
 					.setLabel('Thread Notification')
 					.setDescription('Toggle whether the new thread system message stays on.')
@@ -566,6 +571,9 @@ export class ComponentInteraction extends Component.Interaction {
 			case 'notification': {
 				return this.categoryPrivateAndNotification({ interaction });
 			}
+			case 'silent_pings': {
+				return this.categorySilentPings({ interaction });
+			}
 			default: {
 				return interaction.reply({
 					embeds: [super.userEmbedError(interaction.user).setDescription('The selected value could not be found.')],
@@ -644,6 +652,15 @@ export class ComponentInteraction extends Component.Interaction {
 		return interaction.editReply({ embeds: [embed], components: [] });
 	}
 
+	@DeferUpdate
+	private categoryView({ interaction }: Component.Context<'button'>) {
+		const { customId, dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const type = customId.includes('previous') ? 'previous' : 'next';
+		const page = Number.parseInt(dynamicValue) + (type === 'next' ? 1 : -1);
+
+		void getCategories.call(this, { interaction }, page);
+	}
+
 	// It is not possible to defer modals...
 	private async categoryMessageTitleDescriptionValues({ interaction }: Component.Context) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
@@ -715,13 +732,23 @@ export class ComponentInteraction extends Component.Interaction {
 		return interaction.editReply({ embeds: [embed] });
 	}
 
-	@DeferUpdate
-	private categoryView({ interaction }: Component.Context<'button'>) {
-		const { customId, dynamicValue } = super.extractCustomId(interaction.customId, true);
-		const type = customId.includes('previous') ? 'previous' : 'next';
-		const page = Number.parseInt(dynamicValue) + (type === 'next' ? 1 : -1);
+	@DeferReply(false)
+	private async categorySilentPings({ interaction }: Component.Context<'string'>) {
+		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
 
-		void getCategories.call(this, { interaction }, page);
+		await database
+			.update(ticketThreadsCategories)
+			.set({
+				silentPings: not(ticketThreadsCategories.silentPings),
+			})
+			.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue)));
+
+		const embed = super
+			.userEmbed(interaction.user)
+			.setTitle('Updated the Thread Ticket Category')
+			.setDescription(`${userMention(interaction.user.id)} has toggled the silent pings enabled option.`);
+
+		return interaction.editReply({ embeds: [embed] });
 	}
 }
 

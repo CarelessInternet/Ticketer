@@ -4,6 +4,7 @@ import {
 	ButtonStyle,
 	ChannelType,
 	Colors,
+	MessageFlags,
 	MessageType,
 	ModalBuilder,
 	PermissionFlagsBits,
@@ -388,6 +389,7 @@ export class ModalInteraction extends Modal.Interaction {
 			components: [buttonRow],
 			content: configuration.ticketThreadsCategories.managers.map((roleId) => roleMention(roleId)).join(', '),
 			embeds: [messageEmbed, ticketEmbed],
+			...(configuration.ticketThreadsCategories.silentPings && { flags: [MessageFlags.SuppressNotifications] }),
 		});
 
 		await initialMessage.pin();

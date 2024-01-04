@@ -74,6 +74,7 @@ export const ticketThreadsCategories = mysqlTable(
 		openingMessageTitle: varchar('openingMessageTitle', { length: 100 }),
 		openingMessageDescription: varchar('openingMessageDescription', { length: 500 }),
 		privateThreads: boolean('privateThreads').notNull().default(true),
+		silentPings: boolean('silentPings').notNull().default(true),
 		threadNotifications: boolean('threadNotifications').notNull().default(false),
 	},
 	(table) => ({

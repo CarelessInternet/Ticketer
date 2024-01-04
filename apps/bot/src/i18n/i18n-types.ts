@@ -410,11 +410,21 @@ type RootTranslation = {
 							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
 							 */
 							title: string
-							/**
-							 * Y​o​u​ ​h​a​v​e​ ​t​o​o​ ​m​a​n​y​ ​a​c​t​i​v​e​ ​t​i​c​k​e​t​s​,​ ​y​o​u​ ​m​a​y​ ​n​o​t​ ​h​a​v​e​ ​m​o​r​e​ ​t​h​a​n​ ​{​a​m​o​u​n​t​}​.
-							 * @param {number} amount
-							 */
-							description: RequiredParams<'amount'>
+							user: {
+								/**
+								 * Y​o​u​ ​h​a​v​e​ ​t​o​o​ ​m​a​n​y​ ​a​c​t​i​v​e​ ​t​i​c​k​e​t​s​,​ ​y​o​u​ ​m​a​y​ ​n​o​t​ ​h​a​v​e​ ​m​o​r​e​ ​t​h​a​n​ ​{​a​m​o​u​n​t​}​.
+								 * @param {number} amount
+								 */
+								description: RequiredParams<'amount'>
+							}
+							proxy: {
+								/**
+								 * {​m​e​m​b​e​r​}​ ​h​a​s​ ​t​o​o​ ​m​a​n​y​ ​a​c​t​i​v​e​ ​t​i​c​k​e​t​s​,​ ​t​h​e​y​ ​m​a​y​ ​n​o​t​ ​h​a​v​e​ ​m​o​r​e​ ​t​h​a​n​ ​{​a​m​o​u​n​t​}​.
+								 * @param {number} amount
+								 * @param {string} member
+								 */
+								description: RequiredParams<'amount' | 'member'>
+							}
 						}
 					}
 					ticketCreated: {
@@ -422,20 +432,41 @@ type RootTranslation = {
 						 * T​i​c​k​e​t​ ​C​r​e​a​t​e​d​!
 						 */
 						title: string
-						user: {
-							/**
-							 * Y​o​u​r​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​h​a​s​ ​b​e​e​n​ ​c​r​e​a​t​e​d​!​ ​V​i​e​w​ ​i​t​ ​a​t​ ​{​c​h​a​n​n​e​l​}​.
-							 * @param {string} channel
-							 */
-							description: RequiredParams<'channel'>
+						notProxy: {
+							user: {
+								/**
+								 * Y​o​u​r​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​h​a​s​ ​b​e​e​n​ ​c​r​e​a​t​e​d​!​ ​V​i​e​w​ ​i​t​ ​a​t​ ​{​c​h​a​n​n​e​l​}​.
+								 * @param {string} channel
+								 */
+								description: RequiredParams<'channel'>
+							}
+							logs: {
+								/**
+								 * {​m​e​m​b​e​r​}​ ​h​a​s​ ​c​r​e​a​t​e​d​ ​a​ ​t​i​c​k​e​t​!​ ​V​i​e​w​ ​i​t​ ​a​t​ ​{​c​h​a​n​n​e​l​}​.
+								 * @param {string} channel
+								 * @param {string} member
+								 */
+								description: RequiredParams<'channel' | 'member'>
+							}
 						}
-						logs: {
-							/**
-							 * {​m​e​m​b​e​r​}​ ​h​a​s​ ​c​r​e​a​t​e​d​ ​a​ ​t​i​c​k​e​t​!​ ​V​i​e​w​ ​i​t​ ​a​t​ ​{​c​h​a​n​n​e​l​}​.
-							 * @param {string} channel
-							 * @param {string} member
-							 */
-							description: RequiredParams<'channel' | 'member'>
+						proxy: {
+							user: {
+								/**
+								 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​f​o​r​ ​{​m​e​m​b​e​r​}​ ​h​a​s​ ​b​e​e​n​ ​c​r​e​a​t​e​d​!​ ​V​i​e​w​ ​i​t​ ​a​t​ ​{​c​h​a​n​n​e​l​}​.
+								 * @param {string} channel
+								 * @param {string} member
+								 */
+								description: RequiredParams<'channel' | 'member'>
+							}
+							logs: {
+								/**
+								 * {​c​r​e​a​t​o​r​}​ ​p​r​o​x​i​e​d​ ​a​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​f​o​r​ ​{​m​e​m​b​e​r​}​!​ ​V​i​e​w​ ​i​t​ ​a​t​ ​{​c​h​a​n​n​e​l​}​.
+								 * @param {string} channel
+								 * @param {string} creator
+								 * @param {string} member
+								 */
+								description: RequiredParams<'channel' | 'creator' | 'member'>
+							}
 						}
 					}
 				}
@@ -1031,10 +1062,18 @@ export type TranslationFunctions = {
 							 * An Error Occured
 							 */
 							title: () => LocalizedString
-							/**
-							 * You have too many active tickets, you may not have more than {amount}.
-							 */
-							description: (arg: { amount: number }) => LocalizedString
+							user: {
+								/**
+								 * You have too many active tickets, you may not have more than {amount}.
+								 */
+								description: (arg: { amount: number }) => LocalizedString
+							}
+							proxy: {
+								/**
+								 * {member} has too many active tickets, they may not have more than {amount}.
+								 */
+								description: (arg: { amount: number, member: string }) => LocalizedString
+							}
 						}
 					}
 					ticketCreated: {
@@ -1042,17 +1081,33 @@ export type TranslationFunctions = {
 						 * Ticket Created!
 						 */
 						title: () => LocalizedString
-						user: {
-							/**
-							 * Your support ticket has been created! View it at {channel}.
-							 */
-							description: (arg: { channel: string }) => LocalizedString
+						notProxy: {
+							user: {
+								/**
+								 * Your support ticket has been created! View it at {channel}.
+								 */
+								description: (arg: { channel: string }) => LocalizedString
+							}
+							logs: {
+								/**
+								 * {member} has created a ticket! View it at {channel}.
+								 */
+								description: (arg: { channel: string, member: string }) => LocalizedString
+							}
 						}
-						logs: {
-							/**
-							 * {member} has created a ticket! View it at {channel}.
-							 */
-							description: (arg: { channel: string, member: string }) => LocalizedString
+						proxy: {
+							user: {
+								/**
+								 * The support ticket for {member} has been created! View it at {channel}.
+								 */
+								description: (arg: { channel: string, member: string }) => LocalizedString
+							}
+							logs: {
+								/**
+								 * {creator} proxied a support ticket for {member}! View it at {channel}.
+								 */
+								description: (arg: { channel: string, creator: string, member: string }) => LocalizedString
+							}
 						}
 					}
 				}

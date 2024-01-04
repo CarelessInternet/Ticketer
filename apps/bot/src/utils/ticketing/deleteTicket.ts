@@ -7,8 +7,10 @@ export async function deleteTicket(
 	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context | Component.Context,
 ) {
-	const { channel, guild, locale, member, user } = interaction;
+	const { channel, guild, guildLocale, locale, member, user } = interaction;
 	const translations = translate(locale).tickets.threads.categories.buttons;
+	const guildSuccessTranslations =
+		translate(guildLocale).tickets.threads.categories.buttons.delete.execute.success.logs;
 
 	if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
 		return interaction.editReply({
@@ -68,8 +70,8 @@ export async function deleteTicket(
 
 		void logsChannel.send({
 			embeds: [
-				embed.setTitle(translations.delete.execute.success.logs.title()).setDescription(
-					translations.delete.execute.success.logs.description({
+				embed.setTitle(guildSuccessTranslations.title()).setDescription(
+					guildSuccessTranslations.description({
 						member: userMention(user.id),
 						threadId: inlineCode(channel.id),
 						title: channel.name,

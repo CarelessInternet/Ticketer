@@ -7,8 +7,9 @@ export async function closeTicket(
 	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context | Component.Context,
 ) {
-	const { channel, guild, locale, member, user } = interaction;
+	const { channel, guild, guildLocale, locale, member, user } = interaction;
 	const translations = translate(locale).tickets.threads.categories.buttons;
+	const guildSuccessTranslations = translate(guildLocale).tickets.threads.categories.buttons.close.execute.success;
 
 	if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
 		return interaction.editReply({
@@ -70,8 +71,8 @@ export async function closeTicket(
 
 		void logsChannel.send({
 			embeds: [
-				embed.setDescription(
-					translations.close.execute.success.logs.description({
+				embed.setTitle(guildSuccessTranslations.title()).setDescription(
+					guildSuccessTranslations.logs.description({
 						thread: channelMention(channel.id),
 						member: userMention(user.id),
 					}),

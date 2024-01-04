@@ -194,16 +194,31 @@ const sv_SE = {
 						},
 						tooManyTickets: {
 							title: ERROR_TITLE,
-							description: 'Du har för många aktiva stödbiljetter, du får inte ha fler än {amount}.',
+							user: {
+								description: 'Du har för många aktiva stödbiljetter, du får inte ha fler än {amount}.',
+							},
+							proxy: {
+								description: '{member} har för många aktiva stödbiljetter, hen får inte ha fler än {amount}.',
+							},
 						},
 					},
 					ticketCreated: {
 						title: 'Stödbiljett Skapats!',
-						user: {
-							description: 'Din stödbiljett har skapats! Se den i {channel}.',
+						notProxy: {
+							user: {
+								description: 'Din stödbiljett har skapats! Se den i {channel}.',
+							},
+							logs: {
+								description: '{member} har skapat en stödbiljett! Se den i {channel}.',
+							},
 						},
-						logs: {
-							description: '{member} har skapat en stödbiljett! Se den i {channel}.',
+						proxy: {
+							user: {
+								description: 'Stödbiljetten för {member} har skapats! Se den i {channel}.',
+							},
+							logs: {
+								description: '{creator} har skapat en stödbiljett genom ombud för {member}! Se den i {channel}.',
+							},
 						},
 					},
 				},

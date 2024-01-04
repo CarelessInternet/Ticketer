@@ -7,6 +7,7 @@ import {
 	MessageType,
 	ModalBuilder,
 	PermissionFlagsBits,
+	type Snowflake,
 	TextInputBuilder,
 	TextInputStyle,
 	ThreadAutoArchiveDuration,
@@ -39,7 +40,7 @@ export default class extends Command.Interaction {
 	@DeferReply(true)
 	public async execute({ interaction }: Command.Context) {
 		const list = await categoryList(
-			super.customId('ticket_threads_categories_create_list'),
+			super.customId('ticket_threads_categories_create_list_command'),
 			interaction.locale,
 			interaction.guildId,
 		);
@@ -50,8 +51,9 @@ export default class extends Command.Interaction {
 
 export class ComponentInteraction extends Component.Interaction {
 	public readonly customIds = [
-		super.customId('ticket_threads_categories_create_list'),
-		super.customId('ticket_threads_categories_create_panel_button'),
+		super.customId('ticket_threads_categories_create_list_command'),
+		super.dynamicCustomId('ticket_threads_categories_create_list_proxy'),
+		super.customId('ticket_threads_categories_create_list_panel'),
 		super.customId('ticket_threads_category_create_rename_title'),
 		super.customId('ticket_threads_category_create_lock'),
 		super.customId('ticket_threads_category_create_close'),
@@ -59,11 +61,17 @@ export class ComponentInteraction extends Component.Interaction {
 	];
 
 	public execute(context: Component.Context) {
-		switch (context.interaction.customId) {
-			case super.customId('ticket_threads_categories_create_list'): {
-				return context.interaction.isStringSelectMenu() && this.ticketModal({ interaction: context.interaction });
+		const { customId, dynamicValue } = super.extractCustomId(context.interaction.customId);
+
+		switch (customId) {
+			case super.customId('ticket_threads_categories_create_list_command'):
+			case super.dynamicCustomId('ticket_threads_categories_create_list_proxy'): {
+				return (
+					context.interaction.isStringSelectMenu() &&
+					this.ticketModal({ interaction: context.interaction }, dynamicValue)
+				);
 			}
-			case super.customId('ticket_threads_categories_create_panel_button'): {
+			case super.customId('ticket_threads_categories_create_list_panel'): {
 				return context.interaction.isButton() && this.panelTicketModal(context);
 			}
 			case super.customId('ticket_threads_category_create_rename_title'): {
@@ -99,7 +107,7 @@ export class ComponentInteraction extends Component.Interaction {
 		}
 	}
 
-	private ticketModal({ interaction }: Component.Context<'string'>) {
+	private ticketModal({ interaction }: Component.Context<'string'>, userId?: Snowflake) {
 		const translations = translate(interaction.locale).tickets.threads.categories.createModal;
 		const id = interaction.values.at(0);
 
@@ -124,7 +132,7 @@ export class ComponentInteraction extends Component.Interaction {
 		const descriptionRow = new ActionRowBuilder<TextInputBuilder>().setComponents(descriptonInput);
 
 		const modal = new ModalBuilder()
-			.setCustomId(super.customId('ticket_threads_categories_create_ticket', id))
+			.setCustomId(super.customId('ticket_threads_categories_create_ticket', userId ? `${id}_${userId}` : id))
 			.setTitle(translations.modalTitle())
 			.setComponents(titleRow, descriptionRow);
 
@@ -193,14 +201,18 @@ export class ModalInteraction extends Modal.Interaction {
 
 	@DeferUpdate
 	private async ticketCreation({ interaction }: Modal.Context) {
-		const { customId, fields, guild, guildId, guildLocale, locale, user } = interaction;
+		const { customId, fields, guild, guildId, guildLocale, locale, user: interactionUser } = interaction;
 		const { dynamicValue } = super.extractCustomId(customId, true);
-		const id = Number.parseInt(dynamicValue);
+		const dynamicValues = dynamicValue.split('_');
+		const categoryId = Number.parseInt(dynamicValues.at(0) ?? dynamicValue);
+		const isProxied = !!dynamicValues.at(1);
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const user = isProxied ? await this.client.users.fetch(dynamicValues.at(1)!) : interactionUser;
 
 		const translations = translate(locale).tickets.threads.categories;
 		const guildTranslations = translate(guildLocale).tickets.threads.categories;
 
-		if (Number.isNaN(id)) {
+		if (Number.isNaN(categoryId)) {
 			return interaction.editReply({
 				components: [],
 				embeds: [
@@ -215,7 +227,7 @@ export class ModalInteraction extends Modal.Interaction {
 		const [configuration] = await database
 			.select()
 			.from(ticketThreadsCategories)
-			.where(eq(ticketThreadsCategories.id, id))
+			.where(eq(ticketThreadsCategories.id, categoryId))
 			.innerJoin(ticketThreadsConfigurations, eq(ticketThreadsCategories.guildId, ticketThreadsConfigurations.guildId));
 
 		if (!configuration) {
@@ -305,9 +317,14 @@ export class ModalInteraction extends Modal.Interaction {
 						.userEmbedError(user)
 						.setTitle(translations.createTicket.errors.tooManyTickets.title())
 						.setDescription(
-							translations.createTicket.errors.tooManyTickets.description({
-								amount: configuration.ticketThreadsConfigurations.activeTickets,
-							}),
+							isProxied
+								? translations.createTicket.errors.tooManyTickets.proxy.description({
+										amount: configuration.ticketThreadsConfigurations.activeTickets,
+										member: userMention(user.id),
+									})
+								: translations.createTicket.errors.tooManyTickets.user.description({
+										amount: configuration.ticketThreadsConfigurations.activeTickets,
+									}),
 						),
 				],
 			});
@@ -323,7 +340,7 @@ export class ModalInteraction extends Modal.Interaction {
 			type: isPrivate ? ChannelType.PrivateThread : ChannelType.PublicThread,
 		});
 
-		await database.insert(ticketsThreads).values({ authorId: user.id, categoryId: id, guildId, threadId: thread.id });
+		await database.insert(ticketsThreads).values({ authorId: user.id, categoryId, guildId, threadId: thread.id });
 
 		const messageEmbed = openingMessageEmbed({
 			categoryTitle: configuration.ticketThreadsCategories.categoryTitle,
@@ -333,7 +350,10 @@ export class ModalInteraction extends Modal.Interaction {
 			title: configuration.ticketThreadsCategories.openingMessageTitle,
 			user,
 		});
-		const ticketEmbed = super.userEmbed(user).setColor(Colors.Green).setTitle(title).setDescription(description);
+		const ticketEmbed = (isProxied ? super.embed : super.userEmbed(user))
+			.setColor(Colors.Green)
+			.setTitle(title)
+			.setDescription(description);
 
 		const renameTitleButton = new ButtonBuilder()
 			.setCustomId(super.customId('ticket_threads_category_create_rename_title'))
@@ -389,10 +409,17 @@ export class ModalInteraction extends Modal.Interaction {
 
 		const threadAsMention = channelMention(thread.id);
 		const ticketCreatedEmbed = super
-			.userEmbed(user)
+			.userEmbed(isProxied ? interactionUser : user)
 			.setColor(Colors.Green)
 			.setTitle(translations.createTicket.ticketCreated.title())
-			.setDescription(translations.createTicket.ticketCreated.user.description({ channel: threadAsMention }));
+			.setDescription(
+				isProxied
+					? translations.createTicket.ticketCreated.proxy.user.description({
+							channel: threadAsMention,
+							member: userMention(user.id),
+						})
+					: translations.createTicket.ticketCreated.notProxy.user.description({ channel: threadAsMention }),
+			);
 
 		await interaction.editReply({ components: [], embeds: [ticketCreatedEmbed] });
 
@@ -405,10 +432,16 @@ export class ModalInteraction extends Modal.Interaction {
 			void logsChannel.send({
 				embeds: [
 					ticketCreatedEmbed.setTitle(guildTranslations.createTicket.ticketCreated.title()).setDescription(
-						guildTranslations.createTicket.ticketCreated.logs.description({
-							channel: threadAsMention,
-							member: userMention(user.id),
-						}),
+						isProxied
+							? guildTranslations.createTicket.ticketCreated.proxy.logs.description({
+									channel: threadAsMention,
+									creator: userMention(interactionUser.id),
+									member: userMention(user.id),
+								})
+							: guildTranslations.createTicket.ticketCreated.notProxy.logs.description({
+									channel: threadAsMention,
+									member: userMention(user.id),
+								}),
 					),
 				],
 			});

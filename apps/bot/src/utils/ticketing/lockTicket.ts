@@ -7,8 +7,9 @@ export async function lockTicket(
 	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context | Component.Context,
 ) {
-	const { channel, guild, locale, member, user } = interaction;
+	const { channel, guild, guildLocale, locale, member, user } = interaction;
 	const translations = translate(locale).tickets.threads.categories.buttons;
+	const guildSuccessTranslations = translate(guildLocale).tickets.threads.categories.buttons.lock.execute.success;
 
 	if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
 		return interaction.editReply({
@@ -71,8 +72,8 @@ export async function lockTicket(
 
 		void logsChannel.send({
 			embeds: [
-				embed.setDescription(
-					translations.lock.execute.success.logs.description({
+				embed.setTitle(guildSuccessTranslations.title()).setDescription(
+					guildSuccessTranslations.logs.description({
 						thread: channelMention(channel.id),
 						member: userMention(user.id),
 					}),

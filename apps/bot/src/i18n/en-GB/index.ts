@@ -194,16 +194,33 @@ const en_GB = {
 						},
 						tooManyTickets: {
 							title: ERROR_TITLE,
-							description: 'You have too many active tickets, you may not have more than {amount:number}.',
+							user: {
+								description: 'You have too many active tickets, you may not have more than {amount:number}.',
+							},
+							proxy: {
+								description:
+									'{member:string} has too many active tickets, they may not have more than {amount:number}.',
+							},
 						},
 					},
 					ticketCreated: {
 						title: 'Ticket Created!',
-						user: {
-							description: 'Your support ticket has been created! View it at {channel:string}.',
+						notProxy: {
+							user: {
+								description: 'Your support ticket has been created! View it at {channel:string}.',
+							},
+							logs: {
+								description: '{member:string} has created a ticket! View it at {channel:string}.',
+							},
 						},
-						logs: {
-							description: '{member:string} has created a ticket! View it at {channel:string}.',
+						proxy: {
+							user: {
+								description: 'The support ticket for {member:string} has been created! View it at {channel:string}.',
+							},
+							logs: {
+								description:
+									'{creator:string} created a support ticket by proxy for {member:string}! View it at {channel:string}.',
+							},
 						},
 					},
 				},

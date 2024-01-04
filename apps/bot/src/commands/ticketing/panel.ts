@@ -105,7 +105,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		const embed = super.embed.setColor(Colors.Aqua).setTitle(title).setDescription(description);
 		const button = new ButtonBuilder()
-			.setCustomId(super.customId('ticket_threads_categories_create_panel_button'))
+			.setCustomId(super.customId('ticket_threads_categories_create_list_panel'))
 			.setEmoji(buttonEmoji)
 			.setLabel(buttonLabel)
 			.setStyle(ButtonStyle.Primary);

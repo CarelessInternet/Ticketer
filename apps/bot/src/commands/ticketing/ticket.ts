@@ -39,11 +39,11 @@ export default class extends Command.Interaction {
 
 	@DeferReply(true)
 	public async execute({ interaction }: Command.Context) {
-		const list = await categoryList(
-			super.customId('ticket_threads_categories_create_list_command'),
-			interaction.locale,
-			interaction.guildId,
-		);
+		const list = await categoryList({
+			customId: super.customId('ticket_threads_categories_create_list_command'),
+			guildId: interaction.guildId,
+			locale: interaction.locale,
+		});
 
 		return interaction.editReply({ components: [list] });
 	}
@@ -141,11 +141,11 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferReply(true)
 	private async panelTicketModal({ interaction }: Component.Context) {
-		const list = await categoryList(
-			super.customId('ticket_threads_categories_create_list'),
-			interaction.locale,
-			interaction.guildId,
-		);
+		const list = await categoryList({
+			customId: super.customId('ticket_threads_categories_create_list_command'),
+			guildId: interaction.guildId,
+			locale: interaction.locale,
+		});
 
 		return interaction.editReply({ components: [list] });
 	}
@@ -429,7 +429,7 @@ export class ModalInteraction extends Modal.Interaction {
 			if (!logsChannel?.isTextBased()) return;
 			if (!logsChannel.permissionsFor(me).has([PermissionFlagsBits.SendMessages])) return;
 
-			void logsChannel.send({
+			await logsChannel.send({
 				embeds: [
 					ticketCreatedEmbed.setTitle(guildTranslations.createTicket.ticketCreated.title()).setDescription(
 						isProxied
@@ -445,6 +445,21 @@ export class ModalInteraction extends Modal.Interaction {
 					),
 				],
 			});
+		}
+
+		if (isProxied) {
+			user
+				.send({
+					embeds: [
+						super.embed
+							.setTitle('Ticket Created by Proxy')
+							.setDescription(
+								`A ticketing manager created a support ticket for you in the "${guild.name}" server. View the ticket at ${threadAsMention}.`,
+							),
+					],
+				})
+				// Do nothing if the user cannot be sent direct messages.
+				.catch(() => false);
 		}
 	}
 

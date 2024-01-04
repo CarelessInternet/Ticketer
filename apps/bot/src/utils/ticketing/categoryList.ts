@@ -9,14 +9,26 @@ import { database, eq, ticketThreadsCategories } from '@ticketer/database';
 import type { BaseInteraction } from '@ticketer/djs-framework';
 import { translate } from '@/i18n';
 
-export async function categoryList(customId: BaseInteraction.CustomIds[number], locale: Locale, guildId: Snowflake) {
-	const translations = translate(locale).tickets.threads.categories.categoryList;
-	const categories = await database
+interface CategoryListOptions {
+	customId: BaseInteraction.CustomIds[number];
+	guildId: Snowflake;
+	locale: Locale;
+	filterManagerIds?: Snowflake[];
+}
+
+export async function categoryList({ customId, filterManagerIds, locale, guildId }: CategoryListOptions) {
+	const rawCategories = await database
 		.select()
 		.from(ticketThreadsCategories)
 		.where(eq(ticketThreadsCategories.guildId, guildId))
 		.limit(25);
 
+	const categories =
+		filterManagerIds && filterManagerIds.length > 0
+			? rawCategories.filter((category) => category.managers.some((id) => filterManagerIds.includes(id)))
+			: rawCategories;
+
+	const translations = translate(locale).tickets.threads.categories.categoryList;
 	const options = categories.map((category) =>
 		new StringSelectMenuOptionBuilder()
 			.setEmoji(category.categoryEmoji)

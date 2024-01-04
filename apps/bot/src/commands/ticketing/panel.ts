@@ -111,7 +111,6 @@ export class ModalInteraction extends Modal.Interaction {
 			.setStyle(ButtonStyle.Primary);
 
 		const row = new ActionRowBuilder<ButtonBuilder>().setComponents(button);
-
 		const message = await channel.send({ components: [row], embeds: [embed] });
 
 		void interaction.editReply({

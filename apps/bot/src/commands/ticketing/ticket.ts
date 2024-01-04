@@ -198,7 +198,7 @@ export class ModalInteraction extends Modal.Interaction {
 		const id = Number.parseInt(dynamicValue);
 
 		const translations = translate(locale).tickets.threads.categories;
-		const guildTranslations = translate(guildLocale).tickets.threads.categories.createTicket;
+		const guildTranslations = translate(guildLocale).tickets.threads.categories;
 
 		if (Number.isNaN(id)) {
 			return interaction.editReply({
@@ -338,22 +338,22 @@ export class ModalInteraction extends Modal.Interaction {
 		const renameTitleButton = new ButtonBuilder()
 			.setCustomId(super.customId('ticket_threads_category_create_rename_title'))
 			.setEmoji('📝')
-			.setLabel(translations.buttons.renameTitle.builder.label())
+			.setLabel(guildTranslations.buttons.renameTitle.builder.label())
 			.setStyle(ButtonStyle.Secondary);
 		const lockButton = new ButtonBuilder()
 			.setCustomId(super.customId('ticket_threads_category_create_lock'))
 			.setEmoji('🔐')
-			.setLabel(translations.buttons.lock.builder.label())
+			.setLabel(guildTranslations.buttons.lock.builder.label())
 			.setStyle(ButtonStyle.Primary);
 		const closeButton = new ButtonBuilder()
 			.setCustomId(super.customId('ticket_threads_category_create_close'))
 			.setEmoji('🗃')
-			.setLabel(translations.buttons.close.builder.label())
+			.setLabel(guildTranslations.buttons.close.builder.label())
 			.setStyle(ButtonStyle.Success);
 		const deleteButton = new ButtonBuilder()
 			.setCustomId(super.customId('ticket_threads_category_create_delete'))
 			.setEmoji('🗑')
-			.setLabel(translations.buttons.delete.builder.label())
+			.setLabel(guildTranslations.buttons.delete.builder.label())
 			.setStyle(ButtonStyle.Danger);
 
 		const buttonRow = new ActionRowBuilder<ButtonBuilder>().setComponents(
@@ -404,8 +404,8 @@ export class ModalInteraction extends Modal.Interaction {
 
 			void logsChannel.send({
 				embeds: [
-					ticketCreatedEmbed.setDescription(
-						guildTranslations.ticketCreated.logs.description({
+					ticketCreatedEmbed.setTitle(guildTranslations.createTicket.ticketCreated.title()).setDescription(
+						guildTranslations.createTicket.ticketCreated.logs.description({
 							channel: threadAsMention,
 							member: userMention(user.id),
 						}),
@@ -417,7 +417,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 	@DeferReply(true)
 	private async renameTitle({ interaction }: Modal.Context) {
-		const { channel, fields, guild, locale, member, user } = interaction;
+		const { channel, fields, guild, guildLocale, locale, member, user } = interaction;
 		const translations = translate(locale).tickets.threads.categories.buttons;
 
 		if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
@@ -466,6 +466,8 @@ export class ModalInteraction extends Modal.Interaction {
 		const oldTitle = channel.name;
 		const newTitle = fields.getTextInputValue('title');
 		const successTranslations = translations.renameTitle.modal.success;
+		const guildSuccessTranslations =
+			translate(guildLocale).tickets.threads.categories.buttons.renameTitle.modal.success;
 		const embed = super
 			.userEmbed(user)
 			.setColor(Colors.DarkGreen)
@@ -486,9 +488,11 @@ export class ModalInteraction extends Modal.Interaction {
 
 			void logsChannel.send({
 				embeds: [
-					embed.setDescription(
-						successTranslations.logs.description({ oldTitle, newTitle, thread: channelMention(channel.id) }),
-					),
+					embed
+						.setTitle(guildSuccessTranslations.title())
+						.setDescription(
+							guildSuccessTranslations.logs.description({ oldTitle, newTitle, thread: channelMention(channel.id) }),
+						),
 				],
 			});
 		}

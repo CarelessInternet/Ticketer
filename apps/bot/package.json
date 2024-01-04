@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "commands:deploy:development": "tsx --env-file=../../.env.bot.development.local --env-file=../../.env.database.development.local ./src/deploy.ts",
     "commands:deploy:production": "tsx ./src/deploy.ts",
-    "typesafe-i18n": "typesafe-i18n"
+    "i18n": "typesafe-i18n"
   },
   "dependencies": {
     "@ticketer/database": "workspace:*",

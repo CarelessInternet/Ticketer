@@ -17,8 +17,6 @@ export default class extends Command.Interaction {
 	@DeferReply(true)
 	public async execute({ interaction }: Command.Context) {
 		await migrate();
-
-		const translations = translate(interaction.locale).commands.migrate.command;
-		void interaction.editReply({ content: translations.success() });
+		void interaction.editReply({ content: translate(interaction.locale).commands.migrate.command.success() });
 	}
 }

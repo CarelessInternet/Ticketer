@@ -17,7 +17,7 @@ export default class extends Command.Interaction {
 
 	public async execute({ interaction }: Command.Context<'chat'>) {
 		const ephemeral = interaction.options.getBoolean('hidden') ?? true;
-		const shard = interaction.client.shard;
+		const { shard } = interaction.client;
 
 		if (!shard) {
 			return interaction.reply({ content: 'No shard for the bot could be found.' });

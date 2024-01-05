@@ -354,6 +354,16 @@ type RootTranslation = {
 				}
 				createTicket: {
 					errors: {
+						noCategories: {
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 */
+							title: string
+							/**
+							 * N​o​ ​t​i​c​k​e​t​ ​c​a​t​e​g​o​r​i​e​s​ ​c​o​u​l​d​ ​b​e​ ​f​o​u​n​d​.
+							 */
+							description: string
+						}
 						invalidId: {
 							/**
 							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
@@ -460,7 +470,7 @@ type RootTranslation = {
 							}
 							logs: {
 								/**
-								 * {​c​r​e​a​t​o​r​}​ ​p​r​o​x​i​e​d​ ​a​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​f​o​r​ ​{​m​e​m​b​e​r​}​!​ ​V​i​e​w​ ​i​t​ ​a​t​ ​{​c​h​a​n​n​e​l​}​.
+								 * {​c​r​e​a​t​o​r​}​ ​c​r​e​a​t​e​d​ ​a​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​b​y​ ​p​r​o​x​y​ ​f​o​r​ ​{​m​e​m​b​e​r​}​!​ ​V​i​e​w​ ​i​t​ ​a​t​ ​{​c​h​a​n​n​e​l​}​.
 								 * @param {string} channel
 								 * @param {string} creator
 								 * @param {string} member
@@ -1007,6 +1017,16 @@ export type TranslationFunctions = {
 				}
 				createTicket: {
 					errors: {
+						noCategories: {
+							/**
+							 * An Error Occured
+							 */
+							title: () => LocalizedString
+							/**
+							 * No ticket categories could be found.
+							 */
+							description: () => LocalizedString
+						}
 						invalidId: {
 							/**
 							 * An Error Occured
@@ -1104,7 +1124,7 @@ export type TranslationFunctions = {
 							}
 							logs: {
 								/**
-								 * {creator} proxied a support ticket for {member}! View it at {channel}.
+								 * {creator} created a support ticket by proxy for {member}! View it at {channel}.
 								 */
 								description: (arg: { channel: string, creator: string, member: string }) => LocalizedString
 							}

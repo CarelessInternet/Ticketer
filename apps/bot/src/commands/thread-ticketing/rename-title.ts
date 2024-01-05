@@ -1,7 +1,7 @@
 import { getTranslations, translate } from '@/i18n';
 import { Command } from '@ticketer/djs-framework';
 import { Locale } from 'discord.js';
-import { renameTitle } from '@/utils/ticketing';
+import { renameTitle } from '@/utils/thread-ticketing';
 
 const dataTranslations = translate(Locale.EnglishGB).commands['rename-title'].data;
 

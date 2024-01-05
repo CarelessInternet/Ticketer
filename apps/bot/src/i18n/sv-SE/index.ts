@@ -171,6 +171,10 @@ const sv_SE = {
 				},
 				createTicket: {
 					errors: {
+						noCategories: {
+							title: ERROR_TITLE,
+							description: 'Inga stödbiljettkategorier kunde hittas.',
+						},
 						invalidId: {
 							title: ERROR_TITLE,
 							description: 'Kategori-ID:t är inte giltigt.',

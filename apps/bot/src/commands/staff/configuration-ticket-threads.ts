@@ -145,9 +145,7 @@ function categoryViewEmbed(
 async function getCategories(
 	this: BaseInteraction.Interaction,
 	context: Command.Context | Component.Context,
-	// embed: BaseInteraction.Interaction['userEmbed'],
-	// customId: BaseInteraction.Interaction['customId'],
-	page: number,
+	page = 0,
 ) {
 	const categories = await withPagination({
 		page,
@@ -380,9 +378,7 @@ export default class extends Command.Interaction {
 
 	@DeferReply(false)
 	private categoryViewConfiguration(context: Command.Context) {
-		const page = 0;
-
-		void getCategories.call(this, context, page);
+		void getCategories.call(this, context);
 	}
 
 	@DeferReply(false)

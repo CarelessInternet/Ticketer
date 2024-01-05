@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "7b4b6810-6e25-4b36-bd8c-7c0add64a1c7",
+  "id": "c24a0a51-7ef9-4091-9b0c-f6116eed4dd1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "automaticThreadsConfigurations": {
@@ -321,7 +321,7 @@
         },
         "state": {
           "name": "state",
-          "type": "enum('active','archived','locked')",
+          "type": "enum('active','archived','locked','lockedAndArchived')",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,

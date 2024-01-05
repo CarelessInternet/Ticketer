@@ -42,7 +42,7 @@ CREATE TABLE `ticketsThreads` (
 	`authorId` bigint unsigned NOT NULL,
 	`categoryId` int unsigned NOT NULL,
 	`guildId` bigint unsigned NOT NULL,
-	`state` enum('active','archived','locked') NOT NULL DEFAULT 'active',
+	`state` enum('active','archived','locked','lockedAndArchived') NOT NULL DEFAULT 'active',
 	CONSTRAINT `ticketsThreads_threadId` PRIMARY KEY(`threadId`)
 );
 --> statement-breakpoint

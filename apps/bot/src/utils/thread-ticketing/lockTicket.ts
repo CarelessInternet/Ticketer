@@ -60,7 +60,6 @@ export async function lockTicket(
 		.setDescription(translations.lock.execute.success.user.description());
 
 	await channel.setLocked(true);
-	await database.update(ticketsThreads).set({ state: 'locked' }).where(eq(ticketsThreads.threadId, channel.id));
 	await interaction.editReply({ embeds: [embed] });
 
 	if (row.logsChannelId) {

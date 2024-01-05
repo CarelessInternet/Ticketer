@@ -94,7 +94,7 @@ export const ticketsThreads = mysqlTable(
 		authorId: snowflake('authorId').notNull(),
 		categoryId: int('categoryId', { unsigned: true }).notNull(),
 		guildId: snowflake('guildId').notNull(),
-		state: mysqlEnum('state', ['active', 'archived', 'locked']).notNull().default('active'),
+		state: mysqlEnum('state', ['active', 'archived', 'locked', 'lockedAndArchived']).notNull().default('active'),
 	},
 	(table) => ({
 		authorIdIndex: index('authorId_index').on(table.authorId),

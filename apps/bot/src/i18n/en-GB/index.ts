@@ -171,6 +171,10 @@ const en_GB = {
 				},
 				createTicket: {
 					errors: {
+						noCategories: {
+							title: ERROR_TITLE,
+							description: 'No ticket categories could be found.',
+						},
 						invalidId: {
 							title: ERROR_TITLE,
 							description: 'The category ID is not valid.',

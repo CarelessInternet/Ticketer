@@ -21,12 +21,15 @@ export async function categoryList({ customId, filterManagerIds, locale, guildId
 		.select()
 		.from(ticketThreadsCategories)
 		.where(eq(ticketThreadsCategories.guildId, guildId))
+		// Limit to 25 because that's the maximum amount of select menu options.
 		.limit(25);
 
 	const categories =
 		filterManagerIds && filterManagerIds.length > 0
 			? rawCategories.filter((category) => category.managers.some((id) => filterManagerIds.includes(id)))
 			: rawCategories;
+
+	if (categories.length <= 0) return;
 
 	const translations = translate(locale).tickets.threads.categories.categoryList;
 	const options = categories.map((category) =>

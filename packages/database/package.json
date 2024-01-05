@@ -22,6 +22,6 @@
 	"devDependencies": {
 		"@ticketer/eslint-config": "workspace:*",
 		"dotenv-cli": "^7.3.0",
-		"drizzle-kit": "^0.20.9"
+		"drizzle-kit": "^0.20.10"
 	}
 }

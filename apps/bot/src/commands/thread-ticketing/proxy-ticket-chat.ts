@@ -1,6 +1,7 @@
 import { Command, DeferReply } from '@ticketer/djs-framework';
 import { PermissionFlagsBits } from 'discord.js';
 import { categoryList } from '@/utils';
+import { translate } from '@/i18n';
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName('proxy-ticket')
@@ -19,6 +20,19 @@ export default class extends Command.Interaction {
 			guildId: interaction.guildId,
 			locale: interaction.locale,
 		});
+
+		if (!list) {
+			const translations = translate(interaction.locale).tickets.threads.categories.createTicket.errors.noCategories;
+
+			return interaction.editReply({
+				embeds: [
+					super
+						.userEmbedError(interaction.user)
+						.setTitle(translations.title())
+						.setDescription(translations.description()),
+				],
+			});
+		}
 
 		return interaction.editReply({ components: [list] });
 	}

@@ -1,15 +1,16 @@
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
-import { ChannelType, Colors, PermissionFlagsBits, channelMention, userMention } from 'discord.js';
+import { ChannelType, Colors, PermissionFlagsBits, inlineCode, userMention } from 'discord.js';
 import { database, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 import { translate } from '@/i18n';
 
-export async function closeTicket(
+export async function deleteTicket(
 	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context | Component.Context,
 ) {
 	const { channel, guild, guildLocale, locale, member, user } = interaction;
 	const translations = translate(locale).tickets.threads.categories.buttons;
-	const guildSuccessTranslations = translate(guildLocale).tickets.threads.categories.buttons.close.execute.success;
+	const guildSuccessTranslations =
+		translate(guildLocale).tickets.threads.categories.buttons.delete.execute.success.logs;
 
 	if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
 		return interaction.editReply({
@@ -21,14 +22,12 @@ export async function closeTicket(
 		});
 	}
 
-	if (channel.archived) return;
-
-	if (!channel.editable) {
+	if (!channel.manageable) {
 		return interaction.editReply({
 			embeds: [
 				this.userEmbedError(user)
-					.setTitle(translations.close.execute.errors.notEditable.title())
-					.setDescription(translations.close.execute.errors.notEditable.description()),
+					.setTitle(translations.lock.execute.errors.notManageable.title())
+					.setDescription(translations.lock.execute.errors.notManageable.description()),
 			],
 		});
 	}
@@ -54,13 +53,12 @@ export async function closeTicket(
 	}
 
 	const embed = this.userEmbed(user)
-		.setColor(Colors.Yellow)
-		.setTitle(translations.close.execute.success.title())
-		.setDescription(translations.close.execute.success.user.description());
+		.setColor(Colors.Red)
+		.setTitle(translations.delete.execute.success.user.title())
+		.setDescription(translations.delete.execute.success.user.description());
 
-	await channel.setArchived(true);
-	await database.update(ticketsThreads).set({ state: 'archived' }).where(eq(ticketsThreads.threadId, channel.id));
 	await interaction.editReply({ embeds: [embed] });
+	await channel.delete();
 
 	if (row.logsChannelId) {
 		const me = await guild.members.fetchMe();
@@ -72,9 +70,10 @@ export async function closeTicket(
 		void logsChannel.send({
 			embeds: [
 				embed.setTitle(guildSuccessTranslations.title()).setDescription(
-					guildSuccessTranslations.logs.description({
-						thread: channelMention(channel.id),
+					guildSuccessTranslations.description({
 						member: userMention(user.id),
+						threadId: inlineCode(channel.id),
+						title: channel.name,
 					}),
 				),
 			],

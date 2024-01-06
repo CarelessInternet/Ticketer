@@ -382,10 +382,24 @@ export default class extends Command.Interaction {
 	}
 
 	@DeferReply(false)
-	@HasGlobalConfiguration
 	private async categoryConfiguration({ interaction }: Command.Context<'chat'>) {
 		const id = Number.parseInt(interaction.options.getString('title', true));
+		const [result] = await database
+			.select({ emoji: ticketThreadsCategories.categoryEmoji, title: ticketThreadsCategories.categoryTitle })
+			.from(ticketThreadsCategories)
+			.where(and(eq(ticketThreadsCategories.guildId, interaction.guildId), eq(ticketThreadsCategories.id, id)));
 
+		if (!result) {
+			return interaction.editReply({
+				embeds: [
+					super
+						.userEmbedError(interaction.user)
+						.setDescription('Please create a global thread ticket configuration before creating categories.'),
+				],
+			});
+		}
+
+		const embed = super.embed.setTitle(`${result.emoji} ${result.title}`);
 		const categoriesMenu = new StringSelectMenuBuilder()
 			.setCustomId(super.customId('ticket_threads_category_configuration', id))
 			.setMinValues(1)
@@ -436,7 +450,7 @@ export default class extends Command.Interaction {
 
 		const row = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(categoriesMenu);
 
-		return interaction.editReply({ components: [row] });
+		return interaction.editReply({ components: [row], embeds: [embed] });
 	}
 
 	@DeferReply(false)

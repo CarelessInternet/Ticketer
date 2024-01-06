@@ -69,7 +69,7 @@ export async function viewUserTickets(
 						ticket.state === 'archived'
 							? 'closed'
 							: ticket.state === 'lockedAndArchived'
-								? 'Locked and Archived'
+								? 'Locked and Closed'
 								: ticket.state,
 					),
 					inline: true,

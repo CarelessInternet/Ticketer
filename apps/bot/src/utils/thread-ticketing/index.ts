@@ -3,4 +3,5 @@ export * from './closeTicket';
 export * from './deleteTicket';
 export * from './lockTicket';
 export * from './renameTitle';
+export * from './ticketState';
 export * from './viewUserTickets';

@@ -1,19 +1,23 @@
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
 import { type Snowflake, channelMention, userMention } from 'discord.js';
-import { and, asc, count, database, eq, sql, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
-import { capitalise, messageWithPagination, withPagination } from '..';
+import { and, asc, count, database, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
+import { managerIntersection, messageWithPagination, ticketState, withPagination } from '..';
+
+interface ViewUserTicketsOptions {
+	page?: number;
+	userId: Snowflake;
+}
 
 export async function viewUserTickets(
 	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context<'chat' | 'user'> | Component.Context,
-	userId: Snowflake,
-	page = 0,
+	{ page = 0, userId }: ViewUserTicketsOptions,
 ) {
 	const PAGE_SIZE = 3;
 	const user = await interaction.client.users.fetch(userId);
 
 	const { globalAmount, tickets } = await database.transaction(async (tx) => {
-		const query = database
+		const query = tx
 			.select({
 				categoryEmoji: ticketThreadsCategories.categoryEmoji,
 				categoryTitle: ticketThreadsCategories.categoryTitle,
@@ -25,14 +29,11 @@ export async function viewUserTickets(
 			.where(
 				and(
 					eq(ticketsThreads.authorId, user.id),
-					// We do this to not accidentally display tickets not belonging to the manager's role(s),
-					// as well as avoiding duplicate results as a result of that.
-					sql`JSON_OVERLAPS(${ticketThreadsCategories.managers}, '${sql.raw(
-						JSON.stringify([...interaction.member.roles.cache.keys()]),
-					)}')`,
+					eq(ticketsThreads.guildId, interaction.guildId),
+					managerIntersection(ticketThreadsCategories.managers, interaction.member.roles),
 				),
 			)
-			.leftJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id))
+			.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id))
 			.orderBy(asc(ticketsThreads.categoryId))
 			.$dynamic();
 
@@ -42,12 +43,12 @@ export async function viewUserTickets(
 			query,
 		});
 
-		const amount = await tx
+		const [row] = await tx
 			.select({ amount: count() })
 			.from(ticketsThreads)
 			.where(and(eq(ticketsThreads.guildId, interaction.guildId), eq(ticketsThreads.authorId, user.id)));
 
-		return { globalAmount: amount.at(0)?.amount, tickets };
+		return { globalAmount: row?.amount, tickets };
 	});
 
 	const embeds = tickets.map((ticket) =>
@@ -61,13 +62,7 @@ export async function viewUserTickets(
 				},
 				{
 					name: 'State',
-					value: capitalise(
-						ticket.state === 'archived'
-							? 'closed'
-							: ticket.state === 'lockedAndArchived'
-								? 'Locked and Closed'
-								: ticket.state,
-					),
+					value: ticketState(ticket.state),
 					inline: true,
 				},
 			),

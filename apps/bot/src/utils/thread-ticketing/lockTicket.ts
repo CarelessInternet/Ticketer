@@ -42,9 +42,9 @@ export async function lockTicket(
 		})
 		.from(ticketsThreads)
 		.where(eq(ticketsThreads.threadId, channel.id))
-		.leftJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id));
+		.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id));
 
-	if (row?.authorId !== user.id && !row?.managers?.some((id) => member.roles.resolve(id))) {
+	if (row?.authorId !== user.id && !row?.managers.some((id) => member.roles.resolve(id))) {
 		return interaction.editReply({
 			embeds: [
 				this.userEmbedError(user)

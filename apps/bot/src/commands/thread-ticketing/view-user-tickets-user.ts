@@ -9,6 +9,6 @@ export default class extends Command.Interaction {
 
 	@DeferReply(true)
 	public execute(context: Command.Context<'user'>) {
-		void viewUserTickets.call(this, context, context.interaction.targetUser.id);
+		void viewUserTickets.call(this, context, { userId: context.interaction.targetUser.id });
 	}
 }

@@ -1,3 +1,4 @@
+import { baseTicketConfiguration, jsonWithParsing } from './utils';
 import {
 	boolean,
 	customType,
@@ -9,21 +10,6 @@ import {
 	tinyint,
 	varchar,
 } from 'drizzle-orm/mysql-core';
-
-// https://orm.drizzle.team/docs/custom-types#examples
-const jsonWithParsing = <Data>(name: string) =>
-	customType<{ data: Data; driverData: string; notNull: true }>({
-		dataType() {
-			return 'json';
-		},
-		// For some reason, drizzle-orm's `json()` method doesn't parse the data automatically?
-		fromDriver(value: string) {
-			return JSON.parse(value);
-		},
-		toDriver(value: Data): string {
-			return JSON.stringify(value);
-		},
-	})(name).notNull();
 
 // TODO: change mode to 'string' when available: https://github.com/drizzle-team/drizzle-orm/issues/813
 // const snowflake = (name: string) => bigint(name, { mode: 'bigint', unsigned: true });
@@ -62,6 +48,7 @@ export const ticketThreadsConfigurations = mysqlTable('ticketThreadsConfiguratio
 export const ticketThreadsCategories = mysqlTable(
 	'ticketThreadsCategories',
 	{
+		...baseTicketConfiguration,
 		id: int('id', { unsigned: true }).autoincrement().primaryKey(),
 		guildId: snowflake('guildId').notNull(),
 		// This is not a char because one emoji can compose of several like 👨‍👩‍👦‍👦.
@@ -70,9 +57,6 @@ export const ticketThreadsCategories = mysqlTable(
 		categoryDescription: varchar('categoryDescription', { length: 100 }).notNull(),
 		channelId: snowflake('channelId'),
 		logsChannelId: snowflake('logsChannelId'),
-		managers: jsonWithParsing('managers').$type<string[]>().default([]),
-		openingMessageTitle: varchar('openingMessageTitle', { length: 100 }),
-		openingMessageDescription: varchar('openingMessageDescription', { length: 500 }),
 		privateThreads: boolean('privateThreads').notNull().default(true),
 		silentPings: boolean('silentPings').notNull().default(true),
 		threadNotifications: boolean('threadNotifications').notNull().default(false),
@@ -109,14 +93,12 @@ export const ticketsThreads = mysqlTable(
 	}),
 );
 
-export const ticketForumsConfigurations = mysqlTable(
-	'ticketForumsConfigurations',
+export const automaticForumsConfigurations = mysqlTable(
+	'automaticForumsConfigurations',
 	{
+		...baseTicketConfiguration,
 		guildId: snowflake('guildId').notNull(),
 		channelId: snowflake('channelId').notNull(),
-		managers: jsonWithParsing('managers').$type<string[]>().default([]),
-		openingMessageTitle: varchar('openingMessageTitle', { length: 100 }),
-		openingMessageDescription: varchar('openingMessageDescription', { length: 500 }),
 	},
 	(table) => ({
 		guildIdIndex: index('guildId_index').on(table.guildId),
@@ -127,11 +109,9 @@ export const ticketForumsConfigurations = mysqlTable(
 export const automaticThreadsConfigurations = mysqlTable(
 	'automaticThreadsConfigurations',
 	{
+		...baseTicketConfiguration,
 		guildId: snowflake('guildId').notNull(),
 		channelId: snowflake('channelId').notNull(),
-		managers: jsonWithParsing('managers').$type<string[]>().default([]),
-		openingMessageTitle: varchar('openingMessageTitle', { length: 100 }),
-		openingMessageDescription: varchar('openingMessageDescription', { length: 500 }),
 	},
 	(table) => ({
 		guildIdIndex: index('guildId_index').on(table.guildId),

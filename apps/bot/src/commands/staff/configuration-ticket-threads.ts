@@ -456,21 +456,38 @@ export default class extends Command.Interaction {
 	@DeferReply(false)
 	@HasGlobalConfiguration
 	private async categoryDelete({ interaction }: Command.Context<'chat'>) {
-		const id = Number.parseInt(interaction.options.getString('title', true));
-		// TODO: When the MariaDB driver gets released, change the query to use the RETURNING clause.
-		const query = await database
-			.delete(ticketThreadsCategories)
-			.where(sql`${ticketThreadsCategories.id} = ${id} RETURNING ${ticketThreadsCategories.categoryTitle}`);
+		try {
+			const id = Number.parseInt(interaction.options.getString('title', true));
+			// TODO: When the MariaDB driver gets released, change the query to use the RETURNING clause.
+			const query = await database
+				.delete(ticketThreadsCategories)
+				.where(sql`${ticketThreadsCategories.id} = ${id} RETURNING ${ticketThreadsCategories.categoryTitle}`);
 
-		const title = (query[0] as unknown as Pick<typeof ticketThreadsCategories.$inferSelect, 'categoryTitle'>[]).at(0)
-			?.categoryTitle;
+			const title = (query[0] as unknown as Pick<typeof ticketThreadsCategories.$inferSelect, 'categoryTitle'>[]).at(0)
+				?.categoryTitle;
 
-		const embed = super
-			.userEmbed(interaction.user)
-			.setTitle('Deleted the Thread Ticket Category')
-			.setDescription(`${userMention(interaction.user.id)} deleted the category with the following title: ${title}.`);
+			const embed = super
+				.userEmbed(interaction.user)
+				.setTitle('Deleted the Thread Ticket Category')
+				.setDescription(`${userMention(interaction.user.id)} deleted the category with the following title: ${title}.`);
 
-		return interaction.editReply({ embeds: [embed] });
+			return interaction.editReply({ embeds: [embed] });
+		} catch (error) {
+			const isObject = (object: unknown): object is object =>
+				typeof object === 'object' && !Array.isArray(object) && object !== null;
+
+			if (isObject(error) && 'errno' in error && error.errno === 1451) {
+				return interaction.editReply({
+					embeds: [
+						super
+							.userEmbedError(interaction.user)
+							.setDescription(
+								'You must delete all of the tickets which has this category before deleting the category itself.',
+							),
+					],
+				});
+			}
+		}
 	}
 }
 

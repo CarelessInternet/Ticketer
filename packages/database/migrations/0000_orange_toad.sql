@@ -1,4 +1,4 @@
-CREATE TABLE `automaticThreadsConfigurations` (
+CREATE TABLE `automaticForumsConfigurations` (
 	`guildId` bigint unsigned NOT NULL,
 	`channelId` bigint unsigned NOT NULL,
 	`managers` json NOT NULL DEFAULT ('[]'),
@@ -6,7 +6,7 @@ CREATE TABLE `automaticThreadsConfigurations` (
 	`openingMessageDescription` varchar(500)
 );
 --> statement-breakpoint
-CREATE TABLE `ticketForumsConfigurations` (
+CREATE TABLE `automaticThreadsConfigurations` (
 	`guildId` bigint unsigned NOT NULL,
 	`channelId` bigint unsigned NOT NULL,
 	`managers` json NOT NULL DEFAULT ('[]'),
@@ -62,10 +62,10 @@ CREATE TABLE `welcomeAndFarewell` (
 	CONSTRAINT `welcomeAndFarewell_farewellChannelId_unique` UNIQUE(`farewellChannelId`)
 );
 --> statement-breakpoint
+CREATE INDEX `guildId_index` ON `automaticForumsConfigurations` (`guildId`);--> statement-breakpoint
+CREATE INDEX `channelId_index` ON `automaticForumsConfigurations` (`channelId`);--> statement-breakpoint
 CREATE INDEX `guildId_index` ON `automaticThreadsConfigurations` (`guildId`);--> statement-breakpoint
 CREATE INDEX `channelId_index` ON `automaticThreadsConfigurations` (`channelId`);--> statement-breakpoint
-CREATE INDEX `guildId_index` ON `ticketForumsConfigurations` (`guildId`);--> statement-breakpoint
-CREATE INDEX `channelId_index` ON `ticketForumsConfigurations` (`channelId`);--> statement-breakpoint
 CREATE INDEX `guildId_index` ON `ticketThreadsCategories` (`guildId`);--> statement-breakpoint
 CREATE INDEX `authorId_index` ON `ticketsThreads` (`authorId`);--> statement-breakpoint
 CREATE INDEX `categoryId_index` ON `ticketsThreads` (`categoryId`);--> statement-breakpoint

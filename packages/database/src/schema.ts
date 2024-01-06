@@ -48,7 +48,6 @@ export const ticketThreadsConfigurations = mysqlTable('ticketThreadsConfiguratio
 export const ticketThreadsCategories = mysqlTable(
 	'ticketThreadsCategories',
 	{
-		...baseTicketConfiguration,
 		id: int('id', { unsigned: true }).autoincrement().primaryKey(),
 		guildId: snowflake('guildId').notNull(),
 		// This is not a char because one emoji can compose of several like 👨‍👩‍👦‍👦.
@@ -57,6 +56,7 @@ export const ticketThreadsCategories = mysqlTable(
 		categoryDescription: varchar('categoryDescription', { length: 100 }).notNull(),
 		channelId: snowflake('channelId'),
 		logsChannelId: snowflake('logsChannelId'),
+		...baseTicketConfiguration,
 		privateThreads: boolean('privateThreads').notNull().default(true),
 		silentPings: boolean('silentPings').notNull().default(true),
 		threadNotifications: boolean('threadNotifications').notNull().default(false),
@@ -96,9 +96,9 @@ export const ticketsThreads = mysqlTable(
 export const automaticForumsConfigurations = mysqlTable(
 	'automaticForumsConfigurations',
 	{
-		...baseTicketConfiguration,
 		guildId: snowflake('guildId').notNull(),
 		channelId: snowflake('channelId').notNull(),
+		...baseTicketConfiguration,
 	},
 	(table) => ({
 		guildIdIndex: index('guildId_index').on(table.guildId),
@@ -109,9 +109,9 @@ export const automaticForumsConfigurations = mysqlTable(
 export const automaticThreadsConfigurations = mysqlTable(
 	'automaticThreadsConfigurations',
 	{
-		...baseTicketConfiguration,
 		guildId: snowflake('guildId').notNull(),
 		channelId: snowflake('channelId').notNull(),
+		...baseTicketConfiguration,
 	},
 	(table) => ({
 		guildIdIndex: index('guildId_index').on(table.guildId),

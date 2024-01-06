@@ -1,11 +1,11 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "c24a0a51-7ef9-4091-9b0c-f6116eed4dd1",
+  "id": "8a19db8b-87ca-4a8c-9555-45d804204f8f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "automaticThreadsConfigurations": {
-      "name": "automaticThreadsConfigurations",
+    "automaticForumsConfigurations": {
+      "name": "automaticForumsConfigurations",
       "columns": {
         "guildId": {
           "name": "guildId",
@@ -64,8 +64,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "ticketForumsConfigurations": {
-      "name": "ticketForumsConfigurations",
+    "automaticThreadsConfigurations": {
+      "name": "automaticThreadsConfigurations",
       "columns": {
         "guildId": {
           "name": "guildId",

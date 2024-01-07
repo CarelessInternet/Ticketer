@@ -1,5 +1,5 @@
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
-import { type Snowflake, channelMention, userMention } from 'discord.js';
+import { type Snowflake, channelMention } from 'discord.js';
 import { and, asc, count, database, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 import { managerIntersection, messageWithPagination, ticketState, withPagination } from '..';
 
@@ -83,7 +83,7 @@ export async function viewUserTickets(
 			parse: [],
 		},
 		components,
-		content: `Total amount of tickets by ${userMention(user.id)} in the server: ${globalAmount ?? 0}.`,
+		content: `Total amount of tickets by ${user.toString()} in the server: ${globalAmount ?? 0}.`,
 		embeds,
 	});
 }

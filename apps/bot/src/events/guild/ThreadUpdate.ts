@@ -5,20 +5,6 @@ export default class extends Event.Handler {
 	public readonly name = Event.Name.ThreadUpdate;
 
 	public execute([oldThread, newThread]: Event.ArgumentsOf<this['name']>) {
-		// Active -> Archived
-		// Active -> Locked
-		// Active -> Archived -> Locked & Archived
-		// Active -> Locked -> Archived & Locked
-
-		// Locked & Archived -> Archived -> Active
-
-		// const onlyArchived = !oldThread.archived && newThread.archived;
-		// const onlyUnarchived = oldThread.archived && !newThread.archived;
-		// const onlyLocked = !oldThread.locked && newThread.locked;
-		// const onlyUnlocked = oldThread.locked && !newThread.locked;
-
-		// const archived =
-
 		const archived = !oldThread.archived && newThread.archived;
 		const unarchived = oldThread.archived && !newThread.archived;
 		const locked = !oldThread.locked && newThread.locked;

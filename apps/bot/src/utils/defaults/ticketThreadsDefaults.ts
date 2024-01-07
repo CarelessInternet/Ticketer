@@ -1,4 +1,4 @@
-import { Colors, type EmbedBuilder, type Locale, type Snowflake, type User, inlineCode, userMention } from 'discord.js';
+import { Colors, type EmbedBuilder, type Locale, type User, inlineCode } from 'discord.js';
 import type { ticketThreadsCategories } from '@ticketer/database';
 import { translate } from '@/i18n';
 
@@ -18,8 +18,8 @@ interface MessageTitleOptions extends BaseOptions, BaseMessageOptions {
 }
 
 interface MessageDescriptionOptions extends BaseOptions, BaseMessageOptions {
-	userId: Snowflake;
 	description: Columns['openingMessageDescription'];
+	userMention: ReturnType<User['toString']>;
 }
 
 const replaceMessageCategory = (text: string, category: string) => text.replaceAll('{category}', category);
@@ -31,15 +31,15 @@ interface ReplaceTitleOptions extends BaseMessageOptions {
 }
 
 interface ReplaceDescriptionOptions extends BaseMessageOptions {
-	user: MessageDescriptionOptions['userId'];
 	messageDescription: NonNullable<MessageDescriptionOptions['description']>;
+	userMention: MessageDescriptionOptions['userMention'];
 }
 
 const replaceMessageTitle = ({ categoryTitle, messageTitle, displayName }: ReplaceTitleOptions) =>
 	replaceMember(replaceMessageCategory(messageTitle, categoryTitle), displayName);
 
-const replaceMessageDescription = ({ categoryTitle, messageDescription, user }: ReplaceDescriptionOptions) =>
-	replaceMember(replaceMessageCategory(messageDescription, categoryTitle), userMention(user));
+const replaceMessageDescription = ({ categoryTitle, messageDescription, userMention }: ReplaceDescriptionOptions) =>
+	replaceMember(replaceMessageCategory(messageDescription, categoryTitle), userMention);
 
 const translations = (locale: BaseOptions['locale']) => translate(locale).tickets.threads.categories.configuration;
 
@@ -49,12 +49,17 @@ export const openingMessageTitle = ({ categoryTitle, displayName, locale, title 
 		? replaceMessageTitle({ categoryTitle, displayName, messageTitle: title })
 		: translations(locale).openingMessage.title({ category: categoryTitle });
 
-export const openingMessageDescription = ({ categoryTitle, description, locale, userId }: MessageDescriptionOptions) =>
+export const openingMessageDescription = ({
+	categoryTitle,
+	description,
+	locale,
+	userMention,
+}: MessageDescriptionOptions) =>
 	description
-		? replaceMessageDescription({ categoryTitle, messageDescription: description, user: userId })
+		? replaceMessageDescription({ categoryTitle, messageDescription: description, userMention })
 		: translations(locale).openingMessage.description({
 				category: inlineCode(categoryTitle),
-				member: userMention(userId),
+				member: userMention,
 			});
 
 interface MessageEmbedOptions extends BaseOptions, BaseMessageOptions {
@@ -68,4 +73,4 @@ export const openingMessageEmbed = ({ categoryTitle, description, embed, locale,
 	embed
 		.setColor(Colors.Fuchsia)
 		.setTitle(openingMessageTitle({ categoryTitle, displayName: user.displayName, locale, title }))
-		.setDescription(openingMessageDescription({ categoryTitle, description, locale, userId: user.id }));
+		.setDescription(openingMessageDescription({ categoryTitle, description, locale, userMention: user.toString() }));

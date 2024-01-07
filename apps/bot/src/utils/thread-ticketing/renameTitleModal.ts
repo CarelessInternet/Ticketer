@@ -2,7 +2,10 @@ import { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
 import { translate } from '@/i18n';
 
-export function renameTitle(this: BaseInteraction.Interaction, { interaction }: Command.Context | Component.Context) {
+export function renameTitleModal(
+	this: BaseInteraction.Interaction,
+	{ interaction }: Command.Context | Component.Context,
+) {
 	const translations = translate(interaction.locale).tickets.threads.categories.buttons.renameTitle.component;
 
 	const input = new TextInputBuilder()

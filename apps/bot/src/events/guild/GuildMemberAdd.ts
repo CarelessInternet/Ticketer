@@ -11,21 +11,15 @@ export default class extends Event.Handler {
 		const table = await database.select().from(welcomeAndFarewell).where(eq(welcomeAndFarewell.guildId, guildId));
 		const data = table.at(0);
 
-		if (!data?.welcomeChannelId || !data.welcomeEnabled) {
-			return;
-		}
+		if (!data?.welcomeChannelId || !data.welcomeEnabled) return;
 
 		const channel = await channels.fetch(data.welcomeChannelId.toString());
 
-		if (!channel?.isTextBased()) {
-			return;
-		}
+		if (!channel?.isTextBased()) return;
 
 		const me = await members.fetchMe();
 
-		if (!channel.permissionsFor(me).has(PermissionFlagsBits.SendMessages)) {
-			return;
-		}
+		if (!channel.permissionsFor(me).has(PermissionFlagsBits.SendMessages)) return;
 
 		if (data.welcomeNewMemberRoles.length > 0) {
 			const highestRoleWithManageRoles = me.roles.cache

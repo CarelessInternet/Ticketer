@@ -12,10 +12,8 @@ import {
 	TextInputBuilder,
 	TextInputStyle,
 	ThreadAutoArchiveDuration,
-	channelMention,
 	inlineCode,
 	roleMention,
-	userMention,
 } from 'discord.js';
 import { Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
 import {
@@ -27,7 +25,7 @@ import {
 	ticketThreadsConfigurations,
 	ticketsThreads,
 } from '@ticketer/database';
-import { categoryList, closeTicket, deleteTicket, lockTicket, openingMessageEmbed, renameTitle } from '@/utils';
+import { categoryList, closeTicket, deleteTicket, lockTicket, openingMessageEmbed, renameTitleModal } from '@/utils';
 import { getTranslations, translate } from '@/i18n';
 
 const dataTranslations = translate('en-GB').commands.ticket.data;
@@ -89,7 +87,7 @@ export class ComponentInteraction extends Component.Interaction {
 				return context.interaction.isButton() && this.panelTicketModal(context);
 			}
 			case super.customId('ticket_threads_category_create_rename_title'): {
-				void renameTitle.call(this, context);
+				void renameTitleModal.call(this, context);
 				return;
 			}
 			case super.customId('ticket_threads_category_create_lock'): {
@@ -347,7 +345,7 @@ export class ModalInteraction extends Modal.Interaction {
 							isProxied
 								? translations.createTicket.errors.tooManyTickets.proxy.description({
 										amount: configuration.ticketThreadsConfigurations.activeTickets,
-										member: userMention(user.id),
+										member: user.toString(),
 									})
 								: translations.createTicket.errors.tooManyTickets.user.description({
 										amount: configuration.ticketThreadsConfigurations.activeTickets,
@@ -435,7 +433,6 @@ export class ModalInteraction extends Modal.Interaction {
 
 		await thread.members.add(user);
 
-		const threadAsMention = channelMention(thread.id);
 		const ticketCreatedEmbed = super
 			.userEmbed(isProxied ? interactionUser : user)
 			.setColor(Colors.Green)
@@ -443,10 +440,10 @@ export class ModalInteraction extends Modal.Interaction {
 			.setDescription(
 				isProxied
 					? translations.createTicket.ticketCreated.proxy.user.description({
-							channel: threadAsMention,
-							member: userMention(user.id),
+							channel: thread.toString(),
+							member: user.toString(),
 						})
-					: translations.createTicket.ticketCreated.notProxy.user.description({ channel: threadAsMention }),
+					: translations.createTicket.ticketCreated.notProxy.user.description({ channel: thread.toString() }),
 			);
 
 		await interaction.editReply({ components: [], embeds: [ticketCreatedEmbed] });
@@ -462,13 +459,13 @@ export class ModalInteraction extends Modal.Interaction {
 					ticketCreatedEmbed.setTitle(guildTranslations.createTicket.ticketCreated.title()).setDescription(
 						isProxied
 							? guildTranslations.createTicket.ticketCreated.proxy.logs.description({
-									channel: threadAsMention,
-									creator: userMention(interactionUser.id),
-									member: userMention(user.id),
+									channel: thread.toString(),
+									creator: interactionUser.toString(),
+									member: user.toString(),
 								})
 							: guildTranslations.createTicket.ticketCreated.notProxy.logs.description({
-									channel: threadAsMention,
-									member: userMention(user.id),
+									channel: thread.toString(),
+									member: user.toString(),
 								}),
 					),
 				],
@@ -482,7 +479,9 @@ export class ModalInteraction extends Modal.Interaction {
 						super.embed
 							.setTitle('Ticket Created by Proxy')
 							.setDescription(
-								`A ticketing manager created a support ticket for you in the "${guild.name}" server. View the ticket at ${threadAsMention}.`,
+								`A ticketing manager created a support ticket for you in the "${
+									guild.name
+								}" server. View the ticket at ${thread.toString()}.`,
 							),
 					],
 				})
@@ -567,7 +566,7 @@ export class ModalInteraction extends Modal.Interaction {
 					embed
 						.setTitle(guildSuccessTranslations.title())
 						.setDescription(
-							guildSuccessTranslations.logs.description({ oldTitle, newTitle, thread: channelMention(channel.id) }),
+							guildSuccessTranslations.logs.description({ oldTitle, newTitle, thread: channel.toString() }),
 						),
 				],
 			});

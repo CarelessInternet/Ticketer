@@ -7,7 +7,6 @@ import {
 	PermissionFlagsBits,
 	TextInputBuilder,
 	TextInputStyle,
-	channelMention,
 } from 'discord.js';
 import { Command, DeferReply, Modal } from '@ticketer/djs-framework';
 import { extractEmoji } from '@/utils';
@@ -98,7 +97,8 @@ export class ModalInteraction extends Modal.Interaction {
 				embeds: [
 					super
 						.userEmbedError(user)
-						.setDescription(`I do not have the send messages permission in ${channelMention(channel.id)}.`),
+						// eslint-disable-next-line @typescript-eslint/no-base-to-string
+						.setDescription(`I do not have the send messages permission in ${channel.toString()}.`),
 				],
 			});
 		}
@@ -115,14 +115,12 @@ export class ModalInteraction extends Modal.Interaction {
 
 		void interaction.editReply({
 			embeds: [
-				super
-					.userEmbed(user)
-					.setTitle('Sent the Ticket Panel')
-					.setDescription(
-						`The thread ticket panel has successfully been sent in ${channelMention(channel.id)}. View the message at ${
-							message.url
-						}!`,
-					),
+				super.userEmbed(user).setTitle('Sent the Ticket Panel').setDescription(
+					// eslint-disable-next-line @typescript-eslint/no-base-to-string
+					`The thread ticket panel has successfully been sent in ${channel.toString()}. View the message at ${
+						message.url
+					}!`,
+				),
 			],
 		});
 	}

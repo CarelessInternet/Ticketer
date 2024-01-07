@@ -6,9 +6,7 @@ export function RequiredChannelPermissions(...permissions: PermissionFlagsValues
 		const original = descriptor.value as () => void;
 
 		descriptor.value = async function (this: BaseInteraction.Interaction, { interaction }: BaseInteraction.Context) {
-			if (!interaction.isRepliable() || !interaction.channel) {
-				return;
-			}
+			if (!interaction.isRepliable() || !interaction.channel) return;
 
 			const me = await interaction.guild.members.fetchMe();
 

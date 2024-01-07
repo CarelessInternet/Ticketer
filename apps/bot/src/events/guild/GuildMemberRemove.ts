@@ -11,21 +11,15 @@ export default class extends Event.Handler {
 		const table = await database.select().from(welcomeAndFarewell).where(eq(welcomeAndFarewell.guildId, guildId));
 		const data = table.at(0);
 
-		if (!data?.farewellChannelId || !data.farewellEnabled) {
-			return;
-		}
+		if (!data?.farewellChannelId || !data.farewellEnabled) return;
 
 		const channel = await channels.fetch(data.farewellChannelId.toString());
 
-		if (!channel?.isTextBased()) {
-			return;
-		}
+		if (!channel?.isTextBased()) return;
 
 		const me = await members.fetchMe();
 
-		if (!channel.permissionsFor(me).has(PermissionFlagsBits.SendMessages)) {
-			return;
-		}
+		if (!channel.permissionsFor(me).has(PermissionFlagsBits.SendMessages)) return;
 
 		const embed = farewellEmbed({
 			data: {

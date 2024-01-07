@@ -11,7 +11,6 @@ import {
 	TextInputStyle,
 	channelMention,
 	roleMention,
-	userMention,
 } from 'discord.js';
 import {
 	Autocomplete,
@@ -120,7 +119,7 @@ function categoryViewEmbed(
 						categoryTitle: category.categoryTitle,
 						description: category.openingMessageDescription,
 						locale: context.interaction.locale,
-						userId: context.interaction.user.id,
+						userMention: context.interaction.user.toString(),
 					}),
 					inline: true,
 				},
@@ -310,7 +309,7 @@ export default class extends Command.Interaction {
 					.userEmbed(user)
 					.setTitle('Updated the Thead Ticket Configuration')
 					.setDescription(
-						`${userMention(user.id)} updated the amount of active tickets a user may have at once to ${activeTickets}.`,
+						`${user.toString()} updated the amount of active tickets a user may have at once to ${activeTickets}.`,
 					);
 
 				return interaction.editReply({ embeds: [embed] });
@@ -469,7 +468,7 @@ export default class extends Command.Interaction {
 			const embed = super
 				.userEmbed(interaction.user)
 				.setTitle('Deleted the Thread Ticket Category')
-				.setDescription(`${userMention(interaction.user.id)} deleted the category with the following title: ${title}.`);
+				.setDescription(`${interaction.user.toString()} deleted the category with the following title: ${title}.`);
 
 			return interaction.editReply({ embeds: [embed] });
 		} catch (error) {
@@ -639,19 +638,20 @@ export class ComponentInteraction extends Component.Interaction {
 		const type = customId.includes('logs') ? 'logs channel' : 'ticket channel';
 		const id = Number.parseInt(dynamicValue);
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const channelId = interaction.channels.at(0)!.id;
+		const channel = interaction.channels.at(0)!;
 
 		await database
 			.update(ticketThreadsCategories)
 			.set({
-				...(type === 'ticket channel' ? { channelId } : { logsChannelId: channelId }),
+				...(type === 'ticket channel' ? { channelId: channel.id } : { logsChannelId: channel.id }),
 			})
 			.where(eq(ticketThreadsCategories.id, id));
 
 		const embed = super
 			.userEmbed(interaction.user)
 			.setTitle('Updated the Thread Ticket Category')
-			.setDescription(`${userMention(interaction.user.id)} updated the ${type} to ${channelMention(channelId)}.`);
+			// eslint-disable-next-line @typescript-eslint/no-base-to-string
+			.setDescription(`${interaction.user.toString()} updated the ${type} to ${channel.toString()}.`);
 
 		return interaction.editReply({ embeds: [embed], components: [] });
 	}
@@ -671,7 +671,7 @@ export class ComponentInteraction extends Component.Interaction {
 			.userEmbed(interaction.user)
 			.setTitle('Updated the Thread Ticket Category')
 			.setDescription(
-				`${userMention(interaction.user.id)} updated the managers of the category to: ${
+				`${interaction.user.toString()} updated the managers of the category to: ${
 					managers.length > 0 ? roles : 'none'
 				}`,
 			);
@@ -754,7 +754,7 @@ export class ComponentInteraction extends Component.Interaction {
 		const embed = super
 			.userEmbed(interaction.user)
 			.setTitle('Updated the Thread Ticket Category')
-			.setDescription(`${userMention(interaction.user.id)} has toggled the ${type} enabled option.`);
+			.setDescription(`${interaction.user.toString()} has toggled the ${type} enabled option.`);
 
 		return interaction.editReply({ embeds: [embed] });
 	}
@@ -773,7 +773,7 @@ export class ComponentInteraction extends Component.Interaction {
 		const embed = super
 			.userEmbed(interaction.user)
 			.setTitle('Updated the Thread Ticket Category')
-			.setDescription(`${userMention(interaction.user.id)} has toggled the silent pings enabled option.`);
+			.setDescription(`${interaction.user.toString()} has toggled the silent pings enabled option.`);
 
 		return interaction.editReply({ embeds: [embed] });
 	}
@@ -854,7 +854,7 @@ export class ModalInteraction extends Modal.Interaction {
 			.userEmbed(user)
 			.setTitle(`${dynamicValue ? 'Updated the' : 'Created a'} Thread Ticket Category`)
 			.setDescription(
-				`${userMention(user.id)} ${
+				`${user.toString()} ${
 					dynamicValue ? 'updated' : 'created'
 				} the thread ticket category with the following details:`,
 			)
@@ -895,7 +895,7 @@ export class ModalInteraction extends Modal.Interaction {
 		const embed = super
 			.userEmbed(user)
 			.setTitle('Updated the Thread Ticket Category')
-			.setDescription(`${userMention(user.id)} updated the opening message title and description to the following:`)
+			.setDescription(`${user.toString()} updated the opening message title and description to the following:`)
 			.setFields(
 				{
 					name: 'Title',

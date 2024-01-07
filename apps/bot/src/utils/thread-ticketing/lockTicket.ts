@@ -1,5 +1,5 @@
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
-import { ChannelType, Colors, PermissionFlagsBits, channelMention, userMention } from 'discord.js';
+import { ChannelType, Colors, PermissionFlagsBits } from 'discord.js';
 import { database, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 import { translate } from '@/i18n';
 
@@ -73,8 +73,8 @@ export async function lockTicket(
 			embeds: [
 				embed.setTitle(guildSuccessTranslations.title()).setDescription(
 					guildSuccessTranslations.logs.description({
-						thread: channelMention(channel.id),
-						member: userMention(user.id),
+						thread: channel.toString(),
+						member: user.toString(),
 					}),
 				),
 			],

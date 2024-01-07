@@ -12,7 +12,6 @@ import {
 	channelMention,
 	inlineCode,
 	roleMention,
-	userMention,
 } from 'discord.js';
 import { Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
 import { capitalise, farewellEmbed, welcomeEmbed } from '@/utils';
@@ -305,11 +304,11 @@ export class ComponentInteraction extends Component.Interaction {
 	private async welcomeAndFarewellConfigurationChannel({ interaction }: Component.Context<'channel'>) {
 		const { channels, customId: id, guildId, user } = interaction;
 		const { customId } = super.extractCustomId(id);
-		const channelId = channels.at(0)?.id;
+		const channel = channels.at(0);
 
 		const type = customId.includes('welcome') ? 'welcome' : 'farewell';
 		const channelDatabaseValue: InsertWithoutGuildId =
-			type === 'welcome' ? { welcomeChannelId: channelId } : { farewellChannelId: channelId };
+			type === 'welcome' ? { welcomeChannelId: channel?.id } : { farewellChannelId: channel?.id };
 
 		await database
 			.insert(welcomeAndFarewell)
@@ -321,9 +320,7 @@ export class ComponentInteraction extends Component.Interaction {
 		const embed = super
 			.userEmbed(user)
 			.setTitle('Updated the Welcome/Farewell Configuration')
-			.setDescription(
-				`${userMention(user.id)} updated the ${type} channel to ${channelMention(channelId?.toString() ?? '')}`,
-			);
+			.setDescription(`${user.toString()} updated the ${type} channel to ${channel?.toString()}`);
 
 		return interaction.editReply({ embeds: [embed], components: [] });
 	}
@@ -350,7 +347,7 @@ export class ComponentInteraction extends Component.Interaction {
 		const embed = super
 			.userEmbed(user)
 			.setTitle('Updated the Welcome/Farewell Configuration')
-			.setDescription(`${userMention(user.id)} has toggled the ${type} enabled option.`);
+			.setDescription(`${user.toString()} has toggled the ${type} enabled option.`);
 
 		return interaction.editReply({ embeds: [embed] });
 	}
@@ -370,7 +367,7 @@ export class ComponentInteraction extends Component.Interaction {
 			.userEmbed(user)
 			.setTitle('Updated the Welcome Configuration')
 			.setDescription(
-				`${userMention(user.id)} updated the roles given to new members: ${
+				`${user.toString()} updated the roles given to new members: ${
 					welcomeNewMemberRoles.length > 0 ? roles : 'none'
 				}`,
 			);
@@ -413,7 +410,7 @@ export class ModalInteraction extends Modal.Interaction {
 					.userEmbed(user)
 					.setTitle('Updated the Welcome/Farewell Configuration')
 					.setDescription(
-						`${userMention(user.id)} updated the ${type} message title to` +
+						`${user.toString()} updated the ${type} message title to` +
 							(title ? `:\n\n${inlineCode(title)}` : ' the default title.'),
 					);
 
@@ -434,7 +431,7 @@ export class ModalInteraction extends Modal.Interaction {
 					.userEmbed(user)
 					.setTitle('Updated the Welcome/Farewell Configuration')
 					.setDescription(
-						`${userMention(user.id)} updated the ${type} message description to` +
+						`${user.toString()} updated the ${type} message description to` +
 							(description ? `:\n\n${inlineCode(description)}` : ' the default description.'),
 					);
 

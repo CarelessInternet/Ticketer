@@ -6,9 +6,7 @@ export function RequiredGlobalPermissions(...permissions: PermissionFlagsValues[
 		const original = descriptor.value as () => void;
 
 		descriptor.value = async function (this: BaseInteraction.Interaction, { interaction }: BaseInteraction.Context) {
-			if (!interaction.isRepliable()) {
-				return;
-			}
+			if (!interaction.isRepliable()) return;
 
 			if (!interaction.appPermissions?.has(permissions)) {
 				const allPermissions = permissions.map((permission) => getPermissionByValue(permission));

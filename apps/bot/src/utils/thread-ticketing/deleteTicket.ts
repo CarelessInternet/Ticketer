@@ -1,5 +1,5 @@
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
-import { ChannelType, Colors, PermissionFlagsBits, inlineCode, userMention } from 'discord.js';
+import { ChannelType, Colors, PermissionFlagsBits, inlineCode } from 'discord.js';
 import { database, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 import { translate } from '@/i18n';
 
@@ -71,7 +71,7 @@ export async function deleteTicket(
 			embeds: [
 				embed.setTitle(guildSuccessTranslations.title()).setDescription(
 					guildSuccessTranslations.description({
-						member: userMention(user.id),
+						member: user.toString(),
 						threadId: inlineCode(channel.id),
 						title: channel.name,
 					}),

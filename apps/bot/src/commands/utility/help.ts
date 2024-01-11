@@ -45,6 +45,7 @@ export default class extends Command.Interaction {
 					PermissionFlagsBits.ManageChannels,
 					PermissionFlagsBits.ManageMessages,
 					PermissionFlagsBits.ManageThreads,
+					PermissionFlagsBits.MentionEveryone,
 					PermissionFlagsBits.ViewChannel,
 					PermissionFlagsBits.SendMessages,
 					PermissionFlagsBits.SendMessagesInThreads,

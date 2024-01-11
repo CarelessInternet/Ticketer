@@ -300,15 +300,19 @@ export class ModalInteraction extends Modal.Interaction {
 			!channel
 				.permissionsFor(me)
 				.has([
+					PermissionFlagsBits.MentionEveryone,
 					PermissionFlagsBits.ManageMessages,
 					PermissionFlagsBits.SendMessagesInThreads,
 					isPrivate ? PermissionFlagsBits.CreatePrivateThreads : PermissionFlagsBits.CreatePublicThreads,
 				])
 		) {
 			const permissions = inlineCode(
-				['Manage Messages', 'Send Messages in Threads', `Create ${isPrivate ? 'Private' : 'Public'} Threads`].join(
-					', ',
-				),
+				[
+					'Mention All Roles',
+					'Manage Messages',
+					'Send Messages in Threads',
+					`Create ${isPrivate ? 'Private' : 'Public'} Threads`,
+				].join(', '),
 			);
 
 			return interaction.editReply({

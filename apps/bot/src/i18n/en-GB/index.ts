@@ -171,6 +171,10 @@ const en_GB = {
 				},
 				createTicket: {
 					errors: {
+						invalidUser: {
+							title: ERROR_TITLE,
+							description: 'A ticket for myself cannot be created, you silly.',
+						},
 						noCategories: {
 							title: ERROR_TITLE,
 							description: 'No ticket categories could be found.',

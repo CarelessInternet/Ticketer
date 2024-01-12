@@ -354,6 +354,16 @@ type RootTranslation = {
 				}
 				createTicket: {
 					errors: {
+						invalidUser: {
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 */
+							title: string
+							/**
+							 * A​ ​t​i​c​k​e​t​ ​f​o​r​ ​m​y​s​e​l​f​ ​c​a​n​n​o​t​ ​b​e​ ​c​r​e​a​t​e​d​,​ ​y​o​u​ ​s​i​l​l​y​.
+							 */
+							description: string
+						}
 						noCategories: {
 							/**
 							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
@@ -1017,6 +1027,16 @@ export type TranslationFunctions = {
 				}
 				createTicket: {
 					errors: {
+						invalidUser: {
+							/**
+							 * An Error Occured
+							 */
+							title: () => LocalizedString
+							/**
+							 * A ticket for myself cannot be created, you silly.
+							 */
+							description: () => LocalizedString
+						}
 						noCategories: {
 							/**
 							 * An Error Occured

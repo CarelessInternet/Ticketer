@@ -226,7 +226,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 	@DeferUpdate
 	private async ticketCreation({ interaction }: Modal.Context) {
-		const { customId, fields, guild, guildId, guildLocale, locale, user: interactionUser } = interaction;
+		const { client, customId, fields, guild, guildId, guildLocale, locale, user: interactionUser } = interaction;
 		const { dynamicValue } = super.extractCustomId(customId, true);
 		const dynamicValues = dynamicValue.split('_');
 		const categoryId = Number.parseInt(dynamicValues.at(0) ?? dynamicValue);
@@ -236,6 +236,18 @@ export class ModalInteraction extends Modal.Interaction {
 
 		const translations = translate(locale).tickets.threads.categories;
 		const guildTranslations = translate(guildLocale).tickets.threads.categories;
+
+		if (user.id === client.user.id) {
+			return interaction.editReply({
+				components: [],
+				embeds: [
+					super
+						.userEmbedError(user)
+						.setTitle(translations.createTicket.errors.invalidUser.title())
+						.setDescription(translations.createTicket.errors.invalidUser.description()),
+				],
+			});
+		}
 
 		if (Number.isNaN(categoryId)) {
 			return interaction.editReply({

@@ -123,8 +123,8 @@ importers:
         specifier: ^7.3.0
         version: 7.3.0
       drizzle-kit:
-        specifier: ^0.20.10
-        version: 0.20.10
+        specifier: ^0.20.11
+        version: 0.20.11
 
   packages/djs-framework:
     dependencies:
@@ -145,8 +145,8 @@ importers:
   packages/env:
     dependencies:
       '@t3-oss/env-core':
-        specifier: ^0.7.1
-        version: 0.7.1(zod@3.22.4)
+        specifier: ^0.7.3
+        version: 0.7.3(zod@3.22.4)
       zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -794,7 +794,7 @@ packages:
     resolution: {integrity: sha512-UTYAUj/wviwdsMfzoSJspJxbkH5o1snzwX0//0ENX1u/55kkZZkcTZP6u9bwKGkv+dkk9at4m1Cpt0uY80kcpQ==}
     dependencies:
       '@jridgewell/gen-mapping': 0.3.3
-      '@jridgewell/trace-mapping': 0.3.20
+      '@jridgewell/trace-mapping': 0.3.21
     dev: false
 
   /@jridgewell/sourcemap-codec@1.4.15:
@@ -805,6 +805,13 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
+
+  /@jridgewell/trace-mapping@0.3.21:
+    resolution: {integrity: sha512-SRfKmRe1KvYnxjEMtxEr+J4HIeMX5YBg/qhRHpxEIGjhX1rshcHlnFUE9K0GazhVKWM7B+nARSkV8LuvJdJ5/g==}
+    dependencies:
+      '@jridgewell/resolve-uri': 3.1.1
+      '@jridgewell/sourcemap-codec': 1.4.15
+    dev: false
 
   /@mdx-js/loader@3.0.0(webpack@5.89.0):
     resolution: {integrity: sha512-9kLv83YtgxpoXVYHaf0ygx1dmhCffo0MQCv6KtNG67jy/JlBK/2Q0dSWfuuyStP3jnZKABHfbjv8zsiT1buu6A==}
@@ -1024,8 +1031,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@t3-oss/env-core@0.7.1(zod@3.22.4):
-    resolution: {integrity: sha512-3+SQt39OlmSaRLqYVFv8uRm1BpFepM5TIiMytRqO9cjH+wB77o6BIJdeyM5h5U4qLBMEzOJWCY4MBaU/rLwbYw==}
+  /@t3-oss/env-core@0.7.3(zod@3.22.4):
+    resolution: {integrity: sha512-hhtj59TKC6TKVdwJ0CcbKsvkr9R8Pc/SNKd4IgGUIC9T9X6moB8EZZ3FTJdABA/h9UABCK4J+KsF8gzmvMvHPg==}
     peerDependencies:
       typescript: '>=4.7.2'
       zod: ^3.0.0
@@ -2032,8 +2039,8 @@ packages:
       wordwrap: 1.0.0
     dev: true
 
-  /drizzle-kit@0.20.10:
-    resolution: {integrity: sha512-GoBmfAWrZiX2ZHMGlVg7w34bnJw1gbQIzhGr1cROK6+0eikhFNSR4a4G8jtD3FO5JZKbbWHuNA5YFDJu6Us0Tw==}
+  /drizzle-kit@0.20.11:
+    resolution: {integrity: sha512-s03Zi72fKPAWI3zzfe4cbm6RfMs3msv3xlv4pz605RVxheJtYUAHyX+wZEe3u6EyhVvhVj1eQ9Bqzv/FP+xRlg==}
     hasBin: true
     dependencies:
       '@drizzle-team/studio': 0.0.37
@@ -5143,7 +5150,7 @@ packages:
       uglify-js:
         optional: true
     dependencies:
-      '@jridgewell/trace-mapping': 0.3.20
+      '@jridgewell/trace-mapping': 0.3.21
       jest-worker: 27.5.1
       schema-utils: 3.3.0
       serialize-javascript: 6.0.2

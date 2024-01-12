@@ -171,6 +171,10 @@ const sv_SE = {
 				},
 				createTicket: {
 					errors: {
+						invalidUser: {
+							title: ERROR_TITLE,
+							description: 'En stödbiljett för mig själv kan inte skapas, din dumbom.',
+						},
 						noCategories: {
 							title: ERROR_TITLE,
 							description: 'Inga stödbiljettkategorier kunde hittas.',

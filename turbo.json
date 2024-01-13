@@ -17,6 +17,10 @@
 		"lint": {
 			"cache": true,
 			"persistent": false
+		},
+		"test": {
+			"cache": false,
+			"persistent": false
 		}
 	}
 }

@@ -6,7 +6,8 @@
 	"types": "./src/index.ts",
 	"type": "module",
 	"scripts": {
-		"lint": "eslint ."
+		"lint": "eslint .",
+		"test": "tsx --test ./tests/**/*.test.ts"
 	},
 	"dependencies": {
 		"fast-glob": "^3.3.2"
@@ -16,6 +17,7 @@
 	},
 	"devDependencies": {
 		"@ticketer/eslint-config": "workspace:*",
-		"@types/node": "^20.11.0"
+		"@types/node": "^20.11.0",
+		"tsx": "^4.7.0"
 	}
 }

@@ -1,4 +1,5 @@
 import type { BaseTranslation } from '../i18n-types.js';
+import type { ticketsThreads } from '@ticketer/database';
 
 const ERROR_TITLE = 'An Error Occured';
 
@@ -114,6 +115,41 @@ const en_GB = {
 			data: {
 				name: 'rename-title',
 				description: 'Rename the title of the thread support ticket.',
+			},
+		},
+		'show-tickets': {
+			data: {
+				name: 'show-tickets',
+				description: 'Show the tickets you have in the server.',
+				options: [
+					{
+						name: 'state',
+						description: "Filter by the tickets' states.",
+					},
+				],
+			},
+			command: {
+				buttons: {
+					previous: {
+						label: 'Previous Page',
+					},
+					next: {
+						label: 'Next Page',
+					},
+				},
+				content: 'Total amount of tickets by you in the server: {amount:number}.',
+				embeds: [
+					{
+						fields: [
+							{
+								name: 'Thread Channel',
+							},
+							{
+								name: 'State',
+							},
+						],
+					},
+				],
 			},
 		},
 		ticket: {
@@ -336,6 +372,12 @@ const en_GB = {
 						},
 					},
 				},
+				ticketState: {
+					active: 'Active',
+					archived: 'Closed',
+					locked: 'Locked',
+					lockedAndArchived: 'Locked and Closed',
+				} as Record<typeof ticketsThreads.$inferSelect.state, string>,
 			},
 		},
 	},

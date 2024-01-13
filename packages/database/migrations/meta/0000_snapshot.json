@@ -1,21 +1,21 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "8a19db8b-87ca-4a8c-9555-45d804204f8f",
+  "id": "6370dd1b-ea8a-47b8-9a58-0992e6e7e4fc",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "automaticForumsConfigurations": {
       "name": "automaticForumsConfigurations",
       "columns": {
-        "guildId": {
-          "name": "guildId",
+        "channelId": {
+          "name": "channelId",
           "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "channelId": {
-          "name": "channelId",
+        "guildId": {
+          "name": "guildId",
           "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
@@ -51,31 +51,31 @@
             "guildId"
           ],
           "isUnique": false
-        },
-        "channelId_index": {
-          "name": "channelId_index",
-          "columns": [
-            "channelId"
-          ],
-          "isUnique": false
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "automaticForumsConfigurations_channelId": {
+          "name": "automaticForumsConfigurations_channelId",
+          "columns": [
+            "channelId"
+          ]
+        }
+      },
       "uniqueConstraints": {}
     },
     "automaticThreadsConfigurations": {
       "name": "automaticThreadsConfigurations",
       "columns": {
-        "guildId": {
-          "name": "guildId",
+        "channelId": {
+          "name": "channelId",
           "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "channelId": {
-          "name": "channelId",
+        "guildId": {
+          "name": "guildId",
           "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
@@ -111,17 +111,17 @@
             "guildId"
           ],
           "isUnique": false
-        },
-        "channelId_index": {
-          "name": "channelId_index",
-          "columns": [
-            "channelId"
-          ],
-          "isUnique": false
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "automaticThreadsConfigurations_channelId": {
+          "name": "automaticThreadsConfigurations_channelId",
+          "columns": [
+            "channelId"
+          ]
+        }
+      },
       "uniqueConstraints": {}
     },
     "ticketThreadsCategories": {

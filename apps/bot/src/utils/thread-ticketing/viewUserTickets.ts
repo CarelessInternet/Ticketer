@@ -1,6 +1,6 @@
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
 import { type Snowflake, channelMention } from 'discord.js';
-import { and, asc, count, database, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
+import { and, count, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 import { managerIntersection, messageWithPagination, ticketState, withPagination } from '..';
 
 interface ViewUserTicketsOptions {
@@ -21,7 +21,6 @@ export async function viewUserTickets(
 			.select({
 				categoryEmoji: ticketThreadsCategories.categoryEmoji,
 				categoryTitle: ticketThreadsCategories.categoryTitle,
-				managers: ticketThreadsCategories.managers,
 				state: ticketsThreads.state,
 				threadId: ticketsThreads.threadId,
 			})
@@ -34,7 +33,7 @@ export async function viewUserTickets(
 				),
 			)
 			.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id))
-			.orderBy(asc(ticketsThreads.categoryId))
+			.orderBy(desc(ticketsThreads.threadId))
 			.$dynamic();
 
 		const tickets = await withPagination({

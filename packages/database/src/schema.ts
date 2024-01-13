@@ -1,31 +1,5 @@
-import { baseTicketConfiguration, jsonWithParsing } from './utils';
-import {
-	boolean,
-	customType,
-	foreignKey,
-	index,
-	int,
-	mysqlEnum,
-	mysqlTable,
-	tinyint,
-	varchar,
-} from 'drizzle-orm/mysql-core';
-
-// TODO: change mode to 'string' when available: https://github.com/drizzle-team/drizzle-orm/issues/813
-// const snowflake = (name: string) => bigint(name, { mode: 'bigint', unsigned: true });
-
-const snowflake = customType<{ data: string }>({
-	dataType() {
-		return 'bigint unsigned';
-	},
-	// eslint-disable-next-line unicorn/prefer-native-coercion-functions
-	fromDriver(value: unknown) {
-		return String(value);
-	},
-	toDriver(value: string) {
-		return value;
-	},
-});
+import { baseTicketConfiguration, jsonWithParsing, snowflake } from './utils';
+import { boolean, foreignKey, index, int, mysqlEnum, mysqlTable, tinyint, varchar } from 'drizzle-orm/mysql-core';
 
 export const welcomeAndFarewell = mysqlTable('welcomeAndFarewell', {
 	guildId: snowflake('guildId').primaryKey(),
@@ -96,25 +70,23 @@ export const ticketsThreads = mysqlTable(
 export const automaticForumsConfigurations = mysqlTable(
 	'automaticForumsConfigurations',
 	{
+		channelId: snowflake('channelId').primaryKey(),
 		guildId: snowflake('guildId').notNull(),
-		channelId: snowflake('channelId').notNull(),
 		...baseTicketConfiguration,
 	},
 	(table) => ({
 		guildIdIndex: index('guildId_index').on(table.guildId),
-		channelIdIndex: index('channelId_index').on(table.channelId),
 	}),
 );
 
 export const automaticThreadsConfigurations = mysqlTable(
 	'automaticThreadsConfigurations',
 	{
+		channelId: snowflake('channelId').primaryKey(),
 		guildId: snowflake('guildId').notNull(),
-		channelId: snowflake('channelId').notNull(),
 		...baseTicketConfiguration,
 	},
 	(table) => ({
 		guildIdIndex: index('guildId_index').on(table.guildId),
-		channelIdIndex: index('channelId_index').on(table.channelId),
 	}),
 );

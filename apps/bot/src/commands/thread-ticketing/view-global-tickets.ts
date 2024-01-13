@@ -1,6 +1,6 @@
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
 import { PermissionFlagsBits, channelMention, userMention } from 'discord.js';
-import { and, asc, count, database, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
+import { and, count, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 import { messageWithPagination, ticketState, withPagination } from '@/utils';
 
 type TicketState = typeof ticketsThreads.$inferSelect.state;
@@ -29,7 +29,7 @@ async function viewGlobalTickets(
 			.from(ticketsThreads)
 			.where(and(eq(ticketsThreads.guildId, interaction.guildId), state ? eq(ticketsThreads.state, state) : undefined))
 			.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id))
-			.orderBy(asc(ticketsThreads.categoryId))
+			.orderBy(desc(ticketsThreads.threadId))
 			.$dynamic();
 
 		const tickets = await withPagination({
@@ -90,7 +90,7 @@ export default class extends Command.Interaction {
 		.addStringOption((option) =>
 			option
 				.setName('state')
-				.setDescription("Filter by the categories' state.")
+				.setDescription("Filter by the tickets' states.")
 				.setRequired(false)
 				.setChoices(...ticketsThreads.state.enumValues.map((state) => ({ name: ticketState(state), value: state }))),
 		);

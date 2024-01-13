@@ -1,5 +1,8 @@
-import { capitalise } from '..';
+import { Locale } from 'discord.js';
 import type { ticketsThreads } from '@ticketer/database';
+import { translate } from '@/i18n';
 
-export const ticketState = (state: typeof ticketsThreads.$inferSelect.state) =>
-	state === 'lockedAndArchived' ? 'Locked and Closed' : capitalise(state === 'archived' ? 'closed' : state);
+type TicketState = typeof ticketsThreads.$inferSelect.state;
+
+export const ticketState = (state: TicketState, locale?: Locale) =>
+	translate(locale ?? Locale.EnglishGB).tickets.threads.categories.ticketState[state]();

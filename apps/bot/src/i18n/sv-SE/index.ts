@@ -116,6 +116,41 @@ const sv_SE = {
 				description: 'Ändra titeln på trådstödbiljetten.',
 			},
 		},
+		'show-tickets': {
+			data: {
+				name: 'visa-stödbiljett',
+				description: 'Visa stödbiljetterna som du har i servern.',
+				options: [
+					{
+						name: 'läge',
+						description: 'Filtrera efter stödbiljetternas lägen.',
+					},
+				],
+			},
+			command: {
+				buttons: {
+					previous: {
+						label: 'Föregående Sida',
+					},
+					next: {
+						label: 'Nästa Sida',
+					},
+				},
+				content: 'Antalet stödbiljetter av dig i servern: {amount}.',
+				embeds: [
+					{
+						fields: [
+							{
+								name: 'Trådkanal',
+							},
+							{
+								name: 'Läge',
+							},
+						],
+					},
+				],
+			},
+		},
 		ticket: {
 			data: {
 				name: 'biljett',
@@ -332,6 +367,12 @@ const sv_SE = {
 							},
 						},
 					},
+				},
+				ticketState: {
+					active: 'Aktiv',
+					archived: 'Stängt',
+					locked: 'Låst',
+					lockedAndArchived: 'Låst och Stängt',
 				},
 			},
 		},

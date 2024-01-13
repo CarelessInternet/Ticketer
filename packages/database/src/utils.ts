@@ -1,5 +1,21 @@
 import { customType, varchar } from 'drizzle-orm/mysql-core';
 
+// TODO: change mode to 'string' when available: https://github.com/drizzle-team/drizzle-orm/issues/813
+// const snowflake = (name: string) => bigint(name, { mode: 'bigint', unsigned: true });
+
+export const snowflake = customType<{ data: string }>({
+	dataType() {
+		return 'bigint unsigned';
+	},
+	// eslint-disable-next-line unicorn/prefer-native-coercion-functions
+	fromDriver(value: unknown) {
+		return String(value);
+	},
+	toDriver(value: string) {
+		return value;
+	},
+});
+
 // https://orm.drizzle.team/docs/custom-types#examples
 export const jsonWithParsing = <Data>(name: string) =>
 	customType<{ data: Data; driverData: string; notNull: true }>({

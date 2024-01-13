@@ -17,6 +17,7 @@ export function withPagination<T extends MySqlSelect>({ page, pageSize, query }:
 interface ButtonInfo {
 	customId: string;
 	disabled: boolean;
+	label?: string;
 }
 
 interface EmbedWithPaginationOptions {
@@ -31,13 +32,13 @@ export function messageWithPagination({
 	const previousPageButton = new ButtonBuilder()
 		.setCustomId(previous.customId)
 		.setEmoji('⏮')
-		.setLabel('Previous Page')
+		.setLabel(previous.label ?? 'Previous Page')
 		.setStyle(ButtonStyle.Primary)
 		.setDisabled(previous.disabled);
 	const nextPageButton = new ButtonBuilder()
 		.setCustomId(next.customId)
 		.setEmoji('⏭')
-		.setLabel('Next Page')
+		.setLabel(next.label ?? 'Next Page')
 		.setStyle(ButtonStyle.Success)
 		.setDisabled(next.disabled);
 

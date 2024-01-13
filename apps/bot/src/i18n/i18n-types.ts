@@ -241,6 +241,69 @@ type RootTranslation = {
 				description: string
 			}
 		}
+		'show-tickets': {
+			data: {
+				/**
+				 * s​h​o​w​-​t​i​c​k​e​t​s
+				 */
+				name: string
+				/**
+				 * S​h​o​w​ ​t​h​e​ ​t​i​c​k​e​t​s​ ​y​o​u​ ​h​a​v​e​ ​i​n​ ​t​h​e​ ​s​e​r​v​e​r​.
+				 */
+				description: string
+				options: {
+					'0': {
+						/**
+						 * s​t​a​t​e
+						 */
+						name: string
+						/**
+						 * F​i​l​t​e​r​ ​b​y​ ​t​h​e​ ​t​i​c​k​e​t​s​'​ ​s​t​a​t​e​s​.
+						 */
+						description: string
+					}
+				}
+			}
+			command: {
+				buttons: {
+					previous: {
+						/**
+						 * P​r​e​v​i​o​u​s​ ​P​a​g​e
+						 */
+						label: string
+					}
+					next: {
+						/**
+						 * N​e​x​t​ ​P​a​g​e
+						 */
+						label: string
+					}
+				}
+				/**
+				 * T​o​t​a​l​ ​a​m​o​u​n​t​ ​o​f​ ​t​i​c​k​e​t​s​ ​b​y​ ​y​o​u​ ​i​n​ ​t​h​e​ ​s​e​r​v​e​r​:​ ​{​a​m​o​u​n​t​}​.
+				 * @param {number} amount
+				 */
+				content: RequiredParams<'amount'>
+				embeds: {
+					'0': {
+						fields: {
+							'0': {
+								/**
+								 * T​h​r​e​a​d​ ​C​h​a​n​n​e​l
+								 */
+								name: string
+							}
+							'1': {
+								/**
+								 * S​t​a​t​e
+								 */
+								name: string
+							}
+						}
+					}
+				}
+			}
+		}
 		ticket: {
 			data: {
 				/**
@@ -694,6 +757,24 @@ type RootTranslation = {
 						}
 					}
 				}
+				ticketState: {
+					/**
+					 * A​c​t​i​v​e
+					 */
+					active: string
+					/**
+					 * C​l​o​s​e​d
+					 */
+					archived: string
+					/**
+					 * L​o​c​k​e​d
+					 */
+					locked: string
+					/**
+					 * L​o​c​k​e​d​ ​a​n​d​ ​C​l​o​s​e​d
+					 */
+					lockedAndArchived: string
+				}
 			}
 		}
 	}
@@ -919,6 +1000,68 @@ export type TranslationFunctions = {
 				 * Rename the title of the thread support ticket.
 				 */
 				description: () => LocalizedString
+			}
+		}
+		'show-tickets': {
+			data: {
+				/**
+				 * show-tickets
+				 */
+				name: () => LocalizedString
+				/**
+				 * Show the tickets you have in the server.
+				 */
+				description: () => LocalizedString
+				options: {
+					'0': {
+						/**
+						 * state
+						 */
+						name: () => LocalizedString
+						/**
+						 * Filter by the tickets' states.
+						 */
+						description: () => LocalizedString
+					}
+				}
+			}
+			command: {
+				buttons: {
+					previous: {
+						/**
+						 * Previous Page
+						 */
+						label: () => LocalizedString
+					}
+					next: {
+						/**
+						 * Next Page
+						 */
+						label: () => LocalizedString
+					}
+				}
+				/**
+				 * Total amount of tickets by you in the server: {amount}.
+				 */
+				content: (arg: { amount: number }) => LocalizedString
+				embeds: {
+					'0': {
+						fields: {
+							'0': {
+								/**
+								 * Thread Channel
+								 */
+								name: () => LocalizedString
+							}
+							'1': {
+								/**
+								 * State
+								 */
+								name: () => LocalizedString
+							}
+						}
+					}
+				}
 			}
 		}
 		ticket: {
@@ -1342,6 +1485,24 @@ export type TranslationFunctions = {
 							}
 						}
 					}
+				}
+				ticketState: {
+					/**
+					 * Active
+					 */
+					active: () => LocalizedString
+					/**
+					 * Closed
+					 */
+					archived: () => LocalizedString
+					/**
+					 * Locked
+					 */
+					locked: () => LocalizedString
+					/**
+					 * Locked and Closed
+					 */
+					lockedAndArchived: () => LocalizedString
 				}
 			}
 		}

@@ -2,8 +2,8 @@ CREATE TABLE `automaticThreadsConfigurations` (
 	`channelId` bigint unsigned NOT NULL,
 	`guildId` bigint unsigned NOT NULL,
 	`managers` json NOT NULL DEFAULT ('[]'),
-	`openingMessageTitle` varchar(100),
-	`openingMessageDescription` varchar(500),
+	`openingMessageTitle` varchar(100) NOT NULL,
+	`openingMessageDescription` varchar(500) NOT NULL,
 	CONSTRAINT `automaticThreadsConfigurations_channelId` PRIMARY KEY(`channelId`)
 );
 --> statement-breakpoint
@@ -16,8 +16,8 @@ CREATE TABLE `ticketThreadsCategories` (
 	`channelId` bigint unsigned,
 	`logsChannelId` bigint unsigned,
 	`managers` json NOT NULL DEFAULT ('[]'),
-	`openingMessageTitle` varchar(100),
-	`openingMessageDescription` varchar(500),
+	`openingMessageTitle` varchar(100) NOT NULL,
+	`openingMessageDescription` varchar(500) NOT NULL,
 	`privateThreads` boolean NOT NULL DEFAULT true,
 	`silentPings` boolean NOT NULL DEFAULT true,
 	`threadNotifications` boolean NOT NULL DEFAULT false,
@@ -43,8 +43,8 @@ CREATE TABLE `userForumsConfigurations` (
 	`channelId` bigint unsigned NOT NULL,
 	`guildId` bigint unsigned NOT NULL,
 	`managers` json NOT NULL DEFAULT ('[]'),
-	`openingMessageTitle` varchar(100),
-	`openingMessageDescription` varchar(500),
+	`openingMessageTitle` varchar(100) NOT NULL,
+	`openingMessageDescription` varchar(500) NOT NULL,
 	CONSTRAINT `userForumsConfigurations_channelId` PRIMARY KEY(`channelId`)
 );
 --> statement-breakpoint

@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "e95ef91d-1410-45fa-8798-138142bd7de3",
+  "id": "5559fd83-2efb-4ca2-812b-1bba71aab003",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "automaticThreadsConfigurations": {
@@ -33,14 +33,14 @@
           "name": "openingMessageTitle",
           "type": "varchar(100)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "openingMessageDescription": {
           "name": "openingMessageDescription",
           "type": "varchar(500)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
@@ -128,14 +128,14 @@
           "name": "openingMessageTitle",
           "type": "varchar(100)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "openingMessageDescription": {
           "name": "openingMessageDescription",
           "type": "varchar(500)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "privateThreads": {
@@ -354,14 +354,14 @@
           "name": "openingMessageTitle",
           "type": "varchar(100)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "openingMessageDescription": {
           "name": "openingMessageDescription",
           "type": "varchar(500)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         }
       },

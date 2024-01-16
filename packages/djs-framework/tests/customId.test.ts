@@ -36,14 +36,14 @@ describe('Custom ID Functionality', () => {
 	});
 
 	it('Extract a custom ID with no dynamic value and with the required argument set to false.', () => {
-		deepStrictEqual(instance.extractCustomId("feds on the case but we don't care", false), {
-			customId: "feds on the case but we don't care",
+		deepStrictEqual(instance.extractCustomId("{feds_ on the case but we don't care", false), {
+			customId: "{feds_ on the case but we don't care",
 		});
 	});
 
 	it('Extract a custom ID with no dynamic value and with the required argument set to true.', () => {
-		deepStrictEqual(instance.extractCustomId('{rifle_, uzi, everything there', true), {
-			customId: '{rifle_, uzi, everything there',
+		deepStrictEqual(instance.extractCustomId('{rifle}}, uzi, everything there', true), {
+			customId: '{rifle}}, uzi, everything there',
 			dynamicValue: undefined,
 		});
 	});

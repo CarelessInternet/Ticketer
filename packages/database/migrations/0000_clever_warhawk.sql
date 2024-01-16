@@ -1,12 +1,3 @@
-CREATE TABLE `automaticForumsConfigurations` (
-	`channelId` bigint unsigned NOT NULL,
-	`guildId` bigint unsigned NOT NULL,
-	`managers` json NOT NULL DEFAULT ('[]'),
-	`openingMessageTitle` varchar(100),
-	`openingMessageDescription` varchar(500),
-	CONSTRAINT `automaticForumsConfigurations_channelId` PRIMARY KEY(`channelId`)
-);
---> statement-breakpoint
 CREATE TABLE `automaticThreadsConfigurations` (
 	`channelId` bigint unsigned NOT NULL,
 	`guildId` bigint unsigned NOT NULL,
@@ -48,6 +39,15 @@ CREATE TABLE `ticketsThreads` (
 	CONSTRAINT `ticketsThreads_threadId` PRIMARY KEY(`threadId`)
 );
 --> statement-breakpoint
+CREATE TABLE `userForumsConfigurations` (
+	`channelId` bigint unsigned NOT NULL,
+	`guildId` bigint unsigned NOT NULL,
+	`managers` json NOT NULL DEFAULT ('[]'),
+	`openingMessageTitle` varchar(100),
+	`openingMessageDescription` varchar(500),
+	CONSTRAINT `userForumsConfigurations_channelId` PRIMARY KEY(`channelId`)
+);
+--> statement-breakpoint
 CREATE TABLE `welcomeAndFarewell` (
 	`guildId` bigint unsigned NOT NULL,
 	`welcomeChannelId` bigint unsigned,
@@ -64,12 +64,12 @@ CREATE TABLE `welcomeAndFarewell` (
 	CONSTRAINT `welcomeAndFarewell_farewellChannelId_unique` UNIQUE(`farewellChannelId`)
 );
 --> statement-breakpoint
-CREATE INDEX `guildId_index` ON `automaticForumsConfigurations` (`guildId`);--> statement-breakpoint
 CREATE INDEX `guildId_index` ON `automaticThreadsConfigurations` (`guildId`);--> statement-breakpoint
 CREATE INDEX `guildId_index` ON `ticketThreadsCategories` (`guildId`);--> statement-breakpoint
 CREATE INDEX `authorId_index` ON `ticketsThreads` (`authorId`);--> statement-breakpoint
 CREATE INDEX `categoryId_index` ON `ticketsThreads` (`categoryId`);--> statement-breakpoint
 CREATE INDEX `guildId_index` ON `ticketsThreads` (`guildId`);--> statement-breakpoint
 CREATE INDEX `state_index` ON `ticketsThreads` (`state`);--> statement-breakpoint
+CREATE INDEX `guildId_index` ON `userForumsConfigurations` (`guildId`);--> statement-breakpoint
 ALTER TABLE `ticketThreadsCategories` ADD CONSTRAINT `ticket_threads_categories_fk` FOREIGN KEY (`guildId`) REFERENCES `ticketThreadsConfigurations`(`guildId`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `ticketsThreads` ADD CONSTRAINT `tickets_threads_fk` FOREIGN KEY (`guildId`,`categoryId`) REFERENCES `ticketThreadsCategories`(`guildId`,`id`) ON DELETE no action ON UPDATE no action;

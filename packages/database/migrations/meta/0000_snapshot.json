@@ -1,69 +1,9 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "6370dd1b-ea8a-47b8-9a58-0992e6e7e4fc",
+  "id": "e95ef91d-1410-45fa-8798-138142bd7de3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "automaticForumsConfigurations": {
-      "name": "automaticForumsConfigurations",
-      "columns": {
-        "channelId": {
-          "name": "channelId",
-          "type": "bigint unsigned",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "guildId": {
-          "name": "guildId",
-          "type": "bigint unsigned",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "managers": {
-          "name": "managers",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "('[]')"
-        },
-        "openingMessageTitle": {
-          "name": "openingMessageTitle",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "openingMessageDescription": {
-          "name": "openingMessageDescription",
-          "type": "varchar(500)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        }
-      },
-      "indexes": {
-        "guildId_index": {
-          "name": "guildId_index",
-          "columns": [
-            "guildId"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "automaticForumsConfigurations_channelId": {
-          "name": "automaticForumsConfigurations_channelId",
-          "columns": [
-            "channelId"
-          ]
-        }
-      },
-      "uniqueConstraints": {}
-    },
     "automaticThreadsConfigurations": {
       "name": "automaticThreadsConfigurations",
       "columns": {
@@ -380,6 +320,66 @@
           "name": "ticketsThreads_threadId",
           "columns": [
             "threadId"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "userForumsConfigurations": {
+      "name": "userForumsConfigurations",
+      "columns": {
+        "channelId": {
+          "name": "channelId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "guildId": {
+          "name": "guildId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "managers": {
+          "name": "managers",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "('[]')"
+        },
+        "openingMessageTitle": {
+          "name": "openingMessageTitle",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "openingMessageDescription": {
+          "name": "openingMessageDescription",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "guildId_index": {
+          "name": "guildId_index",
+          "columns": [
+            "guildId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "userForumsConfigurations_channelId": {
+          "name": "userForumsConfigurations_channelId",
+          "columns": [
+            "channelId"
           ]
         }
       },

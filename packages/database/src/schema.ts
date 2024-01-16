@@ -1,4 +1,4 @@
-import { baseTicketConfiguration, jsonWithParsing, snowflake } from './utils';
+import { baseTicketConfiguration, baseTicketConfigurationNotNull, jsonWithParsing, snowflake } from './utils';
 import { boolean, foreignKey, index, int, mysqlEnum, mysqlTable, tinyint, varchar } from 'drizzle-orm/mysql-core';
 
 export const welcomeAndFarewell = mysqlTable('welcomeAndFarewell', {
@@ -67,12 +67,12 @@ export const ticketsThreads = mysqlTable(
 	}),
 );
 
-export const automaticForumsConfigurations = mysqlTable(
-	'automaticForumsConfigurations',
+export const userForumsConfigurations = mysqlTable(
+	'userForumsConfigurations',
 	{
 		channelId: snowflake('channelId').primaryKey(),
 		guildId: snowflake('guildId').notNull(),
-		...baseTicketConfiguration,
+		...baseTicketConfigurationNotNull,
 	},
 	(table) => ({
 		guildIdIndex: index('guildId_index').on(table.guildId),
@@ -84,7 +84,7 @@ export const automaticThreadsConfigurations = mysqlTable(
 	{
 		channelId: snowflake('channelId').primaryKey(),
 		guildId: snowflake('guildId').notNull(),
-		...baseTicketConfiguration,
+		...baseTicketConfigurationNotNull,
 	},
 	(table) => ({
 		guildIdIndex: index('guildId_index').on(table.guildId),

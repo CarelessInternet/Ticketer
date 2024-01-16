@@ -36,3 +36,9 @@ export const baseTicketConfiguration = {
 	openingMessageTitle: varchar('openingMessageTitle', { length: 100 }),
 	openingMessageDescription: varchar('openingMessageDescription', { length: 500 }),
 };
+
+export const baseTicketConfigurationNotNull = {
+	...baseTicketConfiguration,
+	openingMessageTitle: baseTicketConfiguration.openingMessageTitle.notNull(),
+	openingMessageDescription: baseTicketConfiguration.openingMessageDescription.notNull(),
+};

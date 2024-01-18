@@ -6,10 +6,12 @@ import { translate } from '@/i18n';
 export async function lockTicket(
 	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context | Component.Context,
+	lockAndClose = false,
 ) {
 	const { channel, guild, guildLocale, locale, member, user } = interaction;
 	const translations = translate(locale).tickets.threads.categories.buttons;
-	const guildSuccessTranslations = translate(guildLocale).tickets.threads.categories.buttons.lock.execute.success;
+	const guildSuccessTranslations =
+		translate(guildLocale).tickets.threads.categories.buttons[lockAndClose ? 'lockAndClose' : 'lock'].execute.success;
 
 	if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
 		return interaction.editReply({
@@ -24,12 +26,20 @@ export async function lockTicket(
 	// This is here just in case somebody bypassed the disabled buttons in locked threads.
 	if (channel.locked) return;
 
-	if (!channel.manageable) {
+	if (lockAndClose ? !channel.manageable || !channel.editable : !channel.manageable) {
 		return interaction.editReply({
 			embeds: [
 				this.userEmbedError(user)
-					.setTitle(translations.lock.execute.errors.notManageable.title())
-					.setDescription(translations.lock.execute.errors.notManageable.description()),
+					.setTitle(
+						lockAndClose
+							? translations.lockAndClose.execute.errors.notManageableAndEditable.title()
+							: translations.lock.execute.errors.notManageable.title(),
+					)
+					.setDescription(
+						lockAndClose
+							? translations.lockAndClose.execute.errors.notManageableAndEditable.description()
+							: translations.lock.execute.errors.notManageable.description(),
+					),
 			],
 		});
 	}
@@ -56,10 +66,13 @@ export async function lockTicket(
 
 	const embed = this.userEmbed(user)
 		.setColor(Colors.DarkVividPink)
-		.setTitle(translations.lock.execute.success.title())
-		.setDescription(translations.lock.execute.success.user.description());
+		.setTitle(translations[lockAndClose ? 'lockAndClose' : 'lock'].execute.success.title())
+		.setDescription(translations[lockAndClose ? 'lockAndClose' : 'lock'].execute.success.user.description());
 
-	await channel.setLocked(true);
+	await channel.edit({
+		locked: true,
+		...(lockAndClose && { archived: true }),
+	});
 	await interaction.editReply({ embeds: [embed] });
 
 	if (row.logsChannelId) {

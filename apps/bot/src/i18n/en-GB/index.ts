@@ -325,6 +325,28 @@ const en_GB = {
 							},
 						},
 					},
+					lockAndClose: {
+						builder: {
+							label: 'Lock & Close',
+						},
+						execute: {
+							errors: {
+								notManageableAndEditable: {
+									title: ERROR_TITLE,
+									description: 'I do not have the necessary permission(s) to lock and close the channel.',
+								},
+							},
+							success: {
+								title: 'Ticket Locked & Closed',
+								user: {
+									description: 'The support ticket has been successfully locked and closed!',
+								},
+								logs: {
+									description: 'The support ticket at {thread:string} has been locked and closed by {member:string}.',
+								},
+							},
+						},
+					},
 					close: {
 						builder: {
 							label: 'Close',

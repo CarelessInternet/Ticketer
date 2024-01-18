@@ -322,6 +322,28 @@ const sv_SE = {
 							},
 						},
 					},
+					lockAndClose: {
+						builder: {
+							label: 'Låsa & Stänga',
+						},
+						execute: {
+							errors: {
+								notManageableAndEditable: {
+									title: ERROR_TITLE,
+									description: 'Jag har inte de nödvändiga behörigheter för att låsa och stänga kanalen.',
+								},
+							},
+							success: {
+								title: 'Stödbiljett Låst & Stängt',
+								user: {
+									description: 'Stödbiljetten var låst och stängt framgångsrikt!',
+								},
+								logs: {
+									description: 'Stödbiljetten vid {thread} har låsts och stängs av {member}.',
+								},
+							},
+						},
+					},
 					close: {
 						builder: {
 							label: 'Stänga',

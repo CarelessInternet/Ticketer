@@ -69,6 +69,7 @@ export class ComponentInteraction extends Component.Interaction {
 		super.customId('ticket_threads_category_create_rename_title'),
 		super.customId('ticket_threads_category_create_lock'),
 		super.customId('ticket_threads_category_create_close'),
+		super.customId('ticket_threads_category_create_lock_and_close'),
 		super.customId('ticket_threads_category_create_delete'),
 	];
 
@@ -90,6 +91,7 @@ export class ComponentInteraction extends Component.Interaction {
 				void renameTitleModal.call(this, context);
 				return;
 			}
+			case super.customId('ticket_threads_category_create_lock_and_close'):
 			case super.customId('ticket_threads_category_create_lock'): {
 				void this.lockTicket(context);
 				return;
@@ -177,7 +179,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferReply(true)
 	private lockTicket(context: Component.Context) {
-		return lockTicket.call(this, context);
+		return lockTicket.call(this, context, context.interaction.customId.includes('lock_and_close'));
 	}
 
 	@DeferReply(true)
@@ -403,7 +405,7 @@ export class ModalInteraction extends Modal.Interaction {
 			.setStyle(ButtonStyle.Secondary);
 		const lockButton = new ButtonBuilder()
 			.setCustomId(super.customId('ticket_threads_category_create_lock'))
-			.setEmoji('🔐')
+			.setEmoji('🔒')
 			.setLabel(guildTranslations.buttons.lock.builder.label())
 			.setStyle(ButtonStyle.Primary);
 		const closeButton = new ButtonBuilder()
@@ -411,22 +413,23 @@ export class ModalInteraction extends Modal.Interaction {
 			.setEmoji('🗃')
 			.setLabel(guildTranslations.buttons.close.builder.label())
 			.setStyle(ButtonStyle.Success);
+		const lockAndCloseButton = new ButtonBuilder()
+			.setCustomId(super.customId('ticket_threads_category_create_lock_and_close'))
+			.setEmoji('🔐')
+			.setLabel(guildTranslations.buttons.lockAndClose.builder.label())
+			.setStyle(ButtonStyle.Secondary);
 		const deleteButton = new ButtonBuilder()
 			.setCustomId(super.customId('ticket_threads_category_create_delete'))
 			.setEmoji('🗑')
 			.setLabel(guildTranslations.buttons.delete.builder.label())
 			.setStyle(ButtonStyle.Danger);
 
-		const buttonRow = new ActionRowBuilder<ButtonBuilder>().setComponents(
-			renameTitleButton,
-			lockButton,
-			closeButton,
-			deleteButton,
-		);
+		const buttonRow1 = new ActionRowBuilder<ButtonBuilder>().setComponents(renameTitleButton, lockButton, closeButton);
+		const buttonRow2 = new ActionRowBuilder<ButtonBuilder>().setComponents(lockAndCloseButton, deleteButton);
 
 		const initialMessage = await thread.send({
 			allowedMentions: { roles: configuration.ticketThreadsCategories.managers },
-			components: [buttonRow],
+			components: [buttonRow1, buttonRow2],
 			content: configuration.ticketThreadsCategories.managers.map((roleId) => roleMention(roleId)).join(', '),
 			embeds: [messageEmbed, ticketEmbed],
 			...(configuration.ticketThreadsCategories.silentPings && { flags: [MessageFlags.SuppressNotifications] }),

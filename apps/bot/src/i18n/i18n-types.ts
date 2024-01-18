@@ -667,6 +667,48 @@ type RootTranslation = {
 							}
 						}
 					}
+					lockAndClose: {
+						builder: {
+							/**
+							 * L​o​c​k​ ​&​ ​C​l​o​s​e
+							 */
+							label: string
+						}
+						execute: {
+							errors: {
+								notManageableAndEditable: {
+									/**
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+									 */
+									title: string
+									/**
+									 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​n​e​c​e​s​s​a​r​y​ ​p​e​r​m​i​s​s​i​o​n​(​s​)​ ​t​o​ ​l​o​c​k​ ​a​n​d​ ​c​l​o​s​e​ ​t​h​e​ ​c​h​a​n​n​e​l​.
+									 */
+									description: string
+								}
+							}
+							success: {
+								/**
+								 * T​i​c​k​e​t​ ​L​o​c​k​e​d​ ​&​ ​C​l​o​s​e​d
+								 */
+								title: string
+								user: {
+									/**
+									 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​h​a​s​ ​b​e​e​n​ ​s​u​c​c​e​s​s​f​u​l​l​y​ ​l​o​c​k​e​d​ ​a​n​d​ ​c​l​o​s​e​d​!
+									 */
+									description: string
+								}
+								logs: {
+									/**
+									 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​a​t​ ​{​t​h​r​e​a​d​}​ ​h​a​s​ ​b​e​e​n​ ​l​o​c​k​e​d​ ​a​n​d​ ​c​l​o​s​e​d​ ​b​y​ ​{​m​e​m​b​e​r​}​.
+									 * @param {string} member
+									 * @param {string} thread
+									 */
+									description: RequiredParams<'member' | 'thread'>
+								}
+							}
+						}
+					}
 					close: {
 						builder: {
 							/**
@@ -1395,6 +1437,46 @@ export type TranslationFunctions = {
 								logs: {
 									/**
 									 * The support ticket at {thread} has been locked by {member}.
+									 */
+									description: (arg: { member: string, thread: string }) => LocalizedString
+								}
+							}
+						}
+					}
+					lockAndClose: {
+						builder: {
+							/**
+							 * Lock & Close
+							 */
+							label: () => LocalizedString
+						}
+						execute: {
+							errors: {
+								notManageableAndEditable: {
+									/**
+									 * An Error Occured
+									 */
+									title: () => LocalizedString
+									/**
+									 * I do not have the necessary permission(s) to lock and close the channel.
+									 */
+									description: () => LocalizedString
+								}
+							}
+							success: {
+								/**
+								 * Ticket Locked & Closed
+								 */
+								title: () => LocalizedString
+								user: {
+									/**
+									 * The support ticket has been successfully locked and closed!
+									 */
+									description: () => LocalizedString
+								}
+								logs: {
+									/**
+									 * The support ticket at {thread} has been locked and closed by {member}.
 									 */
 									description: (arg: { member: string, thread: string }) => LocalizedString
 								}

@@ -23,7 +23,7 @@ interface MessageDescriptionOptions extends BaseOptions, BaseMessageOptions {
 }
 
 const replaceMessageCategory = (text: string, category: string) => text.replaceAll('{category}', category);
-const replaceMember = (text: string, user: string) => text.replaceAll('{member}', user);
+const replaceMember = (text: string, member: string) => text.replaceAll('{member}', member);
 
 interface ReplaceTitleOptions extends BaseMessageOptions {
 	displayName: MessageTitleOptions['displayName'];

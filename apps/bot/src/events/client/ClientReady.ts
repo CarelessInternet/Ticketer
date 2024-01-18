@@ -15,7 +15,7 @@ export default class extends Event.Handler {
 
 		console.log(
 			chalk.blue('[Client]'),
-			`Logged in as ${chalk.blueBright(client.user.tag)} at ${formatDate(new Date())} on`,
+			`Logged in as ${chalk.blueBright(client.user.tag)} on ${formatDate(new Date())} on`,
 			chalk.yellow(`shard #${client.shard?.ids.at(0)}.`),
 		);
 	}

@@ -404,7 +404,7 @@ export default class extends Command.Interaction {
 			.setMinValues(1)
 			.setMaxValues(1)
 			.setPlaceholder('Edit one of the following ticket category options:')
-			.addOptions(
+			.setOptions(
 				new StringSelectMenuOptionBuilder()
 					.setEmoji('📰')
 					.setLabel('Emoji, Title, & Description')
@@ -496,11 +496,9 @@ export class AutocompleteInteraction extends Autocomplete.Interaction {
 
 	public async execute({ interaction }: Autocomplete.Context) {
 		const { guildId, options } = interaction;
-		const { name } = options.getFocused(true);
+		const { name, value } = options.getFocused(true);
 
 		if (name === 'title') {
-			const value = options.getFocused();
-
 			const categoriesList = await database
 				.select({
 					id: ticketThreadsCategories.id,
@@ -674,7 +672,7 @@ export class ComponentInteraction extends Component.Interaction {
 			.setDescription(
 				`${interaction.user.toString()} updated the managers of the category to: ${
 					managers.length > 0 ? roles : 'none'
-				}`,
+				}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed], components: [] });

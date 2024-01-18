@@ -27,7 +27,7 @@ services:
     restart: always
     healthcheck:
       test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
-      interval: 20s
+      interval: 10s
       retries: 3
       start_interval: 0s
       start_period: 10s

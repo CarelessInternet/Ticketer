@@ -20,7 +20,7 @@ interface DescriptionOptions extends BaseOptions {
 	userMention: ReturnType<User['toString']>;
 }
 
-const replaceMember = (text: string, user: string) => text.replaceAll('{member}', user);
+const replaceMember = (text: string, member: string) => text.replaceAll('{member}', member);
 const translations = (locale: BaseOptions['locale']) => translate(locale).events.guildMemberAdd;
 
 // Use the user-defined texts if possible, otherwise use the inbuilt localised texts.

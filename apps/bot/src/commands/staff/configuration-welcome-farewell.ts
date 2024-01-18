@@ -37,11 +37,11 @@ export default class extends Command.Interaction {
 		switch (interaction.options.getSubcommand(true)) {
 			case 'settings': {
 				const welcomeSelectMenu = new StringSelectMenuBuilder()
-					.setCustomId('welcome_configuration')
+					.setCustomId(super.customId('welcome_configuration'))
 					.setMinValues(1)
 					.setMaxValues(1)
 					.setPlaceholder('Edit one of the following welcome options:')
-					.addOptions(
+					.setOptions(
 						new StringSelectMenuOptionBuilder()
 							.setEmoji('#️⃣')
 							.setLabel('Channel')
@@ -70,11 +70,11 @@ export default class extends Command.Interaction {
 					);
 
 				const farewellSelectMenu = new StringSelectMenuBuilder()
-					.setCustomId('farewell_configuration')
+					.setCustomId(super.customId('farewell_configuration'))
 					.setMinValues(1)
 					.setMaxValues(1)
 					.setPlaceholder('Edit one of the following farewell options:')
-					.addOptions(
+					.setOptions(
 						new StringSelectMenuOptionBuilder()
 							.setEmoji('#️⃣')
 							.setLabel('Channel')

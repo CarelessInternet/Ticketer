@@ -20,7 +20,7 @@ sharder.on('shardCreate', (shard) => {
 		chalk.green('[Sharding]'),
 		'Created',
 		chalk.yellow(`shard #${shard.id}`),
-		`at ${formatDate(new Date())}.`,
+		`on ${formatDate(new Date())}.`,
 	);
 	shard.once('ready', () => {
 		console.log(chalk.yellow(`[Shard #${shard.id}]`), 'This shard has become ready.');

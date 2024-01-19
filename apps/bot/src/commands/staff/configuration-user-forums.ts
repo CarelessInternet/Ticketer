@@ -12,8 +12,14 @@ import {
 	roleMention,
 } from 'discord.js';
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
-import { database, eq, userForumsConfigurations } from '@ticketer/database';
-import { userForumEmbed } from '@/utils';
+import { database, desc, eq, userForumsConfigurations } from '@ticketer/database';
+import {
+	messageWithPagination,
+	userForumEmbed,
+	userForumsOpeningMessageDescription,
+	userForumsOpeningMessageTitle,
+	withPagination,
+} from '@/utils';
 
 function IsForumChannel(_: object, __: string, descriptor: PropertyDescriptor) {
 	const original = descriptor.value as () => void;
@@ -34,6 +40,62 @@ function IsForumChannel(_: object, __: string, descriptor: PropertyDescriptor) {
 	};
 
 	return descriptor;
+}
+
+async function getConfigurations(
+	this: BaseInteraction.Interaction,
+	{ interaction }: Command.Context<'chat'> | Component.Context<'button'>,
+	page = 0,
+) {
+	const PAGE_SIZE = 3;
+	const configurations = await withPagination({
+		page,
+		pageSize: PAGE_SIZE,
+		query: database
+			.select()
+			.from(userForumsConfigurations)
+			.where(eq(userForumsConfigurations.guildId, interaction.guildId))
+			.orderBy(desc(userForumsConfigurations.channelId))
+			.$dynamic(),
+	});
+
+	const embeds = configurations.map((config) =>
+		this.userEmbed(interaction.user)
+			.setTitle('User Forum Configuration')
+			.setDescription(`The configuration for user forum threads in the channel ${channelMention(config.channelId)}:`)
+			.setFields(
+				{
+					name: 'Opening Message Title',
+					value: userForumsOpeningMessageTitle({
+						displayName: interaction.user.displayName,
+						title: config.openingMessageTitle,
+					}),
+					inline: true,
+				},
+				{
+					name: 'Opening Message Description',
+					value: userForumsOpeningMessageDescription({
+						description: config.openingMessageDescription,
+						userMention: interaction.user.toString(),
+					}),
+					inline: true,
+				},
+				{
+					name: 'Managers',
+					value: config.managers.length > 0 ? config.managers.map((id) => roleMention(id)).join(', ') : 'None',
+				},
+			),
+	);
+
+	const components = messageWithPagination({
+		previous: { customId: this.customId('ticket_user_forums_view_previous', page), disabled: page === 0 },
+		next: {
+			customId: this.customId('ticket_user_forums_view_next', page),
+			disabled: configurations.length < PAGE_SIZE,
+		},
+	});
+
+	return interaction.editReply({ components, embeds });
 }
 
 function openingMessageModal<T>(
@@ -78,7 +140,7 @@ export default class extends Command.Interaction {
 			PermissionFlagsBits.ManageGuild | PermissionFlagsBits.ManageChannels | PermissionFlagsBits.ManageThreads,
 		)
 		.addSubcommand((subcommand) =>
-			subcommand.setName('overview').setDescription('View the current configurations for user forums.'),
+			subcommand.setName('overview').setDescription('View the current configurations for user forum threads.'),
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
@@ -119,6 +181,10 @@ export default class extends Command.Interaction {
 
 	public execute(context: Command.Context<'chat'>) {
 		switch (context.interaction.options.getSubcommand(true)) {
+			case 'overview': {
+				this.configurationOverview(context);
+				return;
+			}
 			case 'create': {
 				this.createConfiguration(context);
 				return;
@@ -136,6 +202,11 @@ export default class extends Command.Interaction {
 				});
 			}
 		}
+	}
+
+	@DeferReply(false)
+	private configurationOverview(context: Command.Context<'chat'>) {
+		void getConfigurations.call(this, context);
 	}
 
 	@IsForumChannel
@@ -208,26 +279,29 @@ export class ComponentInteraction extends Component.Interaction {
 	public readonly customIds = [
 		super.dynamicCustomId('ticket_user_forums_configuration_menu'),
 		super.dynamicCustomId('ticket_user_forums_configuration_managers'),
+		super.dynamicCustomId('ticket_user_forums_view_previous'),
+		super.dynamicCustomId('ticket_user_forums_view_next'),
 	];
 
-	public execute(context: Component.Context) {
-		const { customId } = super.extractCustomId(context.interaction.customId);
+	public execute({ interaction }: Component.Context) {
+		const { customId } = super.extractCustomId(interaction.customId);
 
 		switch (customId) {
 			case super.dynamicCustomId('ticket_user_forums_configuration_menu'): {
-				return (
-					context.interaction.isStringSelectMenu() && this.handleConfigurationMenu({ interaction: context.interaction })
-				);
+				return interaction.isStringSelectMenu() && this.handleConfigurationMenu({ interaction });
 			}
 			case super.dynamicCustomId('ticket_user_forums_configuration_managers'): {
-				return context.interaction.isRoleSelectMenu() && this.updateManagers({ interaction: context.interaction });
+				return interaction.isRoleSelectMenu() && this.updateManagers({ interaction });
+			}
+			case super.dynamicCustomId('ticket_user_forums_view_previous'):
+			case super.dynamicCustomId('ticket_user_forums_view_next'): {
+				interaction.isButton() && this.configurationOverview({ interaction });
+				return;
 			}
 			default: {
-				return context.interaction.reply({
+				return interaction.reply({
 					embeds: [
-						super
-							.userEmbedError(context.interaction.user)
-							.setDescription('The select menu custom ID could not be found.'),
+						super.userEmbedError(interaction.user).setDescription('The select menu custom ID could not be found.'),
 					],
 					ephemeral: true,
 				});
@@ -314,6 +388,15 @@ export class ComponentInteraction extends Component.Interaction {
 			);
 
 		return interaction.editReply({ embeds: [embed], components: [] });
+	}
+
+	@DeferUpdate
+	private configurationOverview(context: Component.Context<'button'>) {
+		const { customId, dynamicValue } = super.extractCustomId(context.interaction.customId, true);
+		const type = customId.includes('previous') ? 'previous' : 'next';
+		const page = Number.parseInt(dynamicValue) + (type === 'next' ? 1 : -1);
+
+		void getConfigurations.call(this, context, page);
 	}
 }
 

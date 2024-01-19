@@ -15,8 +15,9 @@ interface DescriptionOptions {
 
 const replaceMember = (text: string, member: string) => text.replaceAll('{member}', member);
 
-const openingMessageTitle = ({ displayName, title }: TitleOptions) => replaceMember(title, displayName);
-const openingMessageDescription = ({ description, userMention }: DescriptionOptions) =>
+export const userForumsOpeningMessageTitle = ({ displayName, title }: TitleOptions) =>
+	replaceMember(title, displayName);
+export const userForumsOpeningMessageDescription = ({ description, userMention }: DescriptionOptions) =>
 	replaceMember(description, userMention);
 
 interface EmbedOptions {
@@ -29,5 +30,5 @@ interface EmbedOptions {
 export const userForumEmbed = ({ description, embed, title, user }: EmbedOptions) =>
 	embed
 		.setColor(Colors.Greyple)
-		.setTitle(openingMessageTitle({ title, displayName: user.displayName }))
-		.setDescription(openingMessageDescription({ description, userMention: user.toString() }));
+		.setTitle(userForumsOpeningMessageTitle({ title, displayName: user.displayName }))
+		.setDescription(userForumsOpeningMessageDescription({ description, userMention: user.toString() }));

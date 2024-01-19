@@ -36,8 +36,8 @@ import {
 import {
 	extractEmoji,
 	messageWithPagination,
-	openingMessageDescription,
-	openingMessageTitle,
+	ticketThreadsOpeningMessageDescription,
+	ticketThreadsOpeningMessageTitle,
 	withPagination,
 } from '@/utils';
 
@@ -105,7 +105,7 @@ function categoryViewEmbed(
 				},
 				{
 					name: 'Opening Message Title',
-					value: openingMessageTitle({
+					value: ticketThreadsOpeningMessageTitle({
 						categoryTitle: category.categoryTitle,
 						displayName: context.interaction.user.displayName,
 						locale: context.interaction.locale,
@@ -115,7 +115,7 @@ function categoryViewEmbed(
 				},
 				{
 					name: 'Opening Message Description',
-					value: openingMessageDescription({
+					value: ticketThreadsOpeningMessageDescription({
 						categoryTitle: category.categoryTitle,
 						description: category.openingMessageDescription,
 						locale: context.interaction.locale,

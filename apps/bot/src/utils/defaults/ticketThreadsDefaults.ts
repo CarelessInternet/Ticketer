@@ -44,12 +44,12 @@ const replaceMessageDescription = ({ categoryTitle, messageDescription, userMent
 const translations = (locale: BaseOptions['locale']) => translate(locale).tickets.threads.categories.configuration;
 
 // Use the user-defined texts if possible, otherwise use the inbuilt localised texts.
-export const openingMessageTitle = ({ categoryTitle, displayName, locale, title }: MessageTitleOptions) =>
+export const ticketThreadsOpeningMessageTitle = ({ categoryTitle, displayName, locale, title }: MessageTitleOptions) =>
 	title
 		? replaceMessageTitle({ categoryTitle, displayName, messageTitle: title })
 		: translations(locale).openingMessage.title({ category: categoryTitle });
 
-export const openingMessageDescription = ({
+export const ticketThreadsOpeningMessageDescription = ({
 	categoryTitle,
 	description,
 	locale,
@@ -72,5 +72,7 @@ interface MessageEmbedOptions extends BaseOptions, BaseMessageOptions {
 export const openingMessageEmbed = ({ categoryTitle, description, embed, locale, title, user }: MessageEmbedOptions) =>
 	embed
 		.setColor(Colors.Fuchsia)
-		.setTitle(openingMessageTitle({ categoryTitle, displayName: user.displayName, locale, title }))
-		.setDescription(openingMessageDescription({ categoryTitle, description, locale, userMention: user.toString() }));
+		.setTitle(ticketThreadsOpeningMessageTitle({ categoryTitle, displayName: user.displayName, locale, title }))
+		.setDescription(
+			ticketThreadsOpeningMessageDescription({ categoryTitle, description, locale, userMention: user.toString() }),
+		);

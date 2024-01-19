@@ -451,7 +451,7 @@ export class ModalInteraction extends Modal.Interaction {
 					// eslint-disable-next-line @typescript-eslint/no-base-to-string
 					`${interaction.user.toString()} created or updated a user forum configuration in ${channel.toString()}. An example opening message can be seen in the embed below.`,
 				),
-				userForumEmbed({ description, embed: super.userEmbed(interaction.user), title, user: interaction.user }),
+				userForumEmbed({ description, embed: super.embed, title, user: interaction.user }),
 			],
 		});
 	}

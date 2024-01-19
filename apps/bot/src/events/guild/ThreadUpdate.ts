@@ -1,9 +1,11 @@
 import { and, count, database, eq, exists, ticketsThreads } from '@ticketer/database';
 import { Event } from '@ticketer/djs-framework';
+import { LogExceptions } from '@/utils';
 
 export default class extends Event.Handler {
 	public readonly name = Event.Name.ThreadUpdate;
 
+	@LogExceptions
 	public execute([oldThread, newThread]: Event.ArgumentsOf<this['name']>) {
 		const archived = !oldThread.archived && newThread.archived;
 		const unarchived = oldThread.archived && !newThread.archived;

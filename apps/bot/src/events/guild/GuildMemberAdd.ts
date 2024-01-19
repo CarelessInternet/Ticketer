@@ -1,11 +1,12 @@
+import { LogExceptions, welcomeEmbed } from '@/utils';
 import { database, eq, welcomeAndFarewell } from '@ticketer/database';
 import { Event } from '@ticketer/djs-framework';
 import { PermissionFlagsBits } from 'discord.js';
-import { welcomeEmbed } from '@/utils';
 
 export default class extends Event.Handler {
 	public readonly name = Event.Name.GuildMemberAdd;
 
+	@LogExceptions
 	public async execute([member]: Event.ArgumentsOf<this['name']>) {
 		const { channels, id: guildId, members, preferredLocale, roles } = member.guild;
 		const table = await database.select().from(welcomeAndFarewell).where(eq(welcomeAndFarewell.guildId, guildId));

@@ -1,7 +1,7 @@
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
 import { type Snowflake, channelMention } from 'discord.js';
+import { ThreadTicketing, managerIntersection, messageWithPagination, withPagination } from '..';
 import { and, count, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
-import { managerIntersection, messageWithPagination, ticketState, withPagination } from '..';
 
 interface ViewUserTicketsOptions {
 	page?: number;
@@ -61,7 +61,7 @@ export async function viewUserTickets(
 				},
 				{
 					name: 'State',
-					value: ticketState(ticket.state),
+					value: ThreadTicketing.ticketState(ticket.state),
 					inline: true,
 				},
 			),

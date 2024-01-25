@@ -1,7 +1,7 @@
 import { Command, DeferReply } from '@ticketer/djs-framework';
 import { getTranslations, translate } from '@/i18n';
 import { Locale } from 'discord.js';
-import { closeTicket } from '@/utils';
+import { ThreadTicketing } from '@/utils';
 
 const dataTranslations = translate(Locale.EnglishGB).commands.close.data;
 
@@ -13,6 +13,6 @@ export default class extends Command.Interaction {
 
 	@DeferReply(true)
 	public execute(context: Command.Context) {
-		void closeTicket.call(this, context);
+		void ThreadTicketing.closeTicket.call(this, context);
 	}
 }

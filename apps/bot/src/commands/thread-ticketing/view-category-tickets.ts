@@ -7,8 +7,8 @@ import {
 	DeferUpdate,
 } from '@ticketer/djs-framework';
 import { PermissionFlagsBits, channelMention, userMention } from 'discord.js';
+import { ThreadTicketing, managerIntersection, messageWithPagination, withPagination } from '@/utils';
 import { and, asc, count, database, eq, like, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
-import { managerIntersection, messageWithPagination, ticketState, withPagination } from '@/utils';
 
 interface ViewCategoryTicketsOptions {
 	categoryId?: string | null;
@@ -71,7 +71,7 @@ async function viewCategoryTickets(
 			},
 			{
 				name: 'State',
-				value: ticketState(ticket.state),
+				value: ThreadTicketing.ticketState(ticket.state),
 				inline: true,
 			},
 		),

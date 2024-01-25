@@ -1,6 +1,6 @@
 import { Command, DeferReply } from '@ticketer/djs-framework';
 import { PermissionFlagsBits } from 'discord.js';
-import { categoryList } from '@/utils';
+import { ThreadTicketing } from '@/utils';
 import { translate } from '@/i18n';
 
 export default class extends Command.Interaction {
@@ -14,7 +14,7 @@ export default class extends Command.Interaction {
 	@DeferReply(true)
 	public async execute({ interaction }: Command.Context<'chat'>) {
 		const user = interaction.options.getUser('member', true);
-		const list = await categoryList({
+		const list = await ThreadTicketing.categoryList({
 			customId: super.customId('ticket_threads_categories_create_list_proxy', user.id),
 			filterManagerIds: [...interaction.member.roles.cache.keys()],
 			guildId: interaction.guildId,

@@ -16,6 +16,7 @@ import {
 	roleMention,
 } from 'discord.js';
 import { Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
+import { ThreadTicketing, ticketThreadsOpeningMessageEmbed } from '@/utils';
 import {
 	and,
 	count,
@@ -25,7 +26,6 @@ import {
 	ticketThreadsConfigurations,
 	ticketsThreads,
 } from '@ticketer/database';
-import { categoryList, closeTicket, deleteTicket, lockTicket, openingMessageEmbed, renameTitleModal } from '@/utils';
 import { getTranslations, translate } from '@/i18n';
 
 const dataTranslations = translate('en-GB').commands.ticket.data;
@@ -38,7 +38,7 @@ export default class extends Command.Interaction {
 
 	@DeferReply(true)
 	public async execute({ interaction }: Command.Context) {
-		const list = await categoryList({
+		const list = await ThreadTicketing.categoryList({
 			customId: super.customId('ticket_threads_categories_create_list_command'),
 			guildId: interaction.guildId,
 			locale: interaction.locale,
@@ -88,7 +88,7 @@ export class ComponentInteraction extends Component.Interaction {
 				return context.interaction.isButton() && this.panelTicketModal(context);
 			}
 			case super.customId('ticket_threads_category_create_rename_title'): {
-				void renameTitleModal.call(this, context);
+				void ThreadTicketing.renameTitleModal.call(this, context);
 				return;
 			}
 			case super.customId('ticket_threads_category_create_lock_and_close'):
@@ -155,7 +155,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferReply(true)
 	private async panelTicketModal({ interaction }: Component.Context) {
-		const list = await categoryList({
+		const list = await ThreadTicketing.categoryList({
 			customId: super.customId('ticket_threads_categories_create_list_command'),
 			guildId: interaction.guildId,
 			locale: interaction.locale,
@@ -179,17 +179,17 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferReply(true)
 	private lockTicket(context: Component.Context) {
-		return lockTicket.call(this, context, context.interaction.customId.includes('lock_and_close'));
+		return ThreadTicketing.lockTicket.call(this, context, context.interaction.customId.includes('lock_and_close'));
 	}
 
 	@DeferReply(true)
 	private closeTicket(context: Component.Context) {
-		return closeTicket.call(this, context);
+		return ThreadTicketing.closeTicket.call(this, context);
 	}
 
 	@DeferReply(true)
 	private deleteTicket(context: Component.Context) {
-		return deleteTicket.call(this, context);
+		return ThreadTicketing.deleteTicket.call(this, context);
 	}
 }
 
@@ -385,7 +385,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		await database.insert(ticketsThreads).values({ authorId: user.id, categoryId, guildId, threadId: thread.id });
 
-		const messageEmbed = openingMessageEmbed({
+		const messageEmbed = ticketThreadsOpeningMessageEmbed({
 			categoryTitle: configuration.ticketThreadsCategories.categoryTitle,
 			description: configuration.ticketThreadsCategories.openingMessageDescription,
 			embed: super.embed,

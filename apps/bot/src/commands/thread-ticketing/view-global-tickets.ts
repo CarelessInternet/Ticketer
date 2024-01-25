@@ -1,7 +1,7 @@
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
 import { PermissionFlagsBits, channelMention, userMention } from 'discord.js';
+import { ThreadTicketing, messageWithPagination, withPagination } from '@/utils';
 import { and, count, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
-import { messageWithPagination, ticketState, withPagination } from '@/utils';
 
 type TicketState = typeof ticketsThreads.$inferSelect.state;
 
@@ -60,7 +60,7 @@ async function viewGlobalTickets(
 			},
 			{
 				name: 'State',
-				value: ticketState(ticket.state),
+				value: ThreadTicketing.ticketState(ticket.state),
 				inline: true,
 			},
 		),
@@ -92,7 +92,12 @@ export default class extends Command.Interaction {
 				.setName('state')
 				.setDescription("Filter by the tickets' states.")
 				.setRequired(false)
-				.setChoices(...ticketsThreads.state.enumValues.map((state) => ({ name: ticketState(state), value: state }))),
+				.setChoices(
+					...ticketsThreads.state.enumValues.map((state) => ({
+						name: ThreadTicketing.ticketState(state),
+						value: state,
+					})),
+				),
 		);
 
 	@DeferReply(false)

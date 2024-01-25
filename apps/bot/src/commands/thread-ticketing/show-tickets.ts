@@ -1,8 +1,8 @@
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
 import { Locale, channelMention } from 'discord.js';
+import { ThreadTicketing, messageWithPagination, withPagination } from '@/utils';
 import { and, count, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 import { getTranslations, translate } from '@/i18n';
-import { messageWithPagination, ticketState, withPagination } from '@/utils';
 
 type TicketState = typeof ticketsThreads.$inferSelect.state;
 
@@ -62,7 +62,7 @@ async function viewTickets(
 			},
 			{
 				name: translations.embeds[0].fields[1].name(),
-				value: ticketState(ticket.state, interaction.locale),
+				value: ThreadTicketing.ticketState(ticket.state, interaction.locale),
 				inline: true,
 			},
 		),
@@ -103,7 +103,7 @@ export default class extends Command.Interaction {
 				.setRequired(false)
 				.setChoices(
 					...ticketsThreads.state.enumValues.map((state) => ({
-						name: ticketState(state),
+						name: ThreadTicketing.ticketState(state),
 						name_localizations: getTranslations(`tickets.threads.categories.ticketState.${state}`),
 						value: state,
 					})),

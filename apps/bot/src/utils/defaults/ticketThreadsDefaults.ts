@@ -69,7 +69,14 @@ interface MessageEmbedOptions extends BaseOptions, BaseMessageOptions {
 	user: User;
 }
 
-export const openingMessageEmbed = ({ categoryTitle, description, embed, locale, title, user }: MessageEmbedOptions) =>
+export const ticketThreadsOpeningMessageEmbed = ({
+	categoryTitle,
+	description,
+	embed,
+	locale,
+	title,
+	user,
+}: MessageEmbedOptions) =>
 	embed
 		.setColor(Colors.Fuchsia)
 		.setTitle(ticketThreadsOpeningMessageTitle({ categoryTitle, displayName: user.displayName, locale, title }))

@@ -1,3 +1,3 @@
 export * from './defaults';
-export * from './thread-ticketing';
+export * as ThreadTicketing from './thread-ticketing';
 export * from './utility';

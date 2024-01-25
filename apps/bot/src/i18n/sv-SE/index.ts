@@ -280,7 +280,15 @@ const sv_SE = {
 							label: 'Ändra Titeln',
 						},
 						component: {
-							modalTitle: 'Ändra Trådtiteln',
+							modal: {
+								title: 'Ändra Trådtiteln',
+								inputs: [
+									{
+										label: 'Trådtitel',
+										placeholder: 'Skriv den nya titeln som ska användas för tråden.',
+									},
+								],
+							},
 						},
 						modal: {
 							errors: {

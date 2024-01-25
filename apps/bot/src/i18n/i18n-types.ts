@@ -582,10 +582,24 @@ type RootTranslation = {
 							label: string
 						}
 						component: {
-							/**
-							 * R​e​n​a​m​e​ ​T​h​r​e​a​d​ ​T​i​t​l​e
-							 */
-							modalTitle: string
+							modal: {
+								/**
+								 * R​e​n​a​m​e​ ​T​h​r​e​a​d​ ​T​i​t​l​e
+								 */
+								title: string
+								inputs: {
+									'0': {
+										/**
+										 * T​h​r​e​a​d​ ​T​i​t​l​e
+										 */
+										label: string
+										/**
+										 * W​r​i​t​e​ ​t​h​e​ ​n​e​w​ ​t​i​t​l​e​ ​t​h​a​t​ ​s​h​o​u​l​d​ ​b​e​ ​u​s​e​d​ ​f​o​r​ ​t​h​e​ ​t​h​r​e​a​d​.
+										 */
+										placeholder: string
+									}
+								}
+							}
 						}
 						modal: {
 							errors: {
@@ -1365,10 +1379,24 @@ export type TranslationFunctions = {
 							label: () => LocalizedString
 						}
 						component: {
-							/**
-							 * Rename Thread Title
-							 */
-							modalTitle: () => LocalizedString
+							modal: {
+								/**
+								 * Rename Thread Title
+								 */
+								title: () => LocalizedString
+								inputs: {
+									'0': {
+										/**
+										 * Thread Title
+										 */
+										label: () => LocalizedString
+										/**
+										 * Write the new title that should be used for the thread.
+										 */
+										placeholder: () => LocalizedString
+									}
+								}
+							}
 						}
 						modal: {
 							errors: {

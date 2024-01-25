@@ -6,21 +6,21 @@ export function renameTitleModal(
 	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context | Component.Context,
 ) {
-	const translations = translate(interaction.locale).tickets.threads.categories.buttons.renameTitle.component;
+	const translations = translate(interaction.locale).tickets.threads.categories.buttons.renameTitle.component.modal;
 
 	const input = new TextInputBuilder()
 		.setCustomId(this.customId('title'))
-		.setLabel('Thread Title')
+		.setLabel(translations.inputs[0].label())
 		.setRequired(true)
 		.setMinLength(1)
 		.setMaxLength(100)
 		.setStyle(TextInputStyle.Short)
-		.setPlaceholder('Write the new title that should be used for the thread.');
+		.setPlaceholder(translations.inputs[0].placeholder());
 
 	const row = new ActionRowBuilder<TextInputBuilder>().setComponents(input);
 	const modal = new ModalBuilder()
 		.setCustomId(this.customId('ticket_threads_categories_create_rename_title_modal'))
-		.setTitle(translations.modalTitle())
+		.setTitle(translations.title())
 		.setComponents(row);
 
 	return interaction.showModal(modal);

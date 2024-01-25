@@ -282,7 +282,15 @@ const en_GB = {
 							label: 'Rename Title',
 						},
 						component: {
-							modalTitle: 'Rename Thread Title',
+							modal: {
+								title: 'Rename Thread Title',
+								inputs: [
+									{
+										label: 'Thread Title',
+										placeholder: 'Write the new title that should be used for the thread.',
+									},
+								],
+							},
 						},
 						modal: {
 							errors: {

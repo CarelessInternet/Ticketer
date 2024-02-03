@@ -9,8 +9,7 @@ export default class extends Event.Handler {
 	@LogExceptions
 	public async execute([member]: Event.ArgumentsOf<this['name']>) {
 		const { channels, id: guildId, members, preferredLocale, roles } = member.guild;
-		const table = await database.select().from(welcomeAndFarewell).where(eq(welcomeAndFarewell.guildId, guildId));
-		const data = table.at(0);
+		const [data] = await database.select().from(welcomeAndFarewell).where(eq(welcomeAndFarewell.guildId, guildId));
 
 		if (!data?.welcomeChannelId || !data.welcomeEnabled) return;
 

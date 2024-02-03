@@ -50,11 +50,11 @@ function HasGlobalConfiguration(_: object, __: string, descriptor: PropertyDescr
 	descriptor.value = async function (this: BaseInteraction.Interaction, { interaction }: BaseInteraction.Context) {
 		if (interaction.isMessageComponent() || interaction.isModalSubmit()) {
 			const [row] = await database
-				.select({ amount: count() })
+				.select()
 				.from(ticketThreadsConfigurations)
 				.where(eq(ticketThreadsConfigurations.guildId, interaction.guildId));
 
-			if (!row || row.amount <= 0) {
+			if (!row) {
 				const embed = this.userEmbedError(interaction.user).setDescription(
 					'Please create a global thread ticket configuration before creating categories.',
 				);
@@ -325,12 +325,11 @@ export default class extends Command.Interaction {
 	@DeferReply(false)
 	private async overview({ interaction }: Command.Context) {
 		const { guildId, user } = interaction;
-		const table = await database
-			.select()
+		const [result] = await database
+			.select({ activeTickets: ticketThreadsConfigurations.activeTickets })
 			.from(ticketThreadsConfigurations)
 			.where(eq(ticketThreadsConfigurations.guildId, guildId))
 			.limit(1);
-		const result = table.at(0);
 
 		if (!result) {
 			return interaction.editReply({

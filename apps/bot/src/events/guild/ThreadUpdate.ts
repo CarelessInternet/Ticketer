@@ -1,4 +1,4 @@
-import { and, count, database, eq, exists, ticketsThreads } from '@ticketer/database';
+import { and, database, eq, exists, ticketsThreads } from '@ticketer/database';
 import { Event } from '@ticketer/djs-framework';
 import { LogExceptions } from '@/utils';
 
@@ -19,9 +19,7 @@ export default class extends Event.Handler {
 
 		const whereCondition = and(
 			eq(ticketsThreads.threadId, newThread.id),
-			exists(
-				database.select({ _: count() }).from(ticketsThreads).where(eq(ticketsThreads.threadId, newThread.id)).limit(1),
-			),
+			exists(database.select().from(ticketsThreads).where(eq(ticketsThreads.threadId, newThread.id)).limit(1)),
 		);
 
 		// Two events are sent when the thread is archived and the locked button is pressed. We pray for no race conditions 🙏.

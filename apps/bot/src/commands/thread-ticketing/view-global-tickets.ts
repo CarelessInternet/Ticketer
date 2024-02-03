@@ -2,6 +2,7 @@ import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } fro
 import { PermissionFlagsBits, channelMention, userMention } from 'discord.js';
 import { ThreadTicketing, messageWithPagination, withPagination } from '@/utils';
 import { and, count, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
+import { getTranslations } from '@/i18n';
 
 type TicketState = typeof ticketsThreads.$inferSelect.state;
 
@@ -95,6 +96,7 @@ export default class extends Command.Interaction {
 				.setChoices(
 					...ticketsThreads.state.enumValues.map((state) => ({
 						name: ThreadTicketing.ticketState(state),
+						name_localizations: getTranslations(`tickets.threads.categories.ticketState.${state}`),
 						value: state,
 					})),
 				),

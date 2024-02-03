@@ -67,6 +67,7 @@ async function viewTickets(
 			},
 		),
 	);
+
 	const components = messageWithPagination({
 		previous: {
 			customId: this.customId('ticket_threads_categories_view_tickets_previous', `${page}_${state ?? ''}`),

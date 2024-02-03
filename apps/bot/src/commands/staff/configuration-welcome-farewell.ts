@@ -104,12 +104,11 @@ export default class extends Command.Interaction {
 			}
 			case 'overview': {
 				const { guildId, guildLocale, user } = interaction;
-				const table = await database
+				const [result] = await database
 					.select()
 					.from(welcomeAndFarewell)
 					.where(eq(welcomeAndFarewell.guildId, guildId))
 					.limit(1);
-				const result = table.at(0);
 
 				if (!result) {
 					return interaction.editReply({

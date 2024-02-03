@@ -5,7 +5,7 @@
 	"author": "CarelessInternet",
 	"license": "Apache-2.0",
 	"scripts": {
-		"dev": "FORCE_COLOR=1 turbo run dev",
+		"dev": "turbo run dev",
 		"start": "turbo run start",
 		"build": "turbo run build",
 		"lint": "turbo run lint",
@@ -15,6 +15,6 @@
 	"devDependencies": {
 		"eslint": "^8.56.0",
 		"prettier": "^3.2.4",
-		"turbo": "^1.11.3"
+		"turbo": "^1.12.2"
 	}
 }

@@ -1,9 +1,9 @@
-import { Locale, OAuth2Scopes, PermissionFlagsBits, hyperlink, inlineCode } from 'discord.js';
+import { OAuth2Scopes, PermissionFlagsBits, hyperlink, inlineCode } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
 import { Command } from '@ticketer/djs-framework';
 import { environment } from '@ticketer/env/bot';
 
-const dataTranslations = translate(Locale.EnglishGB).commands.help.data;
+const dataTranslations = translate().commands.help.data;
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName(dataTranslations.name())

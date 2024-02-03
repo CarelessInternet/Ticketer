@@ -1,8 +1,8 @@
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
-import { Locale, channelMention } from 'discord.js';
 import { ThreadTicketing, messageWithPagination, withPagination } from '@/utils';
 import { and, count, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 import { getTranslations, translate } from '@/i18n';
+import { channelMention } from 'discord.js';
 
 type TicketState = typeof ticketsThreads.$inferSelect.state;
 
@@ -87,7 +87,7 @@ async function viewTickets(
 	});
 }
 
-const dataTranslations = translate(Locale.EnglishGB).commands['show-tickets'].data;
+const dataTranslations = translate().commands['show-tickets'].data;
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName(dataTranslations.name())

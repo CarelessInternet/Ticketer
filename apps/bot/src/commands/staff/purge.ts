@@ -1,8 +1,8 @@
 import { Command, DeferReply, RequiredChannelPermissions } from '@ticketer/djs-framework';
-import { Locale, PermissionFlagsBits } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
+import { PermissionFlagsBits } from 'discord.js';
 
-const dataTranslations = translate(Locale.EnglishGB).commands.purge.data;
+const dataTranslations = translate().commands.purge.data;
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName(dataTranslations.name())

@@ -61,7 +61,7 @@ export default class extends Command.Interaction {
 
 		const modal = new ModalBuilder()
 			.setCustomId(super.customId('ticket_threads_categories_create_panel', channel.id))
-			.setTitle('Ticket Panel Descriptions')
+			.setTitle('Ticket Panel Details')
 			.setComponents(rows);
 
 		return interaction.showModal(modal);

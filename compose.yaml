@@ -16,7 +16,7 @@
 # Run this to rebuild the images from scratch (useful after changes from the codebase):
 # docker compose --env-file ./.env.database.production.local build --no-cache
 
-# Run this to access the database's terminal and the next line to access the database (change username accordingly).
+# Run the following line to access the database's terminal and the line after to access the database (change username accordingly).
 # docker exec -it ticketer-database bash
 # mariadb -u USERNAME -p
 

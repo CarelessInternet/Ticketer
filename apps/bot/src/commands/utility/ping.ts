@@ -1,8 +1,8 @@
-import { Locale, Status, inlineCode } from 'discord.js';
+import { Status, inlineCode } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
 import { Command } from '@ticketer/djs-framework';
 
-const dataTranslations = translate(Locale.EnglishGB).commands.ping;
+const dataTranslations = translate().commands.ping;
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName(dataTranslations.data.name())

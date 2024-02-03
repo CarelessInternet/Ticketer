@@ -3,8 +3,10 @@ import { PermissionFlagsBits } from 'discord.js';
 import { ThreadTicketing } from '@/utils';
 import { translate } from '@/i18n';
 
+const dataTranslations = translate().commands['proxy-ticket-user'].data;
+
 export default class extends Command.Interaction {
-	public readonly data = super.ContextUserBuilder.setName('Create Ticket by Proxy').setDefaultMemberPermissions(
+	public readonly data = super.ContextUserBuilder.setName(dataTranslations.name()).setDefaultMemberPermissions(
 		PermissionFlagsBits.ManageThreads,
 	);
 

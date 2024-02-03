@@ -3,12 +3,17 @@ import { PermissionFlagsBits } from 'discord.js';
 import { ThreadTicketing } from '@/utils';
 import { translate } from '@/i18n';
 
+const dataTranslations = translate().commands['proxy-ticket-chat'].data;
+
 export default class extends Command.Interaction {
-	public readonly data = super.SlashBuilder.setName('proxy-ticket')
-		.setDescription('Create a ticket by proxy for a user.')
+	public readonly data = super.SlashBuilder.setName(dataTranslations.name())
+		.setDescription(dataTranslations.description())
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageThreads)
 		.addUserOption((option) =>
-			option.setName('member').setDescription('The member who you want to create a ticket for.').setRequired(true),
+			option
+				.setName(dataTranslations.options[0].name())
+				.setDescription(dataTranslations.options[0].description())
+				.setRequired(true),
 		);
 
 	@DeferReply(true)

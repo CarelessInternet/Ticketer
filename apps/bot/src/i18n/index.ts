@@ -1,6 +1,6 @@
 import type { Locales, TranslationFunctions } from './i18n-types';
 import L from './i18n-node';
-import type { Locale } from 'discord.js';
+import { Locale } from 'discord.js';
 import { locales } from './i18n-util';
 
 // https://stackoverflow.com/a/58436959
@@ -26,7 +26,10 @@ export const getTranslations = <T extends Leaves<TranslationFunctions>>(key: T) 
 	return translations as Record<Locales, string>;
 };
 
-export const translate = <T extends Locale | Locales>(language: T) =>
-	locales.includes(language as Locales) ? L[language as Locales] : L['en-GB'];
+/**
+ * @param language If no language is specified, it defaults to (British) English.
+ */
+export const translate = <T extends Locale | Locales>(language?: T) =>
+	locales.includes(language as Locales) ? L[language as Locales] : L[Locale.EnglishGB];
 
 export type { Locales } from './i18n-types';

@@ -8,13 +8,13 @@ const en_GB = {
 		close: {
 			data: {
 				name: 'close',
-				description: 'Close/Archive the thread support ticket.',
+				description: 'Close/Archive the thread or support ticket.',
 			},
 		},
 		delete: {
 			data: {
 				name: 'delete',
-				description: 'Delete the thread support ticket.',
+				description: 'Delete the thread or support ticket.',
 			},
 		},
 		help: {
@@ -46,10 +46,16 @@ const en_GB = {
 				],
 			},
 		},
+		'lock-and-close': {
+			data: {
+				name: 'lock-and-close',
+				description: 'Lock and close the thread or support ticket.',
+			},
+		},
 		lock: {
 			data: {
 				name: 'lock',
-				description: 'Lock the thread support ticket.',
+				description: 'Lock the thread or support ticket.',
 			},
 		},
 		migrate: {
@@ -91,6 +97,23 @@ const en_GB = {
 				],
 			},
 		},
+		'proxy-ticket-chat': {
+			data: {
+				name: 'proxy-ticket',
+				description: 'Create a ticket by proxy for a member.',
+				options: [
+					{
+						name: 'member',
+						description: 'The member who you want to create a ticket for.',
+					},
+				],
+			},
+		},
+		'proxy-ticket-user': {
+			data: {
+				name: 'Create Ticket by Proxy',
+			},
+		},
 		purge: {
 			data: {
 				name: 'purge',
@@ -114,7 +137,7 @@ const en_GB = {
 		'rename-title': {
 			data: {
 				name: 'rename-title',
-				description: 'Rename the title of the thread support ticket.',
+				description: 'Rename the title of the thread or support ticket.',
 			},
 		},
 		'show-tickets': {
@@ -296,7 +319,7 @@ const en_GB = {
 							errors: {
 								notEditable: {
 									title: ERROR_TITLE,
-									description: 'I do not have the permission to edit the title.',
+									description: 'I do not have the permission to edit the title in the thread.',
 								},
 							},
 							success: {
@@ -319,7 +342,7 @@ const en_GB = {
 							errors: {
 								notManageable: {
 									title: ERROR_TITLE,
-									description: 'I do not have the necessary permission(s) to lock the channel.',
+									description: 'I do not have the necessary permission(s) to lock the thread ticket.',
 								},
 							},
 							success: {
@@ -329,28 +352,6 @@ const en_GB = {
 								},
 								logs: {
 									description: 'The support ticket at {thread:string} has been locked by {member:string}.',
-								},
-							},
-						},
-					},
-					lockAndClose: {
-						builder: {
-							label: 'Lock & Close',
-						},
-						execute: {
-							errors: {
-								notManageableAndEditable: {
-									title: ERROR_TITLE,
-									description: 'I do not have the necessary permission(s) to lock and close the channel.',
-								},
-							},
-							success: {
-								title: 'Ticket Locked & Closed',
-								user: {
-									description: 'The support ticket has been successfully locked and closed!',
-								},
-								logs: {
-									description: 'The support ticket at {thread:string} has been locked and closed by {member:string}.',
 								},
 							},
 						},
@@ -377,6 +378,28 @@ const en_GB = {
 							},
 						},
 					},
+					lockAndClose: {
+						builder: {
+							label: 'Lock & Close',
+						},
+						execute: {
+							errors: {
+								notManageableAndEditable: {
+									title: ERROR_TITLE,
+									description: 'I do not have the necessary permission(s) to lock and close the thread ticket.',
+								},
+							},
+							success: {
+								title: 'Ticket Locked & Closed',
+								user: {
+									description: 'The support ticket has been successfully locked and closed!',
+								},
+								logs: {
+									description: 'The support ticket at {thread:string} has been locked and closed by {member:string}.',
+								},
+							},
+						},
+					},
 					delete: {
 						builder: {
 							label: 'Delete',
@@ -385,7 +408,7 @@ const en_GB = {
 							errors: {
 								notManageable: {
 									title: ERROR_TITLE,
-									description: 'I do not have the necessary permission(s) to lock the channel.',
+									description: 'I do not have the necessary permission(s) to lock the thread ticket.',
 								},
 							},
 							success: {
@@ -408,6 +431,114 @@ const en_GB = {
 					locked: 'Locked',
 					lockedAndArchived: 'Locked and Closed',
 				} as Record<typeof ticketsThreads.$inferSelect.state, string>,
+			},
+		},
+		userForums: {
+			buttons: {
+				_errorIfNotThreadChannel: {
+					title: ERROR_TITLE,
+					description: 'The channel is not a valid thread channel.',
+				},
+				_errorIfNotThreadAuthorOrManager: {
+					title: ERROR_TITLE,
+					description: 'You need to be the thread author or manager to execute this button/command.',
+				},
+				renameTitle: {
+					builder: {
+						label: 'Rename Title',
+					},
+					component: {
+						modal: {
+							title: 'Rename Thread Title',
+							inputs: [
+								{
+									label: 'Thread Title',
+									placeholder: 'Write the new title that should be used for the thread.',
+								},
+							],
+						},
+					},
+					modal: {
+						errors: {
+							notEditable: {
+								title: ERROR_TITLE,
+								description: 'I do not have the permission to edit the title.',
+							},
+						},
+						success: {
+							title: 'Thread Renamed',
+							description: 'The thread has been renamed from "{oldTitle:string}" to "{newTitle:string}".',
+						},
+					},
+				},
+				lock: {
+					builder: {
+						label: 'Lock',
+					},
+					execute: {
+						errors: {
+							notManageable: {
+								title: ERROR_TITLE,
+								description: 'I do not have the necessary permission(s) to lock the thread.',
+							},
+						},
+						success: {
+							title: 'Thread Locked',
+							description: 'The thread has been successfully locked!',
+						},
+					},
+				},
+				close: {
+					builder: {
+						label: 'Close',
+					},
+					execute: {
+						errors: {
+							notEditable: {
+								title: ERROR_TITLE,
+								description: 'I do not have the permission to close the thread.',
+							},
+						},
+						success: {
+							title: 'Thread Closed',
+							description: 'The thread has been successfully closed!',
+						},
+					},
+				},
+				lockAndClose: {
+					builder: {
+						label: 'Lock & Close',
+					},
+					execute: {
+						errors: {
+							notManageableAndEditable: {
+								title: ERROR_TITLE,
+								description: 'I do not have the necessary permission(s) to lock and close the thread.',
+							},
+						},
+						success: {
+							title: 'Thread Locked & Closed',
+							description: 'The thread has been successfully locked and closed!',
+						},
+					},
+				},
+				delete: {
+					builder: {
+						label: 'Delete',
+					},
+					execute: {
+						errors: {
+							notManageable: {
+								title: ERROR_TITLE,
+								description: 'I do not have the necessary permission(s) to lock the thread.',
+							},
+						},
+						success: {
+							title: 'Deleting Thread...',
+							description: 'I am attempting to delete the thread...',
+						},
+					},
+				},
 			},
 		},
 	},

@@ -19,7 +19,7 @@
 			"persistent": false
 		},
 		"test": {
-			"cache": false,
+			"cache": true,
 			"persistent": false
 		}
 	}

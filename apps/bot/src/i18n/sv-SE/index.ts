@@ -6,14 +6,14 @@ const sv_SE = {
 	commands: {
 		close: {
 			data: {
-				name: 'stäng',
-				description: 'Stänga/Arkivera trådstödbiljetten.',
+				name: 'stänga',
+				description: 'Stänga/Arkivera tråden eller trådstödbiljetten.',
 			},
 		},
 		delete: {
 			data: {
 				name: 'radera',
-				description: 'Radera trådstödbiljetten.',
+				description: 'Radera tråden eller trådstödbiljetten.',
 			},
 		},
 		help: {
@@ -45,10 +45,16 @@ const sv_SE = {
 				],
 			},
 		},
+		'lock-and-close': {
+			data: {
+				name: 'låsa-och-stänga',
+				description: 'Låsa och stänga tråden eller trådstödbiljetten.',
+			},
+		},
 		lock: {
 			data: {
 				name: 'låsa',
-				description: 'Låsa trådstödbiljetten.',
+				description: 'Låsa tråd eller trådstödbiljetten.',
 			},
 		},
 		migrate: {
@@ -90,6 +96,23 @@ const sv_SE = {
 				],
 			},
 		},
+		'proxy-ticket-chat': {
+			data: {
+				name: 'ombud-stödbiljett',
+				description: 'Skapa en stödbiljett genom ombud för en medlem.',
+				options: [
+					{
+						name: 'medlem',
+						description: 'Medlemmen som du vill skapa en stödbiljett för.',
+					},
+				],
+			},
+		},
+		'proxy-ticket-user': {
+			data: {
+				name: 'Skapa Stödbiljett genom Ombud',
+			},
+		},
 		purge: {
 			data: {
 				name: 'rensa',
@@ -113,7 +136,7 @@ const sv_SE = {
 		'rename-title': {
 			data: {
 				name: 'ändra-titel',
-				description: 'Ändra titeln på trådstödbiljetten.',
+				description: 'Ändra titeln på tråden eller trådstödbiljetten.',
 			},
 		},
 		'show-tickets': {
@@ -153,7 +176,7 @@ const sv_SE = {
 		},
 		ticket: {
 			data: {
-				name: 'biljett',
+				name: 'stödbiljett',
 				description: 'Skapa en stödbiljett inom en kategori.',
 			},
 		},
@@ -273,7 +296,7 @@ const sv_SE = {
 					_errorIfNotTicketAuthorOrManager: {
 						title: ERROR_TITLE,
 						description:
-							'Du måste vara stödbiljettägaren eller stödbiljettansvarig för att köra den här knappen/kommandot.',
+							'Du måste vara stödbiljettägaren eller stödbiljettansvarigt för att köra den/det här knappen/kommandot.',
 					},
 					renameTitle: {
 						builder: {
@@ -294,7 +317,7 @@ const sv_SE = {
 							errors: {
 								notEditable: {
 									title: ERROR_TITLE,
-									description: 'Jag har inte behörighet att redigera titeln.',
+									description: 'Jag har inte behörighet att redigera titeln i trådkanalen.',
 								},
 							},
 							success: {
@@ -316,7 +339,7 @@ const sv_SE = {
 							errors: {
 								notManageable: {
 									title: ERROR_TITLE,
-									description: 'Jag har inte de nödvändiga behörigheter för att låsa kanalen.',
+									description: 'Jag har inte de nödvändiga behörigheter för att låsa trådkanalen.',
 								},
 							},
 							success: {
@@ -326,28 +349,6 @@ const sv_SE = {
 								},
 								logs: {
 									description: 'Stödbiljetten vid {thread} har låsts av {member}.',
-								},
-							},
-						},
-					},
-					lockAndClose: {
-						builder: {
-							label: 'Låsa & Stänga',
-						},
-						execute: {
-							errors: {
-								notManageableAndEditable: {
-									title: ERROR_TITLE,
-									description: 'Jag har inte de nödvändiga behörigheter för att låsa och stänga kanalen.',
-								},
-							},
-							success: {
-								title: 'Stödbiljett Låst & Stängt',
-								user: {
-									description: 'Stödbiljetten var låst och stängt framgångsrikt!',
-								},
-								logs: {
-									description: 'Stödbiljetten vid {thread} har låsts och stängs av {member}.',
 								},
 							},
 						},
@@ -374,6 +375,28 @@ const sv_SE = {
 							},
 						},
 					},
+					lockAndClose: {
+						builder: {
+							label: 'Låsa & Stänga',
+						},
+						execute: {
+							errors: {
+								notManageableAndEditable: {
+									title: ERROR_TITLE,
+									description: 'Jag har inte de nödvändiga behörigheter för att låsa och stänga trådkanalen.',
+								},
+							},
+							success: {
+								title: 'Stödbiljett Låst & Stängt',
+								user: {
+									description: 'Stödbiljetten var låst och stängt framgångsrikt!',
+								},
+								logs: {
+									description: 'Stödbiljetten vid {thread} har låsts och stängs av {member}.',
+								},
+							},
+						},
+					},
 					delete: {
 						builder: {
 							label: 'Radera',
@@ -382,7 +405,7 @@ const sv_SE = {
 							errors: {
 								notManageable: {
 									title: ERROR_TITLE,
-									description: 'Jag har inte de nödvändiga behörigheter för att låsa kanalen.',
+									description: 'Jag har inte de nödvändiga behörigheter för att låsa trådkanalen.',
 								},
 							},
 							success: {
@@ -403,6 +426,114 @@ const sv_SE = {
 					archived: 'Stängt',
 					locked: 'Låst',
 					lockedAndArchived: 'Låst och Stängt',
+				},
+			},
+		},
+		userForums: {
+			buttons: {
+				_errorIfNotThreadChannel: {
+					title: ERROR_TITLE,
+					description: 'Kanalen är inte en giltigt trådkanal.',
+				},
+				_errorIfNotThreadAuthorOrManager: {
+					title: ERROR_TITLE,
+					description: 'Du måste vara trådägaren eller trådansvarigt för att köra den/det här knappen/kommandot.',
+				},
+				renameTitle: {
+					builder: {
+						label: 'Ändra Titeln',
+					},
+					component: {
+						modal: {
+							title: 'Ändra Trådtiteln',
+							inputs: [
+								{
+									label: 'Trådtitel',
+									placeholder: 'Skriv den nya titeln som ska användas för tråden.',
+								},
+							],
+						},
+					},
+					modal: {
+						errors: {
+							notEditable: {
+								title: ERROR_TITLE,
+								description: 'Jag har inte behörighet att redigera titeln i trådkanalen.',
+							},
+						},
+						success: {
+							title: 'Tråden Ändrade Namn',
+							description: 'Trådtiteln har ändrats från "{oldTitle}" till "{newTitle}".',
+						},
+					},
+				},
+				lock: {
+					builder: {
+						label: 'Låsa',
+					},
+					execute: {
+						errors: {
+							notManageable: {
+								title: ERROR_TITLE,
+								description: 'Jag har inte de nödvändiga behörigheter för att låsa trådkanalen.',
+							},
+						},
+						success: {
+							title: 'Tråd Låst',
+							description: 'Tråden var låst framgångsrikt!',
+						},
+					},
+				},
+				close: {
+					builder: {
+						label: 'Stänga',
+					},
+					execute: {
+						errors: {
+							notEditable: {
+								title: ERROR_TITLE,
+								description: 'Jag har inte behörighet att stänga tråden.',
+							},
+						},
+						success: {
+							title: 'Tråd Stängt',
+							description: 'Tråden stängdes framgångsrikt!',
+						},
+					},
+				},
+				lockAndClose: {
+					builder: {
+						label: 'Låsa & Stänga',
+					},
+					execute: {
+						errors: {
+							notManageableAndEditable: {
+								title: ERROR_TITLE,
+								description: 'Jag har inte de nödvändiga behörigheter för att låsa och stänga trådkanalen.',
+							},
+						},
+						success: {
+							title: 'Tråd Låst & Stängt',
+							description: 'Tråden var låst och stängt framgångsrikt!',
+						},
+					},
+				},
+				delete: {
+					builder: {
+						label: 'Radera',
+					},
+					execute: {
+						errors: {
+							notManageable: {
+								title: ERROR_TITLE,
+								description: 'Jag har inte de nödvändiga behörigheter för att låsa trådkanalen.',
+							},
+						},
+						success: {
+							title: 'Raderar Tråden...',
+							description: 'Jag försöker att radera tråden...',
+						},
+					},
 				},
 			},
 		},

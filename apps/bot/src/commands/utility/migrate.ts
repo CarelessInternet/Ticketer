@@ -1,9 +1,9 @@
 import { Command, DeferReply } from '@ticketer/djs-framework';
-import { Locale, PermissionFlagsBits } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
+import { PermissionFlagsBits } from 'discord.js';
 import { migrate } from '@ticketer/database';
 
-const dataTranslations = translate(Locale.EnglishGB).commands.migrate.data;
+const dataTranslations = translate().commands.migrate.data;
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName(dataTranslations.name())

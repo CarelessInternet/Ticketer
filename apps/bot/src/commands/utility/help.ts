@@ -39,7 +39,6 @@ export default class extends Command.Interaction {
 			this.client.generateInvite({
 				scopes: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands],
 				permissions: [
-					PermissionFlagsBits.AddReactions,
 					PermissionFlagsBits.CreatePrivateThreads,
 					PermissionFlagsBits.CreatePublicThreads,
 					PermissionFlagsBits.ManageChannels,

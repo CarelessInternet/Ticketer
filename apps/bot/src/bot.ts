@@ -4,15 +4,23 @@ import { Client } from '@ticketer/djs-framework';
 import { environment } from '@ticketer/env/bot';
 import { fileURLToPath } from 'node:url';
 
-// https://discordjs.guide/miscellaneous/cache-customization.html#cache-customization
+const interval = 60;
+const filter = () => () => true;
+
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages],
 	sweepers: {
 		...Options.DefaultSweeperSettings,
-		bans: {
-			interval: 10 * 60,
-			filter: () => () => true,
-		},
+		// Periodically sweep the caches we do not need.
+		autoModerationRules: { filter, interval },
+		bans: { filter, interval },
+		emojis: { filter, interval },
+		invites: { filter, interval },
+		presences: { filter, interval },
+		reactions: { filter, interval },
+		stageInstances: { filter, interval },
+		stickers: { filter, interval },
+		voiceStates: { filter, interval },
 	},
 });
 

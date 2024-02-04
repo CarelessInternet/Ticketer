@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 // https://discordjs.guide/miscellaneous/cache-customization.html#cache-customization
 const client = new Client({
-	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages],
 	sweepers: {
 		...Options.DefaultSweeperSettings,
 		bans: {

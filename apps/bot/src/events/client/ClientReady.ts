@@ -1,5 +1,5 @@
 import { ActivityType, PresenceUpdateStatus } from 'discord.js';
-import { LogExceptions, formatDate } from '@/utils';
+import { LogExceptions, formatDateLong } from '@/utils';
 import { Event } from '@ticketer/djs-framework';
 import chalk from 'chalk';
 
@@ -16,7 +16,7 @@ export default class extends Event.Handler {
 
 		console.log(
 			chalk.blue('[Client]'),
-			`Logged in as ${chalk.blueBright(client.user.tag)} on ${formatDate(new Date())} on`,
+			`Logged in as ${chalk.blueBright(client.user.tag)} on ${formatDateLong(new Date())} on`,
 			chalk.yellow(`shard #${client.shard?.ids.at(0)}.`),
 		);
 	}

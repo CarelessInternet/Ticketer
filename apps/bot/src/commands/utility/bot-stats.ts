@@ -1,6 +1,6 @@
 import { PermissionFlagsBits, Status, codeBlock } from 'discord.js';
 import { Command } from '@ticketer/djs-framework';
-import { formatDate } from '@/utils';
+import { formatDateLong } from '@/utils';
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName('bot-stats')
@@ -101,7 +101,7 @@ export default class extends Command.Interaction {
 			value += `* Ram Usage: ${shard.ramInMegabytes} MB\n`;
 			value += `* Servers: ${shard.servers.toLocaleString()}\n`;
 			value += `* Status: ${Status[shard.status]}\n`;
-			value += `* Up Since: ${shard.uptime ? formatDate(new Date(Date.now() - shard.uptime)) : 'Unknown'}\n`;
+			value += `* Up Since: ${shard.uptime ? formatDateLong(new Date(Date.now() - shard.uptime)) : 'Unknown'}\n`;
 			value += `* Users: ${shard.users.toLocaleString()}\n\n`;
 
 			return accumulator + value;

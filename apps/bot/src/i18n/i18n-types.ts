@@ -398,6 +398,224 @@ type RootTranslation = {
 		}
 	}
 	tickets: {
+		errors: {
+			invalidTicket: {
+				/**
+				 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+				 */
+				title: string
+				/**
+				 * Y​o​u​ ​c​a​n​n​o​t​ ​e​d​i​t​ ​a​ ​t​h​r​e​a​d​ ​o​r​ ​t​i​c​k​e​t​ ​i​n​ ​t​h​i​s​ ​c​h​a​n​n​e​l​.
+				 */
+				description: string
+			}
+		}
+		automaticThreads: {
+			buttons: {
+				_errorIfNotThreadChannel: {
+					/**
+					 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+					 */
+					title: string
+					/**
+					 * T​h​e​ ​c​h​a​n​n​e​l​ ​i​s​ ​n​o​t​ ​a​ ​v​a​l​i​d​ ​t​h​r​e​a​d​ ​c​h​a​n​n​e​l​.
+					 */
+					description: string
+				}
+				_errorIfNotThreadAuthorOrManager: {
+					/**
+					 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+					 */
+					title: string
+					/**
+					 * Y​o​u​ ​n​e​e​d​ ​t​o​ ​b​e​ ​t​h​e​ ​t​h​r​e​a​d​ ​a​u​t​h​o​r​ ​o​r​ ​m​a​n​a​g​e​r​ ​t​o​ ​e​x​e​c​u​t​e​ ​t​h​i​s​ ​b​u​t​t​o​n​/​c​o​m​m​a​n​d​.
+					 */
+					description: string
+				}
+				renameTitle: {
+					builder: {
+						/**
+						 * R​e​n​a​m​e​ ​T​i​t​l​e
+						 */
+						label: string
+					}
+					component: {
+						modal: {
+							/**
+							 * R​e​n​a​m​e​ ​T​h​r​e​a​d​ ​T​i​t​l​e
+							 */
+							title: string
+							inputs: {
+								'0': {
+									/**
+									 * T​h​r​e​a​d​ ​T​i​t​l​e
+									 */
+									label: string
+									/**
+									 * W​r​i​t​e​ ​t​h​e​ ​n​e​w​ ​t​i​t​l​e​ ​t​h​a​t​ ​s​h​o​u​l​d​ ​b​e​ ​u​s​e​d​ ​f​o​r​ ​t​h​e​ ​t​h​r​e​a​d​.
+									 */
+									placeholder: string
+								}
+							}
+						}
+					}
+					modal: {
+						errors: {
+							notEditable: {
+								/**
+								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+								 */
+								title: string
+								/**
+								 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​p​e​r​m​i​s​s​i​o​n​ ​t​o​ ​e​d​i​t​ ​t​h​e​ ​t​i​t​l​e​.
+								 */
+								description: string
+							}
+						}
+						success: {
+							/**
+							 * T​h​r​e​a​d​ ​R​e​n​a​m​e​d
+							 */
+							title: string
+							/**
+							 * T​h​e​ ​t​h​r​e​a​d​ ​h​a​s​ ​b​e​e​n​ ​r​e​n​a​m​e​d​ ​f​r​o​m​ ​"​{​o​l​d​T​i​t​l​e​}​"​ ​t​o​ ​"​{​n​e​w​T​i​t​l​e​}​"​.
+							 * @param {string} newTitle
+							 * @param {string} oldTitle
+							 */
+							description: RequiredParams<'newTitle' | 'oldTitle'>
+						}
+					}
+				}
+				lock: {
+					builder: {
+						/**
+						 * L​o​c​k
+						 */
+						label: string
+					}
+					execute: {
+						errors: {
+							notManageable: {
+								/**
+								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+								 */
+								title: string
+								/**
+								 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​n​e​c​e​s​s​a​r​y​ ​p​e​r​m​i​s​s​i​o​n​(​s​)​ ​t​o​ ​l​o​c​k​ ​t​h​e​ ​t​h​r​e​a​d​.
+								 */
+								description: string
+							}
+						}
+						success: {
+							/**
+							 * T​h​r​e​a​d​ ​L​o​c​k​e​d
+							 */
+							title: string
+							/**
+							 * T​h​e​ ​t​h​r​e​a​d​ ​h​a​s​ ​b​e​e​n​ ​s​u​c​c​e​s​s​f​u​l​l​y​ ​l​o​c​k​e​d​!
+							 */
+							description: string
+						}
+					}
+				}
+				close: {
+					builder: {
+						/**
+						 * C​l​o​s​e
+						 */
+						label: string
+					}
+					execute: {
+						errors: {
+							notEditable: {
+								/**
+								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+								 */
+								title: string
+								/**
+								 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​p​e​r​m​i​s​s​i​o​n​ ​t​o​ ​c​l​o​s​e​ ​t​h​e​ ​t​h​r​e​a​d​.
+								 */
+								description: string
+							}
+						}
+						success: {
+							/**
+							 * T​h​r​e​a​d​ ​C​l​o​s​e​d
+							 */
+							title: string
+							/**
+							 * T​h​e​ ​t​h​r​e​a​d​ ​h​a​s​ ​b​e​e​n​ ​s​u​c​c​e​s​s​f​u​l​l​y​ ​c​l​o​s​e​d​!
+							 */
+							description: string
+						}
+					}
+				}
+				lockAndClose: {
+					builder: {
+						/**
+						 * L​o​c​k​ ​&​ ​C​l​o​s​e
+						 */
+						label: string
+					}
+					execute: {
+						errors: {
+							notManageableAndEditable: {
+								/**
+								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+								 */
+								title: string
+								/**
+								 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​n​e​c​e​s​s​a​r​y​ ​p​e​r​m​i​s​s​i​o​n​(​s​)​ ​t​o​ ​l​o​c​k​ ​a​n​d​ ​c​l​o​s​e​ ​t​h​e​ ​t​h​r​e​a​d​.
+								 */
+								description: string
+							}
+						}
+						success: {
+							/**
+							 * T​h​r​e​a​d​ ​L​o​c​k​e​d​ ​&​ ​C​l​o​s​e​d
+							 */
+							title: string
+							/**
+							 * T​h​e​ ​t​h​r​e​a​d​ ​h​a​s​ ​b​e​e​n​ ​s​u​c​c​e​s​s​f​u​l​l​y​ ​l​o​c​k​e​d​ ​a​n​d​ ​c​l​o​s​e​d​!
+							 */
+							description: string
+						}
+					}
+				}
+				'delete': {
+					builder: {
+						/**
+						 * D​e​l​e​t​e
+						 */
+						label: string
+					}
+					execute: {
+						errors: {
+							notManageable: {
+								/**
+								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+								 */
+								title: string
+								/**
+								 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​n​e​c​e​s​s​a​r​y​ ​p​e​r​m​i​s​s​i​o​n​(​s​)​ ​t​o​ ​l​o​c​k​ ​t​h​e​ ​t​h​r​e​a​d​.
+								 */
+								description: string
+							}
+						}
+						success: {
+							/**
+							 * D​e​l​e​t​i​n​g​ ​T​h​r​e​a​d​.​.​.
+							 */
+							title: string
+							/**
+							 * I​ ​a​m​ ​a​t​t​e​m​p​t​i​n​g​ ​t​o​ ​d​e​l​e​t​e​ ​t​h​e​ ​t​h​r​e​a​d​.​.​.
+							 */
+							description: string
+						}
+					}
+				}
+			}
+		}
 		threads: {
 			categories: {
 				configuration: {
@@ -1460,6 +1678,222 @@ export type TranslationFunctions = {
 		}
 	}
 	tickets: {
+		errors: {
+			invalidTicket: {
+				/**
+				 * An Error Occured
+				 */
+				title: () => LocalizedString
+				/**
+				 * You cannot edit a thread or ticket in this channel.
+				 */
+				description: () => LocalizedString
+			}
+		}
+		automaticThreads: {
+			buttons: {
+				_errorIfNotThreadChannel: {
+					/**
+					 * An Error Occured
+					 */
+					title: () => LocalizedString
+					/**
+					 * The channel is not a valid thread channel.
+					 */
+					description: () => LocalizedString
+				}
+				_errorIfNotThreadAuthorOrManager: {
+					/**
+					 * An Error Occured
+					 */
+					title: () => LocalizedString
+					/**
+					 * You need to be the thread author or manager to execute this button/command.
+					 */
+					description: () => LocalizedString
+				}
+				renameTitle: {
+					builder: {
+						/**
+						 * Rename Title
+						 */
+						label: () => LocalizedString
+					}
+					component: {
+						modal: {
+							/**
+							 * Rename Thread Title
+							 */
+							title: () => LocalizedString
+							inputs: {
+								'0': {
+									/**
+									 * Thread Title
+									 */
+									label: () => LocalizedString
+									/**
+									 * Write the new title that should be used for the thread.
+									 */
+									placeholder: () => LocalizedString
+								}
+							}
+						}
+					}
+					modal: {
+						errors: {
+							notEditable: {
+								/**
+								 * An Error Occured
+								 */
+								title: () => LocalizedString
+								/**
+								 * I do not have the permission to edit the title.
+								 */
+								description: () => LocalizedString
+							}
+						}
+						success: {
+							/**
+							 * Thread Renamed
+							 */
+							title: () => LocalizedString
+							/**
+							 * The thread has been renamed from "{oldTitle}" to "{newTitle}".
+							 */
+							description: (arg: { newTitle: string, oldTitle: string }) => LocalizedString
+						}
+					}
+				}
+				lock: {
+					builder: {
+						/**
+						 * Lock
+						 */
+						label: () => LocalizedString
+					}
+					execute: {
+						errors: {
+							notManageable: {
+								/**
+								 * An Error Occured
+								 */
+								title: () => LocalizedString
+								/**
+								 * I do not have the necessary permission(s) to lock the thread.
+								 */
+								description: () => LocalizedString
+							}
+						}
+						success: {
+							/**
+							 * Thread Locked
+							 */
+							title: () => LocalizedString
+							/**
+							 * The thread has been successfully locked!
+							 */
+							description: () => LocalizedString
+						}
+					}
+				}
+				close: {
+					builder: {
+						/**
+						 * Close
+						 */
+						label: () => LocalizedString
+					}
+					execute: {
+						errors: {
+							notEditable: {
+								/**
+								 * An Error Occured
+								 */
+								title: () => LocalizedString
+								/**
+								 * I do not have the permission to close the thread.
+								 */
+								description: () => LocalizedString
+							}
+						}
+						success: {
+							/**
+							 * Thread Closed
+							 */
+							title: () => LocalizedString
+							/**
+							 * The thread has been successfully closed!
+							 */
+							description: () => LocalizedString
+						}
+					}
+				}
+				lockAndClose: {
+					builder: {
+						/**
+						 * Lock & Close
+						 */
+						label: () => LocalizedString
+					}
+					execute: {
+						errors: {
+							notManageableAndEditable: {
+								/**
+								 * An Error Occured
+								 */
+								title: () => LocalizedString
+								/**
+								 * I do not have the necessary permission(s) to lock and close the thread.
+								 */
+								description: () => LocalizedString
+							}
+						}
+						success: {
+							/**
+							 * Thread Locked & Closed
+							 */
+							title: () => LocalizedString
+							/**
+							 * The thread has been successfully locked and closed!
+							 */
+							description: () => LocalizedString
+						}
+					}
+				}
+				'delete': {
+					builder: {
+						/**
+						 * Delete
+						 */
+						label: () => LocalizedString
+					}
+					execute: {
+						errors: {
+							notManageable: {
+								/**
+								 * An Error Occured
+								 */
+								title: () => LocalizedString
+								/**
+								 * I do not have the necessary permission(s) to lock the thread.
+								 */
+								description: () => LocalizedString
+							}
+						}
+						success: {
+							/**
+							 * Deleting Thread...
+							 */
+							title: () => LocalizedString
+							/**
+							 * I am attempting to delete the thread...
+							 */
+							description: () => LocalizedString
+						}
+					}
+				}
+			}
+		}
 		threads: {
 			categories: {
 				configuration: {

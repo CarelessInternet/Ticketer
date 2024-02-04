@@ -1,5 +1,5 @@
+import { AutomaticThreads, ThreadTicketing, TicketType, UserForums, invalidTicket, ticketType } from '@/utils';
 import { Command, DeferReply } from '@ticketer/djs-framework';
-import { ThreadTicketing, TicketType, UserForums, ticketType } from '@/utils';
 import { getTranslations, translate } from '@/i18n';
 
 const dataTranslations = translate().commands['lock-and-close'].data;
@@ -11,8 +11,8 @@ export default class extends Command.Interaction {
 		.setDescriptionLocalizations(getTranslations('commands.lock-and-close.data.description'));
 
 	@DeferReply(true)
-	public execute(context: Command.Context): unknown {
-		switch (ticketType(context.interaction.channel)) {
+	public async execute(context: Command.Context): Promise<unknown> {
+		switch (await ticketType(context.interaction.channel)) {
 			case TicketType.ThreadTicketing: {
 				return ThreadTicketing.lockTicket.call(this, context, true);
 			}
@@ -20,7 +20,10 @@ export default class extends Command.Interaction {
 				return UserForums.lockTicket.call(this, context, true);
 			}
 			case TicketType.AutomaticThreads: {
-				return;
+				return AutomaticThreads.lockTicket.call(this, context, true, true);
+			}
+			default: {
+				return invalidTicket.call(this, context);
 			}
 		}
 	}

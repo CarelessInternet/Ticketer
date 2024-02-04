@@ -32,14 +32,13 @@ export default class extends Event.Handler {
 
 			if (!row) return;
 
-			const translations = translate(thread.guild.preferredLocale).tickets.userForums.buttons;
-
 			const embed = userForumEmbed({
 				embed: super.embed,
 				...row,
 				user,
 			});
 
+			const translations = translate(thread.guild.preferredLocale).tickets.userForums.buttons;
 			const buttonsRow = ticketButtons({
 				close: {
 					customId: super.customId('ticket_user_forums_thread_close'),

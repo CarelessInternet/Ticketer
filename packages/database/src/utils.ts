@@ -1,6 +1,6 @@
 import { customType, varchar } from 'drizzle-orm/mysql-core';
 
-// TODO: change mode to 'string' when available: https://github.com/drizzle-team/drizzle-orm/issues/813
+// TODO: Change mode to 'string' when available: https://github.com/drizzle-team/drizzle-orm/issues/813
 // const snowflake = (name: string) => bigint(name, { mode: 'bigint', unsigned: true });
 
 export const snowflake = customType<{ data: string }>({

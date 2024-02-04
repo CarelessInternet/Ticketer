@@ -3,7 +3,7 @@ import { ShardingManager } from 'discord.js';
 import chalk from 'chalk';
 import { environment } from '@ticketer/env/bot';
 import { fileURLToPath } from 'node:url';
-import { formatDate } from '@/utils';
+import { formatDateLong } from '@/utils';
 
 const currentDirectory = dirname(fileURLToPath(import.meta.url));
 const botFilePath = resolve(currentDirectory, './bot.ts');
@@ -20,7 +20,7 @@ sharder.on('shardCreate', (shard) => {
 		chalk.green('[Sharding]'),
 		'Created',
 		chalk.yellow(`shard #${shard.id}`),
-		`on ${formatDate(new Date())}.`,
+		`on ${formatDateLong(new Date())}.`,
 	);
 	shard.once('ready', () => {
 		console.log(chalk.yellow(`[Shard #${shard.id}]`), 'This shard has become ready.');

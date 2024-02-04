@@ -1,13 +1,21 @@
 import type { BaseInteraction, Modal } from '@ticketer/djs-framework';
 import { ChannelType, Colors } from 'discord.js';
-import { database, eq, userForumsConfigurations } from '@ticketer/database';
+import { automaticThreadsConfigurations, database, eq, userForumsConfigurations } from '@ticketer/database';
 import { translate } from '@/i18n';
 
-export async function renameTitle(this: BaseInteraction.Interaction, { interaction }: Modal.Context) {
+export async function renameTitle(
+	this: BaseInteraction.Interaction,
+	{ interaction }: Modal.Context,
+	isAutomaticThreads = false,
+) {
 	const { channel, fields, locale, member, user } = interaction;
-	const translations = translate(locale).tickets.userForums.buttons;
+	const translations = translate(locale).tickets[isAutomaticThreads ? 'automaticThreads' : 'userForums'].buttons;
+	const table = isAutomaticThreads ? automaticThreadsConfigurations : userForumsConfigurations;
 
-	if (channel?.type !== ChannelType.PublicThread || channel.parent?.type !== ChannelType.GuildForum) {
+	if (
+		channel?.type !== ChannelType.PublicThread ||
+		channel.parent?.type !== (isAutomaticThreads ? ChannelType.GuildText : ChannelType.GuildForum)
+	) {
 		return interaction.editReply({
 			embeds: [
 				this.userEmbedError(user)
@@ -29,10 +37,10 @@ export async function renameTitle(this: BaseInteraction.Interaction, { interacti
 
 	const [row] = await database
 		.select({
-			managers: userForumsConfigurations.managers,
+			managers: table.managers,
 		})
-		.from(userForumsConfigurations)
-		.where(eq(userForumsConfigurations.channelId, channel.parent.id));
+		.from(table)
+		.where(eq(table.channelId, channel.parent.id));
 
 	if (!row || (channel.ownerId !== user.id && !row.managers.some((id) => member.roles.resolve(id)))) {
 		return interaction.editReply({

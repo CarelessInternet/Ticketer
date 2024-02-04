@@ -1,4 +1,13 @@
 import { ChannelType, type GuildTextBasedChannel } from 'discord.js';
+import {
+	automaticThreadsConfigurations,
+	database,
+	eq,
+	sql,
+	ticketThreadsCategories,
+	unionAll,
+	userForumsConfigurations,
+} from '@ticketer/database';
 
 export enum TicketType {
 	ThreadTicketing,
@@ -6,26 +15,30 @@ export enum TicketType {
 	AutomaticThreads,
 }
 
-export function ticketType(channel: GuildTextBasedChannel | null) {
-	if (channel?.type === ChannelType.PrivateThread) {
-		return TicketType.ThreadTicketing;
-	}
+export async function ticketType(channel: GuildTextBasedChannel | null) {
+	if (!channel) return;
 
-	if (channel?.type === ChannelType.PublicThread) {
-		if (channel.ownerId === channel.client.user.id) {
-			return TicketType.ThreadTicketing;
-		}
+	const id =
+		channel.type === ChannelType.PublicThread || channel.type === ChannelType.PrivateThread
+			? channel.parentId
+			: channel.id;
 
-		switch (channel.parent?.type) {
-			case ChannelType.GuildForum: {
-				return TicketType.UserForums;
-			}
-			case ChannelType.GuildText: {
-				return TicketType.AutomaticThreads;
-			}
-			default: {
-				return;
-			}
-		}
-	}
+	if (!id) return;
+
+	const [row] = await unionAll(
+		database
+			.select({ type: sql<string>`'${TicketType.ThreadTicketing}'`.as('ticket_type') })
+			.from(ticketThreadsCategories)
+			.where(eq(ticketThreadsCategories.channelId, id)),
+		database
+			.select({ type: sql<string>`'${TicketType.UserForums}'`.as('ticket_type') })
+			.from(userForumsConfigurations)
+			.where(eq(userForumsConfigurations.channelId, id)),
+		database
+			.select({ type: sql<string>`'${TicketType.AutomaticThreads}'`.as('ticket_type') })
+			.from(automaticThreadsConfigurations)
+			.where(eq(automaticThreadsConfigurations.channelId, id)),
+	);
+
+	return row ? Number.parseInt(row.type) : undefined;
 }

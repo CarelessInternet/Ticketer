@@ -54,7 +54,10 @@ export async function lockTicket(
 		.from(table)
 		.where(eq(table.channelId, channel.parent.id));
 
-	if (!row || (channel.ownerId !== user.id && !row.managers.some((id) => member.roles.resolve(id)))) {
+	// eslint-disable-next-line unicorn/no-await-expression-member
+	const ownerId = isAutomaticThreads ? (await channel.fetchStarterMessage())?.author.id : channel.ownerId;
+
+	if (!row || (ownerId !== user.id && !row.managers.some((id) => member.roles.resolve(id)))) {
 		return interaction.editReply({
 			embeds: [
 				this.userEmbedError(user)

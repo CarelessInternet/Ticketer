@@ -2,6 +2,7 @@ import './globals.css';
 import { DM_Sans } from 'next/font/google';
 import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
+import type { PropsWithChildren } from 'react';
 import ThemeProvider from '@/components/ThemeProvider';
 import { cn } from '@/lib/utils';
 
@@ -12,13 +13,13 @@ export const metadata: Metadata = {
 	description: 'The Discord bot for creating tickets with threads.',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html lang="en">
-			<body className={cn('min-h-screen bg-background font-sans antialiased', font.variable)}>
+			<body className={cn('bg-background min-h-screen font-sans antialiased', font.variable)}>
 				<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-					<Navbar />
-					{children}
+					<Navbar className="pb-4" />
+					<div className="mx-8 sm:mx-16">{children}</div>
 				</ThemeProvider>
 			</body>
 		</html>

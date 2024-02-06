@@ -19,6 +19,7 @@ const config = {
 	useTabs: true,
 	embeddedLanguageFormatting: 'auto',
 	parser: 'typescript',
+	plugins: ['prettier-plugin-tailwindcss'],
 };
 
 export default config;

@@ -10,7 +10,7 @@ import {
 	Scale,
 	Server,
 	Sun,
-	Terminal,
+	// Terminal,
 } from 'lucide-react';
 import {
 	DropdownMenu,
@@ -157,7 +157,9 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 						<NavigationMenuList>
 							<NavigationMenuItem className="flex flex-1 flex-row items-center space-x-2">
 								<Image src="/favicon.ico" alt="favicon" width={48} height={48} priority className="rounded-full" />
-								<Link href="/">Ticketer</Link>
+								<Link href="/" className="text-base">
+									Ticketer
+								</Link>
 							</NavigationMenuItem>
 						</NavigationMenuList>
 					</NavigationMenu>
@@ -170,9 +172,10 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 										<ListItem href="/docs/self-hosting" icon={<Server />} title="Self-Hosting">
 											Learn how to self-host the Ticketer bot on any computer that supports Docker.
 										</ListItem>
-										<ListItem href="/docs/commands" icon={<Terminal />} title="Commands">
+										{/* TODO: Create a most popular commands documentation page. */}
+										{/* <ListItem href="/docs/commands" icon={<Terminal />} title="Commands">
 											View some of the most popular and important commands in Ticketer.
-										</ListItem>
+										</ListItem> */}
 									</ul>
 								</NavigationMenuContent>
 							</NavigationMenuItem>

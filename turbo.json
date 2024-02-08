@@ -1,0 +1,27 @@
+{
+	"$schema": "https://turbo.build/schema.json",
+	"globalEnv": ["VERCEL_URL", "PORT"],
+	"globalDotEnv": ["**/.env.*local"],
+	"pipeline": {
+		"dev": {
+			"cache": false,
+			"persistent": true
+		},
+		"start": {
+			"cache": false,
+			"persistent": true
+		},
+		"build": {
+			"dependsOn": ["^build"],
+			"outputs": [".next/**", "!.next/cache/**"]
+		},
+		"lint": {
+			"cache": true,
+			"persistent": false
+		},
+		"test": {
+			"cache": true,
+			"persistent": false
+		}
+	}
+}

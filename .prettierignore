@@ -1,0 +1,4 @@
+README.md
+*.yaml
+/apps/bot/src/i18n/i18n-*.ts
+/apps/bot/src/i18n/formatters.ts

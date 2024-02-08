@@ -2,6 +2,6 @@
 
 ## What type of release does it go under? (select only one)
 
-- [ ] Major release
-- [ ] Minor release
-- [ ] Patch release
+- [x] Major Release
+- [x] Minor Release
+- [x] Patch Release

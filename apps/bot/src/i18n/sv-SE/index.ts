@@ -40,6 +40,7 @@ const sv_SE = {
 								links: {
 									invite: 'Inbjudningslänk',
 									supportServer: 'Stödserver',
+									website: 'Webbsida',
 								},
 							},
 						],

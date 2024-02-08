@@ -90,6 +90,10 @@ type RootTranslation = {
 									 * S​u​p​p​o​r​t​ ​S​e​r​v​e​r
 									 */
 									supportServer: string
+									/**
+									 * W​e​b​s​i​t​e
+									 */
+									website: string
 								}
 							}
 						}
@@ -1379,6 +1383,10 @@ export type TranslationFunctions = {
 									 * Support Server
 									 */
 									supportServer: () => LocalizedString
+									/**
+									 * Website
+									 */
+									website: () => LocalizedString
 								}
 							}
 						}

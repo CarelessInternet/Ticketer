@@ -11,6 +11,7 @@ export const environment = createEnv({
 		DISCORD_GUILD_ID: z.string().min(17),
 		DISCORD_OWNER_ID: z.string().min(17),
 		DISCORD_SUPPORT_SERVER: z.string().url().includes('discord.gg').optional(),
+		WEBSITE_URL: z.string().url().default('https://ticketer-careless.vercel.app'),
 	},
 	runtimeEnv: env,
 	emptyStringAsUndefined: true,

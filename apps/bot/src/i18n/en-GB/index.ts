@@ -40,6 +40,7 @@ const en_GB = {
 								links: {
 									invite: 'Invite Link',
 									supportServer: 'Support Server',
+									website: 'Website',
 								},
 							},
 						],

@@ -1,4 +1,4 @@
-import { OAuth2Scopes, PermissionFlagsBits, hyperlink, inlineCode } from 'discord.js';
+import { ApplicationCommandType, OAuth2Scopes, PermissionFlagsBits, hyperlink, inlineCode } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
 import { Command } from '@ticketer/djs-framework';
 import { environment } from '@ticketer/env/bot';
@@ -25,12 +25,13 @@ export default class extends Command.Interaction {
 
 		for (const command of this.client.commands.values()) {
 			const name = command.data.name_localizations?.[interaction.locale] ?? command.data.name;
-			commandsArray.push(inlineCode(`/${name}`));
+			commandsArray.push(inlineCode(command.commandType === ApplicationCommandType.ChatInput ? `/${name}` : name));
 		}
 
 		const commands = commandsArray.join(', ');
 		const translations = translate(interaction.locale).commands.help.command.embeds[0];
 
+		const website = hyperlink(translations.fields[0].links.website(), environment.WEBSITE_URL);
 		const supportServer = environment.DISCORD_SUPPORT_SERVER
 			? hyperlink(translations.fields[0].links.supportServer(), environment.DISCORD_SUPPORT_SERVER)
 			: undefined;
@@ -52,7 +53,7 @@ export default class extends Command.Interaction {
 			}),
 		);
 
-		const linksAsString = [supportServer, inviteLink].filter(Boolean).join(' | ');
+		const linksAsString = [website, supportServer, inviteLink].filter(Boolean).join(' | ');
 
 		const embed = super
 			.userEmbed(interaction.user)

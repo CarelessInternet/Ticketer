@@ -136,8 +136,8 @@ export default function Page() {
 						</span>
 					</CodeBlock>
 					<Paragraph>
-						Once the commands have been deployed, run the <i>/migrate</i> command to deploy any database changes that
-						may be needed:
+						Once the commands have been deployed, run the <i>/migrate</i> command in Discord to deploy any database
+						changes that may be needed:
 					</Paragraph>
 					<CodeBlock clipboardText="/migrate" slashCommand>
 						<span>migrate</span>

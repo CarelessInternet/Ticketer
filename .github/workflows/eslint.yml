@@ -1,16 +1,25 @@
 name: TypeScript ESLint
 
 on:
-  - push
-  - pull_request
+  push:
+  pull_request:
 
 jobs:
-  install:
+  build:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        # Run on the LTS version.
+        node-version: [20.x]
     steps:
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 8
-      - run: pnpm i
-      - run: pnpm run lint
+    - uses: actions/checkout@v3
+    - uses: pnpm/action-setup@v3
+      with:
+        version: 8
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+    - run: pnpm i
+    - run: pnpm lint

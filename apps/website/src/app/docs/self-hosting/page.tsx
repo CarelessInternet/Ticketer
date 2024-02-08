@@ -1,19 +1,12 @@
-import type { HTMLAttributes, PropsWithChildren } from 'react';
 import CodeBlock from '@/components/CodeBlock';
+import ExternalLink from '@/components/ExternalLink';
+import Paragraph from '@/components/Paragraph';
+import type { PropsWithChildren } from 'react';
 import ScrollLink from '@/components/ScrollLink';
 import { Toaster } from '@/components/ui/toaster';
-import { cn } from '@/lib/utils';
 
-function Paragraph({ children, className }: PropsWithChildren<HTMLAttributes<HTMLElement>>) {
-	return <p className={cn('pb-2 text-base sm:text-lg', className)}>{children}</p>;
-}
-
-function ExternalLink({ children, href }: PropsWithChildren<{ href: string }>) {
-	return (
-		<a className="text-blue-600 hover:underline dark:text-blue-500" target="_blank" href={href}>
-			{children}
-		</a>
-	);
+function Divider({ children }: PropsWithChildren) {
+	return <div className="space-y-2">{children}</div>;
 }
 
 function EnvironmentHighlight({ name, value }: { name: string; value?: string }) {
@@ -44,7 +37,7 @@ export default function Page() {
 	return (
 		<>
 			<div className="flex flex-col space-y-12 pt-4">
-				<div className="space-y-2">
+				<Divider>
 					<h1 className="text-3xl font-bold sm:text-4xl">Self-Hosting Ticketer</h1>
 					<Paragraph>
 						Looking to host the Ticketer bot on your own machine? Here is the required software to do so:
@@ -61,9 +54,9 @@ export default function Page() {
 						Need help? Join the{' '}
 						<ExternalLink href="https://discord.gg/9FHagm6343">Ticketer support server</ExternalLink>!
 					</Paragraph>
-				</div>
-				<div className="space-y-2">
-					<ScrollLink href="/docs/self-hosting#cloning-the-repository">Cloning the Repository</ScrollLink>
+				</Divider>
+				<Divider>
+					<ScrollLink target="cloning-the-repository">Cloning the Repository</ScrollLink>
 					<Paragraph>
 						Once you have Git and Docker installed, run the following command in a command line to clone the source code
 						into a folder named &quot;Ticketer&quot;:
@@ -81,9 +74,9 @@ export default function Page() {
 							<span>Ticketer</span>
 						</span>
 					</CodeBlock>
-				</div>
-				<div className="space-y-2">
-					<ScrollLink href="/docs/self-hosting#environment-variables">Environment Variables</ScrollLink>
+				</Divider>
+				<Divider>
+					<ScrollLink target="environment-variables">Environment Variables</ScrollLink>
 					<Paragraph>
 						Both the bot and the database require a few credentials to run. Starting with the database, you will to
 						create a file named &quot;<i>.env.database.production.local</i>&quot; and then create some login credentials
@@ -113,9 +106,9 @@ export default function Page() {
 							<EnvironmentHighlight name="DISCORD_OWNER_ID" />
 						</span>
 					</CodeBlock>
-				</div>
-				<div className="space-y-2">
-					<ScrollLink href="/docs/self-hosting#running-the-bot">Running the Bot</ScrollLink>
+				</Divider>
+				<Divider>
+					<ScrollLink target="running-the-bot">Running the Bot</ScrollLink>
 					<Paragraph>
 						Now it is time to run the bot! Run the following command to start the database and bot (this may take some
 						time):
@@ -155,9 +148,9 @@ export default function Page() {
 							<span>container stop ticketer-database</span>
 						</span>
 					</CodeBlock>
-				</div>
-				<div className="space-y-2">
-					<ScrollLink href="/docs/self-hosting#accessing-the-database">Accessing the Database</ScrollLink>
+				</Divider>
+				<Divider>
+					<ScrollLink target="accessing-the-database">Accessing the Database</ScrollLink>
 					<Paragraph>
 						If you want to access the database, you can do so by running the two commands below and replacing &quot;
 						<i>USERNAME</i>&quot; with the username you chose in the environment variable:
@@ -174,7 +167,7 @@ export default function Page() {
 							<span>-u USERNAME -p</span>
 						</span>
 					</CodeBlock>
-				</div>
+				</Divider>
 			</div>
 			<Toaster />
 		</>

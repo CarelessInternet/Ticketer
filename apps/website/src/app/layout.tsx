@@ -1,4 +1,5 @@
 import './globals.css';
+import { Analytics } from '@vercel/analytics/react';
 import { DM_Sans } from 'next/font/google';
 import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
 					<Navbar className="pb-4" />
 					<div className="mx-8 sm:mx-16">{children}</div>
 				</ThemeProvider>
+				<Analytics />
 			</body>
 		</html>
 	);

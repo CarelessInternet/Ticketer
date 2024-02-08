@@ -1,0 +1,16 @@
+name: TypeScript ESLint
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+      - run: pnpm i
+      - run: pnpm run lint

@@ -1,6 +1,16 @@
 import Divider from '@/components/Divider';
+import type { Metadata } from 'next';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
+
+export const metadata: Metadata = {
+	title: 'Ticketer - Terms of Service',
+	description: 'The terms of service for Ticketer.',
+	openGraph: {
+		title: 'Ticketer - Terms of Service',
+		description: 'The terms of service for Ticketer.',
+	},
+};
 
 export default function Page() {
 	return (

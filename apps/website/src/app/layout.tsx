@@ -12,6 +12,11 @@ const font = DM_Sans({ subsets: ['latin'], variable: '--font-sans' });
 export const metadata: Metadata = {
 	title: 'Ticketer',
 	description: 'The Discord bot for creating tickets with threads.',
+	openGraph: {
+		siteName: 'Ticketer',
+		locale: 'en_GB',
+		type: 'website',
+	},
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {

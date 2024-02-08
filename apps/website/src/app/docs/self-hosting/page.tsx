@@ -1,6 +1,7 @@
 import CodeBlock from '@/components/CodeBlock';
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
+import type { Metadata } from 'next';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
 import { Toaster } from '@/components/ui/toaster';
@@ -28,6 +29,15 @@ const botEnvironmentTemplate = `
 	DISCORD_GUILD_ID=""
 	DISCORD_OWNER_ID=""
 `;
+
+export const metadata: Metadata = {
+	title: 'Ticketer - Self-Hosting',
+	description: 'Documentation on how to self-host the Ticketer bot.',
+	openGraph: {
+		title: 'Ticketer - Self-Hosting',
+		description: 'Documentation on how to self-host the Ticketer bot.',
+	},
+};
 
 export default function Page() {
 	return (

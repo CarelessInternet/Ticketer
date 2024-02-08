@@ -1,5 +1,6 @@
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
+import type { Metadata } from 'next';
 import Paragraph from '@/components/Paragraph';
 import type { PropsWithChildren } from 'react';
 import ScrollLink from '@/components/ScrollLink';
@@ -8,6 +9,15 @@ import SectionDivider from '@/components/SectionDivider';
 function List({ children }: PropsWithChildren) {
 	return <ul className="m-auto list-disc pl-10 font-medium">{children}</ul>;
 }
+
+export const metadata: Metadata = {
+	title: 'Ticketer - Privacy Policy',
+	description: 'The privacy policy for Ticketer.',
+	openGraph: {
+		title: 'Ticketer - Privacy Policy',
+		description: 'The privacy policy for Ticketer.',
+	},
+};
 
 export default function Page() {
 	return (

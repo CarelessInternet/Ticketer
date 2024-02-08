@@ -1,26 +1,9 @@
+import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
 import Paragraph from '@/components/Paragraph';
 import type { PropsWithChildren } from 'react';
 import ScrollLink from '@/components/ScrollLink';
-
-function Divider({ children }: PropsWithChildren) {
-	return <div className="space-y-2">{children}</div>;
-}
-
-function Header({ children }: PropsWithChildren) {
-	return <h3 className="text-lg font-bold sm:text-xl">{children}</h3>;
-}
-
-function SectionDivider({ children, header }: PropsWithChildren<{ header: string }>) {
-	return (
-		<div className="pt-2">
-			<Divider>
-				<Header>{header}</Header>
-				{children}
-			</Divider>
-		</div>
-	);
-}
+import SectionDivider from '@/components/SectionDivider';
 
 function List({ children }: PropsWithChildren) {
 	return <ul className="m-auto list-disc pl-10 font-medium">{children}</ul>;
@@ -28,7 +11,7 @@ function List({ children }: PropsWithChildren) {
 
 export default function Page() {
 	return (
-		<div className="flex flex-col space-y-12 pt-4">
+		<>
 			<Divider>
 				<h1 className="text-3xl font-bold sm:text-4xl">Ticketer Privacy Policy</h1>
 				<Paragraph>This page was last updated on 2024-02-08.</Paragraph>
@@ -154,6 +137,6 @@ export default function Page() {
 					<Paragraph>They may do the following above.</Paragraph>
 				</SectionDivider>
 			</Divider>
-		</div>
+		</>
 	);
 }

@@ -1,13 +1,9 @@
 import CodeBlock from '@/components/CodeBlock';
+import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
 import Paragraph from '@/components/Paragraph';
-import type { PropsWithChildren } from 'react';
 import ScrollLink from '@/components/ScrollLink';
 import { Toaster } from '@/components/ui/toaster';
-
-function Divider({ children }: PropsWithChildren) {
-	return <div className="space-y-2">{children}</div>;
-}
 
 function EnvironmentHighlight({ name, value }: { name: string; value?: string }) {
 	return (

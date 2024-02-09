@@ -119,7 +119,7 @@ function TooltipLinkItem({ children, href, icon }: PropsWithChildren<{ href: str
 			<Tooltip>
 				<TooltipTrigger className="dark:hover:text-cyan-400 dark:focus:text-cyan-400" asChild>
 					<Button variant="outline" size="icon" asChild>
-						<a target="_blank" href={href}>
+						<a target="_blank" href={href} rel="noopener noreferrer">
 							{icon}
 						</a>
 					</Button>

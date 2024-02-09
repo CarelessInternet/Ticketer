@@ -3,6 +3,7 @@
 import {
 	Cookie,
 	Github,
+	Globe,
 	Menu,
 	MessageCircleQuestion,
 	Moon,
@@ -174,6 +175,13 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 										</ListItem>
 										<ListItem href="/docs/self-hosting" icon={<Server />} title="Self-Hosting">
 											Learn how to self-host the Ticketer bot on any computer that supports Docker.
+										</ListItem>
+										<ListItem
+											href="/docs/contributing-to-localisation"
+											icon={<Globe />}
+											title="Contributing to Localisation"
+										>
+											Instructions on how to add language translations to the Ticketer bot.
 										</ListItem>
 									</ul>
 								</NavigationMenuContent>

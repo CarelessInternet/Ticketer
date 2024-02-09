@@ -23,6 +23,12 @@ export default function CodeBlock({
 }: PropsWithChildren<CodeBlockProperties>) {
 	const { toast } = useToast();
 
+	const saveToClipboard = (text: string) =>
+		navigator.clipboard
+			.writeText(text)
+			.then(() => toast({ title: 'Copied to Clipboard!' }))
+			.catch(console.error);
+
 	return (
 		<div className="pb-2">
 			<code
@@ -44,12 +50,15 @@ export default function CodeBlock({
 					</div>
 					<TooltipProvider>
 						<Tooltip>
-							<TooltipTrigger>
+							<TooltipTrigger
+								onKeyUp={(event) => {
+									event.key === 'Enter' && void saveToClipboard(clipboardText);
+								}}
+							>
 								<Copy
 									className="hover:scale-110"
 									onClick={() => {
-										void navigator.clipboard.writeText(clipboardText);
-										toast({ title: 'Copied to Clipboard!' });
+										void saveToClipboard(clipboardText);
 									}}
 								/>
 							</TooltipTrigger>

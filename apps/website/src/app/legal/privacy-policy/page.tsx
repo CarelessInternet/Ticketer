@@ -5,6 +5,7 @@ import Paragraph from '@/components/Paragraph';
 import type { PropsWithChildren } from 'react';
 import ScrollLink from '@/components/ScrollLink';
 import SectionDivider from '@/components/SectionDivider';
+import Title from '@/components/Title';
 
 function List({ children }: PropsWithChildren) {
 	return <ul className="m-auto list-disc pl-10 font-medium">{children}</ul>;
@@ -23,7 +24,7 @@ export default function Page() {
 	return (
 		<>
 			<Divider>
-				<h1 className="text-3xl font-bold sm:text-4xl">Ticketer Privacy Policy</h1>
+				<Title>Ticketer Privacy Policy</Title>
 				<Paragraph>This page was last updated on 2024-02-08.</Paragraph>
 			</Divider>
 			<Divider>

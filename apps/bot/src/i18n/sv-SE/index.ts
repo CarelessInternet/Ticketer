@@ -36,8 +36,13 @@ const sv_SE = {
 						description: 'Här är listan över de tillgängliga kommandona: {commands}.',
 						fields: [
 							{
+								name: '❓ Hur kommer man igång?',
+								value: 'Letar du efter hur man konfigurerar boten? Klicka på "Kommandodokumentation" länken nedan.',
+							},
+							{
 								name: '🔗 Länkar',
 								links: {
+									commandDocumentation: 'Kommandodokumentation',
 									invite: 'Inbjudningslänk',
 									supportServer: 'Stödserver',
 									website: 'Webbsida',

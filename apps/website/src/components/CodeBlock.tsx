@@ -36,7 +36,9 @@ export default function CodeBlock({
 					<div className="flex flex-col space-y-2 truncate">
 						{fileName && <span className="text-slate-300 underline underline-offset-2">{fileName}</span>}
 						<span className={`flex ${!slashCommand && 'gap-2'}`}>
-							{!fileName && <span className={`${!slashCommand && 'text-gray-500'}`}>{slashCommand ? '/' : '$'}</span>}
+							{!fileName && (
+								<span className={slashCommand ? 'text-yellow-300' : 'text-gray-500'}>{slashCommand ? '/' : '$'}</span>
+							)}
 							{children}
 						</span>
 					</div>

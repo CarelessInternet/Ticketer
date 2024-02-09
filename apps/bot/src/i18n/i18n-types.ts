@@ -78,10 +78,24 @@ type RootTranslation = {
 						fields: {
 							'0': {
 								/**
+								 * ❓​ ​H​o​w​ ​t​o​ ​G​e​t​ ​S​t​a​r​t​e​d​?
+								 */
+								name: string
+								/**
+								 * L​o​o​k​i​n​g​ ​f​o​r​ ​h​o​w​ ​t​o​ ​c​o​n​f​i​g​u​r​e​ ​t​h​e​ ​b​o​t​?​ ​C​l​i​c​k​ ​t​h​e​ ​"​C​o​m​m​a​n​d​ ​D​o​c​u​m​e​n​t​a​t​i​o​n​"​ ​l​i​n​k​ ​b​e​l​o​w​.
+								 */
+								value: string
+							}
+							'1': {
+								/**
 								 * �​�​ ​L​i​n​k​s
 								 */
 								name: string
 								links: {
+									/**
+									 * C​o​m​m​a​n​d​ ​D​o​c​u​m​e​n​t​a​t​i​o​n
+									 */
+									commandDocumentation: string
 									/**
 									 * I​n​v​i​t​e​ ​L​i​n​k
 									 */
@@ -1371,10 +1385,24 @@ export type TranslationFunctions = {
 						fields: {
 							'0': {
 								/**
+								 * ❓ How to Get Started?
+								 */
+								name: () => LocalizedString
+								/**
+								 * Looking for how to configure the bot? Click the "Command Documentation" link below.
+								 */
+								value: () => LocalizedString
+							}
+							'1': {
+								/**
 								 * 🔗 Links
 								 */
 								name: () => LocalizedString
 								links: {
+									/**
+									 * Command Documentation
+									 */
+									commandDocumentation: () => LocalizedString
 									/**
 									 * Invite Link
 									 */

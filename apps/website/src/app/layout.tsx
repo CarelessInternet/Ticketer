@@ -8,6 +8,9 @@ import ThemeProvider from '@/components/ThemeProvider';
 import { cn } from '@/lib/utils';
 
 const font = DM_Sans({ subsets: ['latin'], variable: '--font-sans' });
+const baseURL = new URL(
+	process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : `http://localhost:${process.env.PORT ?? 3000}`,
+);
 
 export const metadata: Metadata = {
 	title: 'Ticketer',
@@ -16,10 +19,16 @@ export const metadata: Metadata = {
 		siteName: 'Ticketer',
 		locale: 'en_GB',
 		type: 'website',
+		images: [
+			{
+				url: new URL('/favicon.ico', baseURL),
+				width: 512,
+				height: 512,
+				alt: 'Ticketer logo',
+			},
+		],
 	},
-	metadataBase: new URL(
-		process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : `http://localhost:${process.env.PORT ?? 3000}`,
-	),
+	metadataBase: baseURL,
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {

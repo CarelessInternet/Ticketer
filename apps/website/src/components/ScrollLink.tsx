@@ -16,6 +16,7 @@ export default function ScrollLink({ children, className, target, ...properties 
 		<Link
 			href={`${pathname}#${target}`}
 			id={target}
+			tabIndex={0}
 			className={cn('text-2xl font-bold hover:underline sm:text-3xl', className)}
 			{...properties}
 		>

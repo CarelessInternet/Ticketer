@@ -1,4 +1,4 @@
-import { ChannelType, PermissionFlagsBits, ThreadAutoArchiveDuration } from 'discord.js';
+import { ChannelType, MessageType, PermissionFlagsBits, ThreadAutoArchiveDuration } from 'discord.js';
 import { LogExceptions, automaticThreadsEmbed, formatDateShort, ticketButtons } from '@/utils';
 import { automaticThreadsConfigurations, database, eq } from '@ticketer/database';
 import { Event } from '@ticketer/djs-framework';
@@ -10,6 +10,7 @@ export default class extends Event.Handler {
 	@LogExceptions
 	public async execute([message]: Event.ArgumentsOf<this['name']>) {
 		if (!message.guild || message.channel.type !== ChannelType.GuildText) return;
+		if (message.type !== MessageType.Default) return;
 
 		const me = await message.guild.members.fetchMe();
 

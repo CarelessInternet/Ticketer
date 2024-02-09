@@ -2,6 +2,7 @@ import Divider from '@/components/Divider';
 import type { Metadata } from 'next';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
+import Title from '@/components/Title';
 
 export const metadata: Metadata = {
 	title: 'Ticketer - Terms of Service',
@@ -16,7 +17,7 @@ export default function Page() {
 	return (
 		<>
 			<Divider>
-				<h1 className="text-3xl font-bold sm:text-4xl">Ticketer Terms of Service</h1>
+				<Title>Ticketer Terms of Service</Title>
 				<Paragraph>This page was last updated on 2024-02-08.</Paragraph>
 			</Divider>
 			<Divider>

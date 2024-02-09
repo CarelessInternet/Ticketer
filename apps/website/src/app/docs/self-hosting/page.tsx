@@ -4,6 +4,7 @@ import ExternalLink from '@/components/ExternalLink';
 import type { Metadata } from 'next';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
+import Title from '@/components/Title';
 import { Toaster } from '@/components/ui/toaster';
 
 function EnvironmentHighlight({ name, value }: { name: string; value?: string }) {
@@ -44,7 +45,7 @@ export default function Page() {
 		<>
 			<div className="flex flex-col space-y-12 pt-4">
 				<Divider>
-					<h1 className="text-3xl font-bold sm:text-4xl">Self-Hosting Ticketer</h1>
+					<Title>Self-Hosting Ticketer</Title>
 					<Paragraph>
 						Looking to host the Ticketer bot on your own machine? Here is the required software to do so:
 					</Paragraph>

@@ -36,8 +36,13 @@ const en_GB = {
 						description: 'Here is the list of the available commands: {commands:string}.',
 						fields: [
 							{
+								name: '❓ How to Get Started?',
+								value: 'Looking for how to configure the bot? Click the "Command Documentation" link below.',
+							},
+							{
 								name: '🔗 Links',
 								links: {
+									commandDocumentation: 'Command Documentation',
 									invite: 'Invite Link',
 									supportServer: 'Support Server',
 									website: 'Website',

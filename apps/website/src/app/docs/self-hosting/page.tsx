@@ -24,6 +24,7 @@ const databaseEnvironmentTemplate = `
 `;
 
 const botEnvironmentTemplate = `
+	NODE_ENV="production"
 	DISCORD_APPLICATION_ID=""
 	DISCORD_BOT_TOKEN=""
 	DISCORD_GUILD_ID=""
@@ -104,6 +105,7 @@ export default function Page() {
 				</Paragraph>
 				<CodeBlock clipboardText={botEnvironmentTemplate} fileName=".env.bot.production.local">
 					<span className="flex flex-col">
+						<EnvironmentHighlight name="NODE_ENV" value="production" />
 						<EnvironmentHighlight name="DISCORD_APPLICATION_ID" />
 						<EnvironmentHighlight name="DISCORD_BOT_TOKEN" />
 						<EnvironmentHighlight name="DISCORD_GUILD_ID" />

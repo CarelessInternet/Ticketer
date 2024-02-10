@@ -13,7 +13,7 @@ export default class extends Event.Handler {
 
 		if (!data?.welcomeChannelId || !data.welcomeEnabled) return;
 
-		const channel = await channels.fetch(data.welcomeChannelId.toString());
+		const channel = await channels.fetch(data.welcomeChannelId);
 
 		if (!channel?.isTextBased()) return;
 

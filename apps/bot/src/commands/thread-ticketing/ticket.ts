@@ -14,7 +14,7 @@ import {
 	roleMention,
 } from 'discord.js';
 import { Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
-import { ThreadTicketing, ticketButtons, ticketThreadsOpeningMessageEmbed } from '@/utils';
+import { ThreadTicketing, parseInteger, ticketButtons, ticketThreadsOpeningMessageEmbed } from '@/utils';
 import {
 	and,
 	count,
@@ -229,7 +229,7 @@ export class ModalInteraction extends Modal.Interaction {
 		const { client, customId, fields, guild, guildId, guildLocale, locale, user: interactionUser } = interaction;
 		const { dynamicValue } = super.extractCustomId(customId, true);
 		const dynamicValues = dynamicValue.split('_');
-		const categoryId = Number.parseInt(dynamicValues.at(0) ?? dynamicValue);
+		const categoryId = parseInteger(dynamicValues.at(0) ?? dynamicValue);
 		const isProxied = !!dynamicValues.at(1);
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const user = isProxied ? await this.client.users.fetch(dynamicValues.at(1)!) : interactionUser;
@@ -249,7 +249,7 @@ export class ModalInteraction extends Modal.Interaction {
 			});
 		}
 
-		if (Number.isNaN(categoryId)) {
+		if (categoryId === undefined) {
 			return interaction.editReply({
 				components: [],
 				embeds: [

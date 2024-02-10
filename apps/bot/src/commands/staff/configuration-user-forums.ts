@@ -15,6 +15,7 @@ import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate, Moda
 import { database, desc, eq, userForumsConfigurations } from '@ticketer/database';
 import {
 	messageWithPagination,
+	parseInteger,
 	userForumEmbed,
 	userForumsOpeningMessageDescription,
 	userForumsOpeningMessageTitle,
@@ -394,7 +395,11 @@ export class ComponentInteraction extends Component.Interaction {
 	private configurationOverview(context: Component.Context<'button'>) {
 		const { customId, dynamicValue } = super.extractCustomId(context.interaction.customId, true);
 		const type = customId.includes('previous') ? 'previous' : 'next';
-		const page = Number.parseInt(dynamicValue) + (type === 'next' ? 1 : -1);
+		const currentPage = parseInteger(dynamicValue);
+
+		if (currentPage === undefined) return;
+
+		const page = currentPage + (type === 'next' ? 1 : -1);
 
 		void getConfigurations.call(this, context, page);
 	}

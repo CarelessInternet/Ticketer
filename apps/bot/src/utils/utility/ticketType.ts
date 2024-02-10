@@ -8,6 +8,7 @@ import {
 	unionAll,
 	userForumsConfigurations,
 } from '@ticketer/database';
+import { parseInteger } from '.';
 
 export enum TicketType {
 	ThreadTicketing,
@@ -40,5 +41,5 @@ export async function ticketType(channel: GuildTextBasedChannel | null) {
 			.where(eq(automaticThreadsConfigurations.channelId, id)),
 	);
 
-	return row ? Number.parseInt(row.type) : undefined;
+	return parseInteger(row?.type);
 }

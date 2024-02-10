@@ -36,6 +36,7 @@ import {
 import {
 	extractEmoji,
 	messageWithPagination,
+	parseInteger,
 	ticketThreadsOpeningMessageDescription,
 	ticketThreadsOpeningMessageTitle,
 	withPagination,
@@ -381,7 +382,10 @@ export default class extends Command.Interaction {
 
 	@DeferReply(false)
 	private async categoryConfiguration({ interaction }: Command.Context<'chat'>) {
-		const id = Number.parseInt(interaction.options.getString('title', true));
+		const id = parseInteger(interaction.options.getString('title', true));
+
+		if (id === undefined) return;
+
 		const [result] = await database
 			.select({ emoji: ticketThreadsCategories.categoryEmoji, title: ticketThreadsCategories.categoryTitle })
 			.from(ticketThreadsCategories)
@@ -455,7 +459,10 @@ export default class extends Command.Interaction {
 	@HasGlobalConfiguration
 	private async categoryDelete({ interaction }: Command.Context<'chat'>) {
 		try {
-			const id = Number.parseInt(interaction.options.getString('title', true));
+			const id = parseInteger(interaction.options.getString('title', true));
+
+			if (id === undefined) return;
+
 			// TODO: When the MariaDB driver gets released, change the query to use the RETURNING clause.
 			const query = await database
 				.delete(ticketThreadsCategories)
@@ -609,7 +616,11 @@ export class ComponentInteraction extends Component.Interaction {
 
 	// It is not possible to defer modals...
 	private async categoryFieldsModalValues({ interaction }: Component.Context) {
-		const { dynamicValue: id } = super.extractCustomId(interaction.customId, true);
+		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const id = parseInteger(dynamicValue);
+
+		if (id === undefined) return;
+
 		const [row] = await database
 			.select({
 				emoji: ticketThreadsCategories.categoryEmoji,
@@ -617,7 +628,7 @@ export class ComponentInteraction extends Component.Interaction {
 				description: ticketThreadsCategories.categoryDescription,
 			})
 			.from(ticketThreadsCategories)
-			.where(eq(ticketThreadsCategories.id, Number.parseInt(id)));
+			.where(eq(ticketThreadsCategories.id, id));
 
 		if (!row) {
 			return interaction.reply({
@@ -634,7 +645,10 @@ export class ComponentInteraction extends Component.Interaction {
 	private async categoryChannel({ interaction }: Component.Context<'channel'>) {
 		const { customId, dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const type = customId.includes('logs') ? 'logs channel' : 'ticket channel';
-		const id = Number.parseInt(dynamicValue);
+		const id = parseInteger(dynamicValue);
+
+		if (id === undefined) return;
+
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const channel = interaction.channels.at(0)!;
 
@@ -657,12 +671,13 @@ export class ComponentInteraction extends Component.Interaction {
 	@DeferUpdate
 	private async categoryManagers({ interaction }: Component.Context<'role'>) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const id = parseInteger(dynamicValue);
+
+		if (id === undefined) return;
+
 		const managers = interaction.roles.map((role) => role.id);
 
-		await database
-			.update(ticketThreadsCategories)
-			.set({ managers })
-			.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue)));
+		await database.update(ticketThreadsCategories).set({ managers }).where(eq(ticketThreadsCategories.id, id));
 
 		const roles = managers.map((id) => roleMention(id)).join(', ');
 		const embed = super
@@ -681,7 +696,11 @@ export class ComponentInteraction extends Component.Interaction {
 	private categoryView({ interaction }: Component.Context<'button'>) {
 		const { customId, dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const type = customId.includes('previous') ? 'previous' : 'next';
-		const page = Number.parseInt(dynamicValue) + (type === 'next' ? 1 : -1);
+		const currentPage = parseInteger(dynamicValue);
+
+		if (currentPage === undefined) return;
+
+		const page = currentPage + (type === 'next' ? 1 : -1);
 
 		void getCategories.call(this, { interaction }, page);
 	}
@@ -689,13 +708,17 @@ export class ComponentInteraction extends Component.Interaction {
 	// It is not possible to defer modals...
 	private async categoryMessageTitleDescriptionValues({ interaction }: Component.Context) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const id = parseInteger(dynamicValue);
+
+		if (id === undefined) return;
+
 		const [row] = await database
 			.select({
 				title: ticketThreadsCategories.openingMessageTitle,
 				description: ticketThreadsCategories.openingMessageDescription,
 			})
 			.from(ticketThreadsCategories)
-			.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue)));
+			.where(eq(ticketThreadsCategories.id, id));
 
 		if (!row) {
 			return interaction.reply({
@@ -739,6 +762,9 @@ export class ComponentInteraction extends Component.Interaction {
 	private async categoryPrivateAndNotification({ interaction }: Component.Context<'string'>) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const type = interaction.values.at(0)?.includes('private') ? 'private threads' : 'thread notification';
+		const id = parseInteger(dynamicValue);
+
+		if (id === undefined) return;
 
 		await database
 			.update(ticketThreadsCategories)
@@ -747,7 +773,7 @@ export class ComponentInteraction extends Component.Interaction {
 					? { privateThreads: not(ticketThreadsCategories.privateThreads) }
 					: { threadNotifications: not(ticketThreadsCategories.threadNotifications) },
 			)
-			.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue)));
+			.where(eq(ticketThreadsCategories.id, id));
 
 		const embed = super
 			.userEmbed(interaction.user)
@@ -760,13 +786,16 @@ export class ComponentInteraction extends Component.Interaction {
 	@DeferReply(false)
 	private async categorySilentPings({ interaction }: Component.Context<'string'>) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const id = parseInteger(dynamicValue);
+
+		if (id === undefined) return;
 
 		await database
 			.update(ticketThreadsCategories)
 			.set({
 				silentPings: not(ticketThreadsCategories.silentPings),
 			})
-			.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue)));
+			.where(eq(ticketThreadsCategories.id, id));
 
 		const embed = super
 			.userEmbed(interaction.user)
@@ -822,10 +851,14 @@ export class ModalInteraction extends Modal.Interaction {
 		}
 
 		if (dynamicValue) {
+			const id = parseInteger(dynamicValue);
+
+			if (id === undefined) return;
+
 			await database
 				.update(ticketThreadsCategories)
 				.set({ categoryDescription, categoryEmoji, categoryTitle })
-				.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue)));
+				.where(eq(ticketThreadsCategories.id, id));
 		} else {
 			const [row] = await database
 				.select({ amount: count() })
@@ -881,6 +914,9 @@ export class ModalInteraction extends Modal.Interaction {
 	private async categoryMessageTitleDescription({ interaction }: Modal.Context) {
 		const { customId, fields, user } = interaction;
 		const { dynamicValue } = super.extractCustomId(customId, true);
+		const id = parseInteger(dynamicValue);
+
+		if (id === undefined) return;
 
 		const openingMessageTitle = fields.getTextInputValue('title');
 		const openingMessageDescription = fields.getTextInputValue('description');
@@ -888,7 +924,7 @@ export class ModalInteraction extends Modal.Interaction {
 		await database
 			.update(ticketThreadsCategories)
 			.set({ openingMessageTitle, openingMessageDescription })
-			.where(eq(ticketThreadsCategories.id, Number.parseInt(dynamicValue)));
+			.where(eq(ticketThreadsCategories.id, id));
 
 		const embed = super
 			.userEmbed(user)

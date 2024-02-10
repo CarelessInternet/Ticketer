@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "5559fd83-2efb-4ca2-812b-1bba71aab003",
+  "id": "c06a8b71-d8b5-4151-95fc-08de3c8f6b50",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "automaticThreadsConfigurations": {
@@ -128,14 +128,14 @@
           "name": "openingMessageTitle",
           "type": "varchar(100)",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "openingMessageDescription": {
           "name": "openingMessageDescription",
           "type": "varchar(500)",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "privateThreads": {

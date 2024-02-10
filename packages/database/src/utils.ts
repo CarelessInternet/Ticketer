@@ -37,8 +37,9 @@ export const baseTicketConfiguration = {
 	openingMessageDescription: varchar('openingMessageDescription', { length: 500 }),
 };
 
+// Using structuredClone() does not work here.
 export const baseTicketConfigurationNotNull = {
-	...baseTicketConfiguration,
-	openingMessageTitle: baseTicketConfiguration.openingMessageTitle.notNull(),
-	openingMessageDescription: baseTicketConfiguration.openingMessageDescription.notNull(),
+	managers: baseTicketConfiguration.managers,
+	openingMessageTitle: varchar('openingMessageTitle', { length: 100 }).notNull(),
+	openingMessageDescription: varchar('openingMessageDescription', { length: 500 }).notNull(),
 };

@@ -52,7 +52,7 @@ export default function Page() {
 						<ExternalLink href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git">Git</ExternalLink>
 					</li>
 					<li>
-						<ExternalLink href="https://docs.docker.com/get-docker/">Docker</ExternalLink>
+						<ExternalLink href="https://docs.docker.com/engine/install/">Docker Engine</ExternalLink>
 					</li>
 				</ul>
 				<Paragraph className="pt-2">

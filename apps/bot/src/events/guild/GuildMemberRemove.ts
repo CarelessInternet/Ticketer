@@ -13,7 +13,7 @@ export default class extends Event.Handler {
 
 		if (!data?.farewellChannelId || !data.farewellEnabled) return;
 
-		const channel = await channels.fetch(data.farewellChannelId.toString());
+		const channel = await channels.fetch(data.farewellChannelId);
 
 		if (!channel?.isTextBased()) return;
 

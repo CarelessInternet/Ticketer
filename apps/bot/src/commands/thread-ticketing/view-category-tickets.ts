@@ -7,7 +7,7 @@ import {
 	DeferUpdate,
 } from '@ticketer/djs-framework';
 import { PermissionFlagsBits, channelMention, userMention } from 'discord.js';
-import { ThreadTicketing, managerIntersection, messageWithPagination, withPagination } from '@/utils';
+import { ThreadTicketing, managerIntersection, messageWithPagination, parseInteger, withPagination } from '@/utils';
 import { and, asc, count, database, eq, like, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 
 interface ViewCategoryTicketsOptions {
@@ -21,6 +21,9 @@ async function viewCategoryTickets(
 	{ categoryId, page = 0 }: ViewCategoryTicketsOptions = {},
 ) {
 	const PAGE_SIZE = 3;
+	const id = parseInteger(categoryId);
+
+	if (categoryId && id === undefined) return;
 
 	const { globalAmount, tickets } = await database.transaction(async (tx) => {
 		const query = tx
@@ -36,7 +39,8 @@ async function viewCategoryTickets(
 				and(
 					eq(ticketsThreads.guildId, interaction.guildId),
 					managerIntersection(ticketThreadsCategories.managers, interaction.member.roles),
-					categoryId ? eq(ticketsThreads.categoryId, Number.parseInt(categoryId)) : undefined,
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					categoryId ? eq(ticketsThreads.categoryId, id!) : undefined,
 				),
 			)
 			.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id))
@@ -151,7 +155,11 @@ export class ComponentInteraction extends Component.Interaction {
 	public execute(context: Component.Context) {
 		const { customId, dynamicValue } = super.extractCustomId(context.interaction.customId, true);
 		const [pageAsString, categoryId] = dynamicValue.split('_') as [string, string | undefined];
-		const page = Number.parseInt(pageAsString) + (customId.includes('next') ? 1 : -1);
+		const currentPage = parseInteger(pageAsString);
+
+		if (currentPage === undefined) return;
+
+		const page = currentPage + (customId.includes('next') ? 1 : -1);
 
 		void viewCategoryTickets.call(this, context, { categoryId, page });
 	}

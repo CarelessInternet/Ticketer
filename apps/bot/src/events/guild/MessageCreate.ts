@@ -17,7 +17,11 @@ export default class extends Event.Handler {
 		if (
 			!message.channel
 				.permissionsFor(me)
-				.has([PermissionFlagsBits.CreatePublicThreads, PermissionFlagsBits.SendMessagesInThreads])
+				.has([
+					PermissionFlagsBits.CreatePublicThreads,
+					PermissionFlagsBits.ViewChannel,
+					PermissionFlagsBits.SendMessagesInThreads,
+				])
 		)
 			return;
 		if (message.author.id === me.id) return;

@@ -14,7 +14,8 @@ export default class extends Event.Handler {
 		const parent = thread.parent ?? (await thread.guild.channels.fetch(thread.parentId));
 		const me = await thread.guild.members.fetchMe();
 
-		if (!parent?.permissionsFor(me).has([PermissionFlagsBits.SendMessagesInThreads])) return;
+		if (!parent?.permissionsFor(me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessagesInThreads]))
+			return;
 
 		if (parent.type === ChannelType.GuildForum) {
 			const user = await thread.client.users.fetch(thread.ownerId ?? '');

@@ -98,7 +98,7 @@ export class ModalInteraction extends Modal.Interaction {
 					super
 						.userEmbedError(user)
 						// eslint-disable-next-line @typescript-eslint/no-base-to-string
-						.setDescription(`I do not have the viwe channel and send messages permission in ${channel.toString()}.`),
+						.setDescription(`I do not have the view channel and send messages permission in ${channel.toString()}.`),
 				],
 			});
 		}

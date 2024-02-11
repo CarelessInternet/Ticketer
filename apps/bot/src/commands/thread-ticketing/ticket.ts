@@ -314,6 +314,7 @@ export class ModalInteraction extends Modal.Interaction {
 				.has([
 					PermissionFlagsBits.MentionEveryone,
 					PermissionFlagsBits.ManageMessages,
+					PermissionFlagsBits.ViewChannel,
 					PermissionFlagsBits.SendMessagesInThreads,
 					isPrivate ? PermissionFlagsBits.CreatePrivateThreads : PermissionFlagsBits.CreatePublicThreads,
 				])
@@ -322,6 +323,7 @@ export class ModalInteraction extends Modal.Interaction {
 				[
 					'Mention All Roles',
 					'Manage Messages',
+					'View Channel',
 					'Send Messages in Threads',
 					`Create ${isPrivate ? 'Private' : 'Public'} Threads`,
 				].join(', '),

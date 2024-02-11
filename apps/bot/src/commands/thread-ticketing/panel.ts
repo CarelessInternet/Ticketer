@@ -92,13 +92,13 @@ export class ModalInteraction extends Modal.Interaction {
 
 		const me = await guild.members.fetchMe();
 
-		if (!channel.permissionsFor(me).has([PermissionFlagsBits.SendMessages])) {
+		if (!channel.permissionsFor(me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) {
 			return interaction.editReply({
 				embeds: [
 					super
 						.userEmbedError(user)
 						// eslint-disable-next-line @typescript-eslint/no-base-to-string
-						.setDescription(`I do not have the send messages permission in ${channel.toString()}.`),
+						.setDescription(`I do not have the viwe channel and send messages permission in ${channel.toString()}.`),
 				],
 			});
 		}

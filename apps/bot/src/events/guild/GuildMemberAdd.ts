@@ -19,7 +19,7 @@ export default class extends Event.Handler {
 
 		const me = await members.fetchMe();
 
-		if (!channel.permissionsFor(me).has(PermissionFlagsBits.SendMessages)) return;
+		if (!channel.permissionsFor(me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) return;
 
 		if (data.welcomeNewMemberRoles.length > 0) {
 			const highestRoleWithManageRoles = me.roles.cache

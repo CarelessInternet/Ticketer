@@ -23,7 +23,7 @@ export default class extends Event.Handler {
 
 		if (data.welcomeNewMemberRoles.length > 0) {
 			const highestRoleWithManageRoles = me.roles.cache
-				.filter((role) => role.permissions.has(PermissionFlagsBits.ManageRoles))
+				.filter((role) => role.permissions.has([PermissionFlagsBits.ManageRoles]))
 				.sort((a, b) => b.position - a.position)
 				.at(0);
 

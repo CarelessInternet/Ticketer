@@ -465,7 +465,8 @@ export class ModalInteraction extends Modal.Interaction {
 			const logsChannel = await guild.channels.fetch(configuration.ticketThreadsCategories.logsChannelId);
 
 			if (!logsChannel?.isTextBased()) return;
-			if (!logsChannel.permissionsFor(me).has([PermissionFlagsBits.SendMessages])) return;
+			if (!logsChannel.permissionsFor(me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages]))
+				return;
 
 			await logsChannel.send({
 				embeds: [
@@ -572,7 +573,8 @@ export class ModalInteraction extends Modal.Interaction {
 			const logsChannel = await guild.channels.fetch(row.logsChannelId);
 
 			if (!logsChannel?.isTextBased()) return;
-			if (!logsChannel.permissionsFor(me).has([PermissionFlagsBits.SendMessages])) return;
+			if (!logsChannel.permissionsFor(me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages]))
+				return;
 
 			void logsChannel.send({
 				embeds: [

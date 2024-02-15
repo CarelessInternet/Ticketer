@@ -33,8 +33,10 @@ export async function categoryList({ customId, filterManagerIds, locale, guildId
 
 	const translations = translate(locale).tickets.threads.categories.categoryList;
 	const options = categories.map((category) =>
-		new StringSelectMenuOptionBuilder()
-			.setEmoji(category.categoryEmoji)
+		(category.categoryEmoji
+			? new StringSelectMenuOptionBuilder().setEmoji(category.categoryEmoji)
+			: new StringSelectMenuOptionBuilder()
+		)
 			.setLabel(category.categoryTitle)
 			.setDescription(category.categoryDescription)
 			.setValue(category.id.toString()),

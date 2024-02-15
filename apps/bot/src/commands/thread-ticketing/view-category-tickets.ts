@@ -62,7 +62,7 @@ async function viewCategoryTickets(
 	});
 
 	const embeds = tickets.map((ticket) =>
-		this.embed.setTitle(`${ticket.categoryEmoji} ${ticket.categoryTitle}`).setFields(
+		this.embed.setTitle(ThreadTicketing.titleAndEmoji(ticket.categoryTitle, ticket.categoryEmoji)).setFields(
 			{
 				name: 'Thread Channel',
 				value: channelMention(ticket.threadId),

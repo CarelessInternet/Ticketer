@@ -54,7 +54,7 @@ async function viewTickets(
 
 	const translations = translate(interaction.locale).commands['show-tickets'].command;
 	const embeds = tickets.map((ticket) =>
-		this.embed.setTitle(`${ticket.categoryEmoji} ${ticket.categoryTitle}`).setFields(
+		this.embed.setTitle(ThreadTicketing.titleAndEmoji(ticket.categoryTitle, ticket.categoryEmoji)).setFields(
 			{
 				name: translations.embeds[0].fields[0].name(),
 				value: channelMention(ticket.threadId),

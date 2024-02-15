@@ -1,0 +1,1 @@
+ALTER TABLE `ticketThreadsCategories` MODIFY COLUMN `categoryEmoji` varchar(8);

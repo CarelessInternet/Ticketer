@@ -22,6 +22,15 @@ import {
 	Modal,
 } from '@ticketer/djs-framework';
 import {
+	ThreadTicketing,
+	extractEmoji,
+	messageWithPagination,
+	parseInteger,
+	ticketThreadsOpeningMessageDescription,
+	ticketThreadsOpeningMessageTitle,
+	withPagination,
+} from '@/utils';
+import {
 	and,
 	asc,
 	count,
@@ -33,14 +42,6 @@ import {
 	ticketThreadsCategories,
 	ticketThreadsConfigurations,
 } from '@ticketer/database';
-import {
-	extractEmoji,
-	messageWithPagination,
-	parseInteger,
-	ticketThreadsOpeningMessageDescription,
-	ticketThreadsOpeningMessageTitle,
-	withPagination,
-} from '@/utils';
 
 const MAXIMUM_CATEGORY_AMOUNT = 10;
 const CATEGORY_PAGE_SIZE = 2;
@@ -82,7 +83,7 @@ function categoryViewEmbed(
 ) {
 	return categories.map((category) =>
 		this.userEmbed(context.interaction.user)
-			.setTitle(`${category.categoryEmoji} ${category.categoryTitle}`)
+			.setTitle(ThreadTicketing.titleAndEmoji(category.categoryTitle, category.categoryEmoji))
 			.setDescription(category.categoryDescription)
 			.setFields(
 				{
@@ -173,12 +174,12 @@ async function getCategories(
 function categoryFieldsModal<T>(
 	this: BaseInteraction.Interaction,
 	context: Command.Context | Component.Context,
-	options?: { id?: T; emoji?: string; title?: string; description?: string },
+	options?: { id?: T; emoji?: string | null; title?: string; description?: string },
 ) {
 	const emojiInput = (options?.emoji ? new TextInputBuilder().setValue(options.emoji) : new TextInputBuilder())
 		.setCustomId(this.customId('emoji'))
 		.setLabel('Emoji')
-		.setRequired(true)
+		.setRequired(false)
 		.setMinLength(1)
 		// 8 because of unicode.
 		.setMaxLength(8)
@@ -401,7 +402,7 @@ export default class extends Command.Interaction {
 			});
 		}
 
-		const embed = super.embed.setTitle(`${result.emoji} ${result.title}`);
+		const embed = super.embed.setTitle(ThreadTicketing.titleAndEmoji(result.title, result.emoji));
 		const categoriesMenu = new StringSelectMenuBuilder()
 			.setCustomId(super.customId('ticket_threads_category_configuration', id))
 			.setMinValues(1)
@@ -844,12 +845,6 @@ export class ModalInteraction extends Modal.Interaction {
 		const categoryTitle = fields.getTextInputValue('title');
 		const categoryDescription = fields.getTextInputValue('description');
 
-		if (!categoryEmoji) {
-			return interaction.editReply({
-				embeds: [super.userEmbedError(user).setDescription('The submitted emoji is not a Unicode emoji.')],
-			});
-		}
-
 		if (dynamicValue) {
 			const id = parseInteger(dynamicValue);
 
@@ -857,7 +852,8 @@ export class ModalInteraction extends Modal.Interaction {
 
 			await database
 				.update(ticketThreadsCategories)
-				.set({ categoryDescription, categoryEmoji, categoryTitle })
+				// eslint-disable-next-line unicorn/no-null
+				.set({ categoryDescription, categoryEmoji: categoryEmoji ?? null, categoryTitle })
 				.where(eq(ticketThreadsCategories.id, id));
 		} else {
 			const [row] = await database
@@ -892,7 +888,7 @@ export class ModalInteraction extends Modal.Interaction {
 			.setFields(
 				{
 					name: 'Emoji',
-					value: categoryEmoji,
+					value: categoryEmoji ?? 'None',
 					inline: true,
 				},
 				{

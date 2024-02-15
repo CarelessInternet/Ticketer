@@ -39,7 +39,8 @@ export default function Page() {
 						<span>configuration-ticket-threads global-settings active-tickets</span>
 					</CodeBlock>
 					<Paragraph>
-						Afterwards, you can create a category with an emoji, title, and description using the command below.
+						Afterwards, you can create a category with an emoji (optional), title, and description using the command
+						below.
 					</Paragraph>
 					<CodeBlock clipboardText="/configuration-ticket-threads categories create" slashCommand>
 						<span>configuration-ticket-threads categories create</span>

@@ -52,7 +52,7 @@ export async function viewUserTickets(
 
 	const embeds = tickets.map((ticket) =>
 		this.userEmbed(user)
-			.setTitle(`${ticket.categoryEmoji} ${ticket.categoryTitle}`)
+			.setTitle(ThreadTicketing.titleAndEmoji(ticket.categoryTitle, ticket.categoryEmoji))
 			.setFields(
 				{
 					name: 'Thread Channel',

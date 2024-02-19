@@ -128,7 +128,7 @@ export class ComponentInteraction extends Component.Interaction {
 			.setLabel(translations.title.label())
 			.setRequired(true)
 			.setMinLength(1)
-			.setMaxLength(200)
+			.setMaxLength(100)
 			.setStyle(TextInputStyle.Short)
 			.setPlaceholder(translations.title.placeholder());
 		const descriptonInput = new TextInputBuilder()

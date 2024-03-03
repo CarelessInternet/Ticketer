@@ -12,7 +12,7 @@ export class ComponentInteraction extends Component.Interaction {
 export class ModalInteraction extends Modal.Interaction {
 	public readonly customIds = [super.customId('ticket_user_forums_thread_rename_title_modal')];
 
-	@DeferReply(true)
+	@DeferReply({ ephemeral: true })
 	public execute(context: Modal.Context) {
 		void UserForums.renameTitle.call(this, context);
 	}

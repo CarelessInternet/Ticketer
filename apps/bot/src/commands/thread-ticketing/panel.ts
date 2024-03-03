@@ -71,7 +71,7 @@ export default class extends Command.Interaction {
 export class ModalInteraction extends Modal.Interaction {
 	public readonly customIds = [super.dynamicCustomId('ticket_threads_categories_create_panel')];
 
-	@DeferReply(false)
+	@DeferReply()
 	public async execute({ interaction }: Modal.Context) {
 		const { customId, fields, guild, user } = interaction;
 

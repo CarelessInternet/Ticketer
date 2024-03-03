@@ -32,7 +32,7 @@ export default class extends Command.Interaction {
 				.setDescription('View the current configuration for welcome and farewell messages.'),
 		);
 
-	@DeferReply(false)
+	@DeferReply()
 	public async execute({ interaction }: Command.Context<'chat'>) {
 		switch (interaction.options.getSubcommand(true)) {
 			case 'settings': {
@@ -324,7 +324,7 @@ export class ComponentInteraction extends Component.Interaction {
 		return interaction.editReply({ embeds: [embed], components: [] });
 	}
 
-	@DeferReply(false)
+	@DeferReply()
 	private async welcomeAndFarewellConfigurationToggle({ interaction }: Component.Context<'string'>) {
 		const { farewellEnabled, welcomeEnabled } = welcomeAndFarewell;
 		const { customId: id, guildId, user } = interaction;
@@ -383,7 +383,7 @@ export class ModalInteraction extends Modal.Interaction {
 		super.customId('farewell_message_description'),
 	];
 
-	@DeferReply(false)
+	@DeferReply()
 	public async execute({ interaction }: Modal.Context) {
 		const { customId } = super.extractCustomId(interaction.customId);
 		const type = customId.includes('welcome') ? 'welcome' : 'farewell';

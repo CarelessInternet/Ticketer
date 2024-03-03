@@ -10,7 +10,7 @@ export default class extends Command.Interaction {
 		PermissionFlagsBits.ManageThreads,
 	);
 
-	@DeferReply(true)
+	@DeferReply({ ephemeral: true })
 	public async execute({ interaction }: Command.Context<'user'>) {
 		const user = interaction.targetUser;
 		const list = await ThreadTicketing.categoryList({

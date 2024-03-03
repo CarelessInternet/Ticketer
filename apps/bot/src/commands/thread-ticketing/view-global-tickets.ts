@@ -102,7 +102,7 @@ export default class extends Command.Interaction {
 				),
 		);
 
-	@DeferReply(false)
+	@DeferReply()
 	public execute(context: Command.Context<'chat'>) {
 		void viewGlobalTickets.call(this, context, {
 			state: context.interaction.options.getString('state', false) as TicketState,

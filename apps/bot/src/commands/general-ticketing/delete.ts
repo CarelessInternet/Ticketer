@@ -10,7 +10,7 @@ export default class extends Command.Interaction {
 		.setDescription(dataTranslations.description())
 		.setDescriptionLocalizations(getTranslations('commands.delete.data.description'));
 
-	@DeferReply(true)
+	@DeferReply({ ephemeral: true })
 	public async execute(context: Command.Context): Promise<unknown> {
 		switch (await ticketType(context.interaction.channel)) {
 			case TicketType.ThreadTicketing: {

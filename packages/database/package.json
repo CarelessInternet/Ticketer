@@ -16,8 +16,8 @@
 	},
 	"dependencies": {
 		"@ticketer/env": "workspace:*",
-		"drizzle-orm": "^0.29.3",
-		"mysql2": "^3.9.1"
+		"drizzle-orm": "^0.29.4",
+		"mysql2": "^3.9.2"
 	},
 	"devDependencies": {
 		"@ticketer/eslint-config": "workspace:*",

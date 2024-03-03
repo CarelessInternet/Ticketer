@@ -1,5 +1,5 @@
+import { Command, DeferReply } from '@ticketer/djs-framework';
 import { PermissionFlagsBits, Status, codeBlock } from 'discord.js';
-import { Command } from '@ticketer/djs-framework';
 import { formatDateLong } from '@/utils';
 
 export default class extends Command.Interaction {
@@ -15,15 +15,13 @@ export default class extends Command.Interaction {
 	public readonly ownerOnly = true;
 	public readonly guildOnly = true;
 
+	@DeferReply({ name: 'hidden', ephemeral: true })
 	public async execute({ interaction }: Command.Context<'chat'>) {
-		const ephemeral = interaction.options.getBoolean('hidden') ?? true;
 		const { shard } = interaction.client;
 
 		if (!shard) {
-			return interaction.reply({ content: 'No shard for the bot could be found.' });
+			return interaction.editReply({ content: 'No shard for the bot could be found.' });
 		}
-
-		await interaction.deferReply({ ephemeral });
 
 		const clientsStats = [
 			shard.fetchClientValues('channels.cache.size'),
@@ -98,7 +96,7 @@ export default class extends Command.Interaction {
 		const shardsStatsAsString = shardsStats.reduce((accumulator, shard, index) => {
 			let value = `# Shard ${index.toLocaleString()}\n\n`;
 			value += `* Ping: ${shard.ping.toLocaleString()} ms\n`;
-			value += `* Ram Usage: ${shard.ramInMegabytes} MB\n`;
+			value += `* RAM Usage: ${shard.ramInMegabytes} MB\n`;
 			value += `* Servers: ${shard.servers.toLocaleString()}\n`;
 			value += `* Status: ${Status[shard.status]}\n`;
 			value += `* Up Since: ${shard.uptime ? formatDateLong(new Date(Date.now() - shard.uptime)) : 'Unknown'}\n`;

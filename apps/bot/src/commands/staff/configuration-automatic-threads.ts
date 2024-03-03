@@ -205,7 +205,7 @@ export default class extends Command.Interaction {
 		}
 	}
 
-	@DeferReply(false)
+	@DeferReply()
 	private configurationOverview(context: Command.Context<'chat'>) {
 		void getConfigurations.call(this, context);
 	}
@@ -215,7 +215,7 @@ export default class extends Command.Interaction {
 		void openingMessageModal.call(this, context, { id: context.interaction.options.getChannel('channel', true).id });
 	}
 
-	@DeferReply(false)
+	@DeferReply()
 	@IsTextChannel
 	private async editConfiguration({ interaction }: Command.Context<'chat'>) {
 		const channel = interaction.options.getChannel('channel', true);
@@ -259,7 +259,7 @@ export default class extends Command.Interaction {
 		return interaction.editReply({ components: [row], content: channel.toString() });
 	}
 
-	@DeferReply(false)
+	@DeferReply()
 	@IsTextChannel
 	private async deleteConfiguration({ interaction }: Command.Context<'chat'>) {
 		const channel = interaction.options.getChannel('channel', true);
@@ -428,7 +428,7 @@ export class ModalInteraction extends Modal.Interaction {
 		}
 	}
 
-	@DeferReply(false)
+	@DeferReply()
 	private async createConfigurationOrUpdateOpeningMessage({ interaction }: Modal.Context) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const channel = await interaction.guild.channels.fetch(dynamicValue);

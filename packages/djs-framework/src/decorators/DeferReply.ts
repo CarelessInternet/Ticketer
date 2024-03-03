@@ -15,9 +15,11 @@ export function DeferReply({ name, ephemeral = false }: DeferReplyOptions = {}) 
 		const original = descriptor.value as () => void;
 
 		descriptor.value = async function (this: Command.Interaction, { interaction }: Command.Context) {
-			if (interaction.isChatInputCommand() && !interaction.replied && !interaction.deferred) {
+			if (interaction.isRepliable() && !interaction.replied && !interaction.deferred) {
 				await interaction.deferReply({
-					ephemeral: interaction.options.getBoolean(String(name), false) ?? ephemeral,
+					ephemeral: interaction.isChatInputCommand()
+						? interaction.options.getBoolean(String(name), false) ?? ephemeral
+						: ephemeral,
 				});
 			}
 

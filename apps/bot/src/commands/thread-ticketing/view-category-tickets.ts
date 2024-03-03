@@ -110,7 +110,7 @@ export default class extends Command.Interaction {
 				.setAutocomplete(true),
 		);
 
-	@DeferReply(false)
+	@DeferReply()
 	public execute(context: Command.Context<'chat'>) {
 		void viewCategoryTickets.call(this, context, { categoryId: context.interaction.options.getString('title', false) });
 	}

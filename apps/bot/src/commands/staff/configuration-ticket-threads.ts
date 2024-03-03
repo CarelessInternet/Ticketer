@@ -295,7 +295,7 @@ export default class extends Command.Interaction {
 		}
 	}
 
-	@DeferReply(false)
+	@DeferReply()
 	async settingsGroup({ interaction }: Command.Context<'chat'>) {
 		switch (interaction.options.getSubcommand(true)) {
 			case 'active-tickets': {
@@ -324,7 +324,7 @@ export default class extends Command.Interaction {
 		}
 	}
 
-	@DeferReply(false)
+	@DeferReply()
 	private async overview({ interaction }: Command.Context) {
 		const { guildId, user } = interaction;
 		const [result] = await database
@@ -376,12 +376,12 @@ export default class extends Command.Interaction {
 		}
 	}
 
-	@DeferReply(false)
+	@DeferReply()
 	private categoryViewConfiguration(context: Command.Context) {
 		void getCategories.call(this, context);
 	}
 
-	@DeferReply(false)
+	@DeferReply()
 	private async categoryConfiguration({ interaction }: Command.Context<'chat'>) {
 		const id = parseInteger(interaction.options.getString('title', true));
 
@@ -456,7 +456,7 @@ export default class extends Command.Interaction {
 		return interaction.editReply({ components: [row], embeds: [embed] });
 	}
 
-	@DeferReply(false)
+	@DeferReply()
 	@HasGlobalConfiguration
 	private async categoryDelete({ interaction }: Command.Context<'chat'>) {
 		try {
@@ -759,7 +759,7 @@ export class ComponentInteraction extends Component.Interaction {
 		return interaction.showModal(modal);
 	}
 
-	@DeferReply(false)
+	@DeferReply()
 	private async categoryPrivateAndNotification({ interaction }: Component.Context<'string'>) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const type = interaction.values.at(0)?.includes('private') ? 'private threads' : 'thread notification';
@@ -784,7 +784,7 @@ export class ComponentInteraction extends Component.Interaction {
 		return interaction.editReply({ embeds: [embed] });
 	}
 
-	@DeferReply(false)
+	@DeferReply()
 	private async categorySilentPings({ interaction }: Component.Context<'string'>) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const id = parseInteger(dynamicValue);
@@ -814,7 +814,7 @@ export class ModalInteraction extends Modal.Interaction {
 		super.dynamicCustomId('ticket_threads_category_message'),
 	];
 
-	@DeferReply(false)
+	@DeferReply()
 	@HasGlobalConfiguration
 	public async execute({ interaction }: Modal.Context) {
 		const { customId } = super.extractCustomId(interaction.customId);

@@ -34,7 +34,7 @@ export default class extends Command.Interaction {
 		.setDescription(dataTranslations.description())
 		.setDescriptionLocalizations(getTranslations('commands.ticket.data.description'));
 
-	@DeferReply(true)
+	@DeferReply({ ephemeral: true })
 	public async execute({ interaction }: Command.Context) {
 		const list = await ThreadTicketing.categoryList({
 			customId: super.customId('ticket_threads_categories_create_list_command'),
@@ -151,7 +151,7 @@ export class ComponentInteraction extends Component.Interaction {
 		return interaction.showModal(modal);
 	}
 
-	@DeferReply(true)
+	@DeferReply({ ephemeral: true })
 	private async panelTicketModal({ interaction }: Component.Context) {
 		const list = await ThreadTicketing.categoryList({
 			customId: super.customId('ticket_threads_categories_create_list_command'),
@@ -175,17 +175,17 @@ export class ComponentInteraction extends Component.Interaction {
 		return interaction.editReply({ components: [list] });
 	}
 
-	@DeferReply(true)
+	@DeferReply({ ephemeral: true })
 	private lockTicket(context: Component.Context) {
 		return ThreadTicketing.lockTicket.call(this, context, context.interaction.customId.includes('lock_and_close'));
 	}
 
-	@DeferReply(true)
+	@DeferReply({ ephemeral: true })
 	private closeTicket(context: Component.Context) {
 		return ThreadTicketing.closeTicket.call(this, context);
 	}
 
-	@DeferReply(true)
+	@DeferReply({ ephemeral: true })
 	private deleteTicket(context: Component.Context) {
 		return ThreadTicketing.deleteTicket.call(this, context);
 	}
@@ -504,7 +504,7 @@ export class ModalInteraction extends Modal.Interaction {
 		}
 	}
 
-	@DeferReply(true)
+	@DeferReply({ ephemeral: true })
 	private async renameTitle({ interaction }: Modal.Context) {
 		const { channel, fields, guild, guildLocale, locale, member, user } = interaction;
 		const translations = translate(locale).tickets.threads.categories.buttons;

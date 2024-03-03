@@ -21,7 +21,7 @@ export default class extends Command.Interaction {
 				.setMaxValue(100),
 		);
 
-	@DeferReply(true)
+	@DeferReply({ ephemeral: true })
 	@RequiredChannelPermissions(PermissionFlagsBits.ManageMessages)
 	public async execute({ interaction }: Command.Context<'chat'>) {
 		if (interaction.channel) {

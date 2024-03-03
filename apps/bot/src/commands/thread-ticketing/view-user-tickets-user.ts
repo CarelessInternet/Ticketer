@@ -7,7 +7,7 @@ export default class extends Command.Interaction {
 		PermissionFlagsBits.ManageThreads,
 	);
 
-	@DeferReply(true)
+	@DeferReply({ ephemeral: true })
 	public execute(context: Command.Context<'user'>) {
 		void ThreadTicketing.viewUserTickets.call(this, context, { userId: context.interaction.targetUser.id });
 	}

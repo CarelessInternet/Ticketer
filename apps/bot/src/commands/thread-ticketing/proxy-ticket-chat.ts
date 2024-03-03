@@ -16,7 +16,7 @@ export default class extends Command.Interaction {
 				.setRequired(true),
 		);
 
-	@DeferReply(true)
+	@DeferReply({ ephemeral: true })
 	public async execute({ interaction }: Command.Context<'chat'>) {
 		const user = interaction.options.getUser('member', true);
 		const list = await ThreadTicketing.categoryList({

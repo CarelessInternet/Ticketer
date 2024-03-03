@@ -10,7 +10,7 @@ export default class extends Command.Interaction {
 			option.setName('member').setDescription('The member whose tickets you want to see.').setRequired(true),
 		);
 
-	@DeferReply(false)
+	@DeferReply()
 	public execute(context: Command.Context<'chat'>) {
 		void ThreadTicketing.viewUserTickets.call(this, context, {
 			userId: context.interaction.options.getUser('member', true).id,

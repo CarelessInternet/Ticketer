@@ -42,8 +42,6 @@ services:
 
     environment:
       - NODE_ENV=development
-    env_file:
-      - .env.bot.development.local
 
 # Important to make connections from the bot to the database work!
 networks:

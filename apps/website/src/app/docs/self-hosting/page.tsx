@@ -126,10 +126,10 @@ export default function Page() {
 					</span>
 				</CodeBlock>
 				<Paragraph>To deploy the application commands of the bot, run the following line:</Paragraph>
-				<CodeBlock clipboardText='docker exec ticketer-bot sh -c "cd /src/apps/bot && pnpm commands:deploy:production"'>
+				<CodeBlock clipboardText='docker exec ticketer-bot sh -c "cd /src/apps/bot && pnpm commands:deploy"'>
 					<span>
 						<span className="text-green-500">docker </span>
-						<span>exec ticketer-bot sh -c &quot;cd /src/apps/bot && pnpm commands:deploy:production&quot;</span>
+						<span>exec ticketer-bot sh -c &quot;cd /src/apps/bot && pnpm commands:deploy&quot;</span>
 					</span>
 				</CodeBlock>
 				<Paragraph>

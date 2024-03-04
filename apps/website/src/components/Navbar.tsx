@@ -1,6 +1,7 @@
 'use client';
 
 import {
+	Code,
 	Cookie,
 	Github,
 	Globe,
@@ -175,6 +176,9 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 										</ListItem>
 										<ListItem href="/docs/self-hosting" icon={<Server />} title="Self-Hosting">
 											Learn how to self-host the Ticketer bot on any computer that supports Docker.
+										</ListItem>
+										<ListItem href="/docs/development" icon={<Code />} title="Development">
+											Instructions on how to develop the Ticketer bot.
 										</ListItem>
 										<ListItem
 											href="/docs/contributing-to-localisation"

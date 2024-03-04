@@ -25,15 +25,23 @@ services:
     extends:
       file: base-compose.yaml
       service: database
+    networks:
+      - ticketer-database-network
+    volumes:
+      - ticketer-database-data:/var/lib/mysql
     environment:
       - MARIADB_DATABASE=${DB_DATABASE}
       - MARIADB_USER=${DB_USER}
       - MARIADB_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "3306:3306"
 
   bot:
     extends:
       file: base-compose.yaml
       service: bot
+    networks:
+      - ticketer-database-network
     # Reads the file(s) and exposes the variables when running the container. Undefined files are not allowed.
     env_file:
       - .env.bot.production.local

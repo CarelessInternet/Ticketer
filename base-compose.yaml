@@ -18,14 +18,8 @@ services:
       retries: 3
       start_interval: 0s
       start_period: 10s
-    networks:
-      - ticketer-database-network
-    volumes:
-      - ticketer-database-data:/var/lib/mysql
     environment:
       - MARIADB_RANDOM_ROOT_PASSWORD=true
-    ports:
-      - "3306:3306"
 
   # Sharding will take place in one container as it is not possible to use discord.js' ShardingManager
   # to orchestrate/utilise one container per shard (that I know of). It would create another manager in that container which
@@ -37,16 +31,6 @@ services:
       dockerfile: ./apps/bot/Dockerfile
     image: ticketer-bot:3.0.0
     restart: unless-stopped
-    networks:
-      - ticketer-database-network
     depends_on:
       database:
         condition: service_healthy
-
-# Important to make connections from the bot to the database work!
-networks:
-  ticketer-database-network:
-    driver: bridge
-
-volumes:
-  ticketer-database-data:

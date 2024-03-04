@@ -2,10 +2,17 @@ version: '3.8'
 
 services:
   database:
+    networks:
+      - ticketer-development-database-network
+    volumes:
+      - ticketer-development-database-data:/var/lib/mysql
     environment:
       - MARIADB_DATABASE=ticketer
       - MARIADB_USER=dev_container
       - MARIADB_PASSWORD=12345678
+      - MYSQL_TCP_PORT=3307
+    ports:
+      - "3307:3307"
     
   # Update this to the name of the service you want to work with in your docker-compose.yml file
   bot:
@@ -18,6 +25,8 @@ services:
     #   context: .
     #   dockerfile: .devcontainer/Dockerfile
 
+    networks:
+      - ticketer-development-database-network
     volumes:
       # Update this to wherever you want VS Code to mount the folder of your project
       - ..:/workspaces:cached
@@ -35,3 +44,11 @@ services:
       - NODE_ENV=development
     env_file:
       - .env.bot.development.local
+
+# Important to make connections from the bot to the database work!
+networks:
+  ticketer-development-database-network:
+    driver: bridge
+
+volumes:
+  ticketer-development-database-data:

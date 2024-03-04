@@ -1,3 +1,5 @@
+version: '3.8'
+
 # Comments are provided throughout this file to help you get started.
 # If you need more help, visit the Docker compose reference guide at
 # https://docs.docker.com/compose/compose-file/
@@ -16,7 +18,6 @@ services:
       test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
       interval: 10s
       retries: 3
-      start_interval: 0s
       start_period: 10s
     environment:
       - MARIADB_RANDOM_ROOT_PASSWORD=true

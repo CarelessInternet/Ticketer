@@ -17,40 +17,30 @@ export default function Page() {
 				</Paragraph>
 				<Paragraph>
 					The software which you will need installed is{' '}
+					<ExternalLink href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git">Git</ExternalLink> and{' '}
 					<ExternalLink href="https://www.docker.com/products/docker-desktop/">Docker Desktop</ExternalLink>. Docker
 					Engine should also work fine if you do not want to use Docker Desktop.
 				</Paragraph>
-				<Paragraph>You will also need the WSL and Dev Containers extensions installed in Visual Studio Code.</Paragraph>
+				<Paragraph>You will also need the Dev Containers extension installed in Visual Studio Code.</Paragraph>
 			</Divider>
 			<Divider>
-				<ScrollLink target="using-docker-desktop">Using Docker Desktop</ScrollLink>
+				<ScrollLink target="setting-up">Setting Up</ScrollLink>
 				<Paragraph>
-					Once Docker Desktop is launched, navigate to the &quot;Dev Environments&quot; section on the left and create a
-					new environment. In the source, paste Ticketer&apos;s Git URL below. Continue and you should be able to open
-					the source code in a Dev Container in VS Code!
+					Open Visual Studio Code, and inside the code editor, open the command palette and run the following command.
+				</Paragraph>
+				<CodeBlock clipboardText="Dev Containers: Clone Repository in Container Volume...">
+					<span>Dev Containers: Clone Repository in Container Volume...</span>
+				</CodeBlock>
+				<Paragraph>
+					It should prompt for a repository URL. Paste Ticketer&apos;s GitHub URL and afterwards choose the main branch:
 				</Paragraph>
 				<CodeBlock clipboardText="https://github.com/CarelessInternet/Ticketer.git">
 					<span>https://github.com/CarelessInternet/Ticketer.git</span>
 				</CodeBlock>
-			</Divider>
-			<Divider>
-				<ScrollLink target="using-docker-engine">Using Docker Engine</ScrollLink>
 				<Paragraph>
-					Similarly, you can use Docker Engine to spin up a Dev Container (theoretically). Pull the source code from
-					GitHub using the command below and open Visual Studio Code in the directory.
+					Once the Dev Container has started, you can get to coding. It&apos;s as simple as that! Do not forget to
+					create the necessary bot development environment file to run the bot!
 				</Paragraph>
-				<CodeBlock clipboardText="git clone https://github.com/CarelessInternet/Ticketer.git">
-					<span>
-						<span className="text-green-500">git </span>
-						<span>clone https://github.com/CarelessInternet/Ticketer.git</span>
-					</span>
-				</CodeBlock>
-				<Paragraph>
-					Inside the code editor, open the command palette and run the following command to edit inside a Dev Container:
-				</Paragraph>
-				<CodeBlock clipboardText="Dev Containers: Rebuild and Reopen in Container">
-					<span>Dev Containers: Rebuild and Reopen in Container</span>
-				</CodeBlock>
 			</Divider>
 		</>
 	);

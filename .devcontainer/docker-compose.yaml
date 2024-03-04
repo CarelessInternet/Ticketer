@@ -21,9 +21,9 @@ services:
     # docker-compose.yml file (the first in the devcontainer.json "dockerComposeFile"
     # array). The sample below assumes your primary file is in the root of your project.
     #
-    # build:
-    #   context: .
-    #   dockerfile: .devcontainer/Dockerfile
+    build:
+      context: .
+      dockerfile: .devcontainer/bot/Dockerfile
 
     networks:
       - ticketer-development-database-network

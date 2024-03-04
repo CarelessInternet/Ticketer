@@ -42,7 +42,12 @@
 				"esbenp.prettier-vscode",
 				"bradlc.vscode-tailwindcss",
 				"wix.vscode-import-cost"
-			]
+			],
+			"settings": {
+				"git.enabled": true,
+				"git.path": ["C:\\Program Files\\Git\\bin\\git.exe", "/usr/bin/git"],
+				"terminal.integrated.defaultProfile.linux": "bash"
+			}
 		}
 	}
 

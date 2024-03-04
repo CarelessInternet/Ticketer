@@ -4,11 +4,10 @@
   "main": "./src/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch --clear-screen=false --env-file=../../.env.bot.development.local --env-file=../../.env.database.development.local .",
+    "dev": "tsx watch --clear-screen=false .",
     "start": "tsx .",
     "lint": "eslint .",
-    "commands:deploy:development": "tsx --env-file=../../.env.bot.development.local --env-file=../../.env.database.development.local ./src/deploy.ts",
-    "commands:deploy:production": "tsx ./src/deploy.ts",
+    "commands:deploy": "tsx ./src/deploy.ts",
     "i18n": "typesafe-i18n"
   },
   "dependencies": {

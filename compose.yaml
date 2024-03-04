@@ -22,41 +22,18 @@
 
 services:
   database:
-    container_name: ticketer-database
-    image: mariadb:11
-    restart: always
-    healthcheck:
-      test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
-      interval: 10s
-      retries: 3
-      start_interval: 0s
-      start_period: 10s
-    networks:
-      - ticketer-database-network
-    volumes:
-      - ticketer-database-data:/var/lib/mysql
+    extends:
+      file: base-compose.yaml
+      service: database
     environment:
       - MARIADB_DATABASE=${DB_DATABASE}
       - MARIADB_USER=${DB_USER}
       - MARIADB_PASSWORD=${DB_PASSWORD}
-      - MARIADB_RANDOM_ROOT_PASSWORD=true
-    ports:
-      - "3306:3306"
-  # Sharding will take place in one container as it is not possible to use discord.js' ShardingManager
-  # to orchestrate/utilise one container per shard (that I know of). It would create another manager in that container which
-  # is not the effect we are going for. It seems like vertical scaling is currently the way to go.
+
   bot:
-    container_name: ticketer-bot
-    build:
-      context: .
-      dockerfile: ./apps/bot/Dockerfile
-    image: ticketer-bot:3.0.0
-    restart: unless-stopped
-    networks:
-      - ticketer-database-network
-    depends_on:
-      database:
-        condition: service_healthy
+    extends:
+      file: base-compose.yaml
+      service: bot
     # Reads the file(s) and exposes the variables when running the container. Undefined files are not allowed.
     env_file:
       - .env.bot.production.local

@@ -31,7 +31,7 @@
 	// "shutdownAction": "none",
 
 	// Uncomment the next line to run commands after the container is created.
-	// "postCreateCommand": "cat /etc/os-release",
+	"postCreateCommand": "pnpm install",
 
 	// Configure tool-specific properties.
 	"customizations": {

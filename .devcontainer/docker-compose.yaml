@@ -25,7 +25,9 @@ services:
       context: .
       dockerfile: .devcontainer/bot/Dockerfile
     image: ticketer-bot:development
-
+    depends_on:
+      database:
+        condition: service_healthy
     networks:
       - ticketer-development-database-network
     volumes:

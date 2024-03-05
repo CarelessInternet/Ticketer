@@ -10,7 +10,7 @@ version: '3.8'
 # https://github.com/docker/awesome-compose
 
 # Run this to start the database and bot:
-# docker compose --env-file ./.env.database.production.local --env-file ./.env.bot.production.local up -d
+# docker compose --env-file ./.env.database.production.local --env-file ./.env.bot.production.local -f compose.yaml up -d
 
 # Run this to deploy the commands:
 # docker exec ticketer-bot sh -c "cd /src/apps/bot && pnpm commands:deploy"
@@ -43,6 +43,9 @@ services:
       file: base-compose.yaml
       service: bot
     image: ticketer-bot:3.0.0
+    depends_on:
+      database:
+        condition: service_healthy
     networks:
       - ticketer-database-network
     # Reads the file(s) and exposes the variables when running the container. Undefined files are not allowed.

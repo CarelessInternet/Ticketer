@@ -14,6 +14,7 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
 RUN apk add --no-cache bash
+RUN apk add --no-cache bash-completion
 RUN apk add --no-cache git
 
 # https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials#_sharing-gpg-keys

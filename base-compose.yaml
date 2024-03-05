@@ -30,7 +30,6 @@ services:
     build:
       context: .
       dockerfile: ./apps/bot/Dockerfile
-    image: ticketer-bot:3.0.0
     restart: unless-stopped
     depends_on:
       database:

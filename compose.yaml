@@ -42,6 +42,7 @@ services:
     extends:
       file: base-compose.yaml
       service: bot
+    image: ticketer-bot:3.0.0
     networks:
       - ticketer-database-network
     # Reads the file(s) and exposes the variables when running the container. Undefined files are not allowed.

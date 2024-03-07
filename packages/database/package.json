@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"@ticketer/env": "workspace:*",
-		"drizzle-orm": "^0.29.4",
+		"drizzle-orm": "^0.29.5",
 		"mysql2": "^3.9.2"
 	},
 	"devDependencies": {

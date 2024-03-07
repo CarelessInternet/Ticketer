@@ -17,7 +17,7 @@ function EnvironmentHighlight({ name, value }: { name: string; value?: string })
 }
 
 const databaseEnvironmentTemplate = `
-	DB_HOST="database"
+	DB_HOST="ticketer-database"
 	DB_DATABASE="ticketer"
 	DB_USER=""
 	DB_PASSWORD=""
@@ -88,7 +88,7 @@ export default function Page() {
 				</Paragraph>
 				<CodeBlock clipboardText={databaseEnvironmentTemplate} fileName=".env.database.production.local">
 					<span className="flex flex-col">
-						<EnvironmentHighlight name="DB_HOST" value="database" />
+						<EnvironmentHighlight name="DB_HOST" value="ticketer-database" />
 						<EnvironmentHighlight name="DB_DATABASE" value="Ticketer" />
 						<EnvironmentHighlight name="DB_USER" />
 						<EnvironmentHighlight name="DB_PASSWORD" />

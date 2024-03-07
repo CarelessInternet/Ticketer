@@ -1,11 +1,42 @@
 import type { BaseTranslation } from '../i18n-types.js';
 import ERROR_TITLE from './errorTitle.js';
+import type { PresenceUpdateStatus } from 'discord.js';
 import automaticThreads from './automaticThreads.js';
 import threads from './threads.js';
 import userForums from './userForums.js';
 
 const en_GB = {
 	commands: {
+		'bot-custom-status': {
+			data: {
+				name: 'bot-custom-status',
+				description: "Change the shard's custom status.",
+				options: [
+					{
+						name: 'custom-status',
+						description: 'The new custom status the bot/shard should display. Write "[shardId]" for the shard\'s ID.',
+					},
+					{
+						name: 'display-status',
+						description: 'The display status which the bot/shard should show.',
+						choices: {
+							DoNotDisturb: 'Do Not Disturb',
+							Idle: 'Idle',
+							Invisible: 'Invisible',
+							Online: 'Online',
+						} as Record<Exclude<keyof typeof PresenceUpdateStatus, 'Offline'>, string>,
+					},
+				],
+			},
+			command: {
+				embeds: [
+					{
+						title: 'Updated the Status!',
+						description: "The bot's status has been updated!",
+					},
+				],
+			},
+		},
 		close: {
 			data: {
 				name: 'close',
@@ -136,7 +167,7 @@ const en_GB = {
 				embeds: [
 					{
 						title: 'Purged Messages',
-						description: 'Successfully deleted the last {amount:number} messages!',
+						description: 'Successfully deleted the last {amount:number} message{{s}}!',
 					},
 				],
 			},

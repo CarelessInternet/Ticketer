@@ -1,4 +1,5 @@
 import ERROR_TITLE from './errorTitle.js';
+
 import type { Translation } from '../i18n-types.js';
 import automaticThreads from './automaticThreads.js';
 import threads from './threads.js';
@@ -6,6 +7,36 @@ import userForums from './userForums.js';
 
 const sv_SE = {
 	commands: {
+		'bot-custom-status': {
+			data: {
+				name: 'bot-anpassad-status',
+				description: 'Ändra botens (shard) anpassad status.',
+				options: [
+					{
+						name: 'anpassad-status',
+						description: 'Den nya anpassade statusen som boten (shard) ska visa. Skriv "[shardId]" för shards ID.',
+					},
+					{
+						name: 'visningsstatusen',
+						description: 'Den visningsstatusen som boten (shard) ska visa.',
+						choices: {
+							DoNotDisturb: 'Stör Ej',
+							Idle: 'Inaktiv',
+							Invisible: 'Osynlig',
+							Online: 'Online',
+						},
+					},
+				],
+			},
+			command: {
+				embeds: [
+					{
+						title: 'Uppdaterat Statusen!',
+						description: 'Botens status har uppdaterats!',
+					},
+				],
+			},
+		},
 		close: {
 			data: {
 				name: 'stänga',
@@ -136,7 +167,7 @@ const sv_SE = {
 				embeds: [
 					{
 						title: 'Rensade Meddelandena',
-						description: 'Raderade de sista {amount} meddelanden!',
+						description: 'Raderade de{{t|}} sista {amount} meddelande{{t|n}}!',
 					},
 				],
 			},

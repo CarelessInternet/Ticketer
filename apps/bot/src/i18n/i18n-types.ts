@@ -16,6 +16,72 @@ export type Translations = RootTranslation
 
 type RootTranslation = {
 	commands: {
+		'bot-custom-status': {
+			data: {
+				/**
+				 * b​o​t​-​c​u​s​t​o​m​-​s​t​a​t​u​s
+				 */
+				name: string
+				/**
+				 * C​h​a​n​g​e​ ​t​h​e​ ​s​h​a​r​d​'​s​ ​c​u​s​t​o​m​ ​s​t​a​t​u​s​.
+				 */
+				description: string
+				options: {
+					'0': {
+						/**
+						 * c​u​s​t​o​m​-​s​t​a​t​u​s
+						 */
+						name: string
+						/**
+						 * T​h​e​ ​n​e​w​ ​c​u​s​t​o​m​ ​s​t​a​t​u​s​ ​t​h​e​ ​b​o​t​/​s​h​a​r​d​ ​s​h​o​u​l​d​ ​d​i​s​p​l​a​y​.​ ​W​r​i​t​e​ ​"​[​s​h​a​r​d​I​d​]​"​ ​f​o​r​ ​t​h​e​ ​s​h​a​r​d​'​s​ ​I​D​.
+						 */
+						description: string
+					}
+					'1': {
+						/**
+						 * d​i​s​p​l​a​y​-​s​t​a​t​u​s
+						 */
+						name: string
+						/**
+						 * T​h​e​ ​d​i​s​p​l​a​y​ ​s​t​a​t​u​s​ ​w​h​i​c​h​ ​t​h​e​ ​b​o​t​/​s​h​a​r​d​ ​s​h​o​u​l​d​ ​s​h​o​w​.
+						 */
+						description: string
+						choices: {
+							/**
+							 * D​o​ ​N​o​t​ ​D​i​s​t​u​r​b
+							 */
+							DoNotDisturb: string
+							/**
+							 * I​d​l​e
+							 */
+							Idle: string
+							/**
+							 * I​n​v​i​s​i​b​l​e
+							 */
+							Invisible: string
+							/**
+							 * O​n​l​i​n​e
+							 */
+							Online: string
+						}
+					}
+				}
+			}
+			command: {
+				embeds: {
+					'0': {
+						/**
+						 * U​p​d​a​t​e​d​ ​t​h​e​ ​S​t​a​t​u​s​!
+						 */
+						title: string
+						/**
+						 * T​h​e​ ​b​o​t​'​s​ ​s​t​a​t​u​s​ ​h​a​s​ ​b​e​e​n​ ​u​p​d​a​t​e​d​!
+						 */
+						description: string
+					}
+				}
+			}
+		}
 		close: {
 			data: {
 				/**
@@ -283,7 +349,7 @@ type RootTranslation = {
 						 */
 						title: string
 						/**
-						 * S​u​c​c​e​s​s​f​u​l​l​y​ ​d​e​l​e​t​e​d​ ​t​h​e​ ​l​a​s​t​ ​{​a​m​o​u​n​t​}​ ​m​e​s​s​a​g​e​s​!
+						 * S​u​c​c​e​s​s​f​u​l​l​y​ ​d​e​l​e​t​e​d​ ​t​h​e​ ​l​a​s​t​ ​{​a​m​o​u​n​t​}​ ​m​e​s​s​a​g​e​{​{​s​}​}​!
 						 * @param {number} amount
 						 */
 						description: RequiredParams<'amount'>
@@ -1324,6 +1390,72 @@ type RootTranslation = {
 
 export type TranslationFunctions = {
 	commands: {
+		'bot-custom-status': {
+			data: {
+				/**
+				 * bot-custom-status
+				 */
+				name: () => LocalizedString
+				/**
+				 * Change the shard's custom status.
+				 */
+				description: () => LocalizedString
+				options: {
+					'0': {
+						/**
+						 * custom-status
+						 */
+						name: () => LocalizedString
+						/**
+						 * The new custom status the bot/shard should display. Write "[shardId]" for the shard's ID.
+						 */
+						description: () => LocalizedString
+					}
+					'1': {
+						/**
+						 * display-status
+						 */
+						name: () => LocalizedString
+						/**
+						 * The display status which the bot/shard should show.
+						 */
+						description: () => LocalizedString
+						choices: {
+							/**
+							 * Do Not Disturb
+							 */
+							DoNotDisturb: () => LocalizedString
+							/**
+							 * Idle
+							 */
+							Idle: () => LocalizedString
+							/**
+							 * Invisible
+							 */
+							Invisible: () => LocalizedString
+							/**
+							 * Online
+							 */
+							Online: () => LocalizedString
+						}
+					}
+				}
+			}
+			command: {
+				embeds: {
+					'0': {
+						/**
+						 * Updated the Status!
+						 */
+						title: () => LocalizedString
+						/**
+						 * The bot's status has been updated!
+						 */
+						description: () => LocalizedString
+					}
+				}
+			}
+		}
 		close: {
 			data: {
 				/**
@@ -1587,7 +1719,7 @@ export type TranslationFunctions = {
 						 */
 						title: () => LocalizedString
 						/**
-						 * Successfully deleted the last {amount} messages!
+						 * Successfully deleted the last {amount} message{{s}}!
 						 */
 						description: (arg: { amount: number }) => LocalizedString
 					}

@@ -8,7 +8,5 @@ export default {
 	driver: 'mysql2',
 	schema: './src/schema.ts',
 	out: './migrations',
-	dbCredentials: {
-		...config,
-	},
+	dbCredentials: config,
 } satisfies Config;

@@ -42,8 +42,10 @@ export async function deleteTicket(
 		.from(table)
 		.where(eq(table.channelId, channel.parent.id));
 
-	// eslint-disable-next-line unicorn/no-await-expression-member
-	const ownerId = isAutomaticThreads ? (await channel.fetchStarterMessage())?.author.id : channel.ownerId;
+	const ownerId = isAutomaticThreads
+		? // eslint-disable-next-line @typescript-eslint/no-empty-function, unicorn/no-await-expression-member
+			(await channel.fetchStarterMessage().catch(() => {}))?.author.id
+		: channel.ownerId;
 
 	if (!row || (ownerId !== user.id && !row.managers.some((id) => member.roles.resolve(id)))) {
 		return interaction.editReply({

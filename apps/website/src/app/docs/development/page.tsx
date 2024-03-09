@@ -17,7 +17,6 @@ export default function Page() {
 				</Paragraph>
 				<Paragraph>
 					The software which you will need installed is{' '}
-					<ExternalLink href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git">Git</ExternalLink> and{' '}
 					<ExternalLink href="https://www.docker.com/products/docker-desktop/">Docker Desktop</ExternalLink>. Docker
 					Engine should also work fine if you do not want to use Docker Desktop.
 				</Paragraph>

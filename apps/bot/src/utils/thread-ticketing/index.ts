@@ -3,6 +3,7 @@ export * from './closeTicket';
 export * from './deleteTicket';
 export * from './lockTicket';
 export * from './renameTitleModal';
+export * from './ticketModal';
 export * from './ticketState';
 export * from './titleAndEmoji';
 export * from './viewUserTickets';

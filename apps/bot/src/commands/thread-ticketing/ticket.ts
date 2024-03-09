@@ -1,19 +1,15 @@
 import {
-	ActionRowBuilder,
 	ChannelType,
 	Colors,
 	MessageFlags,
 	MessageType,
-	ModalBuilder,
 	PermissionFlagsBits,
 	type Snowflake,
-	TextInputBuilder,
-	TextInputStyle,
 	ThreadAutoArchiveDuration,
 	inlineCode,
 	roleMention,
 } from 'discord.js';
-import { Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
+import { Command, Component, DeferReply, Modal } from '@ticketer/djs-framework';
 import { ThreadTicketing, parseInteger, ticketButtons, ticketThreadsOpeningMessageEmbed } from '@/utils';
 import {
 	and,
@@ -34,34 +30,53 @@ export default class extends Command.Interaction {
 		.setDescription(dataTranslations.description())
 		.setDescriptionLocalizations(getTranslations('commands.ticket.data.description'));
 
-	@DeferReply({ ephemeral: true })
 	public async execute({ interaction }: Command.Context) {
-		const list = await ThreadTicketing.categoryList({
-			customId: super.customId('ticket_threads_categories_create_list_command'),
-			guildId: interaction.guildId,
-			locale: interaction.locale,
-		});
+		const categories = await ThreadTicketing.categoryList({ guildId: interaction.guildId });
 
-		if (!list) {
+		if (categories.length === 0) {
 			const translations = translate(interaction.locale).tickets.threads.categories.createTicket.errors.noCategories;
 
-			return interaction.editReply({
-				embeds: [
-					super
-						.userEmbedError(interaction.user)
-						.setTitle(translations.title())
-						.setDescription(translations.description()),
-				],
-			});
+			return interaction
+				.reply({
+					embeds: [
+						super
+							.userEmbedError(interaction.user)
+							.setTitle(translations.title())
+							.setDescription(translations.description()),
+					],
+					ephemeral: true,
+				})
+				.catch(() => false);
 		}
 
-		return interaction.editReply({ components: [list] });
+		if (categories.length === 1) {
+			void interaction.showModal(
+				ThreadTicketing.ticketModal.call(this, {
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					categoryId: categories.at(0)!.id,
+					locale: interaction.locale,
+				}),
+			);
+		} else {
+			return interaction
+				.reply({
+					components: [
+						ThreadTicketing.categoryListSelectMenu({
+							categories,
+							customId: super.customId('ticket_threads_categories_create_list'),
+							locale: interaction.locale,
+						}),
+					],
+					ephemeral: true,
+				})
+				.catch(() => false);
+		}
 	}
 }
 
 export class ComponentInteraction extends Component.Interaction {
 	public readonly customIds = [
-		super.customId('ticket_threads_categories_create_list_command'),
+		super.customId('ticket_threads_categories_create_list'),
 		super.dynamicCustomId('ticket_threads_categories_create_list_proxy'),
 		super.customId('ticket_threads_categories_create_list_panel'),
 		super.customId('ticket_threads_category_create_rename_title'),
@@ -75,15 +90,14 @@ export class ComponentInteraction extends Component.Interaction {
 		const { customId, dynamicValue } = super.extractCustomId(context.interaction.customId);
 
 		switch (customId) {
-			case super.customId('ticket_threads_categories_create_list_command'):
+			case super.customId('ticket_threads_categories_create_list'):
 			case super.dynamicCustomId('ticket_threads_categories_create_list_proxy'): {
-				return (
-					context.interaction.isStringSelectMenu() &&
-					this.ticketModal({ interaction: context.interaction }, dynamicValue)
-				);
+				context.interaction.isStringSelectMenu() &&
+					this.ticketModal({ interaction: context.interaction }, dynamicValue);
+				return;
 			}
 			case super.customId('ticket_threads_categories_create_list_panel'): {
-				return context.interaction.isButton() && this.panelTicketModal(context);
+				return context.interaction.isButton() && this.panelTicket(context);
 			}
 			case super.customId('ticket_threads_category_create_rename_title'): {
 				void ThreadTicketing.renameTitleModal.call(this, context);
@@ -120,59 +134,57 @@ export class ComponentInteraction extends Component.Interaction {
 	}
 
 	private ticketModal({ interaction }: Component.Context<'string'>, userId?: Snowflake) {
-		const translations = translate(interaction.locale).tickets.threads.categories.createModal;
-		const id = interaction.values.at(0);
-
-		const titleInput = new TextInputBuilder()
-			.setCustomId(super.customId('title'))
-			.setLabel(translations.title.label())
-			.setRequired(true)
-			.setMinLength(1)
-			.setMaxLength(100)
-			.setStyle(TextInputStyle.Short)
-			.setPlaceholder(translations.title.placeholder());
-		const descriptonInput = new TextInputBuilder()
-			.setCustomId(super.customId('description'))
-			.setLabel(translations.description.label())
-			.setRequired(true)
-			.setMinLength(1)
-			.setMaxLength(2000)
-			.setStyle(TextInputStyle.Paragraph)
-			.setPlaceholder(translations.description.placeholder());
-
-		const titleRow = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
-		const descriptionRow = new ActionRowBuilder<TextInputBuilder>().setComponents(descriptonInput);
-
-		const modal = new ModalBuilder()
-			.setCustomId(super.customId('ticket_threads_categories_create_ticket', userId ? `${id}_${userId}` : id))
-			.setTitle(translations.modalTitle())
-			.setComponents(titleRow, descriptionRow);
-
-		return interaction.showModal(modal);
+		void interaction.showModal(
+			ThreadTicketing.ticketModal.call(this, {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				categoryId: interaction.values.at(0)!,
+				locale: interaction.locale,
+				userId,
+			}),
+		);
 	}
 
-	@DeferReply({ ephemeral: true })
-	private async panelTicketModal({ interaction }: Component.Context) {
-		const list = await ThreadTicketing.categoryList({
-			customId: super.customId('ticket_threads_categories_create_list_command'),
-			guildId: interaction.guildId,
-			locale: interaction.locale,
-		});
+	private async panelTicket({ interaction }: Component.Context) {
+		const categories = await ThreadTicketing.categoryList({ guildId: interaction.guildId });
 
-		if (!list) {
+		if (categories.length === 0) {
 			const translations = translate(interaction.locale).tickets.threads.categories.createTicket.errors.noCategories;
 
-			return interaction.editReply({
-				embeds: [
-					super
-						.userEmbedError(interaction.user)
-						.setTitle(translations.title())
-						.setDescription(translations.description()),
-				],
-			});
+			return interaction
+				.reply({
+					embeds: [
+						super
+							.userEmbedError(interaction.user)
+							.setTitle(translations.title())
+							.setDescription(translations.description()),
+					],
+					ephemeral: true,
+				})
+				.catch(() => false);
 		}
 
-		return interaction.editReply({ components: [list] });
+		if (categories.length === 1) {
+			void interaction.showModal(
+				ThreadTicketing.ticketModal.call(this, {
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					categoryId: categories.at(0)!.id,
+					locale: interaction.locale,
+				}),
+			);
+		} else {
+			return interaction
+				.reply({
+					components: [
+						ThreadTicketing.categoryListSelectMenu({
+							categories,
+							customId: super.customId('ticket_threads_categories_create_list'),
+							locale: interaction.locale,
+						}),
+					],
+					ephemeral: true,
+				})
+				.catch(() => false);
+		}
 	}
 
 	@DeferReply({ ephemeral: true })
@@ -224,8 +236,24 @@ export class ModalInteraction extends Modal.Interaction {
 		}
 	}
 
-	@DeferUpdate
 	private async ticketCreation({ interaction }: Modal.Context) {
+		// If the interaction has been replied to or the interaction message has the category select menu,
+		// then defer the update instead of deferring the reply.
+		interaction.replied ||
+		interaction.message?.components.find((row) =>
+			row.components.find((component) => {
+				if (!component.customId) return false;
+
+				const { customId } = super.extractCustomId(component.customId);
+				return (
+					customId === super.customId('ticket_threads_categories_create_list') ||
+					customId === super.dynamicCustomId('ticket_threads_categories_create_list_proxy')
+				);
+			}),
+		)
+			? await interaction.deferUpdate()
+			: await interaction.deferReply({ ephemeral: true });
+
 		const { client, customId, fields, guild, guildId, guildLocale, locale, user: interactionUser } = interaction;
 		const { dynamicValue } = super.extractCustomId(customId, true);
 		const dynamicValues = dynamicValue.split('_');

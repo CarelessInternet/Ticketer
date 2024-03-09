@@ -8,7 +8,9 @@ export function RequiredGlobalPermissions(...permissions: PermissionFlagsValues[
 		descriptor.value = async function (this: BaseInteraction.Interaction, { interaction }: BaseInteraction.Context) {
 			if (!interaction.isRepliable()) return;
 
-			if (!interaction.appPermissions?.has(permissions)) {
+			const me = await interaction.guild.members.fetchMe();
+
+			if (!me.permissions.has(permissions)) {
 				const allPermissions = permissions.map((permission) => getPermissionByValue(permission));
 				// Changes the PascalCase strings to Split Pascal Case for better user readability.
 				const permissionsAsString = allPermissions

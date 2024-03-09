@@ -1,4 +1,4 @@
-import { Command, DeferReply } from '@ticketer/djs-framework';
+import { Command } from '@ticketer/djs-framework';
 import { PermissionFlagsBits } from 'discord.js';
 import { ThreadTicketing } from '@/utils';
 import { translate } from '@/i18n';
@@ -10,29 +10,50 @@ export default class extends Command.Interaction {
 		PermissionFlagsBits.ManageThreads,
 	);
 
-	@DeferReply({ ephemeral: true })
 	public async execute({ interaction }: Command.Context<'user'>) {
 		const user = interaction.targetUser;
-		const list = await ThreadTicketing.categoryList({
-			customId: super.customId('ticket_threads_categories_create_list_proxy', user.id),
+		const categories = await ThreadTicketing.categoryList({
 			filterManagerIds: [...interaction.member.roles.cache.keys()],
 			guildId: interaction.guildId,
-			locale: interaction.locale,
 		});
 
-		if (!list) {
+		if (categories.length === 0) {
 			const translations = translate(interaction.locale).tickets.threads.categories.createTicket.errors.noCategories;
 
-			return interaction.editReply({
-				embeds: [
-					super
-						.userEmbedError(interaction.user)
-						.setTitle(translations.title())
-						.setDescription(translations.description()),
-				],
-			});
+			return interaction
+				.reply({
+					embeds: [
+						super
+							.userEmbedError(interaction.user)
+							.setTitle(translations.title())
+							.setDescription(translations.description()),
+					],
+					ephemeral: true,
+				})
+				.catch(() => false);
 		}
 
-		return interaction.editReply({ components: [list] });
+		if (categories.length === 1) {
+			void interaction.showModal(
+				ThreadTicketing.ticketModal.call(this, {
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					categoryId: categories.at(0)!.id,
+					locale: interaction.locale,
+				}),
+			);
+		} else {
+			return interaction
+				.reply({
+					components: [
+						ThreadTicketing.categoryListSelectMenu({
+							categories,
+							customId: super.customId('ticket_threads_categories_create_list_proxy', user.id),
+							locale: interaction.locale,
+						}),
+					],
+					ephemeral: true,
+				})
+				.catch(() => false);
+		}
 	}
 }

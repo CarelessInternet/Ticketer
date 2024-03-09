@@ -469,7 +469,7 @@ export default class extends Command.Interaction {
 				.delete(ticketThreadsCategories)
 				.where(sql`${ticketThreadsCategories.id} = ${id} RETURNING ${ticketThreadsCategories.categoryTitle}`);
 
-			const title = (query[0] as unknown as Pick<typeof ticketThreadsCategories.$inferSelect, 'categoryTitle'>[]).at(
+			const title = (query.at(0) as unknown as Pick<typeof ticketThreadsCategories.$inferSelect, 'categoryTitle'>[]).at(
 				0,
 			)?.categoryTitle;
 

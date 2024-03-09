@@ -1,4 +1,6 @@
 version: '3.8'
+# https://stackoverflow.com/a/73715984
+name: 'ticketer'
 
 # Comments are provided throughout this file to help you get started.
 # If you need more help, visit the Docker compose reference guide at

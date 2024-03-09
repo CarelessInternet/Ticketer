@@ -6,11 +6,9 @@ export function RequiredChannelPermissions(...permissions: PermissionFlagsValues
 		const original = descriptor.value as () => void;
 
 		descriptor.value = async function (this: BaseInteraction.Interaction, { interaction }: BaseInteraction.Context) {
-			if (!interaction.isRepliable() || !interaction.channel) return;
+			if (!interaction.isRepliable()) return;
 
-			const me = await interaction.guild.members.fetchMe();
-
-			if (!interaction.channel.permissionsFor(me).has(permissions)) {
+			if (!interaction.appPermissions.has(permissions)) {
 				const allPermissions = permissions.map((permission) => getPermissionByValue(permission));
 				// Changes the PascalCase strings to Split Pascal Case for better user readability.
 				const permissionsAsString = allPermissions

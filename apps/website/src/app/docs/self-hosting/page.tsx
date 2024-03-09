@@ -117,13 +117,10 @@ export default function Page() {
 					Now it is time to run the bot! Run the following command to start the database and bot (this may take some
 					time):
 				</Paragraph>
-				<CodeBlock clipboardText="docker compose --env-file ./.env.database.production.local --env-file ./.env.bot.production.local -f compose.yaml up -d">
+				<CodeBlock clipboardText="docker compose --env-file ./.env.database.production.local -f compose.yaml up -d">
 					<span>
 						<span className="text-green-500">docker </span>
-						<span>
-							compose --env-file ./.env.database.production.local --env-file ./.env.bot.production.local -f compose.yaml
-							up -d
-						</span>
+						<span>compose --env-file ./.env.database.production.local -f compose.yaml up -d</span>
 					</span>
 				</CodeBlock>
 				<Paragraph>To deploy the application commands of the bot, run the following line:</Paragraph>

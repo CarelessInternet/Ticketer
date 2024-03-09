@@ -3,6 +3,9 @@ version: '3.8'
 services:
   database:
     container_name: ticketer-development-database
+    extends:
+      file: ../base-compose.yaml
+      service: database
     networks:
       - ticketer-development-database-network
     volumes:
@@ -22,9 +25,12 @@ services:
     # docker-compose.yml file (the first in the devcontainer.json "dockerComposeFile"
     # array). The sample below assumes your primary file is in the root of your project.
     container_name: ticketer-development-bot
+    extends:
+      file: ../base-compose.yaml
+      service: bot
     build:
       context: .
-      dockerfile: .devcontainer/bot/Dockerfile
+      dockerfile: ./bot/Dockerfile
     image: ticketer-bot:development
     depends_on:
       database:

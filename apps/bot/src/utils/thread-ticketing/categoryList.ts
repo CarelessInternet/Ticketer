@@ -10,27 +10,30 @@ import type { BaseInteraction } from '@ticketer/djs-framework';
 import { translate } from '@/i18n';
 
 interface CategoryListOptions {
-	customId: BaseInteraction.CustomIds[number];
-	guildId: Snowflake;
-	locale: Locale;
 	filterManagerIds?: Snowflake[];
+	guildId: Snowflake;
 }
 
-export async function categoryList({ customId, filterManagerIds, locale, guildId }: CategoryListOptions) {
+export async function categoryList({ filterManagerIds, guildId }: CategoryListOptions) {
 	const rawCategories = await database
 		.select()
 		.from(ticketThreadsCategories)
 		.where(eq(ticketThreadsCategories.guildId, guildId))
-		// Limit to 25 because that's the maximum amount of select menu options.
+		// Limited at 25 because that iss the maximum amount of select menu options.
 		.limit(25);
 
-	const categories =
-		filterManagerIds && filterManagerIds.length > 0
-			? rawCategories.filter((category) => category.managers.some((id) => filterManagerIds.includes(id)))
-			: rawCategories;
+	return filterManagerIds && filterManagerIds.length > 0
+		? rawCategories.filter((category) => category.managers.some((id) => filterManagerIds.includes(id)))
+		: rawCategories;
+}
 
-	if (categories.length <= 0) return;
+interface CategoryListSelectMenuOptions {
+	categories: Awaited<ReturnType<typeof categoryList>>;
+	customId: BaseInteraction.CustomIds[number];
+	locale: Locale;
+}
 
+export function categoryListSelectMenu({ categories, customId, locale }: CategoryListSelectMenuOptions) {
 	const translations = translate(locale).tickets.threads.categories.categoryList;
 	const options = categories.map((category) =>
 		(category.categoryEmoji

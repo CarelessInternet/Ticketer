@@ -19,7 +19,6 @@ function EnvironmentHighlight({
 		<span className="flex flex-row">
 			<span className="text-amber-400">{name}</span>
 			<span className="text-rose-400">=</span>
-			{/* <span className="text-emerald-400">&quot;{!!value && value}&quot;</span> */}
 			<span className="text-emerald-400">
 				{quotations ? <>&quot;{!!value && value}&quot;</> : <>{!!value && value}</>}
 			</span>

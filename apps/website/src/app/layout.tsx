@@ -4,7 +4,7 @@ import { DM_Sans } from 'next/font/google';
 import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
 import type { PropsWithChildren } from 'react';
-import ThemeProvider from '@/components/ThemeProvider';
+import { ThemeProvider } from 'next-themes';
 import { cn } from '@/lib/utils';
 
 const font = DM_Sans({ subsets: ['latin'], variable: '--font-sans' });

@@ -19,7 +19,7 @@ export async function categoryList({ filterManagerIds, guildId }: CategoryListOp
 		.select()
 		.from(ticketThreadsCategories)
 		.where(eq(ticketThreadsCategories.guildId, guildId))
-		// Limited at 25 because that iss the maximum amount of select menu options.
+		// Limited at 25 because that is the maximum amount of select menu options.
 		.limit(25);
 
 	return filterManagerIds && filterManagerIds.length > 0

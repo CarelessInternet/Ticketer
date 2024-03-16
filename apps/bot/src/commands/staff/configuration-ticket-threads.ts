@@ -238,10 +238,10 @@ export default class extends Command.Interaction {
 								.setMinValue(1)
 								.setMaxValue(255),
 						),
+				)
+				.addSubcommand((subcommand) =>
+					subcommand.setName('overview').setDescription('View the current global configuration of thread tickets.'),
 				),
-		)
-		.addSubcommand((subcommand) =>
-			subcommand.setName('overview').setDescription('View the current global configuration of thread tickets.'),
 		)
 		.addSubcommandGroup((group) =>
 			group
@@ -280,17 +280,10 @@ export default class extends Command.Interaction {
 				return this.categoriesGroup({ interaction });
 			}
 			default: {
-				switch (interaction.options.getSubcommand(true)) {
-					case 'overview': {
-						return this.overview({ interaction });
-					}
-					default: {
-						return interaction.reply({
-							embeds: [super.userEmbedError(interaction.user).setDescription('The subcommand could not be found.')],
-							ephemeral: true,
-						});
-					}
-				}
+				return interaction.reply({
+					embeds: [super.userEmbedError(interaction.user).setDescription('The subcommand group could not be found.')],
+					ephemeral: true,
+				});
 			}
 		}
 	}
@@ -315,6 +308,9 @@ export default class extends Command.Interaction {
 					);
 
 				return interaction.editReply({ embeds: [embed] });
+			}
+			case 'overview': {
+				return this.overview({ interaction });
 			}
 			default: {
 				return interaction.editReply({

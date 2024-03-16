@@ -15,7 +15,7 @@ name: 'ticketer'
 # docker compose --env-file ./.env.database.production.local --env-file ./.env.bot.production.local -f compose.yaml up -d
 
 # Run this to deploy the commands:
-# docker exec ticketer-bot sh -c "cd /src/apps/bot && pnpm commands:deploy"
+# docker exec ticketer-bot sh -c "cd /src/apps/bot && pnpm commands:deploy:production"
 
 # Run this to rebuild the images from scratch (useful after changes from the codebase):
 # docker compose build --no-cache

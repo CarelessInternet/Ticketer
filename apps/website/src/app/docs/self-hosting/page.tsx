@@ -6,12 +6,22 @@ import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
 import Title from '@/components/Title';
 
-function EnvironmentHighlight({ name, value }: { name: string; value?: string }) {
+function EnvironmentHighlight({
+	name,
+	value,
+	quotations = true,
+}: {
+	name: string;
+	value?: string;
+	quotations?: boolean;
+}) {
 	return (
 		<span className="flex flex-row">
 			<span className="text-amber-400">{name}</span>
 			<span className="text-rose-400">=</span>
-			<span className="text-emerald-400">&quot;{!!value && value}&quot;</span>
+			<span className="text-emerald-400">
+				{quotations ? <>&quot;{!!value && value}&quot;</> : <>{!!value && value}</>}
+			</span>
 		</span>
 	);
 }
@@ -19,6 +29,7 @@ function EnvironmentHighlight({ name, value }: { name: string; value?: string })
 const databaseEnvironmentTemplate = `
 	DB_HOST="ticketer-database"
 	DB_DATABASE="ticketer"
+	DB_PORT=3306
 	DB_USER=""
 	DB_PASSWORD=""
 `;
@@ -90,6 +101,7 @@ export default function Page() {
 					<span className="flex flex-col">
 						<EnvironmentHighlight name="DB_HOST" value="ticketer-database" />
 						<EnvironmentHighlight name="DB_DATABASE" value="Ticketer" />
+						<EnvironmentHighlight name="DB_PORT" value="3306" quotations={false} />
 						<EnvironmentHighlight name="DB_USER" />
 						<EnvironmentHighlight name="DB_PASSWORD" />
 					</span>

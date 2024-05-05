@@ -1,5 +1,5 @@
 import { InteractionType, type ModalSubmitInteraction } from 'discord.js';
-import { BaseInteraction } from '.';
+import { BaseInteraction } from './index';
 
 /**
  * The interaction for modals.

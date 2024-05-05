@@ -6,13 +6,15 @@ import {
 	InteractionType,
 	type MessageContextMenuCommandInteraction,
 	SlashCommandBuilder,
+	type SlashCommandOptionsOnlyBuilder,
 	type SlashCommandSubcommandsOnlyBuilder,
 	type UserContextMenuCommandInteraction,
 } from 'discord.js';
-import { BaseInteraction } from '.';
+import { BaseInteraction } from './index';
 
 export type Data =
 	| SlashCommandBuilder
+	| SlashCommandOptionsOnlyBuilder
 	| SlashCommandSubcommandsOnlyBuilder
 	| Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
 	| ContextMenuCommandBuilder;

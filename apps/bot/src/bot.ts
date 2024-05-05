@@ -1,8 +1,8 @@
 import { GatewayIntentBits, Options } from 'discord.js';
-import { dirname, resolve } from 'node:path';
 import { Client } from '@ticketer/djs-framework';
 import { environment } from '@ticketer/env/bot';
 import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
 const interval = 60;
 const filter = () => () => true;
@@ -23,9 +23,9 @@ const client = new Client({
 	},
 });
 
-const currentDirectory = dirname(fileURLToPath(import.meta.url));
-const eventsFolder = resolve(currentDirectory, './events');
-const commandsFolder = resolve(currentDirectory, './commands');
+const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
+const eventsFolder = path.resolve(currentDirectory, './events');
+const commandsFolder = path.resolve(currentDirectory, './commands');
 
 await client.init(eventsFolder, commandsFolder);
 

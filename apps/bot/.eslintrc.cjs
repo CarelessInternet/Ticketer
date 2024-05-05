@@ -10,4 +10,7 @@ module.exports = {
 	parserOptions: {
 		project: [join(__dirname, './tsconfig.json')],
 	},
+	rules: {
+		'unicorn/no-anonymous-default-export': 'off',
+	},
 };

@@ -1,4 +1,4 @@
-import { type BaseInteraction, type PermissionFlagsValues, getPermissionByValue } from '..';
+import { type BaseInteraction, type PermissionFlagsValues, getPermissionByValue } from '../index';
 import { inlineCode } from 'discord.js';
 
 export function RequiredGlobalPermissions(...permissions: PermissionFlagsValues[]) {

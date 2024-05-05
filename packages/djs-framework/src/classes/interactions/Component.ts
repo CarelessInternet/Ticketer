@@ -8,7 +8,7 @@ import {
 	type StringSelectMenuInteraction,
 	type UserSelectMenuInteraction,
 } from 'discord.js';
-import { BaseInteraction } from '.';
+import { BaseInteraction } from './index';
 
 /**
  * The interaction for message components.

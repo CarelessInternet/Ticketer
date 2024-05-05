@@ -1,5 +1,5 @@
 import { Colors, EmbedBuilder, type User } from 'discord.js';
-import type { Client } from '.';
+import type { Client } from './index';
 import { env } from 'node:process';
 
 interface ExtractCustomId {

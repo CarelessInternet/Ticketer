@@ -1,4 +1,4 @@
-import type { Autocomplete, BaseInteraction, Command, Component, Modal } from '..';
+import type { Autocomplete, BaseInteraction, Command, Component, Modal } from '../';
 import { InteractionType } from 'discord.js';
 
 /**

@@ -303,11 +303,12 @@ export class ComponentInteraction extends Component.Interaction {
 	private async welcomeAndFarewellConfigurationChannel({ interaction }: Component.Context<'channel'>) {
 		const { channels, customId: id, guildId, user } = interaction;
 		const { customId } = super.extractCustomId(id);
-		const channel = channels.at(0);
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const channel = channels.at(0)!;
 
 		const type = customId.includes('welcome') ? 'welcome' : 'farewell';
 		const channelDatabaseValue: InsertWithoutGuildId =
-			type === 'welcome' ? { welcomeChannelId: channel?.id } : { farewellChannelId: channel?.id };
+			type === 'welcome' ? { welcomeChannelId: channel.id } : { farewellChannelId: channel.id };
 
 		await database
 			.insert(welcomeAndFarewell)
@@ -319,7 +320,7 @@ export class ComponentInteraction extends Component.Interaction {
 		const embed = super
 			.userEmbed(user)
 			.setTitle('Updated the Welcome/Farewell Configuration')
-			.setDescription(`${user.toString()} updated the ${type} channel to ${channel?.toString()}`);
+			.setDescription(`${user.toString()} updated the ${type} channel to ${channel.toString()}`);
 
 		return interaction.editReply({ embeds: [embed], components: [] });
 	}

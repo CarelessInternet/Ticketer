@@ -40,7 +40,10 @@ export function ticketModal(this: BaseInteraction.Interaction, { categoryId, loc
 
 	return new ModalBuilder()
 		.setCustomId(
-			this.customId('ticket_threads_categories_create_ticket', userId ? `${categoryId}_${userId}` : categoryId),
+			this.customId(
+				'ticket_threads_categories_create_ticket',
+				userId ? `${categoryId.toString()}_${userId}` : categoryId,
+			),
 		)
 		.setTitle(translations.modalTitle())
 		.setComponents(titleRow, descriptionRow);

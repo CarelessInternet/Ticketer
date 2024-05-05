@@ -1,17 +1,17 @@
-import { dirname, resolve } from 'node:path';
 import { Client } from '@ticketer/djs-framework';
 import chalk from 'chalk';
 import { environment } from '@ticketer/env/bot';
 import { exit } from 'node:process';
 import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
 const client = new Client({
 	intents: [],
 });
 
-const currentDirectory = dirname(fileURLToPath(import.meta.url));
-const eventsFolder = resolve(currentDirectory, './events');
-const commandsFolder = resolve(currentDirectory, './commands');
+const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
+const eventsFolder = path.resolve(currentDirectory, './events');
+const commandsFolder = path.resolve(currentDirectory, './commands');
 
 await client.init(eventsFolder, commandsFolder);
 

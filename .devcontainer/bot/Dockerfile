@@ -4,7 +4,8 @@
 # If you need more help, visit the Dockerfile reference guide at
 # https://docs.docker.com/engine/reference/builder/
 
-ARG NODE_MAJOR_VERSION=21
+ARG NODE_MAJOR_VERSION=22
+# Necessary to run "pnpm install" when the Dev Container has started.
 ARG PNPM_MAJOR_VERSION=8
 
 FROM node:${NODE_MAJOR_VERSION}-alpine as base

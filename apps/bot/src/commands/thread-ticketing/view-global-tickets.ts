@@ -68,18 +68,18 @@ async function viewGlobalTickets(
 	);
 	const components = messageWithPagination({
 		previous: {
-			customId: this.customId('ticket_threads_categories_view_global_previous', `${page}_${state ?? ''}`),
+			customId: this.customId('ticket_threads_categories_view_global_previous', `${page.toString()}_${state ?? ''}`),
 			disabled: page === 0,
 		},
 		next: {
-			customId: this.customId('ticket_threads_categories_view_global_next', `${page}_${state ?? ''}`),
+			customId: this.customId('ticket_threads_categories_view_global_next', `${page.toString()}_${state ?? ''}`),
 			disabled: tickets.length < PAGE_SIZE,
 		},
 	});
 
 	return interaction.editReply({
 		components,
-		content: `Total amount of tickets in the server: ${globalAmount ?? 0}.`,
+		content: `Total amount of tickets in the server: ${String(globalAmount ?? 0)}.`,
 		embeds,
 	});
 }

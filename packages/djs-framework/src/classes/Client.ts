@@ -1,6 +1,6 @@
 import type { Autocomplete, BaseInteraction, Command, Component, Event, Modal } from '.';
 import { Collection, Client as DiscordClient, Routes, type Snowflake } from 'discord.js';
-import { Guards, glob } from '..';
+import { Guards, glob } from '../index';
 
 /**
  * The extended version of the discord.js Client.

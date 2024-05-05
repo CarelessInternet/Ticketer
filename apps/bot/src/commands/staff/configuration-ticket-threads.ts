@@ -304,7 +304,7 @@ export default class extends Command.Interaction {
 					.userEmbed(user)
 					.setTitle('Updated the Thead Ticket Configuration')
 					.setDescription(
-						`${user.toString()} updated the amount of active tickets a user may have at once to ${activeTickets}.`,
+						`${user.toString()} updated the amount of active tickets a user may have at once to ${activeTickets.toString()}.`,
 					);
 
 				return interaction.editReply({ embeds: [embed] });
@@ -472,7 +472,9 @@ export default class extends Command.Interaction {
 			const embed = super
 				.userEmbed(interaction.user)
 				.setTitle('Deleted the Thread Ticket Category')
-				.setDescription(`${interaction.user.toString()} deleted the category with the following title: ${title}.`);
+				.setDescription(
+					`${interaction.user.toString()} deleted the category with the following title: ${title ?? 'No Title Found'}.`,
+				);
 
 			return interaction.editReply({ embeds: [embed] });
 		} catch (error) {
@@ -863,7 +865,9 @@ export class ModalInteraction extends Modal.Interaction {
 					embeds: [
 						super
 							.userEmbedError(user)
-							.setDescription(`There are too many categories, you may not have more than ${MAXIMUM_CATEGORY_AMOUNT}.`),
+							.setDescription(
+								`There are too many categories, you may not have more than ${MAXIMUM_CATEGORY_AMOUNT.toString()}.`,
+							),
 					],
 				});
 			}

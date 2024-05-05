@@ -96,9 +96,9 @@ export default class extends Command.Interaction {
 		const shardsStatsAsString = shardsStats.reduce((accumulator, shard, index) => {
 			let value = `# Shard ${index.toLocaleString()}\n\n`;
 			value += `* Ping: ${shard.ping.toLocaleString()} ms\n`;
-			value += `* RAM Usage: ${shard.ramInMegabytes} MB\n`;
+			value += `* RAM Usage: ${shard.ramInMegabytes.toString()} MB\n`;
 			value += `* Servers: ${shard.servers.toLocaleString()}\n`;
-			value += `* Status: ${Status[shard.status]}\n`;
+			value += `* Status: ${Status[shard.status].toString()}\n`;
 			value += `* Up Since: ${shard.uptime ? formatDateLong(new Date(Date.now() - shard.uptime)) : 'Unknown'}\n`;
 			value += `* Users: ${shard.users.toLocaleString()}\n\n`;
 

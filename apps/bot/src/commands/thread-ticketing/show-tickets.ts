@@ -70,12 +70,12 @@ async function viewTickets(
 
 	const components = messageWithPagination({
 		previous: {
-			customId: this.customId('ticket_threads_categories_view_tickets_previous', `${page}_${state ?? ''}`),
+			customId: this.customId('ticket_threads_categories_view_tickets_previous', `${page.toString()}_${state ?? ''}`),
 			disabled: page === 0,
 			label: translations.buttons.previous.label(),
 		},
 		next: {
-			customId: this.customId('ticket_threads_categories_view_tickets_next', `${page}_${state ?? ''}`),
+			customId: this.customId('ticket_threads_categories_view_tickets_next', `${page.toString()}_${state ?? ''}`),
 			disabled: tickets.length < PAGE_SIZE,
 			label: translations.buttons.next.label(),
 		},

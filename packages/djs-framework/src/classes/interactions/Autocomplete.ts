@@ -1,5 +1,5 @@
 import { type AutocompleteInteraction, InteractionType } from 'discord.js';
-import { BaseInteraction } from '.';
+import { BaseInteraction } from './index';
 
 /**
  * The interaction for autocomplete.

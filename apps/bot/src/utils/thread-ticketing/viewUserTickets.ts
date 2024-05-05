@@ -68,11 +68,11 @@ export async function viewUserTickets(
 	);
 	const components = messageWithPagination({
 		previous: {
-			customId: this.customId('ticket_threads_categories_view_user_previous', `${page}_${user.id}`),
+			customId: this.customId('ticket_threads_categories_view_user_previous', `${page.toString()}_${user.id}`),
 			disabled: page === 0,
 		},
 		next: {
-			customId: this.customId('ticket_threads_categories_view_user_next', `${page}_${user.id}`),
+			customId: this.customId('ticket_threads_categories_view_user_next', `${page.toString()}_${user.id}`),
 			disabled: tickets.length < PAGE_SIZE,
 		},
 	});
@@ -82,7 +82,7 @@ export async function viewUserTickets(
 			parse: [],
 		},
 		components,
-		content: `Total amount of tickets by ${user.toString()} in the server: ${globalAmount ?? 0}.`,
+		content: `Total amount of tickets by ${user.toString()} in the server: ${String(globalAmount ?? 0)}.`,
 		embeds,
 	});
 }

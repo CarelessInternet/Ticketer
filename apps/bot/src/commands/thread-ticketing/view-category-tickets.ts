@@ -82,18 +82,21 @@ async function viewCategoryTickets(
 	);
 	const components = messageWithPagination({
 		previous: {
-			customId: this.customId('ticket_threads_categories_view_category_previous', `${page}_${categoryId ?? ''}`),
+			customId: this.customId(
+				'ticket_threads_categories_view_category_previous',
+				`${page.toString()}_${categoryId ?? ''}`,
+			),
 			disabled: page === 0,
 		},
 		next: {
-			customId: this.customId('ticket_threads_categories_view_category_next', `${page}_${categoryId ?? ''}`),
+			customId: this.customId('ticket_threads_categories_view_category_next', `${page.toString()}_${categoryId ?? ''}`),
 			disabled: tickets.length < PAGE_SIZE,
 		},
 	});
 
 	return interaction.editReply({
 		components,
-		content: `Total amount of tickets in the server: ${globalAmount ?? 0}.`,
+		content: `Total amount of tickets in the server: ${String(globalAmount ?? 0)}.`,
 		embeds,
 	});
 }

@@ -1,4 +1,4 @@
-import { Base } from '.';
+import { Base } from './index';
 import type { ClientEvents } from 'discord.js';
 
 /**

@@ -1,5 +1,7 @@
 import {
 	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
 	ChannelSelectMenuBuilder,
 	ChannelType,
 	ModalBuilder,
@@ -10,6 +12,7 @@ import {
 	TextInputBuilder,
 	TextInputStyle,
 	channelMention,
+	inlineCode,
 	roleMention,
 } from 'discord.js';
 import {
@@ -38,9 +41,9 @@ import {
 	eq,
 	like,
 	not,
-	sql,
 	ticketThreadsCategories,
 	ticketThreadsConfigurations,
+	ticketsThreads,
 } from '@ticketer/database';
 
 const MAXIMUM_CATEGORY_AMOUNT = 10;
@@ -258,7 +261,11 @@ export default class extends Command.Interaction {
 						.setName('edit')
 						.setDescription('Edit a category for thread tickets.')
 						.addStringOption((option) =>
-							option.setName('title').setDescription("The category's title.").setAutocomplete(true).setRequired(true),
+							option
+								.setName('title')
+								.setDescription('The title of the category of which you want to edit.')
+								.setAutocomplete(true)
+								.setRequired(true),
 						),
 				)
 				.addSubcommand((subcommand) =>
@@ -266,7 +273,11 @@ export default class extends Command.Interaction {
 						.setName('delete')
 						.setDescription('Delete a category from thread tickets.')
 						.addStringOption((option) =>
-							option.setName('title').setDescription("The category's title.").setAutocomplete(true).setRequired(true),
+							option
+								.setName('title')
+								.setDescription('The title of the category of which you want to delete.')
+								.setAutocomplete(true)
+								.setRequired(true),
 						),
 				),
 		);
@@ -455,44 +466,65 @@ export default class extends Command.Interaction {
 	@DeferReply()
 	@HasGlobalConfiguration
 	private async categoryDelete({ interaction }: Command.Context<'chat'>) {
-		try {
-			const id = parseInteger(interaction.options.getString('title', true));
+		const id = parseInteger(interaction.options.getString('title', true));
 
-			if (id === undefined) return;
+		if (id === undefined) return;
 
-			// TODO: When the MariaDB driver gets released, change the query to use the RETURNING clause.
-			const query = await database
-				.delete(ticketThreadsCategories)
-				.where(sql`${ticketThreadsCategories.id} = ${id} RETURNING ${ticketThreadsCategories.categoryTitle}`);
+		const [row] = await database
+			.select({ amount: count(), title: ticketThreadsCategories.categoryTitle })
+			.from(ticketsThreads)
+			.where(
+				and(
+					eq(ticketsThreads.guildId, interaction.guildId),
+					eq(ticketsThreads.categoryId, id),
+					eq(ticketsThreads.state, 'active'),
+				),
+			)
+			.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id));
+		const amount = row?.amount ?? 0;
 
-			const title = (query.at(0) as unknown as Pick<typeof ticketThreadsCategories.$inferSelect, 'categoryTitle'>[]).at(
-				0,
-			)?.categoryTitle;
+		if (amount > 0) {
+			const confirmButton = new ButtonBuilder()
+				.setCustomId(super.customId('ticket_threads_category_delete_confirm', id))
+				.setEmoji('☑️')
+				.setLabel('Confirm')
+				.setStyle(ButtonStyle.Success);
+			const cancelButton = new ButtonBuilder()
+				.setCustomId(super.customId('ticket_threads_category_delete_cancel', id))
+				.setEmoji('✖️')
+				.setLabel('Cancel')
+				.setStyle(ButtonStyle.Danger);
 
+			const actionRow = new ActionRowBuilder<ButtonBuilder>().setComponents(confirmButton, cancelButton);
 			const embed = super
 				.userEmbed(interaction.user)
-				.setTitle('Deleted the Thread Ticket Category')
+				.setTitle('Are you sure you want to proceed?')
 				.setDescription(
-					`${interaction.user.toString()} deleted the category with the following title: ${title ?? 'No Title Found'}.`,
+					`The category you want to delete still has active tickets. Are you sure you want to delete the ${row?.title ? inlineCode(row.title) : 'No Title Found'} category?
+					In addition, you would have to manually delete each thread which has that category.`,
 				);
 
-			return interaction.editReply({ embeds: [embed] });
-		} catch (error) {
-			const isObject = (object: unknown): object is object =>
-				typeof object === 'object' && !Array.isArray(object) && object !== null;
-
-			if (isObject(error) && 'errno' in error && error.errno === 1451) {
-				return interaction.editReply({
-					embeds: [
-						super
-							.userEmbedError(interaction.user)
-							.setDescription(
-								'You must delete all of the tickets which has this category before deleting the category itself.',
-							),
-					],
-				});
-			}
+			return interaction.editReply({
+				components: [actionRow],
+				embeds: [embed],
+			});
 		}
+
+		// TODO: change to use the RETURNING clause for MariaDB when it gets released.
+		const [result] = await database
+			.select({ title: ticketThreadsCategories.categoryTitle })
+			.from(ticketThreadsCategories)
+			.where(eq(ticketThreadsCategories.id, id));
+		await database.delete(ticketThreadsCategories).where(eq(ticketThreadsCategories.id, id));
+
+		const embed = super
+			.userEmbed(interaction.user)
+			.setTitle('Deleted the Thread Ticket Category')
+			.setDescription(
+				`${interaction.user.toString()} deleted the category with the following title: ${result?.title ? inlineCode(result.title) : 'No Title Found'}.`,
+			);
+
+		return interaction.editReply({ embeds: [embed] });
 	}
 }
 
@@ -525,6 +557,8 @@ export class ComponentInteraction extends Component.Interaction {
 		super.dynamicCustomId('ticket_threads_category_configuration_channel'),
 		super.dynamicCustomId('ticket_threads_category_configuration_logs_channel'),
 		super.dynamicCustomId('ticket_threads_category_configuration_managers'),
+		super.dynamicCustomId('ticket_threads_category_delete_confirm'),
+		super.dynamicCustomId('ticket_threads_category_delete_cancel'),
 		super.dynamicCustomId('ticket_threads_category_view_previous'),
 		super.dynamicCustomId('ticket_threads_category_view_next'),
 	];
@@ -543,6 +577,10 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			case super.dynamicCustomId('ticket_threads_category_configuration_managers'): {
 				return interaction.isRoleSelectMenu() && this.categoryManagers({ interaction });
+			}
+			case super.dynamicCustomId('ticket_threads_category_delete_confirm'):
+			case super.dynamicCustomId('ticket_threads_category_delete_cancel'): {
+				return interaction.isButton() && this.confirmDeleteCategory({ interaction });
 			}
 			case super.dynamicCustomId('ticket_threads_category_view_previous'):
 			case super.dynamicCustomId('ticket_threads_category_view_next'): {
@@ -689,6 +727,40 @@ export class ComponentInteraction extends Component.Interaction {
 			);
 
 		return interaction.editReply({ embeds: [embed], components: [] });
+	}
+
+	@DeferUpdate
+	private async confirmDeleteCategory({ interaction }: Component.Context<'button'>) {
+		const { customId, dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const confirmDeletion = customId.includes('confirm');
+		const id = parseInteger(dynamicValue);
+
+		if (id === undefined) return;
+
+		// TODO: change to use the RETURNING clause for MariaDB when it gets released.
+		const [row] = await database
+			.select({ title: ticketThreadsCategories.categoryTitle })
+			.from(ticketThreadsCategories)
+			.where(eq(ticketThreadsCategories.id, id));
+
+		if (confirmDeletion) {
+			await database.delete(ticketsThreads).where(eq(ticketsThreads.categoryId, id));
+			await database.delete(ticketThreadsCategories).where(eq(ticketThreadsCategories.id, id));
+		}
+
+		return interaction.editReply({
+			components: [],
+			embeds: [
+				super
+					.userEmbed(interaction.user)
+					.setTitle(confirmDeletion ? 'Deleted the Category' : 'Deletion Cancelled')
+					.setDescription(
+						confirmDeletion
+							? `${interaction.user.toString()} deleted the ${row?.title ? inlineCode(row.title) : 'No Title Found'} category.`
+							: `The deletion of the category ${row?.title ? inlineCode(row.title) : 'No Title Found'} has been cancelled.`,
+					),
+			],
+		});
 	}
 
 	@DeferUpdate

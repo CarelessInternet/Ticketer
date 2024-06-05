@@ -1,3 +1,4 @@
+import type { DeepPartial } from '@/utils';
 import ERROR_TITLE from './errorTitle';
 import type { Translation } from '../i18n-types';
 
@@ -108,4 +109,4 @@ export default {
 			},
 		},
 	},
-} satisfies Translation['tickets']['userForums'];
+} satisfies DeepPartial<Translation['tickets']['userForums']>;

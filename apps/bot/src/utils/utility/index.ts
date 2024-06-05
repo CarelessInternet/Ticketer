@@ -1,4 +1,5 @@
 export * from './capitalise';
+export * from './DeepPartial';
 export * from './extractEmoji';
 export * from './format';
 export * from './invalidTicket';

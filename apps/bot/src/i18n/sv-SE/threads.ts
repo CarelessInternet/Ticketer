@@ -1,3 +1,4 @@
+import type { DeepPartial } from '@/utils';
 import ERROR_TITLE from './errorTitle';
 import type { Translation } from '../i18n-types';
 
@@ -229,4 +230,4 @@ export default {
 			lockedAndArchived: 'Låst och Stängt',
 		},
 	},
-} satisfies Translation['tickets']['threads'];
+} satisfies DeepPartial<Translation['tickets']['threads']>;

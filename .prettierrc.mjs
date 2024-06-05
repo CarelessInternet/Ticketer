@@ -18,7 +18,6 @@ const config = {
 	trailingComma: 'all',
 	useTabs: true,
 	embeddedLanguageFormatting: 'auto',
-	parser: 'typescript',
 	plugins: ['prettier-plugin-tailwindcss'],
 };
 

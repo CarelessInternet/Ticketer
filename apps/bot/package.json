@@ -16,12 +16,12 @@
     "@ticketer/djs-framework": "workspace:*",
     "@ticketer/env": "workspace:*",
     "chalk": "^5.3.0",
-    "discord.js": "^14.15.2",
+    "discord.js": "^14.15.3",
     "tsx": "^3.13.0",
     "typesafe-i18n": "^5.26.2"
   },
   "devDependencies": {
     "@ticketer/eslint-config": "workspace:*",
-    "@types/node": "^20.12.8"
+    "@types/node": "^20.14.2"
   }
 }

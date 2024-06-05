@@ -1,9 +1,9 @@
-import type { BaseTranslation } from '../i18n-types.js';
-import ERROR_TITLE from './errorTitle.js';
+import type { BaseTranslation } from '../i18n-types';
+import ERROR_TITLE from './errorTitle';
 import type { PresenceUpdateStatus } from 'discord.js';
-import automaticThreads from './automaticThreads.js';
-import threads from './threads.js';
-import userForums from './userForums.js';
+import automaticThreads from './automaticThreads';
+import threads from './threads';
+import userForums from './userForums';
 
 const en_GB = {
 	commands: {

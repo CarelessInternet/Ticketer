@@ -6,7 +6,7 @@
 
 ARG NODE_MAJOR_VERSION=22
 # Necessary to run "pnpm install" when the Dev Container has started.
-ARG PNPM_MAJOR_VERSION=8
+ARG PNPM_MAJOR_VERSION=9
 
 FROM node:${NODE_MAJOR_VERSION}-alpine as base
 RUN --mount=type=cache,target=/root/.npm \

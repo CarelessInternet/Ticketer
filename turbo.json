@@ -1,8 +1,8 @@
 {
 	"$schema": "https://turbo.build/schema.json",
 	"globalEnv": ["VERCEL_URL", "PORT"],
-	"globalDotEnv": ["**/.env.*local"],
-	"pipeline": {
+	"globalDependencies": ["**/.env.*local"],
+	"tasks": {
 		"dev": {
 			"cache": false,
 			"persistent": true

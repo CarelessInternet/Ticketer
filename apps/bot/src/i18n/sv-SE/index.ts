@@ -1,9 +1,9 @@
-import ERROR_TITLE from './errorTitle.js';
-
-import type { Translation } from '../i18n-types.js';
-import automaticThreads from './automaticThreads.js';
-import threads from './threads.js';
-import userForums from './userForums.js';
+import type { DeepPartial } from '@/utils';
+import ERROR_TITLE from './errorTitle';
+import type { Translation } from '../i18n-types';
+import automaticThreads from './automaticThreads';
+import threads from './threads';
+import userForums from './userForums';
 
 const sv_SE = {
 	commands: {
@@ -248,6 +248,6 @@ const sv_SE = {
 		threads,
 		userForums,
 	},
-} satisfies Translation;
+} satisfies DeepPartial<Translation>;
 
 export default sv_SE;

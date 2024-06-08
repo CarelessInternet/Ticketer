@@ -68,6 +68,9 @@ export default {
 						description: '{member:string} has too many active tickets, they may not have more than {amount:number}.',
 					},
 				},
+				invalidFields: {
+					title: ERROR_TITLE,
+				},
 			},
 			ticketCreated: {
 				title: 'Ticket Created!',

@@ -36,8 +36,8 @@ export abstract class Base {
 	/**
 	 * @returns Embed with presetted data for user errors.
 	 */
-	protected userEmbedError(user: User) {
-		return this.userEmbed(user).setColor(Colors.DarkRed).setTitle('You Hit an Error!');
+	protected userEmbedError(user: User, title = 'You Hit an Error!') {
+		return this.userEmbed(user).setColor(Colors.DarkRed).setTitle(title);
 	}
 
 	protected dynamicCustomId(id: string) {

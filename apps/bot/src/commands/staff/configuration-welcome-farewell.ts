@@ -14,8 +14,8 @@ import {
 	roleMention,
 } from 'discord.js';
 import { Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
-import { capitalise, farewellEmbed, welcomeEmbed } from '@/utils';
-import { database, eq, not, welcomeAndFarewell } from '@ticketer/database';
+import { capitalise, farewellEmbed, welcomeEmbed, zodErrorToString } from '@/utils';
+import { database, eq, not, welcomeAndFarewell, welcomeAndFarewellInsertSchema } from '@ticketer/database';
 
 type InsertWithoutGuildId = Omit<typeof welcomeAndFarewell.$inferInsert, 'guildId'>;
 
@@ -221,7 +221,7 @@ export class ComponentInteraction extends Component.Interaction {
 		}
 	}
 
-	private async welcomeAndFarewellConfiguration({ interaction }: Component.Context<'string'>) {
+	private welcomeAndFarewellConfiguration({ interaction }: Component.Context<'string'>) {
 		const { customId } = super.extractCustomId(interaction.customId);
 		const type = customId.includes('welcome_configuration') ? 'welcome' : 'farewell';
 		const value = interaction.values.at(0);
@@ -397,7 +397,21 @@ export class ModalInteraction extends Modal.Interaction {
 		switch (modalType) {
 			case 'title': {
 				const { fields, guildId, user } = interaction;
-				const title = fields.getTextInputValue('message_title') || undefined;
+				const rawTitle = fields.getTextInputValue('message_title');
+				const {
+					data: title,
+					error,
+					success,
+				} = type === 'welcome'
+					? welcomeAndFarewellInsertSchema.shape.welcomeMessageTitle.safeParse(rawTitle)
+					: welcomeAndFarewellInsertSchema.shape.farewellMessageTitle.safeParse(rawTitle);
+
+				if (!success) {
+					return interaction.editReply({
+						embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+					});
+				}
+
 				const titleDatabaseValue: InsertWithoutGuildId =
 					type === 'welcome' ? { welcomeMessageTitle: title } : { farewellMessageTitle: title };
 
@@ -418,7 +432,21 @@ export class ModalInteraction extends Modal.Interaction {
 			}
 			case 'description': {
 				const { fields, guildId, user } = interaction;
-				const description = fields.getTextInputValue('message_description') || undefined;
+				const rawDescription = fields.getTextInputValue('message_description');
+				const {
+					data: description,
+					error,
+					success,
+				} = type === 'welcome'
+					? welcomeAndFarewellInsertSchema.shape.welcomeMessageDescription.safeParse(rawDescription)
+					: welcomeAndFarewellInsertSchema.shape.farewellMessageDescription.safeParse(rawDescription);
+
+				if (!success) {
+					return interaction.editReply({
+						embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+					});
+				}
+
 				const descriptionDatabaseValue: InsertWithoutGuildId =
 					type === 'welcome' ? { welcomeMessageDescription: description } : { farewellMessageDescription: description };
 

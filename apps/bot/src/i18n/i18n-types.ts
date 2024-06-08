@@ -344,10 +344,16 @@ type RootTranslation = {
 			command: {
 				embeds: {
 					'0': {
-						/**
-						 * P​u​r​g​e​d​ ​M​e​s​s​a​g​e​s
-						 */
-						title: string
+						title: {
+							/**
+							 * P​u​r​g​e​d​ ​M​e​s​s​a​g​e​s
+							 */
+							success: string
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 */
+							error: string
+						}
 						/**
 						 * S​u​c​c​e​s​s​f​u​l​l​y​ ​d​e​l​e​t​e​d​ ​t​h​e​ ​l​a​s​t​ ​{​a​m​o​u​n​t​}​ ​m​e​s​s​a​g​e​{​{​s​}​}​!
 						 * @param {number} amount
@@ -854,6 +860,12 @@ type RootTranslation = {
 								 */
 								description: RequiredParams<'amount' | 'member'>
 							}
+						}
+						invalidFields: {
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 */
+							title: string
 						}
 					}
 					ticketCreated: {
@@ -1714,10 +1726,16 @@ export type TranslationFunctions = {
 			command: {
 				embeds: {
 					'0': {
-						/**
-						 * Purged Messages
-						 */
-						title: () => LocalizedString
+						title: {
+							/**
+							 * Purged Messages
+							 */
+							success: () => LocalizedString
+							/**
+							 * An Error Occured
+							 */
+							error: () => LocalizedString
+						}
 						/**
 						 * Successfully deleted the last {amount} message{{s}}!
 						 */
@@ -2209,6 +2227,12 @@ export type TranslationFunctions = {
 								 */
 								description: (arg: { amount: number, member: string }) => LocalizedString
 							}
+						}
+						invalidFields: {
+							/**
+							 * An Error Occured
+							 */
+							title: () => LocalizedString
 						}
 					}
 					ticketCreated: {

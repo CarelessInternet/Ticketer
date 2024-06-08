@@ -3,7 +3,7 @@ import { PermissionFlagsBits, Status, codeBlock } from 'discord.js';
 import { formatDateLong } from '@/utils';
 
 export default class extends Command.Interaction {
-	public readonly data = super.SlashBuilder.setName('bot-stats')
+	public readonly data = super.SlashBuilder.setName('bot-statistics')
 		.setDescription('Show the statistics of the bot.')
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 		.addBooleanOption((option) =>
@@ -55,8 +55,8 @@ export default class extends Command.Interaction {
 
 		const embed = super
 			.userEmbed(interaction.user)
-			.setTitle('Bot Stats')
-			.setDescription("The data below shows information about the bot's stats.")
+			.setTitle('Bot Statistics')
+			.setDescription("The data below shows information about the bot's statistics.")
 			.setFields(
 				{
 					name: '👤 Cached Users',

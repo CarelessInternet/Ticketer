@@ -166,7 +166,10 @@ const sv_SE = {
 			command: {
 				embeds: [
 					{
-						title: 'Rensade Meddelandena',
+						title: {
+							success: 'Rensade Meddelandena',
+							error: ERROR_TITLE,
+						},
 						description: 'Raderade de{{t|}} sista {amount} meddelande{{t|n}}!',
 					},
 				],

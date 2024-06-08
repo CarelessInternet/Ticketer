@@ -1,4 +1,5 @@
-// https://stackoverflow.com/a/69115223
-const emojiRegex = /\p{RGI_Emoji}/gv;
+import { z } from 'zod';
 
-export const extractEmoji = (emoji?: string) => emoji?.match(emojiRegex)?.at(0);
+export function extractEmoji(emoji?: string) {
+	return z.string().emoji().safeParse(emoji).data;
+}

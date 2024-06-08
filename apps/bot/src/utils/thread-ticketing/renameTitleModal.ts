@@ -23,5 +23,5 @@ export function renameTitleModal(
 		.setTitle(translations.title())
 		.setComponents(row);
 
-	return interaction.showModal(modal);
+	return interaction.showModal(modal).catch(() => false);
 }

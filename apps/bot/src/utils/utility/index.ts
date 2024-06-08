@@ -9,3 +9,4 @@ export * from './pagination';
 export * from './parseInteger';
 export * from './ticketButtons';
 export * from './ticketType';
+export * from './zodErrorToString';

@@ -1,5 +1,12 @@
-import { baseTicketConfiguration, baseTicketConfigurationNotNull, jsonWithParsing, snowflake } from './utils';
+import {
+	baseTicketConfiguration,
+	baseTicketConfigurationNotNull,
+	jsonWithParsing,
+	snowflake,
+	snowflakeRequiredParser,
+} from './utils';
 import { boolean, foreignKey, index, int, mysqlEnum, mysqlTable, tinyint, varchar } from 'drizzle-orm/mysql-core';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 
 export const welcomeAndFarewell = mysqlTable('welcomeAndFarewell', {
 	guildId: snowflake('guildId').primaryKey(),
@@ -13,6 +20,8 @@ export const welcomeAndFarewell = mysqlTable('welcomeAndFarewell', {
 	farewellMessageDescription: varchar('farewellMessageDescription', { length: 500 }),
 	farewellEnabled: boolean('farewellEnabled').notNull().default(true),
 });
+
+export const welcomeAndFarewellInsertSchema = createInsertSchema(welcomeAndFarewell);
 
 export const ticketThreadsConfigurations = mysqlTable('ticketThreadsConfigurations', {
 	guildId: snowflake('guildId').primaryKey(),
@@ -44,6 +53,9 @@ export const ticketThreadsCategories = mysqlTable(
 		}),
 	}),
 );
+
+export const ticketThreadsCategoriesSelectSchema = createSelectSchema(ticketThreadsCategories);
+export const ticketThreadsCategoriesInsertSchema = createInsertSchema(ticketThreadsCategories);
 
 export const ticketsThreads = mysqlTable(
 	'ticketsThreads',
@@ -79,6 +91,11 @@ export const userForumsConfigurations = mysqlTable(
 	}),
 );
 
+export const userForumsConfigurationsSelectSchema = createSelectSchema(userForumsConfigurations, {
+	channelId: snowflakeRequiredParser,
+});
+export const userForumsConfigurationsInsertSchema = createInsertSchema(userForumsConfigurations);
+
 export const automaticThreadsConfigurations = mysqlTable(
 	'automaticThreadsConfigurations',
 	{
@@ -90,3 +107,8 @@ export const automaticThreadsConfigurations = mysqlTable(
 		guildIdIndex: index('guildId_index').on(table.guildId),
 	}),
 );
+
+export const automaticThreadsConfigurationsSelectSchema = createSelectSchema(automaticThreadsConfigurations, {
+	channelId: snowflakeRequiredParser,
+});
+export const automaticThreadsConfigurationsInsertSchema = createInsertSchema(automaticThreadsConfigurations);

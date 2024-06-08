@@ -69,6 +69,9 @@ export default {
 						description: '{member} har för många aktiva stödbiljetter, hen får inte ha fler än {amount}.',
 					},
 				},
+				invalidFields: {
+					title: ERROR_TITLE,
+				},
 			},
 			ticketCreated: {
 				title: 'Stödbiljett Skapats!',

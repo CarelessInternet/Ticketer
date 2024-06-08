@@ -166,7 +166,10 @@ const en_GB = {
 			command: {
 				embeds: [
 					{
-						title: 'Purged Messages',
+						title: {
+							success: 'Purged Messages',
+							error: ERROR_TITLE,
+						},
 						description: 'Successfully deleted the last {amount:number} message{{s}}!',
 					},
 				],

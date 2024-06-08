@@ -1,6 +1,7 @@
 import { Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
 import { PermissionFlagsBits, type Snowflake } from 'discord.js';
-import { ThreadTicketing, parseInteger } from '@/utils';
+import { ThreadTicketing } from '@/utils';
+import { z } from 'zod';
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName('view-user-tickets')
@@ -28,9 +29,9 @@ export class ComponentInteraction extends Component.Interaction {
 	public execute(context: Component.Context) {
 		const { customId, dynamicValue } = super.extractCustomId(context.interaction.customId, true);
 		const [pageAsString, userId] = dynamicValue.split('_') as [string, Snowflake];
-		const currentPage = parseInteger(pageAsString);
+		const { data: currentPage, success } = z.coerce.number().int().nonnegative().safeParse(pageAsString);
 
-		if (currentPage === undefined) return;
+		if (!success) return;
 
 		const page = currentPage + (customId.includes('next') ? 1 : -1);
 

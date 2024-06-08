@@ -1,8 +1,9 @@
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
 import { PermissionFlagsBits, channelMention, userMention } from 'discord.js';
-import { ThreadTicketing, messageWithPagination, parseInteger, withPagination } from '@/utils';
+import { ThreadTicketing, messageWithPagination, withPagination } from '@/utils';
 import { and, count, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 import { getTranslations } from '@/i18n';
+import { z } from 'zod';
 
 type TicketState = typeof ticketsThreads.$inferSelect.state;
 
@@ -120,9 +121,9 @@ export class ComponentInteraction extends Component.Interaction {
 	public execute(context: Component.Context) {
 		const { customId, dynamicValue } = super.extractCustomId(context.interaction.customId, true);
 		const [pageAsString, state] = dynamicValue.split('_') as [string, TicketState | undefined];
-		const currentPage = parseInteger(pageAsString);
+		const { data: currentPage, success } = z.coerce.number().int().nonnegative().safeParse(pageAsString);
 
-		if (currentPage === undefined) return;
+		if (!success) return;
 
 		const page = currentPage + (customId.includes('next') ? 1 : -1);
 

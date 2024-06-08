@@ -344,10 +344,16 @@ type RootTranslation = {
 			command: {
 				embeds: {
 					'0': {
-						/**
-						 * P​u​r​g​e​d​ ​M​e​s​s​a​g​e​s
-						 */
-						title: string
+						title: {
+							/**
+							 * P​u​r​g​e​d​ ​M​e​s​s​a​g​e​s
+							 */
+							success: string
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 */
+							error: string
+						}
 						/**
 						 * S​u​c​c​e​s​s​f​u​l​l​y​ ​d​e​l​e​t​e​d​ ​t​h​e​ ​l​a​s​t​ ​{​a​m​o​u​n​t​}​ ​m​e​s​s​a​g​e​{​{​s​}​}​!
 						 * @param {number} amount
@@ -855,6 +861,22 @@ type RootTranslation = {
 								description: RequiredParams<'amount' | 'member'>
 							}
 						}
+						invalidFields: {
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 */
+							title: string
+							fields: {
+								/**
+								 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​t​i​t​l​e​ ​m​u​s​t​ ​b​e​ ​l​e​s​s​ ​t​h​a​n​ ​1​0​0​ ​c​h​a​r​a​c​t​e​r​s​ ​l​o​n​g​.
+								 */
+								title: string
+								/**
+								 * T​h​e​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​d​e​s​c​r​i​p​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​l​e​s​s​ ​t​h​a​n​ ​2​0​0​0​ ​c​h​a​r​a​c​t​e​r​s​ ​l​o​n​g​.
+								 */
+								description: string
+							}
+						}
 					}
 					ticketCreated: {
 						/**
@@ -956,6 +978,16 @@ type RootTranslation = {
 									title: string
 									/**
 									 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​p​e​r​m​i​s​s​i​o​n​ ​t​o​ ​e​d​i​t​ ​t​h​e​ ​t​i​t​l​e​ ​i​n​ ​t​h​e​ ​t​h​r​e​a​d​.
+									 */
+									description: string
+								}
+								tooLong: {
+									/**
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+									 */
+									title: string
+									/**
+									 * T​h​e​ ​t​i​t​l​e​ ​m​a​y​ ​n​o​t​ ​b​e​ ​l​o​n​g​e​r​ ​t​h​a​n​ ​1​0​0​ ​c​h​a​r​a​c​t​e​r​s​.
 									 */
 									description: string
 								}
@@ -1714,10 +1746,16 @@ export type TranslationFunctions = {
 			command: {
 				embeds: {
 					'0': {
-						/**
-						 * Purged Messages
-						 */
-						title: () => LocalizedString
+						title: {
+							/**
+							 * Purged Messages
+							 */
+							success: () => LocalizedString
+							/**
+							 * An Error Occured
+							 */
+							error: () => LocalizedString
+						}
 						/**
 						 * Successfully deleted the last {amount} message{{s}}!
 						 */
@@ -2210,6 +2248,22 @@ export type TranslationFunctions = {
 								description: (arg: { amount: number, member: string }) => LocalizedString
 							}
 						}
+						invalidFields: {
+							/**
+							 * An Error Occured
+							 */
+							title: () => LocalizedString
+							fields: {
+								/**
+								 * The support ticket title must be less than 100 characters long.
+								 */
+								title: () => LocalizedString
+								/**
+								 * The support ticket description must be less than 2000 characters long.
+								 */
+								description: () => LocalizedString
+							}
+						}
 					}
 					ticketCreated: {
 						/**
@@ -2303,6 +2357,16 @@ export type TranslationFunctions = {
 									title: () => LocalizedString
 									/**
 									 * I do not have the permission to edit the title in the thread.
+									 */
+									description: () => LocalizedString
+								}
+								tooLong: {
+									/**
+									 * An Error Occured
+									 */
+									title: () => LocalizedString
+									/**
+									 * The title may not be longer than 100 characters.
 									 */
 									description: () => LocalizedString
 								}

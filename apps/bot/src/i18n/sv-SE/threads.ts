@@ -1,4 +1,5 @@
 import type { DeepPartial } from '@/utils';
+
 import ERROR_TITLE from './errorTitle';
 import type { Translation } from '../i18n-types';
 
@@ -69,6 +70,13 @@ export default {
 						description: '{member} har för många aktiva stödbiljetter, hen får inte ha fler än {amount}.',
 					},
 				},
+				invalidFields: {
+					title: ERROR_TITLE,
+					fields: {
+						title: 'Stödbiljettens titel bör vara mindre än 100 tecken.',
+						description: 'Stödbiljettens beskrivning bör vara mindre än 2000 tecken.',
+					},
+				},
 			},
 			ticketCreated: {
 				title: 'Stödbiljett Skapats!',
@@ -120,6 +128,10 @@ export default {
 						notEditable: {
 							title: ERROR_TITLE,
 							description: 'Jag har inte behörighet att redigera titeln i trådkanalen.',
+						},
+						tooLong: {
+							title: ERROR_TITLE,
+							description: 'Titeln bör inte vara längre än 100 tecken.',
 						},
 					},
 					success: {

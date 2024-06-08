@@ -1,6 +1,8 @@
 import { Command, DeferReply, RequiredChannelPermissions } from '@ticketer/djs-framework';
 import { getTranslations, translate } from '@/i18n';
 import { PermissionFlagsBits } from 'discord.js';
+import { z } from 'zod';
+import { zodErrorToString } from '@/utils';
 
 const dataTranslations = translate().commands.purge.data;
 
@@ -26,13 +28,29 @@ export default class extends Command.Interaction {
 	public async execute({ interaction }: Command.Context<'chat'>) {
 		if (interaction.channel) {
 			const translations = translate(interaction.locale).commands.purge.command.embeds[0];
+			const {
+				data: amount,
+				error,
+				success,
+			} = z
+				.number()
+				.int()
+				.gte(1)
+				.lte(100)
+				.safeParse(interaction.options.getInteger(dataTranslations.options[0].name(), true));
 
-			const amount = interaction.options.getInteger(dataTranslations.options[0].name(), true);
+			if (!success) {
+				return interaction.editReply({
+					embeds: [
+						super.userEmbedError(interaction.user, translations.title.error()).setDescription(zodErrorToString(error)),
+					],
+				});
+			}
+
 			const deleted = await interaction.channel.bulkDelete(amount);
-
 			const embed = super
 				.userEmbed(interaction.user)
-				.setTitle(translations.title())
+				.setTitle(translations.title.success())
 				.setDescription(translations.description({ amount: deleted.size }));
 
 			return interaction.editReply({ embeds: [embed] });

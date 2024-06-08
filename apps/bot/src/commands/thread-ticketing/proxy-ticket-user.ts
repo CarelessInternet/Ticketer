@@ -34,13 +34,15 @@ export default class extends Command.Interaction {
 		}
 
 		if (categories.length === 1) {
-			void interaction.showModal(
-				ThreadTicketing.ticketModal.call(this, {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					categoryId: categories.at(0)!.id,
-					locale: interaction.locale,
-				}),
-			);
+			void interaction
+				.showModal(
+					ThreadTicketing.ticketModal.call(this, {
+						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+						categoryId: categories.at(0)!.id,
+						locale: interaction.locale,
+					}),
+				)
+				.catch(() => false);
 		} else {
 			return interaction
 				.reply({

@@ -1,4 +1,5 @@
 import { customType, varchar } from 'drizzle-orm/mysql-core';
+import { z } from 'zod';
 
 // TODO: Change mode to 'string' when available: https://github.com/drizzle-team/drizzle-orm/issues/813
 // const snowflake = (name: string) => bigint(name, { mode: 'bigint', unsigned: true });
@@ -15,6 +16,10 @@ export const snowflake = customType<{ data: string }>({
 		return value;
 	},
 });
+
+const snowflakeParser = z.coerce.bigint().min(17n).transform(String);
+export const snowflakeOptionalParser = snowflakeParser.optional();
+export const snowflakeRequiredParser = snowflakeParser;
 
 // https://orm.drizzle.team/docs/custom-types#examples
 export const jsonWithParsing = <Data>(name: string) =>

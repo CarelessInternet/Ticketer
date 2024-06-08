@@ -4,6 +4,7 @@ import { DM_Sans } from 'next/font/google';
 import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
 import type { PropsWithChildren } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { ThemeProvider } from 'next-themes';
 import { cn } from '@/lib/utils';
 
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
 					<div className="mx-8 sm:mx-16">{children}</div>
 				</ThemeProvider>
 				<Analytics />
+				<SpeedInsights />
 			</body>
 		</html>
 	);

@@ -10,17 +10,19 @@ import {
 	roleMention,
 } from 'discord.js';
 import { Command, Component, DeferReply, Modal } from '@ticketer/djs-framework';
-import { ThreadTicketing, parseInteger, ticketButtons, ticketThreadsOpeningMessageEmbed } from '@/utils';
+import { ThreadTicketing, ticketButtons, ticketThreadsOpeningMessageEmbed, zodErrorToString } from '@/utils';
 import {
 	and,
 	count,
 	database,
 	eq,
 	ticketThreadsCategories,
+	ticketThreadsCategoriesSelectSchema,
 	ticketThreadsConfigurations,
 	ticketsThreads,
 } from '@ticketer/database';
 import { getTranslations, translate } from '@/i18n';
+import { z } from 'zod';
 
 const dataTranslations = translate().commands.ticket.data;
 
@@ -50,13 +52,15 @@ export default class extends Command.Interaction {
 		}
 
 		if (categories.length === 1) {
-			void interaction.showModal(
-				ThreadTicketing.ticketModal.call(this, {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					categoryId: categories.at(0)!.id,
-					locale: interaction.locale,
-				}),
-			);
+			void interaction
+				.showModal(
+					ThreadTicketing.ticketModal.call(this, {
+						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+						categoryId: categories.at(0)!.id,
+						locale: interaction.locale,
+					}),
+				)
+				.catch(() => false);
 		} else {
 			return interaction
 				.reply({
@@ -164,13 +168,15 @@ export class ComponentInteraction extends Component.Interaction {
 		}
 
 		if (categories.length === 1) {
-			void interaction.showModal(
-				ThreadTicketing.ticketModal.call(this, {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					categoryId: categories.at(0)!.id,
-					locale: interaction.locale,
-				}),
-			);
+			void interaction
+				.showModal(
+					ThreadTicketing.ticketModal.call(this, {
+						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+						categoryId: categories.at(0)!.id,
+						locale: interaction.locale,
+					}),
+				)
+				.catch(() => false);
 		} else {
 			return interaction
 				.reply({
@@ -209,7 +215,7 @@ export class ModalInteraction extends Modal.Interaction {
 		super.customId('ticket_threads_categories_create_rename_title_modal'),
 	];
 
-	public async execute({ interaction }: Modal.Context) {
+	public execute({ interaction }: Modal.Context) {
 		const { customId } = super.extractCustomId(interaction.customId);
 
 		switch (customId) {
@@ -257,7 +263,9 @@ export class ModalInteraction extends Modal.Interaction {
 		const { client, customId, fields, guild, guildId, guildLocale, locale, user: interactionUser } = interaction;
 		const { dynamicValue } = super.extractCustomId(customId, true);
 		const dynamicValues = dynamicValue.split('_');
-		const categoryId = parseInteger(dynamicValues.at(0) ?? dynamicValue);
+		const { data: categoryId, success } = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(
+			Number(dynamicValues.at(0) ?? dynamicValue),
+		);
 		const isProxied = !!dynamicValues.at(1);
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const user = isProxied ? await this.client.users.fetch(dynamicValues.at(1)!) : interactionUser;
@@ -277,7 +285,7 @@ export class ModalInteraction extends Modal.Interaction {
 			});
 		}
 
-		if (categoryId === undefined) {
+		if (!success) {
 			return interaction.editReply({
 				components: [],
 				embeds: [
@@ -292,7 +300,7 @@ export class ModalInteraction extends Modal.Interaction {
 		const [configuration] = await database
 			.select()
 			.from(ticketThreadsCategories)
-			.where(eq(ticketThreadsCategories.id, categoryId))
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)))
 			.innerJoin(ticketThreadsConfigurations, eq(ticketThreadsCategories.guildId, ticketThreadsConfigurations.guildId));
 
 		if (!configuration) {
@@ -401,8 +409,32 @@ export class ModalInteraction extends Modal.Interaction {
 			});
 		}
 
-		const title = fields.getTextInputValue('title');
-		const description = fields.getTextInputValue('description');
+		const {
+			data,
+			error,
+			success: fieldsSuccess,
+		} = z
+			.object({
+				title: z.string().min(1).max(100, translations.createTicket.errors.invalidFields.fields.title()),
+				description: z.string().min(1).max(2000, translations.createTicket.errors.invalidFields.fields.description()),
+			})
+			.safeParse({
+				title: fields.getTextInputValue('title'),
+				description: fields.getTextInputValue('description'),
+			});
+
+		if (!fieldsSuccess) {
+			return interaction.editReply({
+				components: [],
+				embeds: [
+					super
+						.userEmbedError(interaction.user, translations.createTicket.errors.invalidFields.title())
+						.setDescription(zodErrorToString(error)),
+				],
+			});
+		}
+
+		const { description, title } = data;
 
 		const thread = await channel.threads.create({
 			autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
@@ -581,7 +613,18 @@ export class ModalInteraction extends Modal.Interaction {
 		}
 
 		const oldTitle = channel.name;
-		const newTitle = fields.getTextInputValue('title');
+		const { data: newTitle, success } = z.string().min(1).max(100).safeParse(fields.getTextInputValue('title'));
+
+		if (!success) {
+			return interaction.editReply({
+				embeds: [
+					super
+						.userEmbedError(interaction.user, translations.renameTitle.modal.errors.tooLong.title())
+						.setDescription(translations.renameTitle.modal.errors.tooLong.description()),
+				],
+			});
+		}
+
 		const successTranslations = translations.renameTitle.modal.success;
 		const guildSuccessTranslations =
 			translate(guildLocale).tickets.threads.categories.buttons.renameTitle.modal.success;

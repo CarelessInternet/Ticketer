@@ -12,15 +12,24 @@ import {
 	roleMention,
 } from 'discord.js';
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
-import { automaticThreadsConfigurations, database, desc, eq } from '@ticketer/database';
+import {
+	and,
+	automaticThreadsConfigurations,
+	automaticThreadsConfigurationsInsertSchema,
+	automaticThreadsConfigurationsSelectSchema,
+	database,
+	desc,
+	eq,
+} from '@ticketer/database';
 import {
 	automaticThreadsEmbed,
 	automaticThreadsOpeningMessageDescription,
 	automaticThreadsOpeningMessageTitle,
 	messageWithPagination,
-	parseInteger,
 	withPagination,
+	zodErrorToString,
 } from '@/utils';
+import { z } from 'zod';
 
 function IsTextChannel(_: object, __: string, descriptor: PropertyDescriptor) {
 	const original = descriptor.value as () => void;
@@ -131,7 +140,7 @@ function openingMessageModal<T>(
 		.setTitle('Opening Message Title & Description')
 		.setComponents(row1, row2);
 
-	return interaction.showModal(modal);
+	return interaction.showModal(modal).catch(() => false);
 }
 
 export default class extends Command.Interaction {
@@ -227,10 +236,11 @@ export default class extends Command.Interaction {
 		if (!result) {
 			return interaction.editReply({
 				embeds: [
-					super.userEmbedError(interaction.user).setDescription(
-						// eslint-disable-next-line @typescript-eslint/no-base-to-string
-						`The automatic threads configuration for the channel ${channel.toString()} could not be found. Please create one instead of editing it.`,
-					),
+					super
+						.userEmbedError(interaction.user)
+						.setDescription(
+							`The automatic threads configuration for the channel ${channel.toString()} could not be found. Please create one instead of editing it.`,
+						),
 				],
 			});
 		}
@@ -255,7 +265,6 @@ export default class extends Command.Interaction {
 
 		const row = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(selectMenu);
 
-		// eslint-disable-next-line @typescript-eslint/no-base-to-string
 		return interaction.editReply({ components: [row], content: channel.toString() });
 	}
 
@@ -269,10 +278,12 @@ export default class extends Command.Interaction {
 
 		return interaction.editReply({
 			embeds: [
-				super.userEmbed(interaction.user).setTitle('Deleted an Automatic Threads Configuration').setDescription(
-					// eslint-disable-next-line @typescript-eslint/no-base-to-string
-					`${interaction.user.toString()} deleted an automatic threads configuration in the channel ${channel.toString()} if one existed.`,
-				),
+				super
+					.userEmbed(interaction.user)
+					.setTitle('Deleted an Automatic Threads Configuration')
+					.setDescription(
+						`${interaction.user.toString()} deleted an automatic threads configuration in the channel ${channel.toString()} if one existed.`,
+					),
 			],
 		});
 	}
@@ -332,24 +343,46 @@ export class ComponentInteraction extends Component.Interaction {
 	}
 
 	private async openingMessage(context: Component.Context<'string'>) {
-		const { dynamicValue: id } = super.extractCustomId(context.interaction.customId, true);
+		const { dynamicValue } = super.extractCustomId(context.interaction.customId, true);
+		const {
+			data: id,
+			error,
+			success,
+		} = automaticThreadsConfigurationsSelectSchema.shape.channelId.safeParse(dynamicValue);
+
+		if (!success) {
+			return context.interaction
+				.reply({
+					embeds: [super.userEmbedError(context.interaction.user).setDescription(zodErrorToString(error))],
+					ephemeral: true,
+				})
+				.catch(() => false);
+		}
+
 		const [row] = await database
 			.select({
 				title: automaticThreadsConfigurations.openingMessageTitle,
 				description: automaticThreadsConfigurations.openingMessageDescription,
 			})
 			.from(automaticThreadsConfigurations)
-			.where(eq(automaticThreadsConfigurations.channelId, id));
+			.where(
+				and(
+					eq(automaticThreadsConfigurations.channelId, id),
+					eq(automaticThreadsConfigurations.guildId, context.interaction.guildId),
+				),
+			);
 
 		if (!row) {
-			return context.interaction.reply({
-				embeds: [
-					super
-						.userEmbedError(context.interaction.user)
-						.setDescription('No automatic threads configuration for the channel could be found.'),
-				],
-				ephemeral: true,
-			});
+			return context.interaction
+				.reply({
+					embeds: [
+						super
+							.userEmbedError(context.interaction.user)
+							.setDescription('No automatic threads configuration for the channel could be found.'),
+					],
+					ephemeral: true,
+				})
+				.catch(() => false);
 		}
 
 		const { description, title } = row;
@@ -378,7 +411,12 @@ export class ComponentInteraction extends Component.Interaction {
 		await database
 			.update(automaticThreadsConfigurations)
 			.set({ managers })
-			.where(eq(automaticThreadsConfigurations.channelId, dynamicValue));
+			.where(
+				and(
+					eq(automaticThreadsConfigurations.channelId, dynamicValue),
+					eq(automaticThreadsConfigurations.guildId, interaction.guildId),
+				),
+			);
 
 		const roles = managers.map((id) => roleMention(id)).join(', ');
 		const embed = super
@@ -397,9 +435,9 @@ export class ComponentInteraction extends Component.Interaction {
 	private configurationOverview(context: Component.Context<'button'>) {
 		const { customId, dynamicValue } = super.extractCustomId(context.interaction.customId, true);
 		const type = customId.includes('previous') ? 'previous' : 'next';
-		const currentPage = parseInteger(dynamicValue);
+		const { data: currentPage, success } = z.coerce.number().int().nonnegative().safeParse(dynamicValue);
 
-		if (currentPage === undefined) return;
+		if (!success) return;
 
 		const page = currentPage + (type === 'next' ? 1 : -1);
 
@@ -439,18 +477,33 @@ export class ModalInteraction extends Modal.Interaction {
 			});
 		}
 
-		const title = interaction.fields.getTextInputValue('title');
-		const description = interaction.fields.getTextInputValue('description');
+		const { data, error, success } = automaticThreadsConfigurationsInsertSchema
+			.pick({ openingMessageDescription: true, openingMessageTitle: true })
+			.safeParse({
+				openingMessageDescription: interaction.fields.getTextInputValue('description'),
+				openingMessageTitle: interaction.fields.getTextInputValue('title'),
+			});
+
+		if (!success) {
+			return interaction.editReply({
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
 
 		await database
 			.insert(automaticThreadsConfigurations)
 			.values({
-				channelId: dynamicValue,
+				channelId: channel.id,
 				guildId: interaction.guildId,
-				openingMessageTitle: title,
-				openingMessageDescription: description,
+				openingMessageTitle: data.openingMessageTitle,
+				openingMessageDescription: data.openingMessageDescription,
 			})
-			.onDuplicateKeyUpdate({ set: { openingMessageTitle: title, openingMessageDescription: description } });
+			.onDuplicateKeyUpdate({
+				set: {
+					openingMessageTitle: data.openingMessageTitle,
+					openingMessageDescription: data.openingMessageDescription,
+				},
+			});
 
 		return interaction.editReply({
 			embeds: [
@@ -458,7 +511,12 @@ export class ModalInteraction extends Modal.Interaction {
 					// eslint-disable-next-line @typescript-eslint/no-base-to-string
 					`${interaction.user.toString()} created or updated an automatic threads configuration in ${channel.toString()}. An example opening message can be seen in the embed below.`,
 				),
-				automaticThreadsEmbed({ description, embed: super.embed, title, user: interaction.user }),
+				automaticThreadsEmbed({
+					description: data.openingMessageDescription,
+					embed: super.embed,
+					title: data.openingMessageTitle,
+					user: interaction.user,
+				}),
 			],
 		});
 	}

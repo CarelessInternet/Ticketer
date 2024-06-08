@@ -28,10 +28,10 @@ import {
 	ThreadTicketing,
 	extractEmoji,
 	messageWithPagination,
-	parseInteger,
 	ticketThreadsOpeningMessageDescription,
 	ticketThreadsOpeningMessageTitle,
 	withPagination,
+	zodErrorToString,
 } from '@/utils';
 import {
 	and,
@@ -42,9 +42,12 @@ import {
 	like,
 	not,
 	ticketThreadsCategories,
+	ticketThreadsCategoriesInsertSchema,
+	ticketThreadsCategoriesSelectSchema,
 	ticketThreadsConfigurations,
 	ticketsThreads,
 } from '@ticketer/database';
+import { z } from 'zod';
 
 const MAXIMUM_CATEGORY_AMOUNT = 10;
 const CATEGORY_PAGE_SIZE = 2;
@@ -216,7 +219,7 @@ function categoryFieldsModal<T>(
 		.setTitle('Category Emoji, Title, & Description')
 		.setComponents(row1, row2, row3);
 
-	return context.interaction.showModal(modal);
+	return context.interaction.showModal(modal).catch(() => false);
 }
 
 export default class extends Command.Interaction {
@@ -303,7 +306,18 @@ export default class extends Command.Interaction {
 	async settingsGroup({ interaction }: Command.Context<'chat'>) {
 		switch (interaction.options.getSubcommand(true)) {
 			case 'active-tickets': {
-				const activeTickets = interaction.options.getInteger('amount', true);
+				const {
+					data: activeTickets,
+					error,
+					success,
+				} = z.number().int().gte(1).lte(255).safeParse(interaction.options.getInteger('amount', true));
+
+				if (!success) {
+					return interaction.editReply({
+						embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+					});
+				}
+
 				const { guildId, user } = interaction;
 
 				await database
@@ -337,8 +351,7 @@ export default class extends Command.Interaction {
 		const [result] = await database
 			.select({ activeTickets: ticketThreadsConfigurations.activeTickets })
 			.from(ticketThreadsConfigurations)
-			.where(eq(ticketThreadsConfigurations.guildId, guildId))
-			.limit(1);
+			.where(eq(ticketThreadsConfigurations.guildId, guildId));
 
 		if (!result) {
 			return interaction.editReply({
@@ -390,14 +403,22 @@ export default class extends Command.Interaction {
 
 	@DeferReply()
 	private async categoryConfiguration({ interaction }: Command.Context<'chat'>) {
-		const id = parseInteger(interaction.options.getString('title', true));
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(interaction.options.getString('title', true)));
 
-		if (id === undefined) return;
+		if (!success) {
+			return interaction.editReply({
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
 
 		const [result] = await database
 			.select({ emoji: ticketThreadsCategories.categoryEmoji, title: ticketThreadsCategories.categoryTitle })
 			.from(ticketThreadsCategories)
-			.where(and(eq(ticketThreadsCategories.guildId, interaction.guildId), eq(ticketThreadsCategories.id, id)));
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		if (!result) {
 			return interaction.editReply({
@@ -411,7 +432,7 @@ export default class extends Command.Interaction {
 
 		const embed = super.embed.setTitle(ThreadTicketing.titleAndEmoji(result.title, result.emoji));
 		const categoriesMenu = new StringSelectMenuBuilder()
-			.setCustomId(super.customId('ticket_threads_category_configuration', id))
+			.setCustomId(super.customId('ticket_threads_category_configuration', categoryId))
 			.setMinValues(1)
 			.setMaxValues(1)
 			.setPlaceholder('Edit one of the following ticket category options:')
@@ -466,17 +487,25 @@ export default class extends Command.Interaction {
 	@DeferReply()
 	@HasGlobalConfiguration
 	private async categoryDelete({ interaction }: Command.Context<'chat'>) {
-		const id = parseInteger(interaction.options.getString('title', true));
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(interaction.options.getString('title', true)));
 
-		if (id === undefined) return;
+		if (!success) {
+			return interaction.editReply({
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
 
 		const [row] = await database
 			.select({ amount: count(), title: ticketThreadsCategories.categoryTitle })
 			.from(ticketsThreads)
 			.where(
 				and(
+					eq(ticketsThreads.categoryId, categoryId),
 					eq(ticketsThreads.guildId, interaction.guildId),
-					eq(ticketsThreads.categoryId, id),
 					eq(ticketsThreads.state, 'active'),
 				),
 			)
@@ -485,12 +514,12 @@ export default class extends Command.Interaction {
 
 		if (amount > 0) {
 			const confirmButton = new ButtonBuilder()
-				.setCustomId(super.customId('ticket_threads_category_delete_confirm', id))
+				.setCustomId(super.customId('ticket_threads_category_delete_confirm', categoryId))
 				.setEmoji('☑️')
 				.setLabel('Confirm')
 				.setStyle(ButtonStyle.Success);
 			const cancelButton = new ButtonBuilder()
-				.setCustomId(super.customId('ticket_threads_category_delete_cancel', id))
+				.setCustomId(super.customId('ticket_threads_category_delete_cancel', categoryId))
 				.setEmoji('✖️')
 				.setLabel('Cancel')
 				.setStyle(ButtonStyle.Danger);
@@ -514,8 +543,10 @@ export default class extends Command.Interaction {
 		const [result] = await database
 			.select({ title: ticketThreadsCategories.categoryTitle })
 			.from(ticketThreadsCategories)
-			.where(eq(ticketThreadsCategories.id, id));
-		await database.delete(ticketThreadsCategories).where(eq(ticketThreadsCategories.id, id));
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
+		await database
+			.delete(ticketThreadsCategories)
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		const embed = super
 			.userEmbed(interaction.user)
@@ -651,12 +682,19 @@ export class ComponentInteraction extends Component.Interaction {
 		}
 	}
 
-	// It is not possible to defer modals...
 	private async categoryFieldsModalValues({ interaction }: Component.Context) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
-		const id = parseInteger(dynamicValue);
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
 
-		if (id === undefined) return;
+		if (!success) {
+			return interaction.reply({
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
 
 		const [row] = await database
 			.select({
@@ -665,7 +703,7 @@ export class ComponentInteraction extends Component.Interaction {
 				description: ticketThreadsCategories.categoryDescription,
 			})
 			.from(ticketThreadsCategories)
-			.where(eq(ticketThreadsCategories.id, id));
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		if (!row) {
 			return interaction.reply({
@@ -675,16 +713,25 @@ export class ComponentInteraction extends Component.Interaction {
 			});
 		}
 
-		void categoryFieldsModal.call(this, { interaction }, { id, ...row });
+		void categoryFieldsModal.call(this, { interaction }, { id: categoryId, ...row });
 	}
 
 	@DeferUpdate
 	private async categoryChannel({ interaction }: Component.Context<'channel'>) {
 		const { customId, dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const type = customId.includes('logs') ? 'logs channel' : 'ticket channel';
-		const id = parseInteger(dynamicValue);
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
 
-		if (id === undefined) return;
+		if (!success) {
+			return interaction.editReply({
+				components: [],
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
 
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const channel = interaction.channels.at(0)!;
@@ -694,7 +741,7 @@ export class ComponentInteraction extends Component.Interaction {
 			.set({
 				...(type === 'ticket channel' ? { channelId: channel.id } : { logsChannelId: channel.id }),
 			})
-			.where(eq(ticketThreadsCategories.id, id));
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		const embed = super
 			.userEmbed(interaction.user)
@@ -702,19 +749,31 @@ export class ComponentInteraction extends Component.Interaction {
 			// eslint-disable-next-line @typescript-eslint/no-base-to-string
 			.setDescription(`${interaction.user.toString()} updated the ${type} to ${channel.toString()}.`);
 
-		return interaction.editReply({ embeds: [embed], components: [] });
+		return interaction.editReply({ components: [], embeds: [embed] });
 	}
 
 	@DeferUpdate
 	private async categoryManagers({ interaction }: Component.Context<'role'>) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
-		const id = parseInteger(dynamicValue);
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
 
-		if (id === undefined) return;
+		if (!success) {
+			return interaction.editReply({
+				components: [],
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
 
 		const managers = interaction.roles.map((role) => role.id);
 
-		await database.update(ticketThreadsCategories).set({ managers }).where(eq(ticketThreadsCategories.id, id));
+		await database
+			.update(ticketThreadsCategories)
+			.set({ managers })
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		const roles = managers.map((id) => roleMention(id)).join(', ');
 		const embed = super
@@ -726,26 +785,41 @@ export class ComponentInteraction extends Component.Interaction {
 				}.`,
 			);
 
-		return interaction.editReply({ embeds: [embed], components: [] });
+		return interaction.editReply({ components: [], embeds: [embed] });
 	}
 
 	@DeferUpdate
 	private async confirmDeleteCategory({ interaction }: Component.Context<'button'>) {
 		const { customId, dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const confirmDeletion = customId.includes('confirm');
-		const id = parseInteger(dynamicValue);
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
 
-		if (id === undefined) return;
+		if (!success) {
+			return interaction.reply({
+				components: [],
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
 
 		// TODO: change to use the RETURNING clause for MariaDB when it gets released.
 		const [row] = await database
 			.select({ title: ticketThreadsCategories.categoryTitle })
 			.from(ticketThreadsCategories)
-			.where(eq(ticketThreadsCategories.id, id));
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		if (confirmDeletion) {
-			await database.delete(ticketsThreads).where(eq(ticketsThreads.categoryId, id));
-			await database.delete(ticketThreadsCategories).where(eq(ticketThreadsCategories.id, id));
+			await database
+				.delete(ticketsThreads)
+				.where(and(eq(ticketsThreads.categoryId, categoryId), eq(ticketsThreads.guildId, interaction.guildId)));
+			await database
+				.delete(ticketThreadsCategories)
+				.where(
+					and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)),
+				);
 		}
 
 		return interaction.editReply({
@@ -767,21 +841,28 @@ export class ComponentInteraction extends Component.Interaction {
 	private categoryView({ interaction }: Component.Context<'button'>) {
 		const { customId, dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const type = customId.includes('previous') ? 'previous' : 'next';
-		const currentPage = parseInteger(dynamicValue);
+		const { data: currentPage, success } = z.coerce.number().int().nonnegative().safeParse(dynamicValue);
 
-		if (currentPage === undefined) return;
+		if (!success) return;
 
 		const page = currentPage + (type === 'next' ? 1 : -1);
 
 		void getCategories.call(this, { interaction }, page);
 	}
 
-	// It is not possible to defer modals...
 	private async categoryMessageTitleDescriptionValues({ interaction }: Component.Context) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
-		const id = parseInteger(dynamicValue);
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
 
-		if (id === undefined) return;
+		if (!success) {
+			return interaction.reply({
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
 
 		const [row] = await database
 			.select({
@@ -789,7 +870,7 @@ export class ComponentInteraction extends Component.Interaction {
 				description: ticketThreadsCategories.openingMessageDescription,
 			})
 			.from(ticketThreadsCategories)
-			.where(eq(ticketThreadsCategories.id, id));
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		if (!row) {
 			return interaction.reply({
@@ -822,20 +903,28 @@ export class ComponentInteraction extends Component.Interaction {
 		const row2 = new ActionRowBuilder<TextInputBuilder>().setComponents(descriptionInput);
 
 		const modal = new ModalBuilder()
-			.setCustomId(super.customId('ticket_threads_category_message', dynamicValue))
+			.setCustomId(super.customId('ticket_threads_category_message', categoryId))
 			.setTitle('Opening Message Title, & Description')
 			.setComponents(row1, row2);
 
-		return interaction.showModal(modal);
+		return interaction.showModal(modal).catch(() => false);
 	}
 
 	@DeferReply()
 	private async categoryPrivateAndNotification({ interaction }: Component.Context<'string'>) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const type = interaction.values.at(0)?.includes('private') ? 'private threads' : 'thread notification';
-		const id = parseInteger(dynamicValue);
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
 
-		if (id === undefined) return;
+		if (!success) {
+			return interaction.editReply({
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
 
 		await database
 			.update(ticketThreadsCategories)
@@ -844,7 +933,7 @@ export class ComponentInteraction extends Component.Interaction {
 					? { privateThreads: not(ticketThreadsCategories.privateThreads) }
 					: { threadNotifications: not(ticketThreadsCategories.threadNotifications) },
 			)
-			.where(eq(ticketThreadsCategories.id, id));
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		const embed = super
 			.userEmbed(interaction.user)
@@ -857,16 +946,24 @@ export class ComponentInteraction extends Component.Interaction {
 	@DeferReply()
 	private async categorySilentPings({ interaction }: Component.Context<'string'>) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
-		const id = parseInteger(dynamicValue);
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
 
-		if (id === undefined) return;
+		if (!success) {
+			return interaction.editReply({
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
 
 		await database
 			.update(ticketThreadsCategories)
 			.set({
 				silentPings: not(ticketThreadsCategories.silentPings),
 			})
-			.where(eq(ticketThreadsCategories.id, id));
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		const embed = super
 			.userEmbed(interaction.user)
@@ -898,9 +995,8 @@ export class ModalInteraction extends Modal.Interaction {
 				return this.categoryMessageTitleDescription({ interaction });
 			}
 			default: {
-				return interaction.reply({
+				return interaction.editReply({
 					embeds: [super.userEmbedError(interaction.user).setDescription('The modal ID could not be found.')],
-					ephemeral: true,
 				});
 			}
 		}
@@ -909,22 +1005,46 @@ export class ModalInteraction extends Modal.Interaction {
 	private async categoryFields({ interaction }: Modal.Context) {
 		const { customId, fields, guildId, user } = interaction;
 		const { dynamicValue } = super.extractCustomId(customId);
-		const emoji = fields.getTextInputValue('emoji');
 
+		const emoji = fields.getTextInputValue('emoji');
 		const categoryEmoji = extractEmoji(emoji);
-		const categoryTitle = fields.getTextInputValue('title');
-		const categoryDescription = fields.getTextInputValue('description');
+
+		const {
+			data: values,
+			error,
+			success,
+		} = ticketThreadsCategoriesInsertSchema.pick({ categoryTitle: true, categoryDescription: true }).safeParse({
+			categoryTitle: fields.getTextInputValue('title'),
+			categoryDescription: fields.getTextInputValue('description'),
+		});
+
+		if (!success) {
+			return interaction.editReply({
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
+
+		const { categoryDescription, categoryTitle } = values;
 
 		if (dynamicValue) {
-			const id = parseInteger(dynamicValue);
+			const {
+				data: categoryId,
+				error: idError,
+				success: idSuccess,
+			} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
 
-			if (id === undefined) return;
+			if (!idSuccess) {
+				return interaction.editReply({
+					embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(idError))],
+				});
+			}
 
 			await database
 				.update(ticketThreadsCategories)
-				// eslint-disable-next-line unicorn/no-null
-				.set({ categoryDescription, categoryEmoji: categoryEmoji ?? null, categoryTitle })
-				.where(eq(ticketThreadsCategories.id, id));
+				.set({ categoryDescription, categoryEmoji, categoryTitle })
+				.where(
+					and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)),
+				);
 		} else {
 			const [row] = await database
 				.select({ amount: count() })
@@ -982,17 +1102,41 @@ export class ModalInteraction extends Modal.Interaction {
 	private async categoryMessageTitleDescription({ interaction }: Modal.Context) {
 		const { customId, fields, user } = interaction;
 		const { dynamicValue } = super.extractCustomId(customId, true);
-		const id = parseInteger(dynamicValue);
+		const {
+			data: categoryId,
+			error: idError,
+			success: idSuccess,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
 
-		if (id === undefined) return;
+		if (!idSuccess) {
+			return interaction.editReply({
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(idError))],
+			});
+		}
 
-		const openingMessageTitle = fields.getTextInputValue('title');
-		const openingMessageDescription = fields.getTextInputValue('description');
+		const {
+			data: values,
+			error,
+			success,
+		} = ticketThreadsCategoriesInsertSchema
+			.pick({ openingMessageTitle: true, openingMessageDescription: true })
+			.safeParse({
+				openingMessageTitle: fields.getTextInputValue('title'),
+				openingMessageDescription: fields.getTextInputValue('description'),
+			});
+
+		if (!success) {
+			return interaction.editReply({
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
+
+		const { openingMessageDescription, openingMessageTitle } = values;
 
 		await database
 			.update(ticketThreadsCategories)
 			.set({ openingMessageTitle, openingMessageDescription })
-			.where(eq(ticketThreadsCategories.id, id));
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		const embed = super
 			.userEmbed(user)
@@ -1001,12 +1145,12 @@ export class ModalInteraction extends Modal.Interaction {
 			.setFields(
 				{
 					name: 'Title',
-					value: openingMessageTitle,
+					value: openingMessageTitle ?? 'No custom opening message title specified.',
 					inline: true,
 				},
 				{
 					name: 'Description',
-					value: openingMessageDescription,
+					value: openingMessageDescription ?? 'No custom opening message description specified.',
 					inline: true,
 				},
 			);

@@ -12,15 +12,24 @@ import {
 	roleMention,
 } from 'discord.js';
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
-import { database, desc, eq, userForumsConfigurations } from '@ticketer/database';
+import {
+	and,
+	database,
+	desc,
+	eq,
+	userForumsConfigurations,
+	userForumsConfigurationsInsertSchema,
+	userForumsConfigurationsSelectSchema,
+} from '@ticketer/database';
 import {
 	messageWithPagination,
-	parseInteger,
 	userForumEmbed,
 	userForumsOpeningMessageDescription,
 	userForumsOpeningMessageTitle,
 	withPagination,
+	zodErrorToString,
 } from '@/utils';
+import { z } from 'zod';
 
 function IsForumChannel(_: object, __: string, descriptor: PropertyDescriptor) {
 	const original = descriptor.value as () => void;
@@ -131,7 +140,7 @@ function openingMessageModal<T>(
 		.setTitle('Opening Message Title & Description')
 		.setComponents(row1, row2);
 
-	return interaction.showModal(modal);
+	return interaction.showModal(modal).catch(() => false);
 }
 
 export default class extends Command.Interaction {
@@ -227,10 +236,11 @@ export default class extends Command.Interaction {
 		if (!result) {
 			return interaction.editReply({
 				embeds: [
-					super.userEmbedError(interaction.user).setDescription(
-						// eslint-disable-next-line @typescript-eslint/no-base-to-string
-						`The user forum configuration for the channel ${channel.toString()} could not be found. Please create one instead of editing it.`,
-					),
+					super
+						.userEmbedError(interaction.user)
+						.setDescription(
+							`The user forum configuration for the channel ${channel.toString()} could not be found. Please create one instead of editing it.`,
+						),
 				],
 			});
 		}
@@ -255,7 +265,6 @@ export default class extends Command.Interaction {
 
 		const row = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(selectMenu);
 
-		// eslint-disable-next-line @typescript-eslint/no-base-to-string
 		return interaction.editReply({ components: [row], content: channel.toString() });
 	}
 
@@ -267,10 +276,12 @@ export default class extends Command.Interaction {
 
 		return interaction.editReply({
 			embeds: [
-				super.userEmbed(interaction.user).setTitle('Deleted a User Forum Configuration').setDescription(
-					// eslint-disable-next-line @typescript-eslint/no-base-to-string
-					`${interaction.user.toString()} deleted a user forum configuration in the channel ${channel.toString()} if one existed.`,
-				),
+				super
+					.userEmbed(interaction.user)
+					.setTitle('Deleted a User Forum Configuration')
+					.setDescription(
+						`${interaction.user.toString()} deleted a user forum configuration in the channel ${channel.toString()} if one existed.`,
+					),
 			],
 		});
 	}
@@ -330,24 +341,42 @@ export class ComponentInteraction extends Component.Interaction {
 	}
 
 	private async openingMessage(context: Component.Context<'string'>) {
-		const { dynamicValue: id } = super.extractCustomId(context.interaction.customId, true);
+		const { dynamicValue } = super.extractCustomId(context.interaction.customId, true);
+		const { data: id, error, success } = userForumsConfigurationsSelectSchema.shape.channelId.safeParse(dynamicValue);
+
+		if (!success) {
+			return context.interaction
+				.reply({
+					embeds: [super.userEmbedError(context.interaction.user).setDescription(zodErrorToString(error))],
+					ephemeral: true,
+				})
+				.catch(() => false);
+		}
+
 		const [row] = await database
 			.select({
 				title: userForumsConfigurations.openingMessageTitle,
 				description: userForumsConfigurations.openingMessageDescription,
 			})
 			.from(userForumsConfigurations)
-			.where(eq(userForumsConfigurations.channelId, id));
+			.where(
+				and(
+					eq(userForumsConfigurations.channelId, id),
+					eq(userForumsConfigurations.guildId, context.interaction.guildId),
+				),
+			);
 
 		if (!row) {
-			return context.interaction.reply({
-				embeds: [
-					super
-						.userEmbedError(context.interaction.user)
-						.setDescription('No user forum configuration for the channel could be found.'),
-				],
-				ephemeral: true,
-			});
+			return context.interaction
+				.reply({
+					embeds: [
+						super
+							.userEmbedError(context.interaction.user)
+							.setDescription('No user forum configuration for the channel could be found.'),
+					],
+					ephemeral: true,
+				})
+				.catch(() => false);
 		}
 
 		const { description, title } = row;
@@ -370,34 +399,51 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private async updateManagers({ interaction }: Component.Context<'role'>) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const managers = interaction.roles.map((role) => role.id);
+		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const {
+			data: channelId,
+			error,
+			success,
+		} = userForumsConfigurationsSelectSchema.shape.channelId.safeParse(dynamicValue);
+
+		if (!success) {
+			return interaction.editReply({
+				components: [],
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
 
 		await database
 			.update(userForumsConfigurations)
 			.set({ managers })
-			.where(eq(userForumsConfigurations.channelId, dynamicValue));
+			.where(
+				and(
+					eq(userForumsConfigurations.channelId, channelId),
+					eq(userForumsConfigurations.guildId, interaction.guildId),
+				),
+			);
 
 		const roles = managers.map((id) => roleMention(id)).join(', ');
 		const embed = super
 			.userEmbed(interaction.user)
 			.setTitle('Updated the User Forum Managers')
 			.setDescription(
-				`${interaction.user.toString()} updated the managers of the forum threads in ${channelMention(dynamicValue)} to: ${
+				`${interaction.user.toString()} updated the managers of the forum threads in ${channelMention(channelId)} to: ${
 					managers.length > 0 ? roles : 'none'
 				}.`,
 			);
 
-		return interaction.editReply({ embeds: [embed], components: [] });
+		return interaction.editReply({ components: [], embeds: [embed] });
 	}
 
 	@DeferUpdate
 	private configurationOverview(context: Component.Context<'button'>) {
 		const { customId, dynamicValue } = super.extractCustomId(context.interaction.customId, true);
 		const type = customId.includes('previous') ? 'previous' : 'next';
-		const currentPage = parseInteger(dynamicValue);
+		const { data: currentPage, success } = z.coerce.number().int().nonnegative().safeParse(dynamicValue);
 
-		if (currentPage === undefined) return;
+		if (!success) return;
 
 		const page = currentPage + (type === 'next' ? 1 : -1);
 
@@ -437,18 +483,33 @@ export class ModalInteraction extends Modal.Interaction {
 			});
 		}
 
-		const title = interaction.fields.getTextInputValue('title');
-		const description = interaction.fields.getTextInputValue('description');
+		const { data, error, success } = userForumsConfigurationsInsertSchema
+			.pick({ openingMessageDescription: true, openingMessageTitle: true })
+			.safeParse({
+				openingMessageDescription: interaction.fields.getTextInputValue('description'),
+				openingMessageTitle: interaction.fields.getTextInputValue('title'),
+			});
+
+		if (!success) {
+			return interaction.editReply({
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
 
 		await database
 			.insert(userForumsConfigurations)
 			.values({
 				channelId: dynamicValue,
 				guildId: interaction.guildId,
-				openingMessageTitle: title,
-				openingMessageDescription: description,
+				openingMessageTitle: data.openingMessageTitle,
+				openingMessageDescription: data.openingMessageDescription,
 			})
-			.onDuplicateKeyUpdate({ set: { openingMessageTitle: title, openingMessageDescription: description } });
+			.onDuplicateKeyUpdate({
+				set: {
+					openingMessageTitle: data.openingMessageTitle,
+					openingMessageDescription: data.openingMessageDescription,
+				},
+			});
 
 		return interaction.editReply({
 			embeds: [
@@ -456,7 +517,12 @@ export class ModalInteraction extends Modal.Interaction {
 					// eslint-disable-next-line @typescript-eslint/no-base-to-string
 					`${interaction.user.toString()} created or updated a user forum configuration in ${channel.toString()}. An example opening message can be seen in the embed below.`,
 				),
-				userForumEmbed({ description, embed: super.embed, title, user: interaction.user }),
+				userForumEmbed({
+					description: data.openingMessageDescription,
+					embed: super.embed,
+					title: data.openingMessageTitle,
+					user: interaction.user,
+				}),
 			],
 		});
 	}

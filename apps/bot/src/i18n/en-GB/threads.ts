@@ -70,6 +70,10 @@ export default {
 				},
 				invalidFields: {
 					title: ERROR_TITLE,
+					fields: {
+						title: 'The support ticket title must be less than 100 characters long.',
+						description: 'The support ticket description must be less than 2000 characters long.',
+					},
 				},
 			},
 			ticketCreated: {
@@ -122,6 +126,10 @@ export default {
 						notEditable: {
 							title: ERROR_TITLE,
 							description: 'I do not have the permission to edit the title in the thread.',
+						},
+						tooLong: {
+							title: ERROR_TITLE,
+							description: 'The title may not be longer than 100 characters.',
 						},
 					},
 					success: {

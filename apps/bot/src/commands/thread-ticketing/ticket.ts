@@ -413,10 +413,15 @@ export class ModalInteraction extends Modal.Interaction {
 			data,
 			error,
 			success: fieldsSuccess,
-		} = z.object({ title: z.string().min(1).max(100), description: z.string().min(1).max(2000) }).safeParse({
-			title: fields.getTextInputValue('title'),
-			description: fields.getTextInputValue('description'),
-		});
+		} = z
+			.object({
+				title: z.string().min(1).max(100, translations.createTicket.errors.invalidFields.fields.title()),
+				description: z.string().min(1).max(2000, translations.createTicket.errors.invalidFields.fields.description()),
+			})
+			.safeParse({
+				title: fields.getTextInputValue('title'),
+				description: fields.getTextInputValue('description'),
+			});
 
 		if (!fieldsSuccess) {
 			return interaction.editReply({
@@ -608,7 +613,18 @@ export class ModalInteraction extends Modal.Interaction {
 		}
 
 		const oldTitle = channel.name;
-		const newTitle = fields.getTextInputValue('title');
+		const { data: newTitle, success } = z.string().min(1).max(100).safeParse(fields.getTextInputValue('title'));
+
+		if (!success) {
+			return interaction.editReply({
+				embeds: [
+					super
+						.userEmbedError(interaction.user, translations.renameTitle.modal.errors.tooLong.title())
+						.setDescription(translations.renameTitle.modal.errors.tooLong.description()),
+				],
+			});
+		}
+
 		const successTranslations = translations.renameTitle.modal.success;
 		const guildSuccessTranslations =
 			translate(guildLocale).tickets.threads.categories.buttons.renameTitle.modal.success;

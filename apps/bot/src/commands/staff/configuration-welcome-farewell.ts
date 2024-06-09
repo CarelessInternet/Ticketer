@@ -367,7 +367,7 @@ export class ComponentInteraction extends Component.Interaction {
 			.userEmbed(user)
 			.setTitle('Updated the Welcome/Farewell Configuration')
 			.setDescription(
-				`${user.toString()} has toggled the ${type} enabled option to ${valueAsBoolean ? 'enabled' : 'disabled'}.`,
+				`${user.toString()} has toggled the ${type} option to ${valueAsBoolean ? 'enabled' : 'disabled'}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed] });

@@ -951,7 +951,7 @@ export class ComponentInteraction extends Component.Interaction {
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		if (!row) {
-			return interaction.reply({
+			return interaction.editReply({
 				embeds: [
 					super.userEmbedError(interaction.user).setDescription('No category with the given ID could be found.'),
 				],
@@ -997,7 +997,7 @@ export class ComponentInteraction extends Component.Interaction {
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		if (!row) {
-			return interaction.reply({
+			return interaction.editReply({
 				embeds: [
 					super.userEmbedError(interaction.user).setDescription('No category with the given ID could be found.'),
 				],

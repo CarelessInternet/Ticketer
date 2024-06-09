@@ -883,7 +883,7 @@ export class ComponentInteraction extends Component.Interaction {
 		const titleInput = (row.title ? new TextInputBuilder().setValue(row.title) : new TextInputBuilder())
 			.setCustomId(super.customId('title'))
 			.setLabel('Message Title')
-			.setRequired(true)
+			.setRequired(false)
 			.setMinLength(1)
 			.setMaxLength(100)
 			.setStyle(TextInputStyle.Short)
@@ -893,7 +893,7 @@ export class ComponentInteraction extends Component.Interaction {
 		)
 			.setCustomId(super.customId('description'))
 			.setLabel('Message Description')
-			.setRequired(true)
+			.setRequired(false)
 			.setMinLength(1)
 			.setMaxLength(500)
 			.setStyle(TextInputStyle.Paragraph)
@@ -1080,7 +1080,7 @@ export class ModalInteraction extends Modal.Interaction {
 			.setFields(
 				{
 					name: 'Emoji',
-					value: categoryEmoji ?? 'None',
+					value: categoryEmoji ?? 'None.',
 					inline: true,
 				},
 				{
@@ -1141,19 +1141,25 @@ export class ModalInteraction extends Modal.Interaction {
 		const embed = super
 			.userEmbed(user)
 			.setTitle('Updated the Thread Ticket Category')
-			.setDescription(`${user.toString()} updated the opening message title and description to the following:`)
-			.setFields(
-				{
-					name: 'Title',
-					value: openingMessageTitle ?? 'No custom opening message title specified.',
-					inline: true,
-				},
-				{
-					name: 'Description',
-					value: openingMessageDescription ?? 'No custom opening message description specified.',
-					inline: true,
-				},
+			.setDescription(
+				`${user.toString()} updated the opening message title and description to the following if they have text:`,
 			);
+
+		if (openingMessageTitle) {
+			embed.addFields({
+				name: 'Title',
+				value: openingMessageTitle,
+				inline: true,
+			});
+		}
+
+		if (openingMessageDescription) {
+			embed.addFields({
+				name: 'Description',
+				value: openingMessageDescription,
+				inline: true,
+			});
+		}
 
 		return interaction.editReply({ embeds: [embed] });
 	}

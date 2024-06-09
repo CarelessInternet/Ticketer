@@ -344,10 +344,31 @@ export class ComponentInteraction extends Component.Interaction {
 				set: type === 'welcome' ? { welcomeEnabled: not(welcomeEnabled) } : { farewellEnabled: not(farewellEnabled) },
 			});
 
+		const [row] = await database
+			.select({
+				welcomeEnabled: welcomeAndFarewell.welcomeEnabled,
+				farewellEnabled: welcomeAndFarewell.farewellEnabled,
+			})
+			.from(welcomeAndFarewell)
+			.where(eq(welcomeAndFarewell.guildId, interaction.guildId));
+
+		if (!row) {
+			return interaction.editReply({
+				embeds: [
+					super
+						.userEmbedError(interaction.user)
+						.setDescription('No welcome and farewell configuration for the server could be found.'),
+				],
+			});
+		}
+
+		const valueAsBoolean = type === 'welcome' ? row.welcomeEnabled : row.farewellEnabled;
 		const embed = super
 			.userEmbed(user)
 			.setTitle('Updated the Welcome/Farewell Configuration')
-			.setDescription(`${user.toString()} has toggled the ${type} enabled option.`);
+			.setDescription(
+				`${user.toString()} has toggled the ${type} enabled option to ${valueAsBoolean ? 'enabled' : 'disabled'}.`,
+			);
 
 		return interaction.editReply({ embeds: [embed] });
 	}

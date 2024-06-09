@@ -28,6 +28,10 @@ export const ticketThreadsConfigurations = mysqlTable('ticketThreadsConfiguratio
 	activeTickets: tinyint('activeTickets', { unsigned: true }).notNull().default(1),
 });
 
+export const ticketThreadsConfigurationsInsertSchema = createInsertSchema(ticketThreadsConfigurations, {
+	activeTickets: (schema) => schema.activeTickets.int().gte(1).lte(255),
+});
+
 export const ticketThreadsCategories = mysqlTable(
 	'ticketThreadsCategories',
 	{

@@ -45,6 +45,7 @@ import {
 	ticketThreadsCategoriesInsertSchema,
 	ticketThreadsCategoriesSelectSchema,
 	ticketThreadsConfigurations,
+	ticketThreadsConfigurationsInsertSchema,
 	ticketsThreads,
 } from '@ticketer/database';
 import { z } from 'zod';
@@ -138,6 +139,11 @@ function categoryViewEmbed(
 				{
 					name: 'Private Threads',
 					value: category.privateThreads ? 'Enabled' : 'Disabled',
+					inline: true,
+				},
+				{
+					name: 'Silent Pings',
+					value: category.silentPings ? 'Enabled' : 'Disabled',
 					inline: true,
 				},
 				{
@@ -310,7 +316,9 @@ export default class extends Command.Interaction {
 					data: activeTickets,
 					error,
 					success,
-				} = z.number().int().gte(1).lte(255).safeParse(interaction.options.getInteger('amount', true));
+				} = ticketThreadsConfigurationsInsertSchema.shape.activeTickets.safeParse(
+					interaction.options.getInteger('amount', true),
+				);
 
 				if (!success) {
 					return interaction.editReply({
@@ -329,7 +337,7 @@ export default class extends Command.Interaction {
 					.userEmbed(user)
 					.setTitle('Updated the Thead Ticket Configuration')
 					.setDescription(
-						`${user.toString()} updated the amount of active tickets a user may have at once to ${activeTickets.toString()}.`,
+						`${user.toString()} updated the amount of active tickets a user may have at once to ${activeTickets?.toString() ?? 'Unknown'}.`,
 					);
 
 				return interaction.editReply({ embeds: [embed] });
@@ -746,7 +754,6 @@ export class ComponentInteraction extends Component.Interaction {
 		const embed = super
 			.userEmbed(interaction.user)
 			.setTitle('Updated the Thread Ticket Category')
-			// eslint-disable-next-line @typescript-eslint/no-base-to-string
 			.setDescription(`${interaction.user.toString()} updated the ${type} to ${channel.toString()}.`);
 
 		return interaction.editReply({ components: [], embeds: [embed] });
@@ -935,10 +942,29 @@ export class ComponentInteraction extends Component.Interaction {
 			)
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
+		const [row] = await database
+			.select({
+				privateThreads: ticketThreadsCategories.privateThreads,
+				threadNotifications: ticketThreadsCategories.threadNotifications,
+			})
+			.from(ticketThreadsCategories)
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
+
+		if (!row) {
+			return interaction.reply({
+				embeds: [
+					super.userEmbedError(interaction.user).setDescription('No category with the given ID could be found.'),
+				],
+			});
+		}
+
+		const valueAsBoolean = type === 'private threads' ? row.privateThreads : row.threadNotifications;
 		const embed = super
 			.userEmbed(interaction.user)
 			.setTitle('Updated the Thread Ticket Category')
-			.setDescription(`${interaction.user.toString()} has toggled the ${type} enabled option.`);
+			.setDescription(
+				`${interaction.user.toString()} has toggled the ${type} option to ${valueAsBoolean ? 'enabled' : 'disabled'}.`,
+			);
 
 		return interaction.editReply({ embeds: [embed] });
 	}
@@ -965,10 +991,25 @@ export class ComponentInteraction extends Component.Interaction {
 			})
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
+		const [row] = await database
+			.select({ silentPings: ticketThreadsCategories.silentPings })
+			.from(ticketThreadsCategories)
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
+
+		if (!row) {
+			return interaction.reply({
+				embeds: [
+					super.userEmbedError(interaction.user).setDescription('No category with the given ID could be found.'),
+				],
+			});
+		}
+
 		const embed = super
 			.userEmbed(interaction.user)
 			.setTitle('Updated the Thread Ticket Category')
-			.setDescription(`${interaction.user.toString()} has toggled the silent pings enabled option.`);
+			.setDescription(
+				`${interaction.user.toString()} has toggled the silent pings option to ${row.silentPings ? 'enabled' : 'disabled'}.`,
+			);
 
 		return interaction.editReply({ embeds: [embed] });
 	}

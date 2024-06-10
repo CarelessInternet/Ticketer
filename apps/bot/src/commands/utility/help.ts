@@ -1,4 +1,4 @@
-import { ApplicationCommandType, OAuth2Scopes, PermissionFlagsBits, hyperlink, inlineCode } from 'discord.js';
+import { ApplicationCommandType, hyperlink, inlineCode } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
 import { Command } from '@ticketer/djs-framework';
 import { environment } from '@ticketer/env/bot';
@@ -44,20 +44,7 @@ export default class extends Command.Interaction {
 			: undefined;
 		const inviteLink = hyperlink(
 			translations.fields[1].links.invite(),
-			this.client.generateInvite({
-				scopes: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands],
-				permissions: [
-					PermissionFlagsBits.CreatePrivateThreads,
-					PermissionFlagsBits.CreatePublicThreads,
-					PermissionFlagsBits.ManageChannels,
-					PermissionFlagsBits.ManageMessages,
-					PermissionFlagsBits.ManageThreads,
-					PermissionFlagsBits.MentionEveryone,
-					PermissionFlagsBits.ViewChannel,
-					PermissionFlagsBits.SendMessages,
-					PermissionFlagsBits.SendMessagesInThreads,
-				],
-			}),
+			new URL('/invite', environment.WEBSITE_URL).toString(),
 		);
 
 		const linksAsString = [commandDocumentation, website, supportServer, inviteLink].filter(Boolean).join(' | ');

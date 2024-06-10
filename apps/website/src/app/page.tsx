@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 import { Plus } from 'lucide-react';
 
 export default function Home() {
@@ -16,13 +17,10 @@ export default function Home() {
 				</div>
 				<div className="flex justify-center">
 					<Button variant="outline" asChild className="w-fit">
-						<a
-							target="_blank"
-							href="https://discord.com/api/oauth2/authorize?client_id=880454049370083329&permissions=395137133584&scope=bot+applications.commands"
-						>
+						<Link href="/invite" target="_blank">
 							<Plus />
 							Invite to your Discord Server
-						</a>
+						</Link>
 					</Button>
 				</div>
 			</section>

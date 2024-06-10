@@ -135,7 +135,7 @@ function TooltipLinkItem({ children, href, icon }: PropsWithChildren<{ href: str
 const tooltipLinkItems = [
 	{
 		content: 'Invite to Discord Server',
-		href: 'https://discord.com/api/oauth2/authorize?client_id=880454049370083329&permissions=395137133584&scope=bot+applications.commands',
+		href: '/invite',
 		icon: <PlusCircle />,
 	},
 	{

@@ -1,9 +1,8 @@
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
 import { PermissionFlagsBits, channelMention, userMention } from 'discord.js';
-import { ThreadTicketing, messageWithPagination, withPagination } from '@/utils';
+import { ThreadTicketing, goToPage, messageWithPagination, withPagination } from '@/utils';
 import { and, count, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 import { getTranslations } from '@/i18n';
-import { z } from 'zod';
 
 type TicketState = typeof ticketsThreads.$inferSelect.state;
 
@@ -119,14 +118,18 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	public execute(context: Component.Context) {
-		const { customId, dynamicValue } = super.extractCustomId(context.interaction.customId, true);
-		const [pageAsString, state] = dynamicValue.split('_') as [string, TicketState | undefined];
-		const { data: currentPage, success } = z.coerce.number().int().nonnegative().safeParse(pageAsString);
+		const { success, additionalData, error, page } = goToPage.call(this, context.interaction);
 
-		if (!success) return;
+		if (!success) {
+			return void context.interaction.editReply({
+				components: [],
+				embeds: [super.userEmbedError(context.interaction.user).setDescription(error)],
+			});
+		}
 
-		const page = currentPage + (customId.includes('next') ? 1 : -1);
-
-		void viewGlobalTickets.call(this, context, { state, page });
+		void viewGlobalTickets.call(this, context, {
+			state: additionalData.at(0) as ViewGlobalTicketsOptions['state'] | undefined,
+			page,
+		});
 	}
 }

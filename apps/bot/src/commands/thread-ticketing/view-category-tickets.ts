@@ -7,9 +7,15 @@ import {
 	DeferUpdate,
 } from '@ticketer/djs-framework';
 import { PermissionFlagsBits, channelMention, userMention } from 'discord.js';
-import { ThreadTicketing, managerIntersection, messageWithPagination, parseInteger, withPagination } from '@/utils';
+import {
+	ThreadTicketing,
+	goToPage,
+	managerIntersection,
+	messageWithPagination,
+	parseInteger,
+	withPagination,
+} from '@/utils';
 import { and, asc, count, database, eq, like, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
-import { z } from 'zod';
 
 interface ViewCategoryTicketsOptions {
 	categoryId?: string | null;
@@ -157,14 +163,16 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	public execute(context: Component.Context) {
-		const { customId, dynamicValue } = super.extractCustomId(context.interaction.customId, true);
-		const [pageAsString, categoryId] = dynamicValue.split('_') as [string, string | undefined];
-		const { data: currentPage, success } = z.coerce.number().int().nonnegative().safeParse(pageAsString);
+		const { success, additionalData, error, page } = goToPage.call(this, context.interaction);
 
-		if (!success) return;
+		if (!success) {
+			return void context.interaction.editReply({
+				components: [],
+				content: '',
+				embeds: [super.userEmbedError(context.interaction.user).setDescription(error)],
+			});
+		}
 
-		const page = currentPage + (customId.includes('next') ? 1 : -1);
-
-		void viewCategoryTickets.call(this, context, { categoryId, page });
+		void viewCategoryTickets.call(this, context, { categoryId: additionalData.at(0), page });
 	}
 }

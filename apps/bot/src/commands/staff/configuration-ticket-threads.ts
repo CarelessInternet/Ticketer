@@ -27,6 +27,7 @@ import {
 import {
 	ThreadTicketing,
 	extractEmoji,
+	goToPage,
 	messageWithPagination,
 	ticketThreadsOpeningMessageDescription,
 	ticketThreadsOpeningMessageTitle,
@@ -48,7 +49,6 @@ import {
 	ticketThreadsConfigurationsInsertSchema,
 	ticketsThreads,
 } from '@ticketer/database';
-import { z } from 'zod';
 
 const MAXIMUM_CATEGORY_AMOUNT = 10;
 const CATEGORY_PAGE_SIZE = 2;
@@ -846,13 +846,14 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private categoryView({ interaction }: Component.Context<'button'>) {
-		const { customId, dynamicValue } = super.extractCustomId(interaction.customId, true);
-		const type = customId.includes('previous') ? 'previous' : 'next';
-		const { data: currentPage, success } = z.coerce.number().int().nonnegative().safeParse(dynamicValue);
+		const { success, error, page } = goToPage.call(this, interaction);
 
-		if (!success) return;
-
-		const page = currentPage + (type === 'next' ? 1 : -1);
+		if (!success) {
+			return void interaction.editReply({
+				components: [],
+				embeds: [super.userEmbedError(interaction.user).setDescription(error)],
+			});
+		}
 
 		void getCategories.call(this, { interaction }, page);
 	}

@@ -2,6 +2,7 @@ export * from './capitalise';
 export * from './DeepPartial';
 export * from './extractEmoji';
 export * from './format';
+export * from './goToPage';
 export * from './invalidTicket';
 export * from './LogExceptions';
 export * from './managerIntersection';

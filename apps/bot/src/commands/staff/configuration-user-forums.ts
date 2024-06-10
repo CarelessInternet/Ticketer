@@ -22,6 +22,7 @@ import {
 	userForumsConfigurationsSelectSchema,
 } from '@ticketer/database';
 import {
+	goToPage,
 	messageWithPagination,
 	userForumEmbed,
 	userForumsOpeningMessageDescription,
@@ -29,7 +30,6 @@ import {
 	withPagination,
 	zodErrorToString,
 } from '@/utils';
-import { z } from 'zod';
 
 function IsForumChannel(_: object, __: string, descriptor: PropertyDescriptor) {
 	const original = descriptor.value as () => void;
@@ -439,13 +439,14 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private configurationOverview(context: Component.Context<'button'>) {
-		const { customId, dynamicValue } = super.extractCustomId(context.interaction.customId, true);
-		const type = customId.includes('previous') ? 'previous' : 'next';
-		const { data: currentPage, success } = z.coerce.number().int().nonnegative().safeParse(dynamicValue);
+		const { success, error, page } = goToPage.call(this, context.interaction);
 
-		if (!success) return;
-
-		const page = currentPage + (type === 'next' ? 1 : -1);
+		if (!success) {
+			return void context.interaction.editReply({
+				components: [],
+				embeds: [super.userEmbedError(context.interaction.user).setDescription(error)],
+			});
+		}
 
 		void getConfigurations.call(this, context, page);
 	}

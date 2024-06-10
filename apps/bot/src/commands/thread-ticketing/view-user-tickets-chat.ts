@@ -1,7 +1,6 @@
 import { Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
-import { PermissionFlagsBits, type Snowflake } from 'discord.js';
-import { ThreadTicketing } from '@/utils';
-import { z } from 'zod';
+import { ThreadTicketing, goToPage } from '@/utils';
+import { PermissionFlagsBits } from 'discord.js';
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName('view-user-tickets')
@@ -27,14 +26,19 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	public execute(context: Component.Context) {
-		const { customId, dynamicValue } = super.extractCustomId(context.interaction.customId, true);
-		const [pageAsString, userId] = dynamicValue.split('_') as [string, Snowflake];
-		const { data: currentPage, success } = z.coerce.number().int().nonnegative().safeParse(pageAsString);
+		const { success, additionalData, error, page } = goToPage.call(this, context.interaction);
 
-		if (!success) return;
+		if (!success) {
+			return void context.interaction.editReply({
+				components: [],
+				embeds: [super.userEmbedError(context.interaction.user).setDescription(error)],
+			});
+		}
 
-		const page = currentPage + (customId.includes('next') ? 1 : -1);
-
-		void ThreadTicketing.viewUserTickets.call(this, context, { userId, page });
+		void ThreadTicketing.viewUserTickets.call(this, context, {
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			userId: additionalData.at(0)!,
+			page,
+		});
 	}
 }

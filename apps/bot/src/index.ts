@@ -8,10 +8,9 @@ import path from 'node:path';
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 const botFilePath = path.resolve(currentDirectory, './bot.ts');
 
-// https://github.com/esbuild-kit/tsx/issues/354
 const sharder = new ShardingManager(botFilePath, {
-	// Using child_process instead of worker mode results in ERR_UNKNOWN_FILE_EXTENSION.
-	mode: 'worker',
+	execArgv: ['--import=tsx'],
+	mode: 'process',
 	token: environment.DISCORD_BOT_TOKEN,
 });
 

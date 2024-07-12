@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "tsx watch --env-file=../../.env.bot.development.local .",
-		"debug": "tsx watch --inspect-brk --env-file=../../.env.bot.development.local .",
+		"debug": "tsx watch --inspect-wait --env-file=../../.env.bot.development.local .",
 		"start": "tsx .",
 		"lint": "eslint .",
 		"commands:deploy:development": "tsx --env-file=../../.env.bot.development.local ./src/deploy.ts",

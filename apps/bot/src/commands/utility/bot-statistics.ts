@@ -44,8 +44,8 @@ export default class extends Command.Interaction {
 			const users = client.guilds.cache.reduce((accumulator, guild) => accumulator + guild.memberCount, 0);
 
 			const { getHeapStatistics } = await import('node:v8');
-			const roundToTwoDecimals = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
-			const ramInMegabytes = roundToTwoDecimals(getHeapStatistics().total_heap_size / 1024 / 1024);
+			const heapSize = getHeapStatistics().total_heap_size / 1024 / 1024;
+			const ramInMegabytes = Math.round((heapSize + Number.EPSILON) * 100) / 100;
 
 			return { ping, ramInMegabytes, servers, status, uptime, users };
 		});

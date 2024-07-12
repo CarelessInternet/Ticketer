@@ -19,11 +19,13 @@ sharder.on('shardCreate', (shard) => {
 		chalk.green('[Sharding]'),
 		'Created',
 		chalk.yellow(`shard #${shard.id.toString()}`),
-		`on ${formatDateLong(new Date())}.`,
+		`on ${formatDateLong()}.`,
 	);
 	shard.once('ready', () => {
 		console.log(chalk.yellow(`[Shard #${shard.id.toString()}]`), 'This shard has become ready.');
 	});
 });
+
+console.log(chalk.green('[Sharding]'), `Starting the sharding manager on ${formatDateLong()}.`);
 
 void sharder.spawn();

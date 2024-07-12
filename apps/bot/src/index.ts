@@ -3,12 +3,8 @@ import chalk from 'chalk';
 import { environment } from '@ticketer/env/bot';
 import { fileURLToPath } from 'node:url';
 import { formatDateLong } from '@/utils';
-import path from 'node:path';
 
-const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
-const botFilePath = path.resolve(currentDirectory, './bot.ts');
-
-const sharder = new ShardingManager(botFilePath, {
+const sharder = new ShardingManager(fileURLToPath(import.meta.resolve('./bot.ts')), {
 	execArgv: ['--import=tsx'],
 	mode: 'process',
 	token: environment.DISCORD_BOT_TOKEN,

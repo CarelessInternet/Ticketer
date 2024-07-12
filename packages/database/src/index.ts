@@ -4,7 +4,6 @@ import { createConnection } from 'mysql2/promise';
 import { drizzle } from 'drizzle-orm/mysql2';
 import { migrate as drizzleMigrate } from 'drizzle-orm/mysql2/migrator';
 import { fileURLToPath } from 'node:url';
-import path from 'node:path';
 
 const connection = await createConnection({
 	supportBigNumbers: true,
@@ -17,10 +16,7 @@ export const database = drizzle(connection, {
 });
 
 export function migrate() {
-	const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
-	const migrationsFolder = path.resolve(currentDirectory, '../migrations');
-
-	return drizzleMigrate(database, { migrationsFolder });
+	return drizzleMigrate(database, { migrationsFolder: fileURLToPath(new URL('../migrations', import.meta.url)) });
 }
 
 export * from 'drizzle-orm';

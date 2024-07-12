@@ -72,10 +72,9 @@ export default class extends Command.Interaction {
 			(client, { customStatus, status, type }) => {
 				if (!client.isReady() || !client.shard) return;
 
-				const replaceShardId = (text: string, id: number) => text.replaceAll('[shardId]', id.toString());
 				client.user.setPresence({
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					activities: [{ name: replaceShardId(customStatus, client.shard.ids.at(0)!), type }],
+					activities: [{ name: customStatus.replaceAll('[shardId]', client.shard.ids.at(0)!.toString()), type }],
 					status,
 				});
 			},

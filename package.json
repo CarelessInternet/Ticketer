@@ -1,22 +1,23 @@
 {
-  "name": "ticketer",
-  "version": "0.1.0",
-  "description": "A Discord ticketing bot using threads!",
-  "author": "CarelessInternet",
-  "license": "Apache-2.0",
-  "scripts": {
-    "dev": "turbo run dev",
-    "start": "turbo run start",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "test": "turbo run test",
-    "prettier": "prettier --write \"apps/**/*.{ts,tsx,js,jsx}\" \"packages/**/*.{ts,tsx,js,jsx}\""
-  },
-  "devDependencies": {
-    "eslint": "^8.57.0",
-    "prettier": "^3.3.1",
-    "prettier-plugin-tailwindcss": "^0.6.2",
-    "turbo": "^2.0.3"
-  },
-  "packageManager": "pnpm@9.2.0"
+	"name": "ticketer",
+	"version": "0.1.0",
+	"description": "A Discord ticketing bot using threads!",
+	"author": "CarelessInternet",
+	"license": "Apache-2.0",
+	"scripts": {
+		"dev": "turbo run dev",
+		"debug": "turbo run debug",
+		"start": "turbo run start",
+		"build": "turbo run build",
+		"lint": "turbo run lint",
+		"test": "turbo run test",
+		"prettier": "prettier --write \"apps/**/*.{ts,tsx,js,jsx}\" \"packages/**/*.{ts,tsx,js,jsx}\""
+	},
+	"devDependencies": {
+		"eslint": "^8.57.0",
+		"prettier": "^3.3.2",
+		"prettier-plugin-tailwindcss": "^0.6.5",
+		"turbo": "^2.0.6"
+	},
+	"packageManager": "pnpm@9.5.0"
 }

@@ -8,10 +8,9 @@ import path from 'node:path';
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 const botFilePath = path.resolve(currentDirectory, './bot.ts');
 
-// https://github.com/esbuild-kit/tsx/issues/354
 const sharder = new ShardingManager(botFilePath, {
-	// Using child_process instead of worker mode results in ERR_UNKNOWN_FILE_EXTENSION.
-	mode: 'worker',
+	execArgv: ['--import=tsx'],
+	mode: 'process',
 	token: environment.DISCORD_BOT_TOKEN,
 });
 
@@ -20,11 +19,13 @@ sharder.on('shardCreate', (shard) => {
 		chalk.green('[Sharding]'),
 		'Created',
 		chalk.yellow(`shard #${shard.id.toString()}`),
-		`on ${formatDateLong(new Date())}.`,
+		`on ${formatDateLong()}.`,
 	);
 	shard.once('ready', () => {
 		console.log(chalk.yellow(`[Shard #${shard.id.toString()}]`), 'This shard has become ready.');
 	});
 });
+
+console.log(chalk.green('[Sharding]'), `Starting the sharding manager on ${formatDateLong()}.`);
 
 void sharder.spawn();

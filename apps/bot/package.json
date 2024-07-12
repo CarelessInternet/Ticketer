@@ -1,28 +1,29 @@
 {
-  "name": "@ticketer/bot",
-  "version": "3.0.0",
-  "main": "./src/index.ts",
-  "type": "module",
-  "scripts": {
-    "dev": "tsx watch --clear-screen=false --env-file=../../.env.bot.development.local .",
-    "start": "tsx .",
-    "lint": "eslint .",
-    "commands:deploy:development": "tsx --env-file=../../.env.bot.development.local ./src/deploy.ts",
-    "commands:deploy:production": "tsx ./src/deploy.ts",
-    "i18n": "typesafe-i18n"
-  },
-  "dependencies": {
-    "@ticketer/database": "workspace:*",
-    "@ticketer/djs-framework": "workspace:*",
-    "@ticketer/env": "workspace:*",
-    "chalk": "^5.3.0",
-    "discord.js": "^14.15.3",
-    "tsx": "^3.13.0",
-    "typesafe-i18n": "^5.26.2",
-    "zod": "^3.23.8"
-  },
-  "devDependencies": {
-    "@ticketer/eslint-config": "workspace:*",
-    "@types/node": "^20.14.2"
-  }
+	"name": "@ticketer/bot",
+	"version": "3.0.0",
+	"main": "./src/index.ts",
+	"type": "module",
+	"scripts": {
+		"dev": "tsx watch --env-file=../../.env.bot.development.local .",
+		"debug": "tsx watch --inspect-wait --env-file=../../.env.bot.development.local .",
+		"start": "tsx .",
+		"lint": "eslint .",
+		"commands:deploy:development": "tsx --env-file=../../.env.bot.development.local ./src/deploy.ts",
+		"commands:deploy:production": "tsx ./src/deploy.ts",
+		"i18n": "typesafe-i18n"
+	},
+	"dependencies": {
+		"@ticketer/database": "workspace:*",
+		"@ticketer/djs-framework": "workspace:*",
+		"@ticketer/env": "workspace:*",
+		"chalk": "^5.3.0",
+		"discord.js": "^14.15.3",
+		"tsx": "^4.16.2",
+		"typesafe-i18n": "^5.26.2",
+		"zod": "^3.23.8"
+	},
+	"devDependencies": {
+		"@ticketer/eslint-config": "workspace:*",
+		"@types/node": "^20.14.10"
+	}
 }

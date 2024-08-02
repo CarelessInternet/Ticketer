@@ -9,7 +9,7 @@
 		"debug": "turbo run debug",
 		"start": "turbo run start",
 		"build": "turbo run build",
-		"lint": "turbo run lint --force",
+		"lint": "turbo run lint",
 		"test": "turbo run test",
 		"prettier": "prettier --write \"apps/**/*.{ts,tsx,js,jsx}\" \"packages/**/*.{ts,tsx,js,jsx}\""
 	},

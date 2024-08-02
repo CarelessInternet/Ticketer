@@ -8,7 +8,7 @@ const client = new Client({
 	intents: [],
 });
 
-await client.init(
+await client.initialize(
 	fileURLToPath(new URL('events', import.meta.url)),
 	fileURLToPath(new URL('commands', import.meta.url)),
 );

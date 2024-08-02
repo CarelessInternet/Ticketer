@@ -11,6 +11,8 @@ module.exports = {
 		project: [join(__dirname, './tsconfig.json')],
 	},
 	rules: {
+		'@typescript-eslint/return-await': 'error',
+		'no-return-await': 'off',
 		'unicorn/no-anonymous-default-export': 'off',
 	},
 };

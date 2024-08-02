@@ -16,9 +16,9 @@ export async function lockTicket(
 	if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations._errorIfNotTicketChannel.title())
-					.setDescription(translations._errorIfNotTicketChannel.description()),
+				this.userEmbedError(user, translations._errorIfNotTicketChannel.title()).setDescription(
+					translations._errorIfNotTicketChannel.description(),
+				),
 			],
 		});
 	}
@@ -29,17 +29,16 @@ export async function lockTicket(
 	if (lockAndClose ? !channel.manageable || !channel.editable : !channel.manageable) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(
-						lockAndClose
-							? translations.lockAndClose.execute.errors.notManageableAndEditable.title()
-							: translations.lock.execute.errors.notManageable.title(),
-					)
-					.setDescription(
-						lockAndClose
-							? translations.lockAndClose.execute.errors.notManageableAndEditable.description()
-							: translations.lock.execute.errors.notManageable.description(),
-					),
+				this.userEmbedError(
+					user,
+					lockAndClose
+						? translations.lockAndClose.execute.errors.notManageableAndEditable.title()
+						: translations.lock.execute.errors.notManageable.title(),
+				).setDescription(
+					lockAndClose
+						? translations.lockAndClose.execute.errors.notManageableAndEditable.description()
+						: translations.lock.execute.errors.notManageable.description(),
+				),
 			],
 		});
 	}
@@ -57,9 +56,9 @@ export async function lockTicket(
 	if (row?.authorId !== user.id && !row?.managers.some((id) => member.roles.resolve(id))) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations._errorIfNotTicketAuthorOrManager.title())
-					.setDescription(translations._errorIfNotTicketAuthorOrManager.description()),
+				this.userEmbedError(user, translations._errorIfNotTicketAuthorOrManager.title()).setDescription(
+					translations._errorIfNotTicketAuthorOrManager.description(),
+				),
 			],
 		});
 	}

@@ -9,7 +9,8 @@ import {
 	TextInputStyle,
 } from 'discord.js';
 import { Command, DeferReply, Modal } from '@ticketer/djs-framework';
-import { extractEmoji } from '@/utils';
+import { extractEmoji, zodErrorToString } from '@/utils';
+import { z } from 'zod';
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName('panel')
@@ -75,11 +76,30 @@ export class ModalInteraction extends Modal.Interaction {
 	public async execute({ interaction }: Modal.Context) {
 		const { customId, fields, guild, user } = interaction;
 
-		const title = fields.getTextInputValue('title');
-		const description = fields.getTextInputValue('description');
 		const rawButtonEmoji = fields.getTextInputValue('button_emoji');
-		const buttonLabel = fields.getTextInputValue('button_label');
 		const buttonEmoji = extractEmoji(rawButtonEmoji) ?? '🎫';
+
+		const { success, data, error } = z
+			.object({
+				title: z.string().min(1).max(100),
+				description: z.string().min(1).max(2000),
+				buttonLabel: z.string().min(1).max(80),
+			})
+			.safeParse({
+				title: fields.getTextInputValue('title'),
+				description: fields.getTextInputValue('description'),
+				buttonLabel: fields.getTextInputValue('button_label'),
+			});
+
+		if (!success) {
+			return interaction.editReply({
+				embeds: [
+					super
+						.userEmbedError(user, 'One or multiple of the modal fields are invalid.')
+						.setDescription(zodErrorToString(error)),
+				],
+			});
+		}
 
 		const { dynamicValue: channelId } = super.extractCustomId(customId, true);
 		const channel = await guild.channels.fetch(channelId);
@@ -103,11 +123,11 @@ export class ModalInteraction extends Modal.Interaction {
 			});
 		}
 
-		const embed = super.embed.setColor(Colors.Aqua).setTitle(title).setDescription(description);
+		const embed = super.embed.setColor(Colors.Aqua).setTitle(data.title).setDescription(data.description);
 		const button = new ButtonBuilder()
 			.setCustomId(super.customId('ticket_threads_categories_create_list_panel'))
 			.setEmoji(buttonEmoji)
-			.setLabel(buttonLabel)
+			.setLabel(data.buttonLabel)
 			.setStyle(ButtonStyle.Primary);
 
 		const row = new ActionRowBuilder<ButtonBuilder>().setComponents(button);

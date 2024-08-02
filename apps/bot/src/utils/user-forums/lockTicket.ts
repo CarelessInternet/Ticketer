@@ -19,9 +19,9 @@ export async function lockTicket(
 	) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations._errorIfNotThreadChannel.title())
-					.setDescription(translations._errorIfNotThreadChannel.description()),
+				this.userEmbedError(user, translations._errorIfNotThreadChannel.title()).setDescription(
+					translations._errorIfNotThreadChannel.description(),
+				),
 			],
 		});
 	}
@@ -32,17 +32,16 @@ export async function lockTicket(
 	if (lockAndClose ? !channel.manageable || !channel.editable : !channel.manageable) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(
-						lockAndClose
-							? translations.lockAndClose.execute.errors.notManageableAndEditable.title()
-							: translations.lock.execute.errors.notManageable.title(),
-					)
-					.setDescription(
-						lockAndClose
-							? translations.lockAndClose.execute.errors.notManageableAndEditable.description()
-							: translations.lock.execute.errors.notManageable.description(),
-					),
+				this.userEmbedError(
+					user,
+					lockAndClose
+						? translations.lockAndClose.execute.errors.notManageableAndEditable.title()
+						: translations.lock.execute.errors.notManageable.title(),
+				).setDescription(
+					lockAndClose
+						? translations.lockAndClose.execute.errors.notManageableAndEditable.description()
+						: translations.lock.execute.errors.notManageable.description(),
+				),
 			],
 		});
 	}
@@ -62,9 +61,9 @@ export async function lockTicket(
 	if (!row || (ownerId !== user.id && !row.managers.some((id) => member.roles.resolve(id)))) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations._errorIfNotThreadAuthorOrManager.title())
-					.setDescription(translations._errorIfNotThreadAuthorOrManager.description()),
+				this.userEmbedError(user, translations._errorIfNotThreadAuthorOrManager.title()).setDescription(
+					translations._errorIfNotThreadAuthorOrManager.description(),
+				),
 			],
 		});
 	}

@@ -23,10 +23,7 @@ export default class extends Command.Interaction {
 			return interaction
 				.reply({
 					embeds: [
-						super
-							.userEmbedError(interaction.user)
-							.setTitle(translations.title())
-							.setDescription(translations.description()),
+						super.userEmbedError(interaction.user, translations.title()).setDescription(translations.description()),
 					],
 					ephemeral: true,
 				})

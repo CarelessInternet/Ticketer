@@ -9,10 +9,11 @@ export default class extends Event.Handler {
 	public execute([thread]: Event.ArgumentsOf<this['name']>) {
 		const threadIsByBot = thread.ownerId === thread.client.user.id;
 
-		threadIsByBot &&
+		if (threadIsByBot) {
 			database
 				.delete(ticketsThreads)
 				.where(eq(ticketsThreads.threadId, thread.id))
 				.catch(() => false);
+		}
 	}
 }

@@ -183,10 +183,10 @@ async function getCategories(
 	return context.interaction.editReply({ components, embeds });
 }
 
-function categoryFieldsModal<T>(
+function categoryFieldsModal(
 	this: BaseInteraction.Interaction,
 	context: Command.Context | Component.Context,
-	options?: { id?: T; emoji?: string | null; title?: string; description?: string },
+	options?: { id?: string | number; emoji?: string | null; title?: string; description?: string },
 ) {
 	const emojiInput = (options?.emoji ? new TextInputBuilder().setValue(options.emoji) : new TextInputBuilder())
 		.setCustomId(this.customId('emoji'))
@@ -623,8 +623,11 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			case super.dynamicCustomId('ticket_threads_category_view_previous'):
 			case super.dynamicCustomId('ticket_threads_category_view_next'): {
-				interaction.isButton() && this.categoryView({ interaction });
-				return;
+				if (interaction.isButton()) {
+					this.categoryView({ interaction });
+				}
+
+				break;
 			}
 			default: {
 				return interaction.reply({

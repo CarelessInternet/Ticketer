@@ -14,9 +14,9 @@ export async function closeTicket(
 	if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations._errorIfNotTicketChannel.title())
-					.setDescription(translations._errorIfNotTicketChannel.description()),
+				this.userEmbedError(user, translations._errorIfNotTicketChannel.title()).setDescription(
+					translations._errorIfNotTicketChannel.description(),
+				),
 			],
 		});
 	}
@@ -26,9 +26,9 @@ export async function closeTicket(
 	if (!channel.editable) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations.close.execute.errors.notEditable.title())
-					.setDescription(translations.close.execute.errors.notEditable.description()),
+				this.userEmbedError(user, translations.close.execute.errors.notEditable.title()).setDescription(
+					translations.close.execute.errors.notEditable.description(),
+				),
 			],
 		});
 	}
@@ -46,9 +46,9 @@ export async function closeTicket(
 	if (row?.authorId !== user.id && !row?.managers.some((id) => member.roles.resolve(id))) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations._errorIfNotTicketAuthorOrManager.title())
-					.setDescription(translations._errorIfNotTicketAuthorOrManager.description()),
+				this.userEmbedError(user, translations._errorIfNotTicketAuthorOrManager.title()).setDescription(
+					translations._errorIfNotTicketAuthorOrManager.description(),
+				),
 			],
 		});
 	}

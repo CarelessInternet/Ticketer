@@ -54,7 +54,9 @@ export default function CodeBlock({
 						<Tooltip>
 							<TooltipTrigger
 								onKeyUp={(event) => {
-									event.key === 'Enter' && void saveToClipboard(clipboardText);
+									if (event.key === 'Enter') {
+										void saveToClipboard(clipboardText);
+									}
 								}}
 							>
 								<Copy

@@ -1,12 +1,12 @@
-import type { Config } from 'drizzle-kit';
 import config from './src/config';
+import { defineConfig } from 'drizzle-kit';
 
-export default {
-	breakpoints: true,
-	verbose: true,
-	strict: true,
-	driver: 'mysql2',
-	schema: './src/schema.ts',
-	out: './migrations',
+export default defineConfig({
 	dbCredentials: config,
-} satisfies Config;
+	dialect: 'mysql',
+	breakpoints: true,
+	out: './migrations',
+	schema: './src/schema.ts',
+	strict: true,
+	verbose: true,
+});

@@ -18,7 +18,7 @@ export function DeferReply({ name, ephemeral = false }: DeferReplyOptions = {}) 
 			if (interaction.isRepliable() && !interaction.replied && !interaction.deferred) {
 				await interaction.deferReply({
 					ephemeral: interaction.isChatInputCommand()
-						? interaction.options.getBoolean(String(name), false) ?? ephemeral
+						? (interaction.options.getBoolean(String(name), false) ?? ephemeral)
 						: ephemeral,
 				});
 			}

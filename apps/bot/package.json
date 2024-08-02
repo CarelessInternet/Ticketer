@@ -18,12 +18,12 @@
 		"@ticketer/env": "workspace:*",
 		"chalk": "^5.3.0",
 		"discord.js": "^14.15.3",
-		"tsx": "^4.16.2",
+		"tsx": "^4.16.5",
 		"typesafe-i18n": "^5.26.2",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
 		"@ticketer/eslint-config": "workspace:*",
-		"@types/node": "^20.14.10"
+		"@types/node": "^22.1.0"
 	}
 }

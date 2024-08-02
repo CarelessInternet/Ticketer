@@ -18,9 +18,9 @@ export async function renameTitle(
 	) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations._errorIfNotThreadChannel.title())
-					.setDescription(translations._errorIfNotThreadChannel.description()),
+				this.userEmbedError(user, translations._errorIfNotThreadChannel.title()).setDescription(
+					translations._errorIfNotThreadChannel.description(),
+				),
 			],
 		});
 	}
@@ -28,9 +28,9 @@ export async function renameTitle(
 	if (!channel.editable) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations.renameTitle.modal.errors.notEditable.title())
-					.setDescription(translations.renameTitle.modal.errors.notEditable.description()),
+				this.userEmbedError(user, translations.renameTitle.modal.errors.notEditable.title()).setDescription(
+					translations.renameTitle.modal.errors.notEditable.description(),
+				),
 			],
 		});
 	}
@@ -50,9 +50,9 @@ export async function renameTitle(
 	if (!row || (ownerId !== user.id && !row.managers.some((id) => member.roles.resolve(id)))) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations._errorIfNotThreadAuthorOrManager.title())
-					.setDescription(translations._errorIfNotThreadAuthorOrManager.description()),
+				this.userEmbedError(user, translations._errorIfNotThreadAuthorOrManager.title()).setDescription(
+					translations._errorIfNotThreadAuthorOrManager.description(),
+				),
 			],
 		});
 	}

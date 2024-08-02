@@ -108,10 +108,10 @@ async function getConfigurations(
 	return interaction.editReply({ components, embeds });
 }
 
-function openingMessageModal<T>(
+function openingMessageModal(
 	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context<'chat'> | Component.Context<'string'>,
-	options: { id: T; title?: string; description?: string },
+	options: { id: string; title?: string; description?: string },
 ) {
 	const titleInput = (options.title ? new TextInputBuilder().setValue(options.title) : new TextInputBuilder())
 		.setCustomId(this.customId('title'))
@@ -307,8 +307,11 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			case super.dynamicCustomId('ticket_user_forums_view_previous'):
 			case super.dynamicCustomId('ticket_user_forums_view_next'): {
-				interaction.isButton() && this.configurationOverview({ interaction });
-				return;
+				if (interaction.isButton()) {
+					this.configurationOverview({ interaction });
+				}
+
+				break;
 			}
 			default: {
 				return interaction.reply({

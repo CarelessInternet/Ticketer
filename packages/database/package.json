@@ -8,21 +8,21 @@
 	"scripts": {
 		"lint": "eslint .",
 		"drizzle:studio:development": "drizzle-kit studio --port 3001",
-		"migrations:check": "drizzle-kit check:mysql",
+		"migrations:check": "drizzle-kit check",
 		"migrations:drop": "drizzle-kit drop",
-		"migrations:generate": "drizzle-kit generate:mysql",
-		"migrations:push:development": "drizzle-kit push:mysql",
-		"migrations:up": "drizzle-kit up:mysql"
+		"migrations:generate": "drizzle-kit generate",
+		"migrations:push:development": "drizzle-kit push",
+		"migrations:up": "drizzle-kit up"
 	},
 	"dependencies": {
 		"@ticketer/env": "workspace:*",
-		"drizzle-orm": "^0.32.0",
+		"drizzle-orm": "^0.32.1",
 		"drizzle-zod": "^0.5.1",
-		"mysql2": "^3.10.2",
+		"mysql2": "^3.11.0",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
 		"@ticketer/eslint-config": "workspace:*",
-		"drizzle-kit": "^0.23.0"
+		"drizzle-kit": "^0.23.1"
 	}
 }

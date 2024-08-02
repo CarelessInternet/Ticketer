@@ -8,7 +8,7 @@ type Leaves<T> = T extends object
 	? { [K in keyof T]: `${Exclude<K, symbol>}${Leaves<T[K]> extends never ? '' : `.${Leaves<T[K]>}`}` }[keyof T]
 	: never;
 
-export const getTranslations = <T extends Leaves<TranslationFunctions>>(key: T) => {
+export const getTranslations = (key: Leaves<TranslationFunctions>) => {
 	const translations = {};
 
 	for (const language of locales) {
@@ -29,7 +29,7 @@ export const getTranslations = <T extends Leaves<TranslationFunctions>>(key: T) 
 /**
  * @param language If no language is specified, it defaults to (British) English.
  */
-export const translate = <T extends Locale | Locales>(language?: T) =>
+export const translate = (language?: Locale | Locales) =>
 	locales.includes(language as Locales) ? L[language as Locales] : L[Locale.EnglishGB];
 
 export type { Locales } from './i18n-types';

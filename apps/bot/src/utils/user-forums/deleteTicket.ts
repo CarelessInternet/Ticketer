@@ -18,9 +18,9 @@ export async function deleteTicket(
 	) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations._errorIfNotThreadChannel.title())
-					.setDescription(translations._errorIfNotThreadChannel.description()),
+				this.userEmbedError(user, translations._errorIfNotThreadChannel.title()).setDescription(
+					translations._errorIfNotThreadChannel.description(),
+				),
 			],
 		});
 	}
@@ -28,9 +28,9 @@ export async function deleteTicket(
 	if (!channel.manageable) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations.lock.execute.errors.notManageable.title())
-					.setDescription(translations.lock.execute.errors.notManageable.description()),
+				this.userEmbedError(user, translations.lock.execute.errors.notManageable.title()).setDescription(
+					translations.lock.execute.errors.notManageable.description(),
+				),
 			],
 		});
 	}
@@ -50,9 +50,9 @@ export async function deleteTicket(
 	if (!row || (ownerId !== user.id && !row.managers.some((id) => member.roles.resolve(id)))) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations._errorIfNotThreadAuthorOrManager.title())
-					.setDescription(translations._errorIfNotThreadAuthorOrManager.description()),
+				this.userEmbedError(user, translations._errorIfNotThreadAuthorOrManager.title()).setDescription(
+					translations._errorIfNotThreadAuthorOrManager.description(),
+				),
 			],
 		});
 	}

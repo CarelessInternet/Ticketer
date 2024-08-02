@@ -18,9 +18,9 @@ export async function closeTicket(
 	) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations._errorIfNotThreadChannel.title())
-					.setDescription(translations._errorIfNotThreadChannel.description()),
+				this.userEmbedError(user, translations._errorIfNotThreadChannel.title()).setDescription(
+					translations._errorIfNotThreadChannel.description(),
+				),
 			],
 		});
 	}
@@ -30,9 +30,9 @@ export async function closeTicket(
 	if (!channel.editable) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations.close.execute.errors.notEditable.title())
-					.setDescription(translations.close.execute.errors.notEditable.description()),
+				this.userEmbedError(user, translations.close.execute.errors.notEditable.title()).setDescription(
+					translations.close.execute.errors.notEditable.description(),
+				),
 			],
 		});
 	}
@@ -52,9 +52,9 @@ export async function closeTicket(
 	if (!row || (ownerId !== user.id && !row.managers.some((id) => member.roles.resolve(id)))) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user)
-					.setTitle(translations._errorIfNotThreadAuthorOrManager.title())
-					.setDescription(translations._errorIfNotThreadAuthorOrManager.description()),
+				this.userEmbedError(user, translations._errorIfNotThreadAuthorOrManager.title()).setDescription(
+					translations._errorIfNotThreadAuthorOrManager.description(),
+				),
 			],
 		});
 	}

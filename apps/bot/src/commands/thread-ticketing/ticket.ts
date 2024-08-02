@@ -41,10 +41,7 @@ export default class extends Command.Interaction {
 			return interaction
 				.reply({
 					embeds: [
-						super
-							.userEmbedError(interaction.user)
-							.setTitle(translations.title())
-							.setDescription(translations.description()),
+						super.userEmbedError(interaction.user, translations.title()).setDescription(translations.description()),
 					],
 					ephemeral: true,
 				})
@@ -96,9 +93,11 @@ export class ComponentInteraction extends Component.Interaction {
 		switch (customId) {
 			case super.customId('ticket_threads_categories_create_list'):
 			case super.dynamicCustomId('ticket_threads_categories_create_list_proxy'): {
-				context.interaction.isStringSelectMenu() &&
+				if (context.interaction.isStringSelectMenu()) {
 					this.ticketModal({ interaction: context.interaction }, dynamicValue);
-				return;
+				}
+
+				break;
 			}
 			case super.customId('ticket_threads_categories_create_list_panel'): {
 				return context.interaction.isButton() && this.panelTicket(context);
@@ -127,8 +126,7 @@ export class ComponentInteraction extends Component.Interaction {
 				return context.interaction.reply({
 					embeds: [
 						super
-							.userEmbedError(context.interaction.user)
-							.setTitle(translations.title())
+							.userEmbedError(context.interaction.user, translations.title())
 							.setDescription(translations.description()),
 					],
 					ephemeral: true,
@@ -157,10 +155,7 @@ export class ComponentInteraction extends Component.Interaction {
 			return interaction
 				.reply({
 					embeds: [
-						super
-							.userEmbedError(interaction.user)
-							.setTitle(translations.title())
-							.setDescription(translations.description()),
+						super.userEmbedError(interaction.user, translations.title()).setDescription(translations.description()),
 					],
 					ephemeral: true,
 				})
@@ -231,10 +226,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 				return interaction.reply({
 					embeds: [
-						super
-							.userEmbedError(interaction.user)
-							.setTitle(translations.title())
-							.setDescription(translations.description()),
+						super.userEmbedError(interaction.user, translations.title()).setDescription(translations.description()),
 					],
 					ephemeral: true,
 				});
@@ -245,6 +237,7 @@ export class ModalInteraction extends Modal.Interaction {
 	private async ticketCreation({ interaction }: Modal.Context) {
 		// If the interaction has been replied to or the interaction message has the category select menu,
 		// then defer the update instead of deferring the reply.
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		interaction.replied ||
 		interaction.message?.components.find((row) =>
 			row.components.find((component) => {
@@ -278,8 +271,7 @@ export class ModalInteraction extends Modal.Interaction {
 				components: [],
 				embeds: [
 					super
-						.userEmbedError(user)
-						.setTitle(translations.createTicket.errors.invalidUser.title())
+						.userEmbedError(user, translations.createTicket.errors.invalidUser.title())
 						.setDescription(translations.createTicket.errors.invalidUser.description()),
 				],
 			});
@@ -290,8 +282,7 @@ export class ModalInteraction extends Modal.Interaction {
 				components: [],
 				embeds: [
 					super
-						.userEmbedError(user)
-						.setTitle(translations.createTicket.errors.invalidId.title())
+						.userEmbedError(user, translations.createTicket.errors.invalidId.title())
 						.setDescription(translations.createTicket.errors.invalidId.description()),
 				],
 			});
@@ -308,8 +299,7 @@ export class ModalInteraction extends Modal.Interaction {
 				components: [],
 				embeds: [
 					super
-						.userEmbedError(user)
-						.setTitle(translations.createTicket.errors.noConfiguration.title())
+						.userEmbedError(user, translations.createTicket.errors.noConfiguration.title())
 						.setDescription(translations.createTicket.errors.noConfiguration.description()),
 				],
 			});
@@ -320,8 +310,7 @@ export class ModalInteraction extends Modal.Interaction {
 				components: [],
 				embeds: [
 					super
-						.userEmbedError(user)
-						.setTitle(translations.createTicket.errors.noManagers.title())
+						.userEmbedError(user, translations.createTicket.errors.noManagers.title())
 						.setDescription(translations.createTicket.errors.noManagers.description()),
 				],
 			});
@@ -334,8 +323,7 @@ export class ModalInteraction extends Modal.Interaction {
 				components: [],
 				embeds: [
 					super
-						.userEmbedError(user)
-						.setTitle(translations.createTicket.errors.invalidChannel.title())
+						.userEmbedError(user, translations.createTicket.errors.invalidChannel.title())
 						.setDescription(translations.createTicket.errors.invalidChannel.description()),
 				],
 			});
@@ -369,8 +357,7 @@ export class ModalInteraction extends Modal.Interaction {
 				components: [],
 				embeds: [
 					super
-						.userEmbedError(user)
-						.setTitle(translations.createTicket.errors.noPermissions.title())
+						.userEmbedError(user, translations.createTicket.errors.noPermissions.title())
 						.setDescription(translations.createTicket.errors.noPermissions.description({ permissions })),
 				],
 			});
@@ -392,19 +379,16 @@ export class ModalInteraction extends Modal.Interaction {
 			return interaction.editReply({
 				components: [],
 				embeds: [
-					super
-						.userEmbedError(user)
-						.setTitle(translations.createTicket.errors.tooManyTickets.title())
-						.setDescription(
-							isProxied
-								? translations.createTicket.errors.tooManyTickets.proxy.description({
-										amount: configuration.ticketThreadsConfigurations.activeTickets,
-										member: user.toString(),
-									})
-								: translations.createTicket.errors.tooManyTickets.user.description({
-										amount: configuration.ticketThreadsConfigurations.activeTickets,
-									}),
-						),
+					super.userEmbedError(user, translations.createTicket.errors.tooManyTickets.title()).setDescription(
+						isProxied
+							? translations.createTicket.errors.tooManyTickets.proxy.description({
+									amount: configuration.ticketThreadsConfigurations.activeTickets,
+									member: user.toString(),
+								})
+							: translations.createTicket.errors.tooManyTickets.user.description({
+									amount: configuration.ticketThreadsConfigurations.activeTickets,
+								}),
+					),
 				],
 			});
 		}
@@ -573,8 +557,7 @@ export class ModalInteraction extends Modal.Interaction {
 			return interaction.editReply({
 				embeds: [
 					super
-						.userEmbedError(user)
-						.setTitle(translations._errorIfNotTicketChannel.title())
+						.userEmbedError(user, translations._errorIfNotTicketChannel.title())
 						.setDescription(translations._errorIfNotTicketChannel.description()),
 				],
 			});
@@ -584,8 +567,7 @@ export class ModalInteraction extends Modal.Interaction {
 			return interaction.editReply({
 				embeds: [
 					super
-						.userEmbedError(user)
-						.setTitle(translations.renameTitle.modal.errors.notEditable.title())
+						.userEmbedError(user, translations.renameTitle.modal.errors.notEditable.title())
 						.setDescription(translations.renameTitle.modal.errors.notEditable.description()),
 				],
 			});
@@ -605,8 +587,7 @@ export class ModalInteraction extends Modal.Interaction {
 			return interaction.editReply({
 				embeds: [
 					super
-						.userEmbedError(user)
-						.setTitle(translations._errorIfNotTicketAuthorOrManager.title())
+						.userEmbedError(user, translations._errorIfNotTicketAuthorOrManager.title())
 						.setDescription(translations._errorIfNotTicketAuthorOrManager.description()),
 				],
 			});

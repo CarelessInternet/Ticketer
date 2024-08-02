@@ -17,7 +17,7 @@ export class Client extends DiscordClient {
 	/**
 	 * Initializes events and commands.
 	 */
-	public async init(eventsFolder: string, commandsFolder: string) {
+	public async initialize(eventsFolder: string, commandsFolder: string) {
 		// Event handler: sets all events.
 		const events = await this.fetchEvents(eventsFolder);
 

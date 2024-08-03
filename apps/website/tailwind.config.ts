@@ -73,7 +73,6 @@ const config = {
 			},
 		},
 	},
-	// eslint-disable-next-line unicorn/prefer-module
 	plugins: [require('tailwindcss-animate')],
 } satisfies Config;
 

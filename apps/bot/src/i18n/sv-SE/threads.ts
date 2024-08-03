@@ -20,6 +20,10 @@ export default {
 					title: ERROR_TITLE,
 					description: 'Kategori-ID:t kunde inte hittas.',
 				},
+				invalidId: {
+					title: ERROR_TITLE,
+					description: 'Kategori-ID:t är inte giltigt.',
+				},
 			},
 			title: {
 				label: 'Titel',

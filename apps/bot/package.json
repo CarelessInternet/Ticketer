@@ -23,6 +23,7 @@
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
+		"@eslint/eslintrc": "^3.1.0",
 		"@ticketer/eslint-config": "workspace:*",
 		"@types/node": "^22.1.0"
 	}

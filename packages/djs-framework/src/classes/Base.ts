@@ -66,7 +66,6 @@ export abstract class Base {
 		};
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	protected customId<T>(id: string, dynamicValue?: T) {
 		return dynamicValue !== undefined && dynamicValue !== null ? `{${dynamicValue}}_${id}` : id;
 	}

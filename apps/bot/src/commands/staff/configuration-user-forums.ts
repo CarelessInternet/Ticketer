@@ -517,10 +517,12 @@ export class ModalInteraction extends Modal.Interaction {
 
 		return interaction.editReply({
 			embeds: [
-				super.userEmbed(interaction.user).setTitle('Created/Updated a User Forum Configuration').setDescription(
-					// eslint-disable-next-line @typescript-eslint/no-base-to-string
-					`${interaction.user.toString()} created or updated a user forum configuration in ${channel.toString()}. An example opening message can be seen in the embed below.`,
-				),
+				super
+					.userEmbed(interaction.user)
+					.setTitle('Created/Updated a User Forum Configuration')
+					.setDescription(
+						`${interaction.user.toString()} created or updated a user forum configuration in ${channel.toString()}. An example opening message can be seen in the embed below.`,
+					),
 				userForumEmbed({
 					description: data.openingMessageDescription,
 					embed: super.embed,

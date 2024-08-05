@@ -2,10 +2,8 @@ import config from '@ticketer/eslint-config';
 import tseslint from '@ticketer/eslint-config/tseslint.mjs';
 
 export default tseslint.config(
-	...config,
-	...tseslint.configs.strictTypeChecked,
-	...tseslint.configs.stylisticTypeChecked,
 	{
+		extends: [...config, ...tseslint.configs.strictTypeChecked, ...tseslint.configs.stylisticTypeChecked],
 		languageOptions: {
 			parserOptions: {
 				projectService: true,
@@ -19,6 +17,29 @@ export default tseslint.config(
 		},
 	},
 	{
-		ignores: ['/src/i18n/i18n-*.ts', '/src/i18n/formatters.ts'],
+		ignores: ['src/i18n/i18n-*.ts', 'src/i18n/formatters.ts'],
 	},
 );
+
+// export default tseslint.config(
+// 	{
+// 		files: ['./src/**/*.ts'],
+// 		ignores: ['./src/i18n/i18n-*.ts', './src/i18n/formatters.ts'],
+// 	},
+// 	...config,
+// 	...tseslint.configs.strictTypeChecked,
+// 	...tseslint.configs.stylisticTypeChecked,
+// 	{
+// 		languageOptions: {
+// 			parserOptions: {
+// 				projectService: true,
+// 				tsconfigRootDir: import.meta.dirname,
+// 			},
+// 		},
+// 		rules: {
+// 			'@typescript-eslint/return-await': 'error',
+// 			'no-return-await': 'off',
+// 			'unicorn/no-anonymous-default-export': 'off',
+// 		},
+// 	},
+// );

@@ -15,11 +15,13 @@ const compat = new FlatCompat({
 });
 
 export default tseslint.config(
-	...config,
-	...fixupConfigRules(compat.config(next.configs['core-web-vitals'])),
-	...tseslint.configs.strictTypeChecked,
-	...tseslint.configs.stylisticTypeChecked,
 	{
+		extends: [
+			...config,
+			...fixupConfigRules(compat.config(next.configs['core-web-vitals'])),
+			...tseslint.configs.strictTypeChecked,
+			...tseslint.configs.stylisticTypeChecked,
+		],
 		languageOptions: {
 			globals: {
 				React: true,
@@ -30,5 +32,31 @@ export default tseslint.config(
 				tsconfigRootDir: import.meta.dirname,
 			},
 		},
+		files: ['src/**/*.{ts,tsx}'],
+	},
+	{
+		ignores: ['**/.next/'],
 	},
 );
+
+// export default tseslint.config(
+// 	...config,
+// 	...fixupConfigRules(compat.config(next.configs['core-web-vitals'])),
+// 	...tseslint.configs.strictTypeChecked,
+// 	...tseslint.configs.stylisticTypeChecked,
+// 	{
+// 		languageOptions: {
+// 			globals: {
+// 				React: true,
+// 				JSX: true,
+// 			},
+// 			parserOptions: {
+// 				projectService: true,
+// 				tsconfigRootDir: import.meta.dirname,
+// 			},
+// 		},
+// 	},
+// 	{
+// 		files: ['src/**/*.{ts,tsx}'],
+// 	},
+// );

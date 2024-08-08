@@ -7,11 +7,10 @@ settings:
 importers:
 
   .:
-    dependencies:
+    devDependencies:
       eslint:
         specifier: ^9.8.0
         version: 9.8.0
-    devDependencies:
       prettier:
         specifier: ^3.3.3
         version: 3.3.3

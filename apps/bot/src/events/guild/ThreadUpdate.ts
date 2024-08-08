@@ -25,7 +25,6 @@ export default class extends Event.Handler {
 		// Two events are sent when the thread is archived and the locked button is pressed. We pray for no race conditions 🙏.
 		if (lockedAndArchived) {
 			return database.update(ticketsThreads).set({ state: 'lockedAndArchived' }).where(whereCondition);
-			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		} else if (unarchived || unlocked) {
 			if (unlocked && newThread.archived) {
 				return database.update(ticketsThreads).set({ state: 'archived' }).where(whereCondition);
@@ -34,7 +33,6 @@ export default class extends Event.Handler {
 			} else {
 				return database.update(ticketsThreads).set({ state: 'active' }).where(whereCondition);
 			}
-			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		} else if (archived || locked) {
 			return database
 				.update(ticketsThreads)

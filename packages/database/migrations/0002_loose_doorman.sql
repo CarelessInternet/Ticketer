@@ -1,0 +1,1 @@
+ALTER TABLE `ticketThreadsCategories` ADD `titleAndDescriptionRequired` boolean DEFAULT true NOT NULL;

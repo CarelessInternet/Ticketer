@@ -511,10 +511,12 @@ export class ModalInteraction extends Modal.Interaction {
 
 		return interaction.editReply({
 			embeds: [
-				super.userEmbed(interaction.user).setTitle('Created/Updated an Automatic Threads Configuration').setDescription(
-					// eslint-disable-next-line @typescript-eslint/no-base-to-string
-					`${interaction.user.toString()} created or updated an automatic threads configuration in ${channel.toString()}. An example opening message can be seen in the embed below.`,
-				),
+				super
+					.userEmbed(interaction.user)
+					.setTitle('Created/Updated an Automatic Threads Configuration')
+					.setDescription(
+						`${interaction.user.toString()} created or updated an automatic threads configuration in ${channel.toString()}. An example opening message can be seen in the embed below.`,
+					),
 				automaticThreadsEmbed({
 					description: data.openingMessageDescription,
 					embed: super.embed,

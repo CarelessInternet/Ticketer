@@ -15,6 +15,13 @@
       "when": 1708025635717,
       "tag": "0001_pretty_wildside",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1722631066812,
+      "tag": "0002_loose_doorman",
+      "breakpoints": true
     }
   ]
 }

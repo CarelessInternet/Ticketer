@@ -49,12 +49,15 @@ export default class extends Command.Interaction {
 		}
 
 		if (categories.length === 1) {
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			const { id, titleAndDescriptionRequired } = categories.at(0)!;
+
 			void interaction
 				.showModal(
 					ThreadTicketing.ticketModal.call(this, {
-						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-						categoryId: categories.at(0)!.id,
+						categoryId: id,
 						locale: interaction.locale,
+						titleAndDescriptionRequired,
 					}),
 				)
 				.catch(() => false);
@@ -94,7 +97,7 @@ export class ComponentInteraction extends Component.Interaction {
 			case super.customId('ticket_threads_categories_create_list'):
 			case super.dynamicCustomId('ticket_threads_categories_create_list_proxy'): {
 				if (context.interaction.isStringSelectMenu()) {
-					this.ticketModal({ interaction: context.interaction }, dynamicValue);
+					void this.ticketModal({ interaction: context.interaction }, dynamicValue);
 				}
 
 				break;
@@ -135,15 +138,45 @@ export class ComponentInteraction extends Component.Interaction {
 		}
 	}
 
-	private ticketModal({ interaction }: Component.Context<'string'>, userId?: Snowflake) {
-		void interaction.showModal(
-			ThreadTicketing.ticketModal.call(this, {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				categoryId: interaction.values.at(0)!,
-				locale: interaction.locale,
-				userId,
-			}),
-		);
+	private async ticketModal({ interaction }: Component.Context<'string'>, userId?: Snowflake) {
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(interaction.values.at(0)));
+		const translations = translate(interaction.locale).tickets.threads.categories.createModal.errors.invalidId;
+
+		if (!success) {
+			return interaction.reply({
+				embeds: [super.userEmbedError(interaction.user, translations.title()).setDescription(zodErrorToString(error))],
+			});
+		}
+
+		const [row] = await database
+			.select({
+				titleAndDescriptionRequired: ticketThreadsCategories.titleAndDescriptionRequired,
+			})
+			.from(ticketThreadsCategories)
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
+
+		if (!row) {
+			return interaction.reply({
+				embeds: [
+					super.userEmbedError(interaction.user, translations.title()).setDescription(translations.description()),
+				],
+			});
+		}
+
+		void interaction
+			.showModal(
+				ThreadTicketing.ticketModal.call(this, {
+					categoryId,
+					locale: interaction.locale,
+					titleAndDescriptionRequired: row.titleAndDescriptionRequired,
+					userId,
+				}),
+			)
+			.catch(() => false);
 	}
 
 	private async panelTicket({ interaction }: Component.Context) {
@@ -163,12 +196,15 @@ export class ComponentInteraction extends Component.Interaction {
 		}
 
 		if (categories.length === 1) {
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			const { id, titleAndDescriptionRequired } = categories.at(0)!;
+
 			void interaction
 				.showModal(
 					ThreadTicketing.ticketModal.call(this, {
-						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-						categoryId: categories.at(0)!.id,
+						categoryId: id,
 						locale: interaction.locale,
+						titleAndDescriptionRequired,
 					}),
 				)
 				.catch(() => false);
@@ -399,8 +435,8 @@ export class ModalInteraction extends Modal.Interaction {
 			success: fieldsSuccess,
 		} = z
 			.object({
-				title: z.string().min(1).max(100, translations.createTicket.errors.invalidFields.fields.title()),
-				description: z.string().min(1).max(2000, translations.createTicket.errors.invalidFields.fields.description()),
+				title: z.string().min(0).max(100, translations.createTicket.errors.invalidFields.fields.title()),
+				description: z.string().min(0).max(2000, translations.createTicket.errors.invalidFields.fields.description()),
 			})
 			.safeParse({
 				title: fields.getTextInputValue('title'),
@@ -419,11 +455,10 @@ export class ModalInteraction extends Modal.Interaction {
 		}
 
 		const { description, title } = data;
-
 		const thread = await channel.threads.create({
 			autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
 			invitable: false,
-			name: title,
+			name: title || user.displayName,
 			type: isPrivate ? ChannelType.PrivateThread : ChannelType.PublicThread,
 		});
 
@@ -437,10 +472,15 @@ export class ModalInteraction extends Modal.Interaction {
 			title: configuration.ticketThreadsCategories.openingMessageTitle,
 			user,
 		});
-		const ticketEmbed = (isProxied ? super.embed : super.userEmbed(user))
-			.setColor(Colors.Green)
-			.setTitle(title)
-			.setDescription(description);
+		const ticketEmbed = (isProxied ? super.embed : super.userEmbed(user)).setColor(Colors.Green);
+
+		if (title) {
+			ticketEmbed.setTitle(title);
+		}
+
+		if (description) {
+			ticketEmbed.setDescription(description);
+		}
 
 		const buttonsRow = ticketButtons({
 			close: {
@@ -469,7 +509,7 @@ export class ModalInteraction extends Modal.Interaction {
 			allowedMentions: { roles: configuration.ticketThreadsCategories.managers },
 			components: buttonsRow,
 			content: configuration.ticketThreadsCategories.managers.map((roleId) => roleMention(roleId)).join(', '),
-			embeds: [messageEmbed, ticketEmbed],
+			embeds: [messageEmbed, ...(title || description ? [ticketEmbed] : [])],
 			...(configuration.ticketThreadsCategories.silentPings && { flags: [MessageFlags.SuppressNotifications] }),
 		});
 

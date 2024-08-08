@@ -117,7 +117,6 @@ export class ModalInteraction extends Modal.Interaction {
 				embeds: [
 					super
 						.userEmbedError(user)
-						// eslint-disable-next-line @typescript-eslint/no-base-to-string
 						.setDescription(`I do not have the view channel and send messages permission in ${channel.toString()}.`),
 				],
 			});
@@ -135,12 +134,14 @@ export class ModalInteraction extends Modal.Interaction {
 
 		void interaction.editReply({
 			embeds: [
-				super.userEmbed(user).setTitle('Sent the Ticket Panel').setDescription(
-					// eslint-disable-next-line @typescript-eslint/no-base-to-string
-					`The thread ticket panel has successfully been sent in ${channel.toString()}. View the message at ${
-						message.url
-					}!`,
-				),
+				super
+					.userEmbed(user)
+					.setTitle('Sent the Ticket Panel')
+					.setDescription(
+						`The thread ticket panel has successfully been sent in ${channel.toString()}. View the message at ${
+							message.url
+						}!`,
+					),
 			],
 		});
 	}

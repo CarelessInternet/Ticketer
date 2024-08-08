@@ -741,6 +741,16 @@ type RootTranslation = {
 							 */
 							description: string
 						}
+						invalidId: {
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 */
+							title: string
+							/**
+							 * T​h​e​ ​c​a​t​e​g​o​r​y​ ​I​D​ ​i​s​ ​n​o​t​ ​v​a​l​i​d​.
+							 */
+							description: string
+						}
 					}
 					title: {
 						/**
@@ -2129,6 +2139,16 @@ export type TranslationFunctions = {
 							title: () => LocalizedString
 							/**
 							 * The custom ID could not be found.
+							 */
+							description: () => LocalizedString
+						}
+						invalidId: {
+							/**
+							 * An Error Occured
+							 */
+							title: () => LocalizedString
+							/**
+							 * The category ID is not valid.
 							 */
 							description: () => LocalizedString
 						}

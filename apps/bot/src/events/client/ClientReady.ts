@@ -10,7 +10,7 @@ export default class extends Event.Handler {
 	@LogExceptions
 	public execute([client]: Event.ArgumentsOf<this['name']>) {
 		client.user.setPresence({
-			activities: [{ name: `Playing 🏌️‍♂️ | Shard #${String(client.shard?.ids.at(0) ?? 0)}`, type: ActivityType.Custom }],
+			activities: [{ name: `🏌️‍♂️ • /help | Shard #${String(client.shard?.ids.at(0) ?? 0)}`, type: ActivityType.Playing }],
 			status: PresenceUpdateStatus.Online,
 		});
 

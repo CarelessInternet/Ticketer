@@ -20,12 +20,12 @@
 		"@vercel/speed-insights": "^1.0.12",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
-		"lucide-react": "^0.426.0",
+		"lucide-react": "^0.428.0",
 		"next": "14.2.5",
 		"next-themes": "^0.3.0",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
-		"tailwind-merge": "^2.4.0",
+		"tailwind-merge": "^2.5.2",
 		"tailwindcss-animate": "^1.0.7"
 	},
 	"devDependencies": {
@@ -33,12 +33,12 @@
 		"@eslint/eslintrc": "^3.1.0",
 		"@next/eslint-plugin-next": "^14.2.5",
 		"@ticketer/eslint-config": "workspace:*",
-		"@types/node": "^22.1.0",
+		"@types/node": "^22.4.1",
 		"@types/react": "^18.3.3",
 		"@types/react-dom": "^18.3.0",
 		"autoprefixer": "^10.4.20",
 		"postcss": "^8.4.41",
-		"tailwindcss": "^3.4.9",
+		"tailwindcss": "^3.4.10",
 		"typescript": "^5.5.4"
 	}
 }

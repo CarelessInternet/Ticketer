@@ -1,6 +1,7 @@
 import CodeBlock from '@/components/CodeBlock';
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
+import InternalLink from '@/components/InternalLink';
 import type { Metadata } from 'next';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
@@ -67,7 +68,7 @@ export default function Page() {
 					</li>
 				</ul>
 				<Paragraph className="pt-2">
-					Need help? Join the <ExternalLink href="https://discord.gg/9FHagm6343">Ticketer support server</ExternalLink>!
+					Need help? Join the <InternalLink href="/links/discord/support">Ticketer support server</InternalLink>!
 				</Paragraph>
 			</Divider>
 			<Divider>

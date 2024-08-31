@@ -1,7 +1,7 @@
 'use client';
 
 import type { HTMLAttributes, PropsWithChildren } from 'react';
-import Link from 'next/link';
+import InternalLink from './InternalLink';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 
@@ -13,14 +13,15 @@ export default function ScrollLink({ children, className, target, ...properties 
 	const pathname = usePathname();
 
 	return (
-		<Link
+		<InternalLink
 			href={`${pathname}#${target}`}
+			target="_self"
 			id={target}
 			tabIndex={0}
-			className={cn('text-2xl font-bold hover:underline sm:text-3xl', className)}
+			className={cn('text-foreground dark:text-foreground text-2xl font-bold sm:text-3xl', className)}
 			{...properties}
 		>
 			{children}
-		</Link>
+		</InternalLink>
 	);
 }

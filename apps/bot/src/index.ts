@@ -18,7 +18,7 @@ sharder.on('shardCreate', (shard) => {
 		`on ${formatDateLong()}.`,
 	);
 	shard.once('ready', () => {
-		console.log(chalk.yellow(`[Shard #${shard.id.toString()}]`), 'This shard has become ready.');
+		console.log(chalk.yellow(`[Shard #${shard.id.toString()}]`), `This shard has become ready on ${formatDateLong()}.`);
 	});
 });
 

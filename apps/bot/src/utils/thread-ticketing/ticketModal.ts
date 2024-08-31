@@ -13,13 +13,13 @@ import { translate } from '@/i18n';
 interface TicketModalOptions {
 	categoryId: typeof ticketThreadsCategories.$inferSelect.id | string;
 	locale: Locale;
+	proxiedUserId?: Snowflake;
 	titleAndDescriptionRequired: typeof ticketThreadsCategories.$inferSelect.titleAndDescriptionRequired;
-	userId?: Snowflake;
 }
 
 export function ticketModal(
 	this: BaseInteraction.Interaction,
-	{ categoryId, locale, userId, titleAndDescriptionRequired }: TicketModalOptions,
+	{ categoryId, locale, proxiedUserId, titleAndDescriptionRequired }: TicketModalOptions,
 ) {
 	const translations = translate(locale).tickets.threads.categories.createModal;
 	const titleInput = new TextInputBuilder()
@@ -46,7 +46,7 @@ export function ticketModal(
 		.setCustomId(
 			this.customId(
 				'ticket_threads_categories_create_ticket',
-				userId ? `${categoryId.toString()}_${userId}` : categoryId,
+				proxiedUserId ? `${categoryId.toString()}_${proxiedUserId}` : categoryId,
 			),
 		)
 		.setTitle(translations.modalTitle())

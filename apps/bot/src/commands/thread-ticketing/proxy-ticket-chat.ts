@@ -38,13 +38,18 @@ export default class extends Command.Interaction {
 
 		if (categories.length === 1) {
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			const { id, titleAndDescriptionRequired } = categories.at(0)!;
+			const { id: categoryId, skipModal, titleAndDescriptionRequired } = categories.at(0)!;
+
+			if (skipModal) {
+				return ThreadTicketing.createTicket.call(this, { interaction }, { categoryId, proxiedUserId: user.id });
+			}
 
 			void interaction
 				.showModal(
 					ThreadTicketing.ticketModal.call(this, {
-						categoryId: id,
+						categoryId,
 						locale: interaction.locale,
+						proxiedUserId: user.id,
 						titleAndDescriptionRequired,
 					}),
 				)

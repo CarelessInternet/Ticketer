@@ -17,7 +17,7 @@ export default function Home() {
 				</div>
 				<div className="flex justify-center">
 					<Button variant="outline" asChild className="w-fit">
-						<Link href="/invite" target="_blank">
+						<Link href="/links/discord/invite" target="_blank">
 							<Plus />
 							Invite to your Discord Server
 						</Link>

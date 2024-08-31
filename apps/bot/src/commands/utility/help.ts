@@ -44,7 +44,7 @@ export default class extends Command.Interaction {
 			: undefined;
 		const inviteLink = hyperlink(
 			translations.fields[1].links.invite(),
-			new URL('/invite', environment.WEBSITE_URL).toString(),
+			new URL('/links/discord/invite', environment.WEBSITE_URL).toString(),
 		);
 
 		const linksAsString = [commandDocumentation, website, supportServer, inviteLink].filter(Boolean).join(' | ');

@@ -1,5 +1,6 @@
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
+import InternalLink from '@/components/InternalLink';
 import type { Metadata } from 'next';
 import Paragraph from '@/components/Paragraph';
 import type { PropsWithChildren } from 'react';
@@ -77,9 +78,8 @@ export default function Page() {
 				</SectionDivider>
 				<SectionDivider header="How can I contact for questions or concerns?">
 					<Paragraph>
-						You may join the official{' '}
-						<ExternalLink href="https://discord.gg/9FHagm6343">Discord support server</ExternalLink> to ask questions or
-						raise concerns regarding Ticketer.
+						You may join the official <InternalLink href="/links/discord/support">Discord support server</InternalLink>{' '}
+						to ask questions or raise concerns regarding Ticketer.
 					</Paragraph>
 				</SectionDivider>
 			</Divider>
@@ -140,7 +140,7 @@ export default function Page() {
 				<SectionDivider header="How can users contact you if they have concerns about your bot?">
 					<Paragraph>
 						They may join the official{' '}
-						<ExternalLink href="https://discord.gg/9FHagm6343">support server on Discord</ExternalLink> or open an
+						<InternalLink href="/links/discord/support">support server on Discord</InternalLink> or open an
 						issue/discussion on the Ticketer GitHub page.
 					</Paragraph>
 				</SectionDivider>

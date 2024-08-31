@@ -1,10 +1,11 @@
-import type { BaseInteraction, Modal } from '@ticketer/djs-framework';
+import type { BaseInteraction, Command, Component, Modal } from '@ticketer/djs-framework';
 import {
 	ChannelType,
 	Colors,
 	MessageFlags,
 	MessageType,
 	PermissionFlagsBits,
+	type Snowflake,
 	ThreadAutoArchiveDuration,
 	inlineCode,
 	roleMention,
@@ -23,38 +24,50 @@ import { ticketButtons, ticketThreadsOpeningMessageEmbed, zodErrorToString } fro
 import { translate } from '@/i18n';
 import { z } from 'zod';
 
-// TODO: Case 1: Modal (function below)
-// Case 2: No modal
-// On select menu click if there is one, immediately call the function below.
+interface CreateTicketOptions {
+	categoryId?: typeof ticketThreadsCategories.$inferSelect.id;
+	proxiedUserId?: Snowflake;
+}
 
-export async function createTicket(this: BaseInteraction.Interaction, { interaction }: Modal.Context) {
+export async function createTicket(
+	this: BaseInteraction.Interaction,
+	{ interaction }: Command.Context | Component.Context | Modal.Context,
+	{ categoryId: incomingCategoryId, proxiedUserId }: CreateTicketOptions = {},
+) {
 	// If the interaction has been replied to or the interaction message has the category select menu,
 	// then defer the update instead of deferring the reply.
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	interaction.replied ||
-	interaction.message?.components.find((row) =>
-		row.components.find((component) => {
-			if (!component.customId) return false;
+	const hasComponents =
+		'message' in interaction &&
+		interaction.message?.components.find((row) =>
+			row.components.find((component) => {
+				if (!component.customId) return false;
 
-			const { customId } = this.extractCustomId(component.customId);
-			return (
-				customId === this.customId('ticket_threads_categories_create_list') ||
-				customId === this.dynamicCustomId('ticket_threads_categories_create_list_proxy')
-			);
-		}),
-	)
-		? await interaction.deferUpdate()
-		: await interaction.deferReply({ ephemeral: true });
+				const { customId } = this.extractCustomId(component.customId);
+				return (
+					customId === this.customId('ticket_threads_categories_create_list') ||
+					customId === this.dynamicCustomId('ticket_threads_categories_create_list_proxy')
+				);
+			}),
+		);
 
-	const { client, customId, fields, guild, guildId, guildLocale, locale, user: interactionUser } = interaction;
-	const { dynamicValue } = this.extractCustomId(customId, true);
-	const dynamicValues = dynamicValue.split('_');
+	if (interaction.replied || hasComponents) {
+		if ('deferUpdate' in interaction) await interaction.deferUpdate();
+	} else {
+		await interaction.deferReply({ ephemeral: true });
+	}
+
+	const { client, guild, guildId, guildLocale, locale, user: interactionUser } = interaction;
+	const customId = 'customId' in interaction ? interaction.customId : undefined;
+	const fields = 'fields' in interaction ? interaction.fields : undefined;
+
+	const dynamicValue = customId ? this.extractCustomId(customId, true).dynamicValue : undefined;
+	const dynamicValues = dynamicValue?.split('_');
 	const { data: categoryId, success } = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(
-		Number(dynamicValues.at(0) ?? dynamicValue),
+		Number(incomingCategoryId ?? dynamicValues?.at(0) ?? dynamicValue),
 	);
-	const isProxied = !!dynamicValues.at(1);
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const user = isProxied ? await this.client.users.fetch(dynamicValues.at(1)!) : interactionUser;
+	const isProxied = !!(proxiedUserId ?? dynamicValues?.at(1));
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+	const user = isProxied ? await this.client.users.fetch(proxiedUserId ?? dynamicValues?.at(1)!) : interactionUser;
 
 	const translations = translate(locale).tickets.threads.categories;
 	const guildTranslations = translate(guildLocale).tickets.threads.categories;
@@ -196,8 +209,8 @@ export async function createTicket(this: BaseInteraction.Interaction, { interact
 			description: z.string().min(0).max(2000, translations.createTicket.errors.invalidFields.fields.description()),
 		})
 		.safeParse({
-			title: fields.getTextInputValue('title'),
-			description: fields.getTextInputValue('description'),
+			title: fields?.getTextInputValue('title') ?? '',
+			description: fields?.getTextInputValue('description') ?? '',
 		});
 
 	if (!fieldsSuccess) {

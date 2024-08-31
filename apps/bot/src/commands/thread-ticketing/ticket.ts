@@ -38,7 +38,11 @@ export default class extends Command.Interaction {
 
 		if (categories.length === 1) {
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			const { id, titleAndDescriptionRequired } = categories.at(0)!;
+			const { id, skipModal, titleAndDescriptionRequired } = categories.at(0)!;
+
+			if (skipModal) {
+				return ThreadTicketing.createTicket.call(this, { interaction }, { categoryId: id });
+			}
 
 			void interaction
 				.showModal(
@@ -126,7 +130,7 @@ export class ComponentInteraction extends Component.Interaction {
 		}
 	}
 
-	private async ticketModal({ interaction }: Component.Context<'string'>, userId?: Snowflake) {
+	private async ticketModal({ interaction }: Component.Context<'string'>, proxiedUserId?: Snowflake) {
 		const {
 			data: categoryId,
 			error,
@@ -141,9 +145,7 @@ export class ComponentInteraction extends Component.Interaction {
 		}
 
 		const [row] = await database
-			.select({
-				titleAndDescriptionRequired: ticketThreadsCategories.titleAndDescriptionRequired,
-			})
+			.select()
 			.from(ticketThreadsCategories)
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
@@ -155,13 +157,17 @@ export class ComponentInteraction extends Component.Interaction {
 			});
 		}
 
+		if (row.skipModal) {
+			return ThreadTicketing.createTicket.call(this, { interaction }, { categoryId: row.id, proxiedUserId });
+		}
+
 		void interaction
 			.showModal(
 				ThreadTicketing.ticketModal.call(this, {
-					categoryId,
+					categoryId: row.id,
 					locale: interaction.locale,
+					proxiedUserId,
 					titleAndDescriptionRequired: row.titleAndDescriptionRequired,
-					userId,
 				}),
 			)
 			.catch(() => false);
@@ -185,12 +191,16 @@ export class ComponentInteraction extends Component.Interaction {
 
 		if (categories.length === 1) {
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			const { id, titleAndDescriptionRequired } = categories.at(0)!;
+			const { id: categoryId, skipModal, titleAndDescriptionRequired } = categories.at(0)!;
+
+			if (skipModal) {
+				return ThreadTicketing.createTicket.call(this, { interaction }, { categoryId });
+			}
 
 			void interaction
 				.showModal(
 					ThreadTicketing.ticketModal.call(this, {
-						categoryId: id,
+						categoryId,
 						locale: interaction.locale,
 						titleAndDescriptionRequired,
 					}),

@@ -48,6 +48,7 @@ export const ticketThreadsCategories = mysqlTable(
 		silentPings: boolean('silentPings').notNull().default(true),
 		threadNotifications: boolean('threadNotifications').notNull().default(false),
 		titleAndDescriptionRequired: boolean('titleAndDescriptionRequired').notNull().default(true),
+		skipModal: boolean('skipModal').notNull().default(false),
 	},
 	(table) => ({
 		guildIdIndex: index('guildId_index').on(table.guildId),

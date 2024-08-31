@@ -1,5 +1,6 @@
 export * from './categoryList';
 export * from './closeTicket';
+export * from './createTicket';
 export * from './deleteTicket';
 export * from './lockTicket';
 export * from './renameTitleModal';

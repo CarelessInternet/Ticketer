@@ -156,6 +156,11 @@ function categoryViewEmbed(
 					value: category.titleAndDescriptionRequired ? 'Required' : 'Optional',
 					inline: true,
 				},
+				{
+					name: 'Skip Modal',
+					value: category.skipModal ? 'Enabled' : 'Disabled',
+					inline: true,
+				},
 			),
 	);
 }
@@ -495,6 +500,11 @@ export default class extends Command.Interaction {
 					.setLabel('Title & Description')
 					.setDescription('Toggle whether ticket authors must write a title and description.')
 					.setValue('ticket_title_description'),
+				new StringSelectMenuOptionBuilder()
+					.setEmoji('⏩')
+					.setLabel('Skip Modal')
+					.setDescription('Toggle whether modals are skipped.')
+					.setValue('skip_modals'),
 			);
 
 		const row = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(categoriesMenu);
@@ -696,6 +706,9 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			case 'ticket_title_description': {
 				return this.ticketTitleDescription({ interaction });
+			}
+			case 'skip_modals': {
+				return this.skipModals({ interaction });
 			}
 			default: {
 				return interaction.reply({
@@ -1071,6 +1084,51 @@ export class ComponentInteraction extends Component.Interaction {
 			.setTitle('Updated the Thread Ticket Category')
 			.setDescription(
 				`${interaction.user.toString()} has toggled the ticket title and description option to ${row.titleAndDescriptionRequired ? 'required' : 'optional'}.`,
+			);
+
+		return interaction.editReply({ embeds: [embed] });
+	}
+
+	@DeferReply()
+	private async skipModals({ interaction }: Component.Context<'string'>) {
+		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
+
+		if (!success) {
+			return interaction.editReply({
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
+
+		await database
+			.update(ticketThreadsCategories)
+			.set({
+				skipModal: not(ticketThreadsCategories.skipModal),
+			})
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
+
+		const [row] = await database
+			.select({ skipModal: ticketThreadsCategories.skipModal })
+			.from(ticketThreadsCategories)
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
+
+		if (!row) {
+			return interaction.editReply({
+				embeds: [
+					super.userEmbedError(interaction.user).setDescription('No category with the given ID could be found.'),
+				],
+			});
+		}
+
+		const embed = super
+			.userEmbed(interaction.user)
+			.setTitle('Updated the Thread Ticket Category')
+			.setDescription(
+				`${interaction.user.toString()} has toggled the skip modal option to ${row.skipModal ? 'enabled' : 'disabled'}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed] });

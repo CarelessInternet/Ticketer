@@ -1,0 +1,1 @@
+ALTER TABLE `ticketThreadsCategories` ADD `skipModal` boolean DEFAULT false NOT NULL;

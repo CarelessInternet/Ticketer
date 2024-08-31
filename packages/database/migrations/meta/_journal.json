@@ -22,6 +22,13 @@
       "when": 1722631066812,
       "tag": "0002_loose_doorman",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1725118814651,
+      "tag": "0003_white_jocasta",
+      "breakpoints": true
     }
   ]
 }

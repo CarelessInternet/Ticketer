@@ -135,12 +135,12 @@ function TooltipLinkItem({ children, href, icon }: PropsWithChildren<{ href: str
 const tooltipLinkItems = [
 	{
 		content: 'Invite to Discord Server',
-		href: '/invite',
+		href: '/links/discord/invite',
 		icon: <PlusCircle />,
 	},
 	{
 		content: 'Discord Support Server',
-		href: 'https://discord.gg/9FHagm6343',
+		href: '/links/discord/support',
 		icon: <MessageCircleQuestion />,
 	},
 	{

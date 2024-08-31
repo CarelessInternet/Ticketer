@@ -11,11 +11,11 @@
 		"lint": "eslint ."
 	},
 	"dependencies": {
-		"@t3-oss/env-core": "^0.11.0",
+		"@t3-oss/env-core": "^0.11.1",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
 		"@ticketer/eslint-config": "workspace:*",
-		"@types/node": "^22.4.1"
+		"@types/node": "^22.5.1"
 	}
 }

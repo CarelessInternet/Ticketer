@@ -147,6 +147,11 @@ function categoryViewEmbed(
 					inline: true,
 				},
 				{
+					name: 'Skip Modal',
+					value: category.skipModal ? 'Enabled' : 'Disabled',
+					inline: true,
+				},
+				{
 					name: 'Thread Notifications',
 					value: category.threadNotifications ? 'Enabled' : 'Disabled',
 					inline: true,
@@ -154,11 +159,6 @@ function categoryViewEmbed(
 				{
 					name: 'Ticket Title & Description',
 					value: category.titleAndDescriptionRequired ? 'Required' : 'Optional',
-					inline: true,
-				},
-				{
-					name: 'Skip Modal',
-					value: category.skipModal ? 'Enabled' : 'Disabled',
 					inline: true,
 				},
 			),
@@ -491,6 +491,11 @@ export default class extends Command.Interaction {
 					.setDescription('Toggle whether managers get pinged (with noise) on ticket creation.')
 					.setValue('silent_pings'),
 				new StringSelectMenuOptionBuilder()
+					.setEmoji('⏩')
+					.setLabel('Skip Modal')
+					.setDescription('Toggle whether modals are skipped.')
+					.setValue('skip_modals'),
+				new StringSelectMenuOptionBuilder()
 					.setEmoji('📣')
 					.setLabel('Thread Notification')
 					.setDescription('Toggle whether the new thread system message stays on.')
@@ -500,11 +505,6 @@ export default class extends Command.Interaction {
 					.setLabel('Title & Description')
 					.setDescription('Toggle whether ticket authors must write a title and description.')
 					.setValue('ticket_title_description'),
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('⏩')
-					.setLabel('Skip Modal')
-					.setDescription('Toggle whether modals are skipped.')
-					.setValue('skip_modals'),
 			);
 
 		const row = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(categoriesMenu);

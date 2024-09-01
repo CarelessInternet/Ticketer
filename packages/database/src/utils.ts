@@ -1,18 +1,18 @@
+import { and, database, eq, ticketThreadsCategories } from '.';
 import { customType, varchar } from 'drizzle-orm/mysql-core';
 import { z } from 'zod';
 
 // TODO: Change mode to 'string' when available: https://github.com/drizzle-team/drizzle-orm/issues/813
 // const snowflake = (name: string) => bigint(name, { mode: 'bigint', unsigned: true });
 
-export const snowflake = customType<{ data: string }>({
+type DiscordSnowflake = string;
+
+export const snowflake = customType<{ data: DiscordSnowflake }>({
 	dataType() {
 		return 'bigint unsigned';
 	},
-	// eslint-disable-next-line unicorn/prefer-native-coercion-functions
-	fromDriver(value: unknown) {
-		return String(value);
-	},
-	toDriver(value: string) {
+	fromDriver: String,
+	toDriver(value: DiscordSnowflake) {
 		return value;
 	},
 });
@@ -48,3 +48,58 @@ export const baseTicketConfigurationNotNull = {
 	openingMessageTitle: varchar('openingMessageTitle', { length: 100 }).notNull(),
 	openingMessageDescription: varchar('openingMessageDescription', { length: 500 }).notNull(),
 };
+
+export class ThreadTicketButtonsPermissionBitField {
+	['constructor']!: typeof ThreadTicketButtonsPermissionBitField;
+
+	public static Flags = {
+		// key: 1 << n (n=0 at initial)
+		RenameTitle: 1,
+		Lock: 2,
+		Close: 4,
+		LockAndClose: 8,
+		Delete: 16,
+	} as const;
+
+	public static All = Object.values(this.Flags).reduce((permissionBit, accumulator) => permissionBit | accumulator, 0);
+
+	public static Default = this.All;
+
+	public constructor(private bitfield = this.constructor.Default) {}
+
+	public has(bit: number) {
+		return (this.bitfield & bit) === bit;
+	}
+
+	public add(...bits: (typeof this.constructor.Flags)[keyof typeof this.constructor.Flags][]) {
+		let total = 0;
+
+		for (const bit of bits) {
+			total |= bit;
+		}
+
+		this.bitfield |= total;
+	}
+
+	public remove(...bits: (typeof this.constructor.Flags)[keyof typeof this.constructor.Flags][]) {
+		let total = 0;
+
+		for (const bit of bits) {
+			total |= bit;
+		}
+
+		this.bitfield &= ~total;
+	}
+
+	public async updateAuthorPermissions(
+		categoryId: typeof ticketThreadsCategories.$inferSelect.id,
+		guildId: DiscordSnowflake,
+	) {
+		database
+			.update(ticketThreadsCategories)
+			.set({ allowedAuthorButtons: this.bitfield })
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, guildId)));
+
+		return this.bitfield;
+	}
+}

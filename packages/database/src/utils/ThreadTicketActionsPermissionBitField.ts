@@ -32,30 +32,6 @@ export class ThreadTicketActionsPermissionBitField {
 		return this.has(bit);
 	}
 
-	public add(
-		...bits: (typeof ThreadTicketActionsPermissionBitField.Flags)[keyof typeof ThreadTicketActionsPermissionBitField.Flags][]
-	) {
-		let total = 0;
-
-		for (const bit of bits) {
-			total |= bit;
-		}
-
-		this.bitfield |= total;
-	}
-
-	public remove(
-		...bits: (typeof ThreadTicketActionsPermissionBitField.Flags)[keyof typeof ThreadTicketActionsPermissionBitField.Flags][]
-	) {
-		let total = 0;
-
-		for (const bit of bits) {
-			total |= bit;
-		}
-
-		this.bitfield &= ~total;
-	}
-
 	public updateAuthorPermissions(
 		categoryId: typeof ticketThreadsCategories.$inferSelect.id,
 		guildId: DiscordSnowflake,

@@ -101,14 +101,18 @@ export default {
 				},
 			},
 		},
-		buttons: {
+		actions: {
 			_errorIfNotTicketChannel: {
 				title: ERROR_TITLE,
 				description: 'The channel is not a valid ticket channel.',
 			},
 			_errorIfNotTicketAuthorOrManager: {
 				title: ERROR_TITLE,
-				description: 'You need to be the ticket author or manager to execute this button/command.',
+				description: 'You need to be the ticket author or manager to execute this action.',
+			},
+			_errorIfNoAuthorPermissions: {
+				title: ERROR_TITLE,
+				description: 'You do not have permission to use this action.',
 			},
 			renameTitle: {
 				builder: {

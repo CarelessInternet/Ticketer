@@ -1,6 +1,12 @@
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
 import { ChannelType, Colors, PermissionFlagsBits } from 'discord.js';
-import { database, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
+import {
+	ThreadTicketActionsPermissionBitField,
+	database,
+	eq,
+	ticketThreadsCategories,
+	ticketsThreads,
+} from '@ticketer/database';
 import { translate } from '@/i18n';
 
 export async function closeTicket(
@@ -8,8 +14,8 @@ export async function closeTicket(
 	{ interaction }: Command.Context | Component.Context,
 ) {
 	const { channel, guild, guildLocale, locale, member, user } = interaction;
-	const translations = translate(locale).tickets.threads.categories.buttons;
-	const guildSuccessTranslations = translate(guildLocale).tickets.threads.categories.buttons.close.execute.success;
+	const translations = translate(locale).tickets.threads.categories.actions;
+	const guildSuccessTranslations = translate(guildLocale).tickets.threads.categories.actions.close.execute.success;
 
 	if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
 		return interaction.editReply({
@@ -22,7 +28,6 @@ export async function closeTicket(
 	}
 
 	if (channel.archived) return;
-
 	if (!channel.editable) {
 		return interaction.editReply({
 			embeds: [
@@ -35,6 +40,7 @@ export async function closeTicket(
 
 	const [row] = await database
 		.select({
+			allowedAuthorActions: ticketThreadsCategories.allowedAuthorActions,
 			authorId: ticketsThreads.authorId,
 			logsChannelId: ticketThreadsCategories.logsChannelId,
 			managers: ticketThreadsCategories.managers,
@@ -43,14 +49,28 @@ export async function closeTicket(
 		.where(eq(ticketsThreads.threadId, channel.id))
 		.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id));
 
-	if (row?.authorId !== user.id && !row?.managers.some((id) => member.roles.resolve(id))) {
-		return interaction.editReply({
-			embeds: [
-				this.userEmbedError(user, translations._errorIfNotTicketAuthorOrManager.title()).setDescription(
-					translations._errorIfNotTicketAuthorOrManager.description(),
-				),
-			],
-		});
+	if (!row?.managers.some((id) => member.roles.resolve(id))) {
+		if (row?.authorId !== user.id) {
+			return interaction.editReply({
+				embeds: [
+					this.userEmbedError(user, translations._errorIfNotTicketAuthorOrManager.title()).setDescription(
+						translations._errorIfNotTicketAuthorOrManager.description(),
+					),
+				],
+			});
+		}
+
+		const authorPermissions = new ThreadTicketActionsPermissionBitField(row.allowedAuthorActions);
+
+		if (!authorPermissions.has(ThreadTicketActionsPermissionBitField.Flags.Close)) {
+			return interaction.editReply({
+				embeds: [
+					this.userEmbedError(user, translations._errorIfNoAuthorPermissions.title()).setDescription(
+						translations._errorIfNoAuthorPermissions.description(),
+					),
+				],
+			});
+		}
 	}
 
 	const embed = this.userEmbed(user)

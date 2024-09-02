@@ -3,7 +3,7 @@ import ERROR_TITLE from './errorTitle';
 import type { Translation } from '../i18n-types';
 
 export default {
-	buttons: {
+	actions: {
 		_errorIfNotThreadChannel: {
 			title: ERROR_TITLE,
 			description: 'Kanalen är inte en giltigt trådkanal.',

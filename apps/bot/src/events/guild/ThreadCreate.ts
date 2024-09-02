@@ -39,7 +39,7 @@ export default class extends Event.Handler {
 				user,
 			});
 
-			const translations = translate(thread.guild.preferredLocale).tickets.userForums.buttons;
+			const translations = translate(thread.guild.preferredLocale).tickets.userForums.actions;
 			const buttonsRow = ticketButtons({
 				close: {
 					customId: super.customId('ticket_user_forums_thread_close'),

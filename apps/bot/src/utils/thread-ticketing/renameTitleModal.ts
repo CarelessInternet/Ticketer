@@ -6,7 +6,7 @@ export function renameTitleModal(
 	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context | Component.Context,
 ) {
-	const translations = translate(interaction.locale).tickets.threads.categories.buttons.renameTitle.component.modal;
+	const translations = translate(interaction.locale).tickets.threads.categories.actions.renameTitle.component.modal;
 
 	const input = new TextInputBuilder()
 		.setCustomId(this.customId('title'))

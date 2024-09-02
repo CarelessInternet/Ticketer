@@ -28,6 +28,7 @@ export const metadata: Metadata = {
 				alt: 'Ticketer logo',
 			},
 		],
+		url: baseURL,
 	},
 	metadataBase: baseURL,
 };

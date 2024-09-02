@@ -1,7 +1,7 @@
 import { ChannelType, Colors, PermissionFlagsBits, type Snowflake } from 'discord.js';
 import { Command, Component, DeferReply, Modal } from '@ticketer/djs-framework';
-import { ThreadTicketing, zodErrorToString } from '@/utils';
 import {
+	ThreadTicketActionsPermissionBitField,
 	and,
 	database,
 	eq,
@@ -9,6 +9,7 @@ import {
 	ticketThreadsCategoriesSelectSchema,
 	ticketsThreads,
 } from '@ticketer/database';
+import { ThreadTicketing, zodErrorToString } from '@/utils';
 import { getTranslations, translate } from '@/i18n';
 import { z } from 'zod';
 
@@ -271,7 +272,7 @@ export class ModalInteraction extends Modal.Interaction {
 	@DeferReply({ ephemeral: true })
 	private async renameTitle({ interaction }: Modal.Context) {
 		const { channel, fields, guild, guildLocale, locale, member, user } = interaction;
-		const translations = translate(locale).tickets.threads.categories.buttons;
+		const translations = translate(locale).tickets.threads.categories.actions;
 
 		if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
 			return interaction.editReply({
@@ -295,6 +296,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		const [row] = await database
 			.select({
+				allowedAuthorActions: ticketThreadsCategories.allowedAuthorActions,
 				authorId: ticketsThreads.authorId,
 				logsChannelId: ticketThreadsCategories.logsChannelId,
 				managers: ticketThreadsCategories.managers,
@@ -303,14 +305,28 @@ export class ModalInteraction extends Modal.Interaction {
 			.where(eq(ticketsThreads.threadId, channel.id))
 			.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id));
 
-		if (row?.authorId !== user.id && !row?.managers.some((id) => member.roles.resolve(id))) {
-			return interaction.editReply({
-				embeds: [
-					super
-						.userEmbedError(user, translations._errorIfNotTicketAuthorOrManager.title())
-						.setDescription(translations._errorIfNotTicketAuthorOrManager.description()),
-				],
-			});
+		if (!row?.managers.some((id) => member.roles.resolve(id))) {
+			if (row?.authorId !== user.id) {
+				return interaction.editReply({
+					embeds: [
+						super
+							.userEmbedError(user, translations._errorIfNotTicketAuthorOrManager.title())
+							.setDescription(translations._errorIfNotTicketAuthorOrManager.description()),
+					],
+				});
+			}
+
+			const authorPermissions = new ThreadTicketActionsPermissionBitField(row.allowedAuthorActions);
+
+			if (!authorPermissions.has(ThreadTicketActionsPermissionBitField.Flags.RenameTitle)) {
+				return interaction.editReply({
+					embeds: [
+						this.userEmbedError(user, translations._errorIfNoAuthorPermissions.title()).setDescription(
+							translations._errorIfNoAuthorPermissions.description(),
+						),
+					],
+				});
+			}
 		}
 
 		const oldTitle = channel.name;
@@ -328,7 +344,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		const successTranslations = translations.renameTitle.modal.success;
 		const guildSuccessTranslations =
-			translate(guildLocale).tickets.threads.categories.buttons.renameTitle.modal.success;
+			translate(guildLocale).tickets.threads.categories.actions.renameTitle.modal.success;
 		const embed = super
 			.userEmbed(user)
 			.setColor(Colors.DarkGreen)

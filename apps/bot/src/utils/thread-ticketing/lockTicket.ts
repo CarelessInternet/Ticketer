@@ -1,6 +1,12 @@
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
 import { ChannelType, Colors, PermissionFlagsBits } from 'discord.js';
-import { database, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
+import {
+	ThreadTicketActionsPermissionBitField,
+	database,
+	eq,
+	ticketThreadsCategories,
+	ticketsThreads,
+} from '@ticketer/database';
 import { translate } from '@/i18n';
 
 export async function lockTicket(
@@ -9,9 +15,9 @@ export async function lockTicket(
 	lockAndClose = false,
 ) {
 	const { channel, guild, guildLocale, locale, member, user } = interaction;
-	const translations = translate(locale).tickets.threads.categories.buttons;
+	const translations = translate(locale).tickets.threads.categories.actions;
 	const guildSuccessTranslations =
-		translate(guildLocale).tickets.threads.categories.buttons[lockAndClose ? 'lockAndClose' : 'lock'].execute.success;
+		translate(guildLocale).tickets.threads.categories.actions[lockAndClose ? 'lockAndClose' : 'lock'].execute.success;
 
 	if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
 		return interaction.editReply({
@@ -23,9 +29,7 @@ export async function lockTicket(
 		});
 	}
 
-	// This is here just in case somebody bypassed the disabled buttons in locked threads.
 	if (channel.locked) return;
-
 	if (lockAndClose ? !channel.manageable || !channel.editable : !channel.manageable) {
 		return interaction.editReply({
 			embeds: [
@@ -45,6 +49,7 @@ export async function lockTicket(
 
 	const [row] = await database
 		.select({
+			allowedAuthorActions: ticketThreadsCategories.allowedAuthorActions,
 			authorId: ticketsThreads.authorId,
 			logsChannelId: ticketThreadsCategories.logsChannelId,
 			managers: ticketThreadsCategories.managers,
@@ -53,14 +58,28 @@ export async function lockTicket(
 		.where(eq(ticketsThreads.threadId, channel.id))
 		.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id));
 
-	if (row?.authorId !== user.id && !row?.managers.some((id) => member.roles.resolve(id))) {
-		return interaction.editReply({
-			embeds: [
-				this.userEmbedError(user, translations._errorIfNotTicketAuthorOrManager.title()).setDescription(
-					translations._errorIfNotTicketAuthorOrManager.description(),
-				),
-			],
-		});
+	if (!row?.managers.some((id) => member.roles.resolve(id))) {
+		if (row?.authorId !== user.id) {
+			return interaction.editReply({
+				embeds: [
+					this.userEmbedError(user, translations._errorIfNotTicketAuthorOrManager.title()).setDescription(
+						translations._errorIfNotTicketAuthorOrManager.description(),
+					),
+				],
+			});
+		}
+
+		const authorPermissions = new ThreadTicketActionsPermissionBitField(row.allowedAuthorActions);
+
+		if (!authorPermissions.has(ThreadTicketActionsPermissionBitField.Flags[lockAndClose ? 'LockAndClose' : 'Lock'])) {
+			return interaction.editReply({
+				embeds: [
+					this.userEmbedError(user, translations._errorIfNoAuthorPermissions.title()).setDescription(
+						translations._errorIfNoAuthorPermissions.description(),
+					),
+				],
+			});
+		}
 	}
 
 	const embed = this.userEmbed(user)

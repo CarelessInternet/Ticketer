@@ -9,7 +9,7 @@ export async function renameTitle(
 	isAutomaticThreads = false,
 ) {
 	const { channel, fields, locale, member, user } = interaction;
-	const translations = translate(locale).tickets[isAutomaticThreads ? 'automaticThreads' : 'userForums'].buttons;
+	const translations = translate(locale).tickets[isAutomaticThreads ? 'automaticThreads' : 'userForums'].actions;
 	const table = isAutomaticThreads ? automaticThreadsConfigurations : userForumsConfigurations;
 
 	if (

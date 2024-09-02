@@ -8,7 +8,7 @@ export function renameTitleModal(
 	isAutomaticThreads = false,
 ) {
 	const translations = translate(interaction.locale).tickets[isAutomaticThreads ? 'automaticThreads' : 'userForums']
-		.buttons.renameTitle.component.modal;
+		.actions.renameTitle.component.modal;
 
 	const input = new TextInputBuilder()
 		.setCustomId(this.customId('title'))

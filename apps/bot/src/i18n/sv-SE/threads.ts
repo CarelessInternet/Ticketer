@@ -102,7 +102,7 @@ export default {
 				},
 			},
 		},
-		buttons: {
+		actions: {
 			_errorIfNotTicketChannel: {
 				title: ERROR_TITLE,
 				description: 'Kanalen är inte en giltigt stödbiljettkanal.',
@@ -111,6 +111,10 @@ export default {
 				title: ERROR_TITLE,
 				description:
 					'Du måste vara stödbiljettägaren eller stödbiljettansvarigt för att köra den/det här knappen/kommandot.',
+			},
+			_errorIfNoAuthorPermissions: {
+				title: ERROR_TITLE,
+				description: 'Du har inte tillstånd för att använda denna funktion.',
 			},
 			renameTitle: {
 				builder: {

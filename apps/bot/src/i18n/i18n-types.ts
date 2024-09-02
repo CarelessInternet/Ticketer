@@ -501,7 +501,7 @@ type RootTranslation = {
 			}
 		}
 		automaticThreads: {
-			buttons: {
+			actions: {
 				_errorIfNotThreadChannel: {
 					/**
 					 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
@@ -931,7 +931,7 @@ type RootTranslation = {
 						}
 					}
 				}
-				buttons: {
+				actions: {
 					_errorIfNotTicketChannel: {
 						/**
 						 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
@@ -948,7 +948,17 @@ type RootTranslation = {
 						 */
 						title: string
 						/**
-						 * Y​o​u​ ​n​e​e​d​ ​t​o​ ​b​e​ ​t​h​e​ ​t​i​c​k​e​t​ ​a​u​t​h​o​r​ ​o​r​ ​m​a​n​a​g​e​r​ ​t​o​ ​e​x​e​c​u​t​e​ ​t​h​i​s​ ​b​u​t​t​o​n​/​c​o​m​m​a​n​d​.
+						 * Y​o​u​ ​n​e​e​d​ ​t​o​ ​b​e​ ​t​h​e​ ​t​i​c​k​e​t​ ​a​u​t​h​o​r​ ​o​r​ ​m​a​n​a​g​e​r​ ​t​o​ ​e​x​e​c​u​t​e​ ​t​h​i​s​ ​a​c​t​i​o​n​.
+						 */
+						description: string
+					}
+					_errorIfNoAuthorPermissions: {
+						/**
+						 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+						 */
+						title: string
+						/**
+						 * Y​o​u​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​p​e​r​m​i​s​s​i​o​n​ ​t​o​ ​u​s​e​ ​t​h​i​s​ ​a​c​t​i​o​n​.
 						 */
 						description: string
 					}
@@ -1222,7 +1232,7 @@ type RootTranslation = {
 			}
 		}
 		userForums: {
-			buttons: {
+			actions: {
 				_errorIfNotThreadChannel: {
 					/**
 					 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
@@ -1907,7 +1917,7 @@ export type TranslationFunctions = {
 			}
 		}
 		automaticThreads: {
-			buttons: {
+			actions: {
 				_errorIfNotThreadChannel: {
 					/**
 					 * An Error Occured
@@ -2320,7 +2330,7 @@ export type TranslationFunctions = {
 						}
 					}
 				}
-				buttons: {
+				actions: {
 					_errorIfNotTicketChannel: {
 						/**
 						 * An Error Occured
@@ -2337,7 +2347,17 @@ export type TranslationFunctions = {
 						 */
 						title: () => LocalizedString
 						/**
-						 * You need to be the ticket author or manager to execute this button/command.
+						 * You need to be the ticket author or manager to execute this action.
+						 */
+						description: () => LocalizedString
+					}
+					_errorIfNoAuthorPermissions: {
+						/**
+						 * An Error Occured
+						 */
+						title: () => LocalizedString
+						/**
+						 * You do not have permission to use this action.
 						 */
 						description: () => LocalizedString
 					}
@@ -2597,7 +2617,7 @@ export type TranslationFunctions = {
 			}
 		}
 		userForums: {
-			buttons: {
+			actions: {
 				_errorIfNotThreadChannel: {
 					/**
 					 * An Error Occured

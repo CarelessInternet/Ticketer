@@ -47,7 +47,7 @@ export default class extends Event.Handler {
 			user: message.author,
 		});
 
-		const translations = translate(message.guild.preferredLocale).tickets.automaticThreads.buttons;
+		const translations = translate(message.guild.preferredLocale).tickets.automaticThreads.actions;
 		const buttonsRow = ticketButtons({
 			close: {
 				customId: super.customId('ticket_automatic_threads_thread_close'),

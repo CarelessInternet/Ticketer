@@ -1,7 +1,7 @@
 import ERROR_TITLE from './errorTitle';
 
 export default {
-	buttons: {
+	actions: {
 		_errorIfNotThreadChannel: {
 			title: ERROR_TITLE,
 			description: 'The channel is not a valid thread channel.',

@@ -37,7 +37,8 @@ export const ticketThreadsCategories = mysqlTable(
 	{
 		id: int('id', { unsigned: true }).autoincrement().primaryKey(),
 		guildId: snowflake('guildId').notNull(),
-		// This is not a char because one emoji can compose of several like 👨‍👩‍👦‍👦.
+		allowedAuthorActions: int('allowedAuthorActions', { unsigned: true }),
+		// This is not a char because one emoji can compose of several emojis (e.g. 👨‍👩‍👦‍👦).
 		categoryEmoji: varchar('categoryEmoji', { length: 8 }),
 		categoryTitle: varchar('categoryTitle', { length: 100 }).notNull(),
 		categoryDescription: varchar('categoryDescription', { length: 100 }).notNull(),
@@ -46,9 +47,9 @@ export const ticketThreadsCategories = mysqlTable(
 		...baseTicketConfiguration,
 		privateThreads: boolean('privateThreads').notNull().default(true),
 		silentPings: boolean('silentPings').notNull().default(true),
+		skipModal: boolean('skipModal').notNull().default(false),
 		threadNotifications: boolean('threadNotifications').notNull().default(false),
 		titleAndDescriptionRequired: boolean('titleAndDescriptionRequired').notNull().default(true),
-		skipModal: boolean('skipModal').notNull().default(false),
 	},
 	(table) => ({
 		guildIdIndex: index('guildId_index').on(table.guildId),

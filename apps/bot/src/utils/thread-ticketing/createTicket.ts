@@ -255,23 +255,23 @@ export async function createTicket(
 	const buttonsRow = ticketButtons({
 		close: {
 			customId: this.customId('ticket_threads_category_create_close'),
-			label: guildTranslations.buttons.close.builder.label(),
+			label: guildTranslations.actions.close.builder.label(),
 		},
 		delete: {
 			customId: this.customId('ticket_threads_category_create_delete'),
-			label: guildTranslations.buttons.delete.builder.label(),
+			label: guildTranslations.actions.delete.builder.label(),
 		},
 		lock: {
 			customId: this.customId('ticket_threads_category_create_lock'),
-			label: guildTranslations.buttons.lock.builder.label(),
+			label: guildTranslations.actions.lock.builder.label(),
 		},
 		lockAndClose: {
 			customId: this.customId('ticket_threads_category_create_lock_and_close'),
-			label: guildTranslations.buttons.lockAndClose.builder.label(),
+			label: guildTranslations.actions.lockAndClose.builder.label(),
 		},
 		renameTitle: {
 			customId: this.customId('ticket_threads_category_create_rename_title'),
-			label: guildTranslations.buttons.renameTitle.builder.label(),
+			label: guildTranslations.actions.renameTitle.builder.label(),
 		},
 	});
 

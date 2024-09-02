@@ -25,16 +25,7 @@ import {
 	Modal,
 } from '@ticketer/djs-framework';
 import {
-	ThreadTicketing,
-	extractEmoji,
-	goToPage,
-	messageWithPagination,
-	ticketThreadsOpeningMessageDescription,
-	ticketThreadsOpeningMessageTitle,
-	withPagination,
-	zodErrorToString,
-} from '@/utils';
-import {
+	ThreadTicketActionsPermissionBitField,
 	and,
 	asc,
 	count,
@@ -49,6 +40,16 @@ import {
 	ticketThreadsConfigurationsInsertSchema,
 	ticketsThreads,
 } from '@ticketer/database';
+import {
+	ThreadTicketing,
+	extractEmoji,
+	goToPage,
+	messageWithPagination,
+	ticketThreadsOpeningMessageDescription,
+	ticketThreadsOpeningMessageTitle,
+	withPagination,
+	zodErrorToString,
+} from '@/utils';
 
 const MAXIMUM_CATEGORY_AMOUNT = 10;
 const CATEGORY_PAGE_SIZE = 2;
@@ -133,6 +134,12 @@ function categoryViewEmbed(
 					inline: true,
 				},
 				{
+					name: 'Allowed Author Actions',
+					value: ThreadTicketing.actionsBitfieldToNames(category.allowedAuthorActions)
+						.map((name) => inlineCode(name))
+						.join(', '),
+				},
+				{
 					name: '\u200B',
 					value: '\u200B',
 				},
@@ -147,6 +154,11 @@ function categoryViewEmbed(
 					inline: true,
 				},
 				{
+					name: 'Skip Modal',
+					value: category.skipModal ? 'Enabled' : 'Disabled',
+					inline: true,
+				},
+				{
 					name: 'Thread Notifications',
 					value: category.threadNotifications ? 'Enabled' : 'Disabled',
 					inline: true,
@@ -154,11 +166,6 @@ function categoryViewEmbed(
 				{
 					name: 'Ticket Title & Description',
 					value: category.titleAndDescriptionRequired ? 'Required' : 'Optional',
-					inline: true,
-				},
-				{
-					name: 'Skip Modal',
-					value: category.skipModal ? 'Enabled' : 'Disabled',
 					inline: true,
 				},
 			),
@@ -461,6 +468,11 @@ export default class extends Command.Interaction {
 					.setDescription('Change the emoji, title, and description used for this category.')
 					.setValue('emoji_title_description'),
 				new StringSelectMenuOptionBuilder()
+					.setEmoji('🛡️')
+					.setLabel('Ticket Managers')
+					.setDescription('Choose the managers who are responsible for this category.')
+					.setValue('managers'),
+				new StringSelectMenuOptionBuilder()
 					.setEmoji('#️⃣')
 					.setLabel('Channel')
 					.setDescription('Change the channel where tickets of this category go.')
@@ -471,15 +483,15 @@ export default class extends Command.Interaction {
 					.setDescription('Change the channel where logs get sent during ticket activity for the category.')
 					.setValue('logs_channel'),
 				new StringSelectMenuOptionBuilder()
-					.setEmoji('🛡️')
-					.setLabel('Ticket Managers')
-					.setDescription('Choose the managers who are responsible for this category.')
-					.setValue('managers'),
-				new StringSelectMenuOptionBuilder()
 					.setEmoji('📔')
 					.setLabel('Message Title & Description')
 					.setDescription("Change the opening message's title and description.")
 					.setValue('message_title_description'),
+				new StringSelectMenuOptionBuilder()
+					.setEmoji('🚦')
+					.setLabel('Allowed Author Actions')
+					.setDescription('Change what actions the ticket author can use.')
+					.setValue('allowed_author_actions'),
 				new StringSelectMenuOptionBuilder()
 					.setEmoji('🛃')
 					.setLabel('Private Thread')
@@ -491,6 +503,11 @@ export default class extends Command.Interaction {
 					.setDescription('Toggle whether managers get pinged (with noise) on ticket creation.')
 					.setValue('silent_pings'),
 				new StringSelectMenuOptionBuilder()
+					.setEmoji('⏩')
+					.setLabel('Skip Modal')
+					.setDescription('Toggle whether modals are skipped.')
+					.setValue('skip_modals'),
+				new StringSelectMenuOptionBuilder()
 					.setEmoji('📣')
 					.setLabel('Thread Notification')
 					.setDescription('Toggle whether the new thread system message stays on.')
@@ -500,11 +517,6 @@ export default class extends Command.Interaction {
 					.setLabel('Title & Description')
 					.setDescription('Toggle whether ticket authors must write a title and description.')
 					.setValue('ticket_title_description'),
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('⏩')
-					.setLabel('Skip Modal')
-					.setDescription('Toggle whether modals are skipped.')
-					.setValue('skip_modals'),
 			);
 
 		const row = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(categoriesMenu);
@@ -616,6 +628,7 @@ export class ComponentInteraction extends Component.Interaction {
 		super.dynamicCustomId('ticket_threads_category_configuration_channel'),
 		super.dynamicCustomId('ticket_threads_category_configuration_logs_channel'),
 		super.dynamicCustomId('ticket_threads_category_configuration_managers'),
+		super.dynamicCustomId('ticket_threads_category_configuration_allowed_author_actions'),
 		super.dynamicCustomId('ticket_threads_category_delete_confirm'),
 		super.dynamicCustomId('ticket_threads_category_delete_cancel'),
 		super.dynamicCustomId('ticket_threads_category_view_previous'),
@@ -636,6 +649,9 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			case super.dynamicCustomId('ticket_threads_category_configuration_managers'): {
 				return interaction.isRoleSelectMenu() && this.categoryManagers({ interaction });
+			}
+			case super.dynamicCustomId('ticket_threads_category_configuration_allowed_author_actions'): {
+				return interaction.isStringSelectMenu() && this.allowedAuthorActions({ interaction });
 			}
 			case super.dynamicCustomId('ticket_threads_category_delete_confirm'):
 			case super.dynamicCustomId('ticket_threads_category_delete_cancel'): {
@@ -665,6 +681,18 @@ export class ComponentInteraction extends Component.Interaction {
 			case 'emoji_title_description': {
 				return this.categoryFieldsModalValues({ interaction });
 			}
+			case 'managers': {
+				const { dynamicValue } = super.extractCustomId(interaction.customId);
+				const managersMenu = new RoleSelectMenuBuilder()
+					.setCustomId(super.customId('ticket_threads_category_configuration_managers', dynamicValue))
+					.setMinValues(0)
+					.setMaxValues(10)
+					.setPlaceholder('Choose the ticket managers of this category.');
+
+				const row = new ActionRowBuilder<RoleSelectMenuBuilder>().setComponents(managersMenu);
+
+				return interaction.reply({ components: [row] });
+			}
 			case 'channel':
 			case 'logs_channel': {
 				const { dynamicValue } = super.extractCustomId(interaction.customId);
@@ -678,24 +706,52 @@ export class ComponentInteraction extends Component.Interaction {
 					)
 					.setChannelTypes(ChannelType.GuildText);
 
-				const channelRow = new ActionRowBuilder<ChannelSelectMenuBuilder>().setComponents(channelMenu);
-
-				return interaction.reply({ components: [channelRow] });
-			}
-			case 'managers': {
-				const { dynamicValue } = super.extractCustomId(interaction.customId);
-				const managersMenu = new RoleSelectMenuBuilder()
-					.setCustomId(super.customId('ticket_threads_category_configuration_managers', dynamicValue))
-					.setMinValues(0)
-					.setMaxValues(10)
-					.setPlaceholder('Choose the ticket managers of this category.');
-
-				const row = new ActionRowBuilder<RoleSelectMenuBuilder>().setComponents(managersMenu);
+				const row = new ActionRowBuilder<ChannelSelectMenuBuilder>().setComponents(channelMenu);
 
 				return interaction.reply({ components: [row] });
 			}
 			case 'message_title_description': {
 				return this.categoryMessageTitleDescriptionValues({ interaction });
+			}
+			case 'allowed_author_actions': {
+				const { dynamicValue } = super.extractCustomId(interaction.customId);
+
+				const selectMenu = new StringSelectMenuBuilder()
+					.setCustomId(super.customId('ticket_threads_category_configuration_allowed_author_actions', dynamicValue))
+					.setMinValues(1)
+					.setMaxValues(1)
+					.setPlaceholder('Edit one of the following ticket author actions:')
+					.setOptions(
+						new StringSelectMenuOptionBuilder()
+							.setEmoji('📝')
+							.setLabel('Rename Title')
+							.setDescription('Toggle whether ticket authors can rename titles.')
+							.setValue('rename_title'),
+						new StringSelectMenuOptionBuilder()
+							.setEmoji('🔒')
+							.setLabel('Lock')
+							.setDescription('Toggle whether ticket authors can lock tickets.')
+							.setValue('lock'),
+						new StringSelectMenuOptionBuilder()
+							.setEmoji('🗃')
+							.setLabel('Close')
+							.setDescription('Toggle whether ticket authors can close tickets.')
+							.setValue('close'),
+						new StringSelectMenuOptionBuilder()
+							.setEmoji('🔐')
+							.setLabel('Lock & Close')
+							.setDescription('Toggle whether ticket authors can lock and close tickets.')
+							.setValue('lock_and_close'),
+						new StringSelectMenuOptionBuilder()
+							.setEmoji('🗑')
+							.setLabel('Delete')
+							.setDescription('Toggle whether ticket authors can delete tickets.')
+							.setValue('delete'),
+					);
+
+				const row = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(selectMenu);
+
+				return interaction.reply({ components: [row] });
 			}
 			case 'private':
 			case 'notification': {
@@ -812,16 +868,82 @@ export class ComponentInteraction extends Component.Interaction {
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		const roles = managers.map((id) => roleMention(id)).join(', ');
-		const embed = super
-			.userEmbed(interaction.user)
-			.setTitle('Updated the Thread Ticket Category')
-			.setDescription(
-				`${interaction.user.toString()} updated the managers of the category to: ${
-					managers.length > 0 ? roles : 'none'
-				}.`,
-			);
 
-		return interaction.editReply({ components: [], embeds: [embed] });
+		return interaction.editReply({
+			components: [],
+			embeds: [
+				super
+					.userEmbed(interaction.user)
+					.setTitle('Updated the Thread Ticket Category')
+					.setDescription(
+						`${interaction.user.toString()} updated the managers of the category to: ${
+							managers.length > 0 ? roles : 'none'
+						}.`,
+					),
+			],
+		});
+	}
+
+	@DeferUpdate
+	private async allowedAuthorActions({ interaction }: Component.Context<'string'>) {
+		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
+
+		if (!success) {
+			return interaction.editReply({
+				components: [],
+				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+			});
+		}
+
+		const value = interaction.values.at(0);
+
+		if (!value) {
+			return interaction.reply({
+				embeds: [super.userEmbedError(interaction.user).setDescription('The selected value could not be found.')],
+				ephemeral: true,
+			});
+		}
+
+		const [row] = await database
+			.select()
+			.from(ticketThreadsCategories)
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
+
+		if (!row) {
+			return interaction.reply({
+				embeds: [
+					super.userEmbedError(interaction.user).setDescription('No category with the given ID could be found.'),
+				],
+			});
+		}
+
+		const authorPermissions = new ThreadTicketActionsPermissionBitField(row.allowedAuthorActions);
+		let enabled = false;
+
+		for (const [name, flag] of ThreadTicketing.actionsAsKeyAndFlagsMap) {
+			if (value === name) {
+				enabled = authorPermissions.toggle(flag);
+				break;
+			}
+		}
+
+		await authorPermissions.updateAuthorPermissions(row.id, row.guildId);
+
+		return interaction.editReply({
+			embeds: [
+				super
+					.userEmbed(interaction.user)
+					.setTitle('Updated the Thread Ticket Category')
+					.setDescription(
+						`${interaction.user.toString()} has toggled the ${inlineCode(ThreadTicketing.ActionsAsName[value as ThreadTicketing.KeyOfActions])} ticket author action to ${enabled ? 'enabled' : 'disabled'}.`,
+					),
+			],
+		});
 	}
 
 	@DeferUpdate

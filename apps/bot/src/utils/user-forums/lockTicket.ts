@@ -10,7 +10,7 @@ export async function lockTicket(
 	isAutomaticThreads = false,
 ) {
 	const { channel, locale, member, user } = interaction;
-	const translations = translate(locale).tickets[isAutomaticThreads ? 'automaticThreads' : 'userForums'].buttons;
+	const translations = translate(locale).tickets[isAutomaticThreads ? 'automaticThreads' : 'userForums'].actions;
 	const table = isAutomaticThreads ? automaticThreadsConfigurations : userForumsConfigurations;
 
 	if (

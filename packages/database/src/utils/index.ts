@@ -4,15 +4,14 @@ import { z } from 'zod';
 // TODO: Change mode to 'string' when available: https://github.com/drizzle-team/drizzle-orm/issues/813
 // const snowflake = (name: string) => bigint(name, { mode: 'bigint', unsigned: true });
 
-export const snowflake = customType<{ data: string }>({
+export type DiscordSnowflake = string;
+
+export const snowflake = customType<{ data: DiscordSnowflake }>({
 	dataType() {
 		return 'bigint unsigned';
 	},
-	// eslint-disable-next-line unicorn/prefer-native-coercion-functions
-	fromDriver(value: unknown) {
-		return String(value);
-	},
-	toDriver(value: string) {
+	fromDriver: String,
+	toDriver(value: DiscordSnowflake) {
 		return value;
 	},
 });

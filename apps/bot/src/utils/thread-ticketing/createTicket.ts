@@ -20,7 +20,7 @@ import {
 	ticketThreadsConfigurations,
 	ticketsThreads,
 } from '@ticketer/database';
-import { ticketButtons, ticketThreadsOpeningMessageEmbed, zodErrorToString } from '..';
+import { formatDateShort, ticketButtons, ticketThreadsOpeningMessageEmbed, zodErrorToString } from '..';
 import { translate } from '@/i18n';
 import { z } from 'zod';
 
@@ -56,7 +56,7 @@ export async function createTicket(
 		await interaction.deferReply({ ephemeral: true });
 	}
 
-	const { client, guild, guildId, guildLocale, locale, user: interactionUser } = interaction;
+	const { createdAt, client, guild, guildId, guildLocale, locale, user: interactionUser } = interaction;
 	const customId = 'customId' in interaction ? interaction.customId : undefined;
 	const fields = 'fields' in interaction ? interaction.fields : undefined;
 
@@ -65,9 +65,8 @@ export async function createTicket(
 	const { data: categoryId, success } = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(
 		Number(incomingCategoryId ?? dynamicValues?.at(0) ?? dynamicValue),
 	);
-	const isProxied = !!(proxiedUserId ?? dynamicValues?.at(1));
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-	const user = isProxied ? await this.client.users.fetch(proxiedUserId ?? dynamicValues?.at(1)!) : interactionUser;
+	const proxiedUser = proxiedUserId ?? dynamicValues?.at(1);
+	const { nickname, user } = await guild.members.fetch(proxiedUser ?? interactionUser);
 
 	const translations = translate(locale).tickets.threads.categories;
 	const guildTranslations = translate(guildLocale).tickets.threads.categories;
@@ -186,7 +185,7 @@ export async function createTicket(
 			components: [],
 			embeds: [
 				this.userEmbedError(user, translations.createTicket.errors.tooManyTickets.title()).setDescription(
-					isProxied
+					proxiedUser
 						? translations.createTicket.errors.tooManyTickets.proxy.description({
 								amount: configuration.ticketThreadsConfigurations.activeTickets,
 								member: user.toString(),
@@ -228,7 +227,7 @@ export async function createTicket(
 	const thread = await channel.threads.create({
 		autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
 		invitable: false,
-		name: title || user.displayName,
+		name: title || `[${formatDateShort(createdAt)}] ${nickname ?? user.displayName}`,
 		type: isPrivate ? ChannelType.PrivateThread : ChannelType.PublicThread,
 	});
 
@@ -242,7 +241,7 @@ export async function createTicket(
 		title: configuration.ticketThreadsCategories.openingMessageTitle,
 		user,
 	});
-	const ticketEmbed = (isProxied ? this.embed : this.userEmbed(user)).setColor(Colors.Green);
+	const ticketEmbed = (proxiedUser ? this.embed : this.userEmbed(user)).setColor(Colors.Green);
 
 	if (title) {
 		ticketEmbed.setTitle(title);
@@ -300,11 +299,11 @@ export async function createTicket(
 
 	await thread.members.add(user);
 
-	const ticketCreatedEmbed = this.userEmbed(isProxied ? interactionUser : user)
+	const ticketCreatedEmbed = this.userEmbed(proxiedUser ? interactionUser : user)
 		.setColor(Colors.Green)
 		.setTitle(translations.createTicket.ticketCreated.title())
 		.setDescription(
-			isProxied
+			proxiedUser
 				? translations.createTicket.ticketCreated.proxy.user.description({
 						channel: thread.toString(),
 						member: user.toString(),
@@ -324,7 +323,7 @@ export async function createTicket(
 		await logsChannel.send({
 			embeds: [
 				ticketCreatedEmbed.setTitle(guildTranslations.createTicket.ticketCreated.title()).setDescription(
-					isProxied
+					proxiedUser
 						? guildTranslations.createTicket.ticketCreated.proxy.logs.description({
 								channel: thread.toString(),
 								creator: interactionUser.toString(),
@@ -339,7 +338,7 @@ export async function createTicket(
 		});
 	}
 
-	if (isProxied) {
+	if (proxiedUser) {
 		user
 			.send({
 				embeds: [

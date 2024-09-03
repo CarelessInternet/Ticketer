@@ -46,7 +46,7 @@ services:
     extends:
       file: base-compose.yaml
       service: bot
-    image: ticketer-bot:3.0.0
+    image: ticketer-bot:3.1.0
     depends_on:
       database:
         condition: service_healthy

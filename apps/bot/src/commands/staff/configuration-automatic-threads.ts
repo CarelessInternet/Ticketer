@@ -25,6 +25,7 @@ import {
 	automaticThreadsEmbed,
 	automaticThreadsOpeningMessageDescription,
 	automaticThreadsOpeningMessageTitle,
+	fetchChannel,
 	goToPage,
 	messageWithPagination,
 	withPagination,
@@ -473,9 +474,9 @@ export class ModalInteraction extends Modal.Interaction {
 	@DeferReply()
 	private async createConfigurationOrUpdateOpeningMessage({ interaction }: Modal.Context) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
-		const channel = await interaction.guild.channels.fetch(dynamicValue);
+		const channel = await fetchChannel(interaction.guild, dynamicValue);
 
-		if (!channel || channel.type !== ChannelType.GuildText) {
+		if (channel?.type !== ChannelType.GuildText) {
 			return interaction.editReply({
 				embeds: [super.userEmbedError(interaction.user).setDescription('The channel is not a text channel.')],
 			});

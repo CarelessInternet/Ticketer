@@ -1,4 +1,5 @@
 import type { BaseInteraction, Command, Component, Modal } from '@ticketer/djs-framework';
+
 import {
 	ChannelType,
 	Colors,
@@ -20,7 +21,7 @@ import {
 	ticketThreadsConfigurations,
 	ticketsThreads,
 } from '@ticketer/database';
-import { formatDateShort, ticketButtons, ticketThreadsOpeningMessageEmbed, zodErrorToString } from '..';
+import { fetchChannel, formatDateShort, ticketButtons, ticketThreadsOpeningMessageEmbed, zodErrorToString } from '..';
 import { translate } from '@/i18n';
 import { z } from 'zod';
 
@@ -121,9 +122,9 @@ export async function createTicket(
 		});
 	}
 
-	const channel = await guild.channels.fetch(configuration.ticketThreadsCategories.channelId ?? '');
+	const channel = await fetchChannel(guild, configuration.ticketThreadsCategories.channelId);
 
-	if (!channel || channel.type !== ChannelType.GuildText) {
+	if (channel?.type !== ChannelType.GuildText) {
 		return interaction.editReply({
 			components: [],
 			embeds: [
@@ -314,7 +315,7 @@ export async function createTicket(
 	await interaction.editReply({ components: [], embeds: [ticketCreatedEmbed] });
 
 	if (configuration.ticketThreadsCategories.logsChannelId) {
-		const logsChannel = await guild.channels.fetch(configuration.ticketThreadsCategories.logsChannelId);
+		const logsChannel = await fetchChannel(guild, configuration.ticketThreadsCategories.logsChannelId);
 
 		if (!logsChannel?.isTextBased()) return;
 		if (!logsChannel.permissionsFor(me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages]))

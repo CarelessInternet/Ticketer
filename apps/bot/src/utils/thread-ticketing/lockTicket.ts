@@ -7,6 +7,7 @@ import {
 	ticketThreadsCategories,
 	ticketsThreads,
 } from '@ticketer/database';
+import { fetchChannel } from '..';
 import { translate } from '@/i18n';
 
 export async function lockTicket(
@@ -95,7 +96,7 @@ export async function lockTicket(
 
 	if (row.logsChannelId) {
 		const me = await guild.members.fetchMe();
-		const logsChannel = await guild.channels.fetch(row.logsChannelId);
+		const logsChannel = await fetchChannel(guild, row.logsChannelId);
 
 		if (!logsChannel?.isTextBased()) return;
 		if (!logsChannel.permissionsFor(me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages]))

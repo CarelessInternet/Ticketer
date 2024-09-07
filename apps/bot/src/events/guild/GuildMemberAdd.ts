@@ -1,4 +1,4 @@
-import { LogExceptions, welcomeEmbed } from '@/utils';
+import { LogExceptions, fetchChannel, welcomeEmbed } from '@/utils';
 import { database, eq, welcomeAndFarewell } from '@ticketer/database';
 import { Event } from '@ticketer/djs-framework';
 import { PermissionFlagsBits } from 'discord.js';
@@ -8,12 +8,12 @@ export default class extends Event.Handler {
 
 	@LogExceptions
 	public async execute([member]: Event.ArgumentsOf<this['name']>) {
-		const { channels, id: guildId, members, preferredLocale, roles } = member.guild;
+		const { id: guildId, members, preferredLocale, roles } = member.guild;
 		const [data] = await database.select().from(welcomeAndFarewell).where(eq(welcomeAndFarewell.guildId, guildId));
 
 		if (!data?.welcomeChannelId || !data.welcomeEnabled) return;
 
-		const channel = await channels.fetch(data.welcomeChannelId);
+		const channel = await fetchChannel(member.guild, data.welcomeChannelId);
 
 		if (!channel?.isTextBased()) return;
 

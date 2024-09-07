@@ -9,7 +9,7 @@ import {
 	TextInputStyle,
 } from 'discord.js';
 import { Command, DeferReply, Modal } from '@ticketer/djs-framework';
-import { extractEmoji, zodErrorToString } from '@/utils';
+import { extractEmoji, fetchChannel, zodErrorToString } from '@/utils';
 import { z } from 'zod';
 
 export default class extends Command.Interaction {
@@ -102,7 +102,7 @@ export class ModalInteraction extends Modal.Interaction {
 		}
 
 		const { dynamicValue: channelId } = super.extractCustomId(customId, true);
-		const channel = await guild.channels.fetch(channelId);
+		const channel = await fetchChannel(guild, channelId);
 
 		if (!channel?.isTextBased()) {
 			return interaction.editReply({

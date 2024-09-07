@@ -9,7 +9,7 @@ import {
 	ticketThreadsCategoriesSelectSchema,
 	ticketsThreads,
 } from '@ticketer/database';
-import { ThreadTicketing, zodErrorToString } from '@/utils';
+import { ThreadTicketing, fetchChannel, zodErrorToString } from '@/utils';
 import { getTranslations, translate } from '@/i18n';
 import { z } from 'zod';
 
@@ -358,7 +358,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		if (row.logsChannelId) {
 			const me = await guild.members.fetchMe();
-			const logsChannel = await guild.channels.fetch(row.logsChannelId);
+			const logsChannel = await fetchChannel(guild, row.logsChannelId);
 
 			if (!logsChannel?.isTextBased()) return;
 			if (!logsChannel.permissionsFor(me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages]))

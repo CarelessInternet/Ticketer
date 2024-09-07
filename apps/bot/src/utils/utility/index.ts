@@ -1,6 +1,7 @@
 export * from './capitalise';
 export * from './DeepPartial';
 export * from './extractEmoji';
+export * from './fetchChannel';
 export * from './format';
 export * from './goToPage';
 export * from './invalidTicket';

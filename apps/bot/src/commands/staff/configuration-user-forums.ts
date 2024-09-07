@@ -22,6 +22,7 @@ import {
 	userForumsConfigurationsSelectSchema,
 } from '@ticketer/database';
 import {
+	fetchChannel,
 	goToPage,
 	messageWithPagination,
 	userForumEmbed,
@@ -479,9 +480,9 @@ export class ModalInteraction extends Modal.Interaction {
 	@DeferReply()
 	private async createConfigurationOrUpdateOpeningMessage({ interaction }: Modal.Context) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
-		const channel = await interaction.guild.channels.fetch(dynamicValue);
+		const channel = await fetchChannel(interaction.guild, dynamicValue);
 
-		if (!channel || channel.type !== ChannelType.GuildForum) {
+		if (channel?.type !== ChannelType.GuildForum) {
 			return interaction.editReply({
 				embeds: [super.userEmbedError(interaction.user).setDescription('The channel is not a forum channel.')],
 			});

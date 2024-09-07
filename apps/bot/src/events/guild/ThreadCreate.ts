@@ -1,5 +1,5 @@
 import { ChannelType, PermissionFlagsBits } from 'discord.js';
-import { LogExceptions, ticketButtons, userForumEmbed } from '@/utils';
+import { LogExceptions, fetchChannel, ticketButtons, userForumEmbed } from '@/utils';
 import { database, eq, userForumsConfigurations } from '@ticketer/database';
 import { Event } from '@ticketer/djs-framework';
 import { translate } from '@/i18n';
@@ -11,7 +11,7 @@ export default class extends Event.Handler {
 	public async execute([thread, newlyCreated]: Event.ArgumentsOf<this['name']>) {
 		if (!newlyCreated || !thread.parentId) return;
 
-		const parent = thread.parent ?? (await thread.guild.channels.fetch(thread.parentId));
+		const parent = thread.parent ?? (await fetchChannel(thread.guild, thread.parentId));
 		const me = await thread.guild.members.fetchMe();
 
 		if (!parent?.permissionsFor(me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessagesInThreads]))

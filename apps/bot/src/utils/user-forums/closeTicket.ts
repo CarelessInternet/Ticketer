@@ -8,7 +8,7 @@ export async function closeTicket(
 	{ interaction }: Command.Context | Component.Context,
 	isAutomaticThreads = false,
 ) {
-	const { channel, locale, member, user } = interaction;
+	const { channel, locale, member } = interaction;
 	const translations = translate(locale).tickets[isAutomaticThreads ? 'automaticThreads' : 'userForums'].actions;
 	const table = isAutomaticThreads ? automaticThreadsConfigurations : userForumsConfigurations;
 
@@ -18,7 +18,7 @@ export async function closeTicket(
 	) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user, translations._errorIfNotThreadChannel.title()).setDescription(
+				this.userEmbedError(member, translations._errorIfNotThreadChannel.title()).setDescription(
 					translations._errorIfNotThreadChannel.description(),
 				),
 			],
@@ -30,7 +30,7 @@ export async function closeTicket(
 	if (!channel.editable) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user, translations.close.execute.errors.notEditable.title()).setDescription(
+				this.userEmbedError(member, translations.close.execute.errors.notEditable.title()).setDescription(
 					translations.close.execute.errors.notEditable.description(),
 				),
 			],
@@ -49,17 +49,17 @@ export async function closeTicket(
 			(await channel.fetchStarterMessage().catch(() => {}))?.author.id
 		: channel.ownerId;
 
-	if (!row || (ownerId !== user.id && !row.managers.some((id) => member.roles.resolve(id)))) {
+	if (!row || (ownerId !== member.id && !row.managers.some((id) => member.roles.resolve(id)))) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user, translations._errorIfNotThreadAuthorOrManager.title()).setDescription(
+				this.userEmbedError(member, translations._errorIfNotThreadAuthorOrManager.title()).setDescription(
 					translations._errorIfNotThreadAuthorOrManager.description(),
 				),
 			],
 		});
 	}
 
-	const embed = this.userEmbed(user)
+	const embed = this.userEmbed(member)
 		.setColor(Colors.Yellow)
 		.setTitle(translations.close.execute.success.title())
 		.setDescription(translations.close.execute.success.description());

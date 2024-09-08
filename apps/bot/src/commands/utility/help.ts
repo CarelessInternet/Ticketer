@@ -50,7 +50,7 @@ export default class extends Command.Interaction {
 		const linksAsString = [commandDocumentation, website, supportServer, inviteLink].filter(Boolean).join(' | ');
 
 		const embed = super
-			.userEmbed(interaction.user)
+			.userEmbed(interaction.member)
 			.setTitle(translations.title())
 			.setDescription(translations.description({ commands }))
 			.setFields(

@@ -11,6 +11,7 @@ export default class extends Event.Handler {
 	public async execute([message]: Event.ArgumentsOf<this['name']>) {
 		if (!message.guild || message.channel.type !== ChannelType.GuildText) return;
 		if (message.type !== MessageType.Default) return;
+		if (!message.member) return;
 
 		const me = await message.guild.members.fetchMe();
 
@@ -38,13 +39,13 @@ export default class extends Event.Handler {
 
 		const thread = await message.startThread({
 			autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
-			name: `[${formatDateShort(message.createdAt)}] ${message.member?.nickname ?? message.author.displayName}`,
+			name: `[${formatDateShort(message.createdAt)}] ${message.member.displayName}`,
 		});
 
 		const embed = automaticThreadsEmbed({
 			embed: super.embed,
 			...row,
-			user: message.author,
+			member: message.member,
 		});
 
 		const translations = translate(message.guild.preferredLocale).tickets.automaticThreads.actions;

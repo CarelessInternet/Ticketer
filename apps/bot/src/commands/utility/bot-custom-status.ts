@@ -63,7 +63,7 @@ export default class extends Command.Interaction {
 
 			return interaction.editReply({
 				embeds: [
-					super.userEmbed(interaction.user).setTitle(translations.title()).setDescription(translations.description()),
+					super.userEmbed(interaction.member).setTitle(translations.title()).setDescription(translations.description()),
 				],
 			});
 		}
@@ -83,7 +83,7 @@ export default class extends Command.Interaction {
 
 		return interaction.editReply({
 			embeds: [
-				super.userEmbed(interaction.user).setTitle(translations.title()).setDescription(translations.description()),
+				super.userEmbed(interaction.member).setTitle(translations.title()).setDescription(translations.description()),
 			],
 		});
 	}

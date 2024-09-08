@@ -10,7 +10,7 @@ export default class extends Event.Handler {
 		const threadIsByBot = thread.ownerId === thread.client.user.id;
 
 		if (threadIsByBot) {
-			database
+			void database
 				.delete(ticketsThreads)
 				.where(eq(ticketsThreads.threadId, thread.id))
 				.catch(() => false);

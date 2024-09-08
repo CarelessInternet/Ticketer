@@ -42,14 +42,16 @@ export default class extends Command.Interaction {
 			if (!success) {
 				return interaction.editReply({
 					embeds: [
-						super.userEmbedError(interaction.user, translations.title.error()).setDescription(zodErrorToString(error)),
+						super
+							.userEmbedError(interaction.member, translations.title.error())
+							.setDescription(zodErrorToString(error)),
 					],
 				});
 			}
 
 			const deleted = await interaction.channel.bulkDelete(amount);
 			const embed = super
-				.userEmbed(interaction.user)
+				.userEmbed(interaction.member)
 				.setTitle(translations.title.success())
 				.setDescription(translations.description({ amount: deleted.size }));
 

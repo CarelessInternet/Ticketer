@@ -18,7 +18,7 @@ export function RequiredGlobalPermissions(...permissions: PermissionFlagsValues[
 					.map((permission) => permission?.match(/[A-Z][a-z]+/g)?.join(' '))
 					.join(', ');
 
-				const embed = this.userEmbedError(interaction.user).setDescription(
+				const embed = this.userEmbedError(interaction.member).setDescription(
 					`I need the following global permissions to run this command: ${inlineCode(permissionsAsString)}`,
 				);
 

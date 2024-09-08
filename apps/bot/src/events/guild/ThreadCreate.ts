@@ -18,10 +18,9 @@ export default class extends Event.Handler {
 			return;
 
 		if (parent.type === ChannelType.GuildForum) {
-			const user = await thread.client.users.fetch(thread.ownerId ?? '');
+			const member = await thread.guild.members.fetch(thread.ownerId ?? '').catch(() => false);
 
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			if (!user) return;
+			if (typeof member === 'boolean') return;
 
 			const [row] = await database
 				.select({
@@ -36,7 +35,7 @@ export default class extends Event.Handler {
 			const embed = userForumEmbed({
 				embed: super.embed,
 				...row,
-				user,
+				member,
 			});
 
 			const translations = translate(thread.guild.preferredLocale).tickets.userForums.actions;

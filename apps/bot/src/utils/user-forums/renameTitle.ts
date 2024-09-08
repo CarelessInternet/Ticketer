@@ -8,7 +8,7 @@ export async function renameTitle(
 	{ interaction }: Modal.Context,
 	isAutomaticThreads = false,
 ) {
-	const { channel, fields, locale, member, user } = interaction;
+	const { channel, fields, locale, member } = interaction;
 	const translations = translate(locale).tickets[isAutomaticThreads ? 'automaticThreads' : 'userForums'].actions;
 	const table = isAutomaticThreads ? automaticThreadsConfigurations : userForumsConfigurations;
 
@@ -18,7 +18,7 @@ export async function renameTitle(
 	) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user, translations._errorIfNotThreadChannel.title()).setDescription(
+				this.userEmbedError(member, translations._errorIfNotThreadChannel.title()).setDescription(
 					translations._errorIfNotThreadChannel.description(),
 				),
 			],
@@ -28,7 +28,7 @@ export async function renameTitle(
 	if (!channel.editable) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user, translations.renameTitle.modal.errors.notEditable.title()).setDescription(
+				this.userEmbedError(member, translations.renameTitle.modal.errors.notEditable.title()).setDescription(
 					translations.renameTitle.modal.errors.notEditable.description(),
 				),
 			],
@@ -47,10 +47,10 @@ export async function renameTitle(
 			(await channel.fetchStarterMessage().catch(() => {}))?.author.id
 		: channel.ownerId;
 
-	if (!row || (ownerId !== user.id && !row.managers.some((id) => member.roles.resolve(id)))) {
+	if (!row || (ownerId !== member.id && !row.managers.some((id) => member.roles.resolve(id)))) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user, translations._errorIfNotThreadAuthorOrManager.title()).setDescription(
+				this.userEmbedError(member, translations._errorIfNotThreadAuthorOrManager.title()).setDescription(
 					translations._errorIfNotThreadAuthorOrManager.description(),
 				),
 			],
@@ -60,7 +60,7 @@ export async function renameTitle(
 	const oldTitle = channel.name;
 	const newTitle = fields.getTextInputValue('title');
 	const successTranslations = translations.renameTitle.modal.success;
-	const embed = this.userEmbed(user)
+	const embed = this.userEmbed(member)
 		.setColor(Colors.DarkGreen)
 		.setTitle(successTranslations.title())
 		.setDescription(successTranslations.description({ oldTitle, newTitle }));

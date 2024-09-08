@@ -31,7 +31,7 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return void context.interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(context.interaction.user).setDescription(error)],
+				embeds: [super.userEmbedError(context.interaction.member).setDescription(error)],
 			});
 		}
 

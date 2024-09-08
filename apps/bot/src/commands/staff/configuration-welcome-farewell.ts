@@ -103,7 +103,7 @@ export default class extends Command.Interaction {
 				return interaction.editReply({ components: [welcomeRow, farewellRow] });
 			}
 			case 'overview': {
-				const { guildId, guildLocale, user } = interaction;
+				const { guildId, guildLocale, member } = interaction;
 				const [result] = await database
 					.select()
 					.from(welcomeAndFarewell)
@@ -112,12 +112,11 @@ export default class extends Command.Interaction {
 
 				if (!result) {
 					return interaction.editReply({
-						embeds: [super.userEmbedError(user).setDescription('No welcome/farewell configuration could be found.')],
+						embeds: [super.userEmbedError(member).setDescription('No welcome/farewell configuration could be found.')],
 					});
 				}
 
-				const generalEmbed = super
-					.userEmbed(user)
+				const generalEmbed = super.embed
 					.setTitle('General Welcome/Farewell Settings')
 					.setDescription(
 						'This embed shows the configuration for welcome and farewell messages. The next two embeds show examples of the configured welcome and farewell messages.',
@@ -164,7 +163,7 @@ export default class extends Command.Interaction {
 					},
 					embed: super.embed,
 					locale: guildLocale,
-					user,
+					member,
 				});
 
 				const farewellEmbedExample = farewellEmbed({
@@ -174,14 +173,14 @@ export default class extends Command.Interaction {
 					},
 					embed: super.embed,
 					locale: guildLocale,
-					user,
+					member,
 				});
 
 				return interaction.editReply({ embeds: [generalEmbed, welcomeEmbedExample, farewellEmbedExample] });
 			}
 			default: {
 				return interaction.editReply({
-					embeds: [super.userEmbedError(interaction.user).setDescription('The subcommand could not be found.')],
+					embeds: [super.userEmbedError(interaction.member).setDescription('The subcommand could not be found.')],
 				});
 			}
 		}
@@ -214,7 +213,7 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [super.userEmbedError(interaction.user).setDescription('The select menu ID could not be found.')],
+					embeds: [super.userEmbedError(interaction.member).setDescription('The select menu ID could not be found.')],
 					ephemeral: true,
 				});
 			}
@@ -292,7 +291,7 @@ export class ComponentInteraction extends Component.Interaction {
 			default: {
 				return interaction.reply({
 					embeds: [
-						super.userEmbedError(interaction.user).setDescription(`The selected ${type} option could not be found.`),
+						super.userEmbedError(interaction.member).setDescription(`The selected ${type} option could not be found.`),
 					],
 				});
 			}
@@ -301,7 +300,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private async welcomeAndFarewellConfigurationChannel({ interaction }: Component.Context<'channel'>) {
-		const { channels, customId: id, guildId, user } = interaction;
+		const { channels, customId: id, guildId, member } = interaction;
 		const { customId } = super.extractCustomId(id);
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const channel = channels.at(0)!;
@@ -318,9 +317,9 @@ export class ComponentInteraction extends Component.Interaction {
 			});
 
 		const embed = super
-			.userEmbed(user)
+			.userEmbed(member)
 			.setTitle('Updated the Welcome/Farewell Configuration')
-			.setDescription(`${user.toString()} updated the ${type} channel to ${channel.toString()}`);
+			.setDescription(`${member.toString()} updated the ${type} channel to ${channel.toString()}`);
 
 		return interaction.editReply({ embeds: [embed], components: [] });
 	}
@@ -328,7 +327,7 @@ export class ComponentInteraction extends Component.Interaction {
 	@DeferReply()
 	private async welcomeAndFarewellConfigurationToggle({ interaction }: Component.Context<'string'>) {
 		const { farewellEnabled, welcomeEnabled } = welcomeAndFarewell;
-		const { customId: id, guildId, user } = interaction;
+		const { customId: id, guildId, member } = interaction;
 		const { customId } = super.extractCustomId(id);
 		const type = customId.includes('welcome_configuration') ? 'welcome' : 'farewell';
 
@@ -356,7 +355,7 @@ export class ComponentInteraction extends Component.Interaction {
 			return interaction.editReply({
 				embeds: [
 					super
-						.userEmbedError(interaction.user)
+						.userEmbedError(member)
 						.setDescription('No welcome and farewell configuration for the server could be found.'),
 				],
 			});
@@ -364,10 +363,10 @@ export class ComponentInteraction extends Component.Interaction {
 
 		const valueAsBoolean = type === 'welcome' ? row.welcomeEnabled : row.farewellEnabled;
 		const embed = super
-			.userEmbed(user)
+			.userEmbed(member)
 			.setTitle('Updated the Welcome/Farewell Configuration')
 			.setDescription(
-				`${user.toString()} has toggled the ${type} option to ${valueAsBoolean ? 'enabled' : 'disabled'}.`,
+				`${member.toString()} has toggled the ${type} option to ${valueAsBoolean ? 'enabled' : 'disabled'}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed] });
@@ -375,7 +374,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private async welcomeConfigurationRoles({ interaction }: Component.Context<'role'>) {
-		const { guildId, user } = interaction;
+		const { guildId, member } = interaction;
 		const welcomeNewMemberRoles = interaction.roles.map((role) => role.id);
 
 		await database
@@ -385,10 +384,10 @@ export class ComponentInteraction extends Component.Interaction {
 
 		const roles = welcomeNewMemberRoles.map((id) => roleMention(id)).join(', ');
 		const embed = super
-			.userEmbed(user)
+			.userEmbed(member)
 			.setTitle('Updated the Welcome Configuration')
 			.setDescription(
-				`${user.toString()} updated the roles given to new members: ${
+				`${member.toString()} updated the roles given to new members: ${
 					welcomeNewMemberRoles.length > 0 ? roles : 'none'
 				}`,
 			);
@@ -417,7 +416,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		switch (modalType) {
 			case 'title': {
-				const { fields, guildId, user } = interaction;
+				const { fields, guildId, member } = interaction;
 				const rawTitle = fields.getTextInputValue('message_title');
 				const {
 					data: title,
@@ -429,7 +428,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 				if (!success) {
 					return interaction.editReply({
-						embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+						embeds: [super.userEmbedError(member).setDescription(zodErrorToString(error))],
 					});
 				}
 
@@ -442,17 +441,17 @@ export class ModalInteraction extends Modal.Interaction {
 					.onDuplicateKeyUpdate({ set: titleDatabaseValue });
 
 				const embed = super
-					.userEmbed(user)
+					.userEmbed(member)
 					.setTitle('Updated the Welcome/Farewell Configuration')
 					.setDescription(
-						`${user.toString()} updated the ${type} message title to` +
+						`${member.toString()} updated the ${type} message title to` +
 							(title ? `:\n\n${inlineCode(title)}` : ' the default title.'),
 					);
 
 				return interaction.editReply({ embeds: [embed] });
 			}
 			case 'description': {
-				const { fields, guildId, user } = interaction;
+				const { fields, guildId, member } = interaction;
 				const rawDescription = fields.getTextInputValue('message_description');
 				const {
 					data: description,
@@ -464,7 +463,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 				if (!success) {
 					return interaction.editReply({
-						embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+						embeds: [super.userEmbedError(member).setDescription(zodErrorToString(error))],
 					});
 				}
 
@@ -477,10 +476,10 @@ export class ModalInteraction extends Modal.Interaction {
 					.onDuplicateKeyUpdate({ set: descriptionDatabaseValue });
 
 				const embed = super
-					.userEmbed(user)
+					.userEmbed(member)
 					.setTitle('Updated the Welcome/Farewell Configuration')
 					.setDescription(
-						`${user.toString()} updated the ${type} message description to` +
+						`${member.toString()} updated the ${type} message description to` +
 							(description ? `:\n\n${inlineCode(description)}` : ' the default description.'),
 					);
 
@@ -490,7 +489,7 @@ export class ModalInteraction extends Modal.Interaction {
 				return interaction.editReply({
 					embeds: [
 						super
-							.userEmbedError(interaction.user)
+							.userEmbedError(interaction.member)
 							.setDescription('The selected welcome/farewell modal could not be found.'),
 					],
 				});

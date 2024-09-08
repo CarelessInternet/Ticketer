@@ -1,34 +1,34 @@
-import { Colors, type EmbedBuilder, type User } from 'discord.js';
+import { Colors, type EmbedBuilder, type GuildMember } from 'discord.js';
 import type { automaticThreadsConfigurations } from '@ticketer/database';
 
 type Columns = typeof automaticThreadsConfigurations.$inferSelect;
 
 interface TitleOptions {
-	displayName: User['displayName'];
+	displayName: GuildMember['displayName'];
 	title: Columns['openingMessageTitle'];
 }
 
 interface DescriptionOptions {
 	description: Columns['openingMessageDescription'];
-	userMention: ReturnType<User['toString']>;
+	memberMention: ReturnType<GuildMember['toString']>;
 }
 
 const replaceMember = (text: string, member: string) => text.replaceAll('{member}', member);
 
 export const automaticThreadsOpeningMessageTitle = ({ displayName, title }: TitleOptions) =>
 	replaceMember(title, displayName);
-export const automaticThreadsOpeningMessageDescription = ({ description, userMention }: DescriptionOptions) =>
-	replaceMember(description, userMention);
+export const automaticThreadsOpeningMessageDescription = ({ description, memberMention }: DescriptionOptions) =>
+	replaceMember(description, memberMention);
 
 interface EmbedOptions {
 	description: DescriptionOptions['description'];
 	embed: EmbedBuilder;
 	title: TitleOptions['title'];
-	user: User;
+	member: GuildMember;
 }
 
-export const automaticThreadsEmbed = ({ description, embed, title, user }: EmbedOptions) =>
+export const automaticThreadsEmbed = ({ description, embed, member, title }: EmbedOptions) =>
 	embed
 		.setColor(Colors.Greyple)
-		.setTitle(automaticThreadsOpeningMessageTitle({ title, displayName: user.displayName }))
-		.setDescription(automaticThreadsOpeningMessageDescription({ description, userMention: user.toString() }));
+		.setTitle(automaticThreadsOpeningMessageTitle({ title, displayName: member.displayName }))
+		.setDescription(automaticThreadsOpeningMessageDescription({ description, memberMention: member.toString() }));

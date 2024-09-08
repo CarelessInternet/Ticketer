@@ -8,7 +8,7 @@ export async function deleteTicket(
 	{ interaction }: Command.Context | Component.Context,
 	isAutomaticThreads = false,
 ) {
-	const { channel, locale, member, user } = interaction;
+	const { channel, locale, member } = interaction;
 	const translations = translate(locale).tickets[isAutomaticThreads ? 'automaticThreads' : 'userForums'].actions;
 	const table = isAutomaticThreads ? automaticThreadsConfigurations : userForumsConfigurations;
 
@@ -18,7 +18,7 @@ export async function deleteTicket(
 	) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user, translations._errorIfNotThreadChannel.title()).setDescription(
+				this.userEmbedError(member, translations._errorIfNotThreadChannel.title()).setDescription(
 					translations._errorIfNotThreadChannel.description(),
 				),
 			],
@@ -28,7 +28,7 @@ export async function deleteTicket(
 	if (!channel.manageable) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user, translations.lock.execute.errors.notManageable.title()).setDescription(
+				this.userEmbedError(member, translations.lock.execute.errors.notManageable.title()).setDescription(
 					translations.lock.execute.errors.notManageable.description(),
 				),
 			],
@@ -47,17 +47,17 @@ export async function deleteTicket(
 			(await channel.fetchStarterMessage().catch(() => {}))?.author.id
 		: channel.ownerId;
 
-	if (!row || (ownerId !== user.id && !row.managers.some((id) => member.roles.resolve(id)))) {
+	if (!row || (ownerId !== member.id && !row.managers.some((id) => member.roles.resolve(id)))) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user, translations._errorIfNotThreadAuthorOrManager.title()).setDescription(
+				this.userEmbedError(member, translations._errorIfNotThreadAuthorOrManager.title()).setDescription(
 					translations._errorIfNotThreadAuthorOrManager.description(),
 				),
 			],
 		});
 	}
 
-	const embed = this.userEmbed(user)
+	const embed = this.userEmbed(member)
 		.setColor(Colors.Red)
 		.setTitle(translations.delete.execute.success.title())
 		.setDescription(translations.delete.execute.success.description());

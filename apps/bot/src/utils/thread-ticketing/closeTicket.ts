@@ -14,14 +14,14 @@ export async function closeTicket(
 	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context | Component.Context,
 ) {
-	const { channel, guild, guildLocale, locale, member, user } = interaction;
+	const { channel, guild, guildLocale, locale, member } = interaction;
 	const translations = translate(locale).tickets.threads.categories.actions;
 	const guildSuccessTranslations = translate(guildLocale).tickets.threads.categories.actions.close.execute.success;
 
 	if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user, translations._errorIfNotTicketChannel.title()).setDescription(
+				this.userEmbedError(member, translations._errorIfNotTicketChannel.title()).setDescription(
 					translations._errorIfNotTicketChannel.description(),
 				),
 			],
@@ -32,7 +32,7 @@ export async function closeTicket(
 	if (!channel.editable) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user, translations.close.execute.errors.notEditable.title()).setDescription(
+				this.userEmbedError(member, translations.close.execute.errors.notEditable.title()).setDescription(
 					translations.close.execute.errors.notEditable.description(),
 				),
 			],
@@ -51,10 +51,10 @@ export async function closeTicket(
 		.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id));
 
 	if (!row?.managers.some((id) => member.roles.resolve(id))) {
-		if (row?.authorId !== user.id) {
+		if (row?.authorId !== member.id) {
 			return interaction.editReply({
 				embeds: [
-					this.userEmbedError(user, translations._errorIfNotTicketAuthorOrManager.title()).setDescription(
+					this.userEmbedError(member, translations._errorIfNotTicketAuthorOrManager.title()).setDescription(
 						translations._errorIfNotTicketAuthorOrManager.description(),
 					),
 				],
@@ -66,7 +66,7 @@ export async function closeTicket(
 		if (!authorPermissions.has(ThreadTicketActionsPermissionBitField.Flags.Close)) {
 			return interaction.editReply({
 				embeds: [
-					this.userEmbedError(user, translations._errorIfNoAuthorPermissions.title()).setDescription(
+					this.userEmbedError(member, translations._errorIfNoAuthorPermissions.title()).setDescription(
 						translations._errorIfNoAuthorPermissions.description(),
 					),
 				],
@@ -74,7 +74,7 @@ export async function closeTicket(
 		}
 	}
 
-	const embed = this.userEmbed(user)
+	const embed = this.userEmbed(member)
 		.setColor(Colors.Yellow)
 		.setTitle(translations.close.execute.success.title())
 		.setDescription(translations.close.execute.success.user.description());
@@ -95,7 +95,7 @@ export async function closeTicket(
 				embed.setTitle(guildSuccessTranslations.title()).setDescription(
 					guildSuccessTranslations.logs.description({
 						thread: channel.toString(),
-						member: user.toString(),
+						member: member.toString(),
 					}),
 				),
 			],

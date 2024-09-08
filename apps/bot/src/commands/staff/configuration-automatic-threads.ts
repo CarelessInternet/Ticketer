@@ -40,7 +40,7 @@ function IsTextChannel(_: object, __: string, descriptor: PropertyDescriptor) {
 
 		if (type !== ChannelType.GuildText) {
 			const embeds = [
-				this.userEmbedError(interaction.user).setDescription('The specified channel is not a text channel.'),
+				this.userEmbedError(interaction.member).setDescription('The specified channel is not a text channel.'),
 			];
 
 			return interaction.deferred ? interaction.editReply({ embeds }) : interaction.reply({ embeds });
@@ -71,14 +71,14 @@ async function getConfigurations(
 	});
 
 	const embeds = configurations.map((config) =>
-		this.userEmbed(interaction.user)
+		this.embed
 			.setTitle('Automatic Threads Configuration')
 			.setDescription(`The configuration for automatic threads in the channel ${channelMention(config.channelId)}:`)
 			.setFields(
 				{
 					name: 'Opening Message Title',
 					value: automaticThreadsOpeningMessageTitle({
-						displayName: interaction.user.displayName,
+						displayName: interaction.member.displayName,
 						title: config.openingMessageTitle,
 					}),
 					inline: true,
@@ -87,7 +87,7 @@ async function getConfigurations(
 					name: 'Opening Message Description',
 					value: automaticThreadsOpeningMessageDescription({
 						description: config.openingMessageDescription,
-						userMention: interaction.user.toString(),
+						memberMention: interaction.member.toString(),
 					}),
 					inline: true,
 				},
@@ -208,7 +208,9 @@ export default class extends Command.Interaction {
 			}
 			default: {
 				return context.interaction.reply({
-					embeds: [super.userEmbedError(context.interaction.user).setDescription('The subcommand could not be found.')],
+					embeds: [
+						super.userEmbedError(context.interaction.member).setDescription('The subcommand could not be found.'),
+					],
 					ephemeral: true,
 				});
 			}
@@ -238,7 +240,7 @@ export default class extends Command.Interaction {
 			return interaction.editReply({
 				embeds: [
 					super
-						.userEmbedError(interaction.user)
+						.userEmbedError(interaction.member)
 						.setDescription(
 							`The automatic threads configuration for the channel ${channel.toString()} could not be found. Please create one instead of editing it.`,
 						),
@@ -280,10 +282,10 @@ export default class extends Command.Interaction {
 		return interaction.editReply({
 			embeds: [
 				super
-					.userEmbed(interaction.user)
+					.userEmbed(interaction.member)
 					.setTitle('Deleted an Automatic Threads Configuration')
 					.setDescription(
-						`${interaction.user.toString()} deleted an automatic threads configuration in the channel ${channel.toString()} if one existed.`,
+						`${interaction.member.toString()} deleted an automatic threads configuration in the channel ${channel.toString()} if one existed.`,
 					),
 			],
 		});
@@ -319,7 +321,7 @@ export class ComponentInteraction extends Component.Interaction {
 			default: {
 				return interaction.reply({
 					embeds: [
-						super.userEmbedError(interaction.user).setDescription('The select menu custom ID could not be found.'),
+						super.userEmbedError(interaction.member).setDescription('The select menu custom ID could not be found.'),
 					],
 					ephemeral: true,
 				});
@@ -338,7 +340,7 @@ export class ComponentInteraction extends Component.Interaction {
 			default: {
 				return context.interaction.reply({
 					embeds: [
-						super.userEmbedError(context.interaction.user).setDescription('The selected value could not be found.'),
+						super.userEmbedError(context.interaction.member).setDescription('The selected value could not be found.'),
 					],
 					ephemeral: true,
 				});
@@ -357,7 +359,7 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return context.interaction
 				.reply({
-					embeds: [super.userEmbedError(context.interaction.user).setDescription(zodErrorToString(error))],
+					embeds: [super.userEmbedError(context.interaction.member).setDescription(zodErrorToString(error))],
 					ephemeral: true,
 				})
 				.catch(() => false);
@@ -381,7 +383,7 @@ export class ComponentInteraction extends Component.Interaction {
 				.reply({
 					embeds: [
 						super
-							.userEmbedError(context.interaction.user)
+							.userEmbedError(context.interaction.member)
 							.setDescription('No automatic threads configuration for the channel could be found.'),
 					],
 					ephemeral: true,
@@ -424,10 +426,10 @@ export class ComponentInteraction extends Component.Interaction {
 
 		const roles = managers.map((id) => roleMention(id)).join(', ');
 		const embed = super
-			.userEmbed(interaction.user)
+			.userEmbed(interaction.member)
 			.setTitle('Updated the Automatic Threads Managers')
 			.setDescription(
-				`${interaction.user.toString()} updated the managers of the automatic threads in ${channelMention(dynamicValue)} to: ${
+				`${interaction.member.toString()} updated the managers of the automatic threads in ${channelMention(dynamicValue)} to: ${
 					managers.length > 0 ? roles : 'none'
 				}.`,
 			);
@@ -442,7 +444,7 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return void context.interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(context.interaction.user).setDescription(error)],
+				embeds: [super.userEmbedError(context.interaction.member).setDescription(error)],
 			});
 		}
 
@@ -463,7 +465,7 @@ export class ModalInteraction extends Modal.Interaction {
 			default: {
 				return context.interaction.reply({
 					embeds: [
-						super.userEmbedError(context.interaction.user).setDescription('The modal custom ID could not be found.'),
+						super.userEmbedError(context.interaction.member).setDescription('The modal custom ID could not be found.'),
 					],
 					ephemeral: true,
 				});
@@ -478,7 +480,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		if (channel?.type !== ChannelType.GuildText) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.user).setDescription('The channel is not a text channel.')],
+				embeds: [super.userEmbedError(interaction.member).setDescription('The channel is not a text channel.')],
 			});
 		}
 
@@ -491,7 +493,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
 			});
 		}
 
@@ -513,16 +515,16 @@ export class ModalInteraction extends Modal.Interaction {
 		return interaction.editReply({
 			embeds: [
 				super
-					.userEmbed(interaction.user)
+					.userEmbed(interaction.member)
 					.setTitle('Created/Updated an Automatic Threads Configuration')
 					.setDescription(
-						`${interaction.user.toString()} created or updated an automatic threads configuration in ${channel.toString()}. An example opening message can be seen in the embed below.`,
+						`${interaction.member.toString()} created or updated an automatic threads configuration in ${channel.toString()}. An example opening message can be seen in the embed below.`,
 					),
 				automaticThreadsEmbed({
 					description: data.openingMessageDescription,
 					embed: super.embed,
+					member: interaction.member,
 					title: data.openingMessageTitle,
-					user: interaction.user,
 				}),
 			],
 		});

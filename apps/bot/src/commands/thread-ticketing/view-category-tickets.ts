@@ -7,14 +7,7 @@ import {
 	DeferUpdate,
 } from '@ticketer/djs-framework';
 import { PermissionFlagsBits, channelMention, userMention } from 'discord.js';
-import {
-	ThreadTicketing,
-	goToPage,
-	managerIntersection,
-	messageWithPagination,
-	parseInteger,
-	withPagination,
-} from '@/utils';
+import { ThreadTicketing, goToPage, managerIntersection, messageWithPagination, withPagination } from '@/utils';
 import { and, asc, count, database, eq, like, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 
 interface ViewCategoryTicketsOptions {
@@ -28,9 +21,9 @@ async function viewCategoryTickets(
 	{ categoryId, page = 0 }: ViewCategoryTicketsOptions = {},
 ) {
 	const PAGE_SIZE = 3;
-	const id = parseInteger(categoryId);
+	const id = Number.parseInt(String(categoryId));
 
-	if (categoryId && id === undefined) return;
+	if (categoryId && Number.isNaN(id)) return;
 
 	const { globalAmount, tickets } = await database.transaction(async (tx) => {
 		const query = tx
@@ -46,8 +39,7 @@ async function viewCategoryTickets(
 				and(
 					eq(ticketsThreads.guildId, interaction.guildId),
 					managerIntersection(ticketThreadsCategories.managers, interaction.member.roles),
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					categoryId ? eq(ticketsThreads.categoryId, id!) : undefined,
+					categoryId ? eq(ticketsThreads.categoryId, id) : undefined,
 				),
 			)
 			.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id))
@@ -169,7 +161,7 @@ export class ComponentInteraction extends Component.Interaction {
 			return void context.interaction.editReply({
 				components: [],
 				content: '',
-				embeds: [super.userEmbedError(context.interaction.user).setDescription(error)],
+				embeds: [super.userEmbedError(context.interaction.member).setDescription(error)],
 			});
 		}
 

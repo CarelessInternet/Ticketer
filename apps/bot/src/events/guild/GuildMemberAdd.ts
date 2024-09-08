@@ -47,7 +47,7 @@ export default class extends Event.Handler {
 			},
 			embed: super.embed,
 			locale: preferredLocale,
-			user: member.user,
+			member,
 		});
 
 		void channel.send({ embeds: [embed] });

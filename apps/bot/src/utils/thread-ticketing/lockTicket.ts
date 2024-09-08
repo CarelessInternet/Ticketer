@@ -15,7 +15,7 @@ export async function lockTicket(
 	{ interaction }: Command.Context | Component.Context,
 	lockAndClose = false,
 ) {
-	const { channel, guild, guildLocale, locale, member, user } = interaction;
+	const { channel, guild, guildLocale, locale, member } = interaction;
 	const translations = translate(locale).tickets.threads.categories.actions;
 	const guildSuccessTranslations =
 		translate(guildLocale).tickets.threads.categories.actions[lockAndClose ? 'lockAndClose' : 'lock'].execute.success;
@@ -23,7 +23,7 @@ export async function lockTicket(
 	if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(user, translations._errorIfNotTicketChannel.title()).setDescription(
+				this.userEmbedError(member, translations._errorIfNotTicketChannel.title()).setDescription(
 					translations._errorIfNotTicketChannel.description(),
 				),
 			],
@@ -35,7 +35,7 @@ export async function lockTicket(
 		return interaction.editReply({
 			embeds: [
 				this.userEmbedError(
-					user,
+					member,
 					lockAndClose
 						? translations.lockAndClose.execute.errors.notManageableAndEditable.title()
 						: translations.lock.execute.errors.notManageable.title(),
@@ -60,10 +60,10 @@ export async function lockTicket(
 		.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id));
 
 	if (!row?.managers.some((id) => member.roles.resolve(id))) {
-		if (row?.authorId !== user.id) {
+		if (row?.authorId !== member.id) {
 			return interaction.editReply({
 				embeds: [
-					this.userEmbedError(user, translations._errorIfNotTicketAuthorOrManager.title()).setDescription(
+					this.userEmbedError(member, translations._errorIfNotTicketAuthorOrManager.title()).setDescription(
 						translations._errorIfNotTicketAuthorOrManager.description(),
 					),
 				],
@@ -75,7 +75,7 @@ export async function lockTicket(
 		if (!authorPermissions.has(ThreadTicketActionsPermissionBitField.Flags[lockAndClose ? 'LockAndClose' : 'Lock'])) {
 			return interaction.editReply({
 				embeds: [
-					this.userEmbedError(user, translations._errorIfNoAuthorPermissions.title()).setDescription(
+					this.userEmbedError(member, translations._errorIfNoAuthorPermissions.title()).setDescription(
 						translations._errorIfNoAuthorPermissions.description(),
 					),
 				],
@@ -83,7 +83,7 @@ export async function lockTicket(
 		}
 	}
 
-	const embed = this.userEmbed(user)
+	const embed = this.userEmbed(member)
 		.setColor(Colors.DarkVividPink)
 		.setTitle(translations[lockAndClose ? 'lockAndClose' : 'lock'].execute.success.title())
 		.setDescription(translations[lockAndClose ? 'lockAndClose' : 'lock'].execute.success.user.description());
@@ -107,7 +107,7 @@ export async function lockTicket(
 				embed.setTitle(guildSuccessTranslations.title()).setDescription(
 					guildSuccessTranslations.logs.description({
 						thread: channel.toString(),
-						member: user.toString(),
+						member: member.toString(),
 					}),
 				),
 			],

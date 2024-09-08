@@ -16,7 +16,7 @@ export function RequiredChannelPermissions(...permissions: PermissionFlagsValues
 					.map((permission) => permission?.match(/[A-Z][a-z]+/g)?.join(' '))
 					.join(', ');
 
-				const embed = this.userEmbedError(interaction.user).setDescription(
+				const embed = this.userEmbedError(interaction.member).setDescription(
 					`I need the following permissions in this channel to run the specified command: ${inlineCode(
 						permissionsAsString,
 					)}`,

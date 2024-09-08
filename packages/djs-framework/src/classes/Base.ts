@@ -1,4 +1,4 @@
-import { Colors, EmbedBuilder, type User } from 'discord.js';
+import { Colors, EmbedBuilder, type GuildMember, type User } from 'discord.js';
 import type { Client } from './index';
 import { env } from 'node:process';
 
@@ -26,7 +26,7 @@ export abstract class Base {
 	/**
 	 * @returns Embed with presetted data and a user.
 	 */
-	protected userEmbed(user: User) {
+	protected userEmbed(user: User | GuildMember) {
 		return this.embed.setAuthor({
 			name: user.displayName,
 			iconURL: user.displayAvatarURL(),
@@ -36,7 +36,7 @@ export abstract class Base {
 	/**
 	 * @returns Embed with presetted data for user errors.
 	 */
-	protected userEmbedError(user: User, title = 'You Hit an Error!') {
+	protected userEmbedError(user: User | GuildMember, title = 'You Hit an Error!') {
 		return this.userEmbed(user).setColor(Colors.DarkRed).setTitle(title);
 	}
 

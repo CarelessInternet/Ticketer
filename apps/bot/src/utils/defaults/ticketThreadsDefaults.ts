@@ -1,4 +1,4 @@
-import { Colors, type EmbedBuilder, type Locale, type User, inlineCode } from 'discord.js';
+import { Colors, type EmbedBuilder, type GuildMember, type Locale, inlineCode } from 'discord.js';
 import type { ticketThreadsCategories } from '@ticketer/database';
 import { translate } from '@/i18n';
 
@@ -13,13 +13,13 @@ interface BaseMessageOptions {
 }
 
 interface MessageTitleOptions extends BaseOptions, BaseMessageOptions {
-	displayName: User['displayName'];
+	displayName: GuildMember['displayName'];
 	title: Columns['openingMessageTitle'];
 }
 
 interface MessageDescriptionOptions extends BaseOptions, BaseMessageOptions {
 	description: Columns['openingMessageDescription'];
-	userMention: ReturnType<User['toString']>;
+	memberMention: ReturnType<GuildMember['toString']>;
 }
 
 const replaceMessageCategory = (text: string, category: string) => text.replaceAll('{category}', category);
@@ -32,14 +32,14 @@ interface ReplaceTitleOptions extends BaseMessageOptions {
 
 interface ReplaceDescriptionOptions extends BaseMessageOptions {
 	messageDescription: NonNullable<MessageDescriptionOptions['description']>;
-	userMention: MessageDescriptionOptions['userMention'];
+	memberMention: MessageDescriptionOptions['memberMention'];
 }
 
 const replaceMessageTitle = ({ categoryTitle, messageTitle, displayName }: ReplaceTitleOptions) =>
 	replaceMember(replaceMessageCategory(messageTitle, categoryTitle), displayName);
 
-const replaceMessageDescription = ({ categoryTitle, messageDescription, userMention }: ReplaceDescriptionOptions) =>
-	replaceMember(replaceMessageCategory(messageDescription, categoryTitle), userMention);
+const replaceMessageDescription = ({ categoryTitle, memberMention, messageDescription }: ReplaceDescriptionOptions) =>
+	replaceMember(replaceMessageCategory(messageDescription, categoryTitle), memberMention);
 
 const translations = (locale: BaseOptions['locale']) => translate(locale).tickets.threads.categories.configuration;
 
@@ -53,20 +53,20 @@ export const ticketThreadsOpeningMessageDescription = ({
 	categoryTitle,
 	description,
 	locale,
-	userMention,
+	memberMention,
 }: MessageDescriptionOptions) =>
 	description
-		? replaceMessageDescription({ categoryTitle, messageDescription: description, userMention })
+		? replaceMessageDescription({ categoryTitle, memberMention, messageDescription: description })
 		: translations(locale).openingMessage.description({
 				category: inlineCode(categoryTitle),
-				member: userMention,
+				member: memberMention,
 			});
 
 interface MessageEmbedOptions extends BaseOptions, BaseMessageOptions {
 	description: MessageDescriptionOptions['description'];
 	embed: EmbedBuilder;
+	member: GuildMember;
 	title: MessageTitleOptions['title'];
-	user: User;
 }
 
 export const ticketThreadsOpeningMessageEmbed = ({
@@ -74,12 +74,12 @@ export const ticketThreadsOpeningMessageEmbed = ({
 	description,
 	embed,
 	locale,
+	member,
 	title,
-	user,
 }: MessageEmbedOptions) =>
 	embed
 		.setColor(Colors.Fuchsia)
-		.setTitle(ticketThreadsOpeningMessageTitle({ categoryTitle, displayName: user.displayName, locale, title }))
+		.setTitle(ticketThreadsOpeningMessageTitle({ categoryTitle, displayName: member.displayName, locale, title }))
 		.setDescription(
-			ticketThreadsOpeningMessageDescription({ categoryTitle, description, locale, userMention: user.toString() }),
+			ticketThreadsOpeningMessageDescription({ categoryTitle, description, locale, memberMention: member.toString() }),
 		);

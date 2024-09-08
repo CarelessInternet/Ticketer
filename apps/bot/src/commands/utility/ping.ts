@@ -12,7 +12,7 @@ export default class extends Command.Interaction {
 
 	public async execute({ interaction }: Command.Context) {
 		const translations = translate(interaction.locale).commands.ping.command;
-		const embed = super.userEmbed(interaction.user).setTitle(translations.embeds[0].title());
+		const embed = super.userEmbed(interaction.member).setTitle(translations.embeds[0].title());
 
 		const message = await interaction.reply({
 			embeds: [embed],

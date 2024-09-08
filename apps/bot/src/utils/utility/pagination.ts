@@ -1,12 +1,9 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from 'discord.js';
 import { type MySqlSelect } from '@ticketer/database';
 
-interface PaginationOptions {
+interface WithPaginationOptions<T extends MySqlSelect> {
 	page: number;
 	pageSize: number;
-}
-
-interface WithPaginationOptions<T extends MySqlSelect> extends PaginationOptions {
 	query: T;
 }
 

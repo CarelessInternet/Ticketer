@@ -74,7 +74,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 	@DeferReply()
 	public async execute({ interaction }: Modal.Context) {
-		const { customId, fields, guild, user } = interaction;
+		const { customId, fields, guild, member } = interaction;
 
 		const rawButtonEmoji = fields.getTextInputValue('button_emoji');
 		const buttonEmoji = extractEmoji(rawButtonEmoji) ?? '🎫';
@@ -95,7 +95,7 @@ export class ModalInteraction extends Modal.Interaction {
 			return interaction.editReply({
 				embeds: [
 					super
-						.userEmbedError(user, 'One or multiple of the modal fields are invalid.')
+						.userEmbedError(member, 'One or multiple of the modal fields are invalid.')
 						.setDescription(zodErrorToString(error)),
 				],
 			});
@@ -106,7 +106,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		if (!channel?.isTextBased()) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(user).setDescription('The specified channel is not text based.')],
+				embeds: [super.userEmbedError(member).setDescription('The specified channel is not text based.')],
 			});
 		}
 
@@ -116,7 +116,7 @@ export class ModalInteraction extends Modal.Interaction {
 			return interaction.editReply({
 				embeds: [
 					super
-						.userEmbedError(user)
+						.userEmbedError(member)
 						.setDescription(`I do not have the view channel and send messages permission in ${channel.toString()}.`),
 				],
 			});
@@ -135,7 +135,7 @@ export class ModalInteraction extends Modal.Interaction {
 		void interaction.editReply({
 			embeds: [
 				super
-					.userEmbed(user)
+					.userEmbed(member)
 					.setTitle('Sent the Ticket Panel')
 					.setDescription(
 						`The thread ticket panel has successfully been sent in ${channel.toString()}. View the message at ${

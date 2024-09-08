@@ -65,7 +65,7 @@ function HasGlobalConfiguration(_: object, __: string, descriptor: PropertyDescr
 				.where(eq(ticketThreadsConfigurations.guildId, interaction.guildId));
 
 			if (!row) {
-				const embed = this.userEmbedError(interaction.user).setDescription(
+				const embed = this.userEmbedError(interaction.member).setDescription(
 					'Please create a global thread ticket configuration before creating categories.',
 				);
 
@@ -90,7 +90,7 @@ function categoryViewEmbed(
 	categories: (typeof ticketThreadsCategories.$inferSelect)[],
 ) {
 	return categories.map((category) =>
-		this.userEmbed(context.interaction.user)
+		this.embed
 			.setTitle(ThreadTicketing.titleAndEmoji(category.categoryTitle, category.categoryEmoji))
 			.setDescription(category.categoryDescription)
 			.setFields(
@@ -117,7 +117,7 @@ function categoryViewEmbed(
 					name: 'Opening Message Title',
 					value: ticketThreadsOpeningMessageTitle({
 						categoryTitle: category.categoryTitle,
-						displayName: context.interaction.user.displayName,
+						displayName: context.interaction.member.displayName,
 						locale: context.interaction.locale,
 						title: category.openingMessageTitle,
 					}),
@@ -129,7 +129,7 @@ function categoryViewEmbed(
 						categoryTitle: category.categoryTitle,
 						description: category.openingMessageDescription,
 						locale: context.interaction.locale,
-						userMention: context.interaction.user.toString(),
+						memberMention: context.interaction.member.toString(),
 					}),
 					inline: true,
 				},
@@ -318,7 +318,7 @@ export default class extends Command.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [super.userEmbedError(interaction.user).setDescription('The subcommand group could not be found.')],
+					embeds: [super.userEmbedError(interaction.member).setDescription('The subcommand group could not be found.')],
 					ephemeral: true,
 				});
 			}
@@ -339,11 +339,11 @@ export default class extends Command.Interaction {
 
 				if (!success) {
 					return interaction.editReply({
-						embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+						embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
 					});
 				}
 
-				const { guildId, user } = interaction;
+				const { guildId, member } = interaction;
 
 				await database
 					.insert(ticketThreadsConfigurations)
@@ -351,10 +351,10 @@ export default class extends Command.Interaction {
 					.onDuplicateKeyUpdate({ set: { activeTickets } });
 
 				const embed = super
-					.userEmbed(user)
+					.userEmbed(member)
 					.setTitle('Updated the Thead Ticket Configuration')
 					.setDescription(
-						`${user.toString()} updated the amount of active tickets a user may have at once to ${activeTickets?.toString() ?? 'Unknown'}.`,
+						`${member.toString()} updated the amount of active tickets a user may have at once to ${activeTickets?.toString() ?? 'Unknown'}.`,
 					);
 
 				return interaction.editReply({ embeds: [embed] });
@@ -364,7 +364,7 @@ export default class extends Command.Interaction {
 			}
 			default: {
 				return interaction.editReply({
-					embeds: [super.userEmbedError(interaction.user).setDescription('The subcommand could not be found.')],
+					embeds: [super.userEmbedError(interaction.member).setDescription('The subcommand could not be found.')],
 				});
 			}
 		}
@@ -372,20 +372,20 @@ export default class extends Command.Interaction {
 
 	@DeferReply()
 	private async overview({ interaction }: Command.Context) {
-		const { guildId, user } = interaction;
 		const [result] = await database
 			.select({ activeTickets: ticketThreadsConfigurations.activeTickets })
 			.from(ticketThreadsConfigurations)
-			.where(eq(ticketThreadsConfigurations.guildId, guildId));
+			.where(eq(ticketThreadsConfigurations.guildId, interaction.guildId));
 
 		if (!result) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(user).setDescription('No thread ticket configuration could be found.')],
+				embeds: [
+					super.userEmbedError(interaction.member).setDescription('No thread ticket configuration could be found.'),
+				],
 			});
 		}
 
-		const embed = super
-			.userEmbed(user)
+		const embed = super.embed
 			.setTitle('Thread Ticket Configuration')
 			.setDescription('Here is the global configuration for thread tickets:')
 			.setFields({
@@ -414,7 +414,7 @@ export default class extends Command.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [super.userEmbedError(interaction.user).setDescription('The subcommand could not be found.')],
+					embeds: [super.userEmbedError(interaction.member).setDescription('The subcommand could not be found.')],
 					ephemeral: true,
 				});
 			}
@@ -436,7 +436,7 @@ export default class extends Command.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
 			});
 		}
 
@@ -449,7 +449,7 @@ export default class extends Command.Interaction {
 			return interaction.editReply({
 				embeds: [
 					super
-						.userEmbedError(interaction.user)
+						.userEmbedError(interaction.member)
 						.setDescription('Please create a global thread ticket configuration before creating categories.'),
 				],
 			});
@@ -535,7 +535,7 @@ export default class extends Command.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
 			});
 		}
 
@@ -566,7 +566,7 @@ export default class extends Command.Interaction {
 
 			const actionRow = new ActionRowBuilder<ButtonBuilder>().setComponents(confirmButton, cancelButton);
 			const embed = super
-				.userEmbed(interaction.user)
+				.userEmbed(interaction.member)
 				.setTitle('Are you sure you want to proceed?')
 				.setDescription(
 					`The category you want to delete still has active tickets. Are you sure you want to delete the ${row?.title ? inlineCode(row.title) : 'No Title Found'} category?
@@ -589,10 +589,10 @@ export default class extends Command.Interaction {
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		const embed = super
-			.userEmbed(interaction.user)
+			.userEmbed(interaction.member)
 			.setTitle('Deleted the Thread Ticket Category')
 			.setDescription(
-				`${interaction.user.toString()} deleted the category with the following title: ${result?.title ? inlineCode(result.title) : 'No Title Found'}.`,
+				`${interaction.member.toString()} deleted the category with the following title: ${result?.title ? inlineCode(result.title) : 'No Title Found'}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed] });
@@ -667,7 +667,7 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [super.userEmbedError(interaction.user).setDescription('The component ID could not be found.')],
+					embeds: [super.userEmbedError(interaction.member).setDescription('The component ID could not be found.')],
 					ephemeral: true,
 				});
 			}
@@ -768,7 +768,7 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [super.userEmbedError(interaction.user).setDescription('The selected value could not be found.')],
+					embeds: [super.userEmbedError(interaction.member).setDescription('The selected value could not be found.')],
 					ephemeral: true,
 				});
 			}
@@ -785,7 +785,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 		if (!success) {
 			return interaction.reply({
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
 			});
 		}
 
@@ -801,7 +801,7 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!row) {
 			return interaction.reply({
 				embeds: [
-					super.userEmbedError(interaction.user).setDescription('No category with the given ID could be found.'),
+					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
 				],
 			});
 		}
@@ -822,7 +822,7 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
 			});
 		}
 
@@ -837,9 +837,9 @@ export class ComponentInteraction extends Component.Interaction {
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		const embed = super
-			.userEmbed(interaction.user)
+			.userEmbed(interaction.member)
 			.setTitle('Updated the Thread Ticket Category')
-			.setDescription(`${interaction.user.toString()} updated the ${type} to ${channel.toString()}.`);
+			.setDescription(`${interaction.member.toString()} updated the ${type} to ${channel.toString()}.`);
 
 		return interaction.editReply({ components: [], embeds: [embed] });
 	}
@@ -856,7 +856,7 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
 			});
 		}
 
@@ -873,10 +873,10 @@ export class ComponentInteraction extends Component.Interaction {
 			components: [],
 			embeds: [
 				super
-					.userEmbed(interaction.user)
+					.userEmbed(interaction.member)
 					.setTitle('Updated the Thread Ticket Category')
 					.setDescription(
-						`${interaction.user.toString()} updated the managers of the category to: ${
+						`${interaction.member.toString()} updated the managers of the category to: ${
 							managers.length > 0 ? roles : 'none'
 						}.`,
 					),
@@ -896,7 +896,7 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
 			});
 		}
 
@@ -904,7 +904,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 		if (!value) {
 			return interaction.reply({
-				embeds: [super.userEmbedError(interaction.user).setDescription('The selected value could not be found.')],
+				embeds: [super.userEmbedError(interaction.member).setDescription('The selected value could not be found.')],
 				ephemeral: true,
 			});
 		}
@@ -917,7 +917,7 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!row) {
 			return interaction.reply({
 				embeds: [
-					super.userEmbedError(interaction.user).setDescription('No category with the given ID could be found.'),
+					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
 				],
 			});
 		}
@@ -937,10 +937,10 @@ export class ComponentInteraction extends Component.Interaction {
 		return interaction.editReply({
 			embeds: [
 				super
-					.userEmbed(interaction.user)
+					.userEmbed(interaction.member)
 					.setTitle('Updated the Thread Ticket Category')
 					.setDescription(
-						`${interaction.user.toString()} has toggled the ${inlineCode(ThreadTicketing.ActionsAsName[value as ThreadTicketing.KeyOfActions])} ticket author action to ${enabled ? 'enabled' : 'disabled'}.`,
+						`${interaction.member.toString()} has toggled the ${inlineCode(ThreadTicketing.ActionsAsName[value as ThreadTicketing.KeyOfActions])} ticket author action to ${enabled ? 'enabled' : 'disabled'}.`,
 					),
 			],
 		});
@@ -959,7 +959,7 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.reply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
 			});
 		}
 
@@ -984,11 +984,11 @@ export class ComponentInteraction extends Component.Interaction {
 			components: [],
 			embeds: [
 				super
-					.userEmbed(interaction.user)
+					.userEmbed(interaction.member)
 					.setTitle(confirmDeletion ? 'Deleted the Category' : 'Deletion Cancelled')
 					.setDescription(
 						confirmDeletion
-							? `${interaction.user.toString()} deleted the ${row?.title ? inlineCode(row.title) : 'No Title Found'} category.`
+							? `${interaction.member.toString()} deleted the ${row?.title ? inlineCode(row.title) : 'No Title Found'} category.`
 							: `The deletion of the category ${row?.title ? inlineCode(row.title) : 'No Title Found'} has been cancelled.`,
 					),
 			],
@@ -1002,7 +1002,7 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return void interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.user).setDescription(error)],
+				embeds: [super.userEmbedError(interaction.member).setDescription(error)],
 			});
 		}
 
@@ -1019,7 +1019,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 		if (!success) {
 			return interaction.reply({
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
 			});
 		}
 
@@ -1034,7 +1034,7 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!row) {
 			return interaction.reply({
 				embeds: [
-					super.userEmbedError(interaction.user).setDescription('No category with the given ID could be found.'),
+					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
 				],
 			});
 		}
@@ -1081,7 +1081,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
 			});
 		}
 
@@ -1105,17 +1105,17 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!row) {
 			return interaction.editReply({
 				embeds: [
-					super.userEmbedError(interaction.user).setDescription('No category with the given ID could be found.'),
+					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
 				],
 			});
 		}
 
 		const valueAsBoolean = type === 'private threads' ? row.privateThreads : row.threadNotifications;
 		const embed = super
-			.userEmbed(interaction.user)
+			.userEmbed(interaction.member)
 			.setTitle('Updated the Thread Ticket Category')
 			.setDescription(
-				`${interaction.user.toString()} has toggled the ${type} option to ${valueAsBoolean ? 'enabled' : 'disabled'}.`,
+				`${interaction.member.toString()} has toggled the ${type} option to ${valueAsBoolean ? 'enabled' : 'disabled'}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed] });
@@ -1132,7 +1132,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
 			});
 		}
 
@@ -1151,16 +1151,16 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!row) {
 			return interaction.editReply({
 				embeds: [
-					super.userEmbedError(interaction.user).setDescription('No category with the given ID could be found.'),
+					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
 				],
 			});
 		}
 
 		const embed = super
-			.userEmbed(interaction.user)
+			.userEmbed(interaction.member)
 			.setTitle('Updated the Thread Ticket Category')
 			.setDescription(
-				`${interaction.user.toString()} has toggled the silent pings option to ${row.silentPings ? 'enabled' : 'disabled'}.`,
+				`${interaction.member.toString()} has toggled the silent pings option to ${row.silentPings ? 'enabled' : 'disabled'}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed] });
@@ -1177,7 +1177,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
 			});
 		}
 
@@ -1196,16 +1196,16 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!row) {
 			return interaction.editReply({
 				embeds: [
-					super.userEmbedError(interaction.user).setDescription('No category with the given ID could be found.'),
+					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
 				],
 			});
 		}
 
 		const embed = super
-			.userEmbed(interaction.user)
+			.userEmbed(interaction.member)
 			.setTitle('Updated the Thread Ticket Category')
 			.setDescription(
-				`${interaction.user.toString()} has toggled the ticket title and description option to ${row.titleAndDescriptionRequired ? 'required' : 'optional'}.`,
+				`${interaction.member.toString()} has toggled the ticket title and description option to ${row.titleAndDescriptionRequired ? 'required' : 'optional'}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed] });
@@ -1222,7 +1222,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
 			});
 		}
 
@@ -1241,16 +1241,16 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!row) {
 			return interaction.editReply({
 				embeds: [
-					super.userEmbedError(interaction.user).setDescription('No category with the given ID could be found.'),
+					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
 				],
 			});
 		}
 
 		const embed = super
-			.userEmbed(interaction.user)
+			.userEmbed(interaction.member)
 			.setTitle('Updated the Thread Ticket Category')
 			.setDescription(
-				`${interaction.user.toString()} has toggled the skip modal option to ${row.skipModal ? 'enabled' : 'disabled'}.`,
+				`${interaction.member.toString()} has toggled the skip modal option to ${row.skipModal ? 'enabled' : 'disabled'}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed] });
@@ -1279,14 +1279,14 @@ export class ModalInteraction extends Modal.Interaction {
 			}
 			default: {
 				return interaction.editReply({
-					embeds: [super.userEmbedError(interaction.user).setDescription('The modal ID could not be found.')],
+					embeds: [super.userEmbedError(interaction.member).setDescription('The modal ID could not be found.')],
 				});
 			}
 		}
 	}
 
 	private async categoryFields({ interaction }: Modal.Context) {
-		const { customId, fields, guildId, user } = interaction;
+		const { customId, fields, guildId, member } = interaction;
 		const { dynamicValue } = super.extractCustomId(customId);
 
 		const emoji = fields.getTextInputValue('emoji');
@@ -1303,7 +1303,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(member).setDescription(zodErrorToString(error))],
 			});
 		}
 
@@ -1318,7 +1318,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 			if (!idSuccess) {
 				return interaction.editReply({
-					embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(idError))],
+					embeds: [super.userEmbedError(member).setDescription(zodErrorToString(idError))],
 				});
 			}
 
@@ -1339,7 +1339,7 @@ export class ModalInteraction extends Modal.Interaction {
 				return interaction.editReply({
 					embeds: [
 						super
-							.userEmbedError(user)
+							.userEmbedError(member)
 							.setDescription(
 								`There are too many categories, you may not have more than ${MAXIMUM_CATEGORY_AMOUNT.toString()}.`,
 							),
@@ -1353,10 +1353,10 @@ export class ModalInteraction extends Modal.Interaction {
 		}
 
 		const embed = super
-			.userEmbed(user)
+			.userEmbed(member)
 			.setTitle(`${dynamicValue ? 'Updated the' : 'Created a'} Thread Ticket Category`)
 			.setDescription(
-				`${user.toString()} ${
+				`${member.toString()} ${
 					dynamicValue ? 'updated' : 'created'
 				} the thread ticket category with the following details:`,
 			)
@@ -1383,7 +1383,7 @@ export class ModalInteraction extends Modal.Interaction {
 	}
 
 	private async categoryMessageTitleDescription({ interaction }: Modal.Context) {
-		const { customId, fields, user } = interaction;
+		const { customId, fields, member } = interaction;
 		const { dynamicValue } = super.extractCustomId(customId, true);
 		const {
 			data: categoryId,
@@ -1393,7 +1393,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		if (!idSuccess) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(idError))],
+				embeds: [super.userEmbedError(member).setDescription(zodErrorToString(idError))],
 			});
 		}
 
@@ -1410,7 +1410,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.user).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(member).setDescription(zodErrorToString(error))],
 			});
 		}
 
@@ -1422,10 +1422,10 @@ export class ModalInteraction extends Modal.Interaction {
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		const embed = super
-			.userEmbed(user)
+			.userEmbed(member)
 			.setTitle('Updated the Thread Ticket Category')
 			.setDescription(
-				`${user.toString()} updated the opening message title and description to the following if they have text:`,
+				`${member.toString()} updated the opening message title and description to the following if they have text:`,
 			);
 
 		if (openingMessageTitle) {

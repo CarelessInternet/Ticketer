@@ -1,7 +1,7 @@
+import { type GuildMember, PermissionFlagsBits } from 'discord.js';
 import { LogExceptions, farewellEmbed, fetchChannel } from '@/utils';
 import { database, eq, welcomeAndFarewell } from '@ticketer/database';
 import { Event } from '@ticketer/djs-framework';
-import { PermissionFlagsBits } from 'discord.js';
 
 export default class extends Event.Handler {
 	public readonly name = Event.Name.GuildMemberRemove;
@@ -28,7 +28,7 @@ export default class extends Event.Handler {
 			},
 			embed: super.embed,
 			locale: preferredLocale,
-			user: member.user,
+			member: member as GuildMember,
 		});
 
 		void channel.send({ embeds: [embed] });

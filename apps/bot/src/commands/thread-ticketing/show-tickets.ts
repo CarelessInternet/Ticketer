@@ -30,7 +30,7 @@ async function viewTickets(
 			.where(
 				and(
 					eq(ticketsThreads.guildId, interaction.guildId),
-					eq(ticketsThreads.authorId, interaction.user.id),
+					eq(ticketsThreads.authorId, interaction.member.id),
 					state ? eq(ticketsThreads.state, state) : undefined,
 				),
 			)
@@ -132,7 +132,7 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return void context.interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(context.interaction.user).setDescription(error)],
+				embeds: [super.userEmbedError(context.interaction.member).setDescription(error)],
 			});
 		}
 

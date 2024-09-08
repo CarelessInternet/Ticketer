@@ -1,4 +1,4 @@
-import { Colors, type EmbedBuilder, type Locale, type User } from 'discord.js';
+import { Colors, type EmbedBuilder, type GuildMember, type Locale } from 'discord.js';
 import { translate } from '@/i18n';
 import type { welcomeAndFarewell } from '@ticketer/database';
 
@@ -9,7 +9,7 @@ interface BaseOptions {
 }
 
 interface TitleOptions extends BaseOptions {
-	displayName: User['displayName'];
+	displayName: GuildMember['displayName'];
 	// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 	title: Columns['welcomeMessageTitle'] | Columns['farewellMessageTitle'];
 }
@@ -17,7 +17,7 @@ interface TitleOptions extends BaseOptions {
 interface DescriptionOptions extends BaseOptions {
 	// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 	description: Columns['welcomeMessageDescription'] | Columns['farewellMessageDescription'];
-	userMention: ReturnType<User['toString']>;
+	memberMention: ReturnType<GuildMember['toString']>;
 }
 
 const replaceMember = (text: string, member: string) => text.replaceAll('{member}', member);
@@ -27,20 +27,22 @@ const translations = (locale: BaseOptions['locale']) => translate(locale).events
 const welcomeMessageTitle = ({ locale, displayName, title }: TitleOptions) =>
 	title ? replaceMember(title, displayName) : translations(locale).welcome.title({ member: displayName });
 
-const welcomeMessageDescription = ({ description, locale, userMention }: DescriptionOptions) =>
-	description ? replaceMember(description, userMention) : translations(locale).welcome.message({ member: userMention });
+const welcomeMessageDescription = ({ description, locale, memberMention }: DescriptionOptions) =>
+	description
+		? replaceMember(description, memberMention)
+		: translations(locale).welcome.message({ member: memberMention });
 
 const farewellMessageTitle = ({ locale, displayName, title }: TitleOptions) =>
 	title ? replaceMember(title, displayName) : translations(locale).farewell.title({ member: displayName });
 
-const farewellMessageDescription = ({ description, locale, userMention }: DescriptionOptions) =>
+const farewellMessageDescription = ({ description, locale, memberMention }: DescriptionOptions) =>
 	description
-		? replaceMember(description, userMention)
-		: translations(locale).farewell.message({ member: userMention });
+		? replaceMember(description, memberMention)
+		: translations(locale).farewell.message({ member: memberMention });
 
 interface BaseWelcomeAndFarewellEmbedOptions extends BaseOptions {
 	embed: EmbedBuilder;
-	user: User;
+	member: GuildMember;
 }
 
 interface WelcomeEmbedOptions extends BaseWelcomeAndFarewellEmbedOptions {
@@ -51,24 +53,28 @@ interface FarewellEmbedOptions extends BaseWelcomeAndFarewellEmbedOptions {
 	data: Pick<Columns, 'farewellMessageTitle' | 'farewellMessageDescription'>;
 }
 
-export const welcomeEmbed = ({ data, embed, locale, user }: WelcomeEmbedOptions) =>
+export const welcomeEmbed = ({ data, embed, locale, member }: WelcomeEmbedOptions) =>
 	embed
 		.setColor(Colors.DarkBlue)
-		.setTitle(welcomeMessageTitle({ displayName: user.displayName, locale, title: data.welcomeMessageTitle }))
+		.setTitle(welcomeMessageTitle({ displayName: member.displayName, locale, title: data.welcomeMessageTitle }))
 		.setDescription(
-			welcomeMessageDescription({ description: data.welcomeMessageDescription, locale, userMention: user.toString() }),
+			welcomeMessageDescription({
+				description: data.welcomeMessageDescription,
+				locale,
+				memberMention: member.toString(),
+			}),
 		)
-		.setThumbnail(user.displayAvatarURL());
+		.setThumbnail(member.displayAvatarURL());
 
-export const farewellEmbed = ({ data, embed, locale, user }: FarewellEmbedOptions) =>
+export const farewellEmbed = ({ data, embed, locale, member }: FarewellEmbedOptions) =>
 	embed
 		.setColor(Colors.Purple)
-		.setTitle(farewellMessageTitle({ displayName: user.displayName, locale, title: data.farewellMessageTitle }))
+		.setTitle(farewellMessageTitle({ displayName: member.displayName, locale, title: data.farewellMessageTitle }))
 		.setDescription(
 			farewellMessageDescription({
 				description: data.farewellMessageDescription,
 				locale,
-				userMention: user.toString(),
+				memberMention: member.toString(),
 			}),
 		)
-		.setThumbnail(user.displayAvatarURL());
+		.setThumbnail(member.displayAvatarURL());

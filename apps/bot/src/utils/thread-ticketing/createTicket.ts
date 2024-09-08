@@ -57,7 +57,7 @@ export async function createTicket(
 		await interaction.deferReply({ ephemeral: true });
 	}
 
-	const { createdAt, client, guild, guildId, guildLocale, locale, user: interactionUser } = interaction;
+	const { createdAt, client, guild, guildId, guildLocale, locale, member: interactionMember } = interaction;
 	const customId = 'customId' in interaction ? interaction.customId : undefined;
 	const fields = 'fields' in interaction ? interaction.fields : undefined;
 
@@ -67,16 +67,16 @@ export async function createTicket(
 		Number(incomingCategoryId ?? dynamicValues?.at(0) ?? dynamicValue),
 	);
 	const proxiedUser = proxiedUserId ?? dynamicValues?.at(1);
-	const { nickname, user } = await guild.members.fetch(proxiedUser ?? interactionUser);
+	const member = await guild.members.fetch(proxiedUser ?? interactionMember);
 
 	const translations = translate(locale).tickets.threads.categories;
 	const guildTranslations = translate(guildLocale).tickets.threads.categories;
 
-	if (user.id === client.user.id) {
+	if (member.id === client.user.id) {
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(user, translations.createTicket.errors.invalidUser.title()).setDescription(
+				this.userEmbedError(interactionMember, translations.createTicket.errors.invalidUser.title()).setDescription(
 					translations.createTicket.errors.invalidUser.description(),
 				),
 			],
@@ -87,7 +87,7 @@ export async function createTicket(
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(user, translations.createTicket.errors.invalidId.title()).setDescription(
+				this.userEmbedError(interactionMember, translations.createTicket.errors.invalidId.title()).setDescription(
 					translations.createTicket.errors.invalidId.description(),
 				),
 			],
@@ -104,7 +104,7 @@ export async function createTicket(
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(user, translations.createTicket.errors.noConfiguration.title()).setDescription(
+				this.userEmbedError(interactionMember, translations.createTicket.errors.noConfiguration.title()).setDescription(
 					translations.createTicket.errors.noConfiguration.description(),
 				),
 			],
@@ -115,7 +115,7 @@ export async function createTicket(
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(user, translations.createTicket.errors.noManagers.title()).setDescription(
+				this.userEmbedError(interactionMember, translations.createTicket.errors.noManagers.title()).setDescription(
 					translations.createTicket.errors.noManagers.description(),
 				),
 			],
@@ -128,7 +128,7 @@ export async function createTicket(
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(user, translations.createTicket.errors.invalidChannel.title()).setDescription(
+				this.userEmbedError(interactionMember, translations.createTicket.errors.invalidChannel.title()).setDescription(
 					translations.createTicket.errors.invalidChannel.description(),
 				),
 			],
@@ -162,7 +162,7 @@ export async function createTicket(
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(user, translations.createTicket.errors.noPermissions.title()).setDescription(
+				this.userEmbedError(interactionMember, translations.createTicket.errors.noPermissions.title()).setDescription(
 					translations.createTicket.errors.noPermissions.description({ permissions }),
 				),
 			],
@@ -174,7 +174,7 @@ export async function createTicket(
 		.from(ticketsThreads)
 		.where(
 			and(
-				eq(ticketsThreads.authorId, user.id),
+				eq(ticketsThreads.authorId, member.id),
 				eq(ticketsThreads.guildId, guildId),
 				eq(ticketsThreads.state, 'active'),
 			),
@@ -185,11 +185,11 @@ export async function createTicket(
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(user, translations.createTicket.errors.tooManyTickets.title()).setDescription(
+				this.userEmbedError(interactionMember, translations.createTicket.errors.tooManyTickets.title()).setDescription(
 					proxiedUser
 						? translations.createTicket.errors.tooManyTickets.proxy.description({
 								amount: configuration.ticketThreadsConfigurations.activeTickets,
-								member: user.toString(),
+								member: member.toString(),
 							})
 						: translations.createTicket.errors.tooManyTickets.user.description({
 								amount: configuration.ticketThreadsConfigurations.activeTickets,
@@ -217,7 +217,7 @@ export async function createTicket(
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(interaction.user, translations.createTicket.errors.invalidFields.title()).setDescription(
+				this.userEmbedError(interactionMember, translations.createTicket.errors.invalidFields.title()).setDescription(
 					zodErrorToString(error),
 				),
 			],
@@ -228,21 +228,21 @@ export async function createTicket(
 	const thread = await channel.threads.create({
 		autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
 		invitable: false,
-		name: title || `[${formatDateShort(createdAt)}] ${nickname ?? user.displayName}`,
+		name: title || `[${formatDateShort(createdAt)}] ${member.displayName}`,
 		type: isPrivate ? ChannelType.PrivateThread : ChannelType.PublicThread,
 	});
 
-	await database.insert(ticketsThreads).values({ authorId: user.id, categoryId, guildId, threadId: thread.id });
+	await database.insert(ticketsThreads).values({ authorId: member.id, categoryId, guildId, threadId: thread.id });
 
 	const messageEmbed = ticketThreadsOpeningMessageEmbed({
 		categoryTitle: configuration.ticketThreadsCategories.categoryTitle,
 		description: configuration.ticketThreadsCategories.openingMessageDescription,
 		embed: this.embed,
 		locale: guildLocale,
+		member,
 		title: configuration.ticketThreadsCategories.openingMessageTitle,
-		user,
 	});
-	const ticketEmbed = (proxiedUser ? this.embed : this.userEmbed(user)).setColor(Colors.Green);
+	const ticketEmbed = (proxiedUser ? this.embed : this.userEmbed(member)).setColor(Colors.Green);
 
 	if (title) {
 		ticketEmbed.setTitle(title);
@@ -298,16 +298,16 @@ export async function createTicket(
 		}
 	}
 
-	await thread.members.add(user);
+	await thread.members.add(member);
 
-	const ticketCreatedEmbed = this.userEmbed(proxiedUser ? interactionUser : user)
+	const ticketCreatedEmbed = this.userEmbed(interactionMember)
 		.setColor(Colors.Green)
 		.setTitle(translations.createTicket.ticketCreated.title())
 		.setDescription(
 			proxiedUser
 				? translations.createTicket.ticketCreated.proxy.user.description({
 						channel: thread.toString(),
-						member: user.toString(),
+						member: member.toString(),
 					})
 				: translations.createTicket.ticketCreated.notProxy.user.description({ channel: thread.toString() }),
 		);
@@ -327,12 +327,12 @@ export async function createTicket(
 					proxiedUser
 						? guildTranslations.createTicket.ticketCreated.proxy.logs.description({
 								channel: thread.toString(),
-								creator: interactionUser.toString(),
-								member: user.toString(),
+								creator: interactionMember.toString(),
+								member: member.toString(),
 							})
 						: guildTranslations.createTicket.ticketCreated.notProxy.logs.description({
 								channel: thread.toString(),
-								member: user.toString(),
+								member: member.toString(),
 							}),
 				),
 			],
@@ -340,7 +340,7 @@ export async function createTicket(
 	}
 
 	if (proxiedUser) {
-		user
+		member
 			.send({
 				embeds: [
 					this.embed

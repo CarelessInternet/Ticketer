@@ -30,7 +30,7 @@ export default class extends Command.Interaction {
 			return interaction
 				.reply({
 					embeds: [
-						super.userEmbedError(interaction.user, translations.title()).setDescription(translations.description()),
+						super.userEmbedError(interaction.member, translations.title()).setDescription(translations.description()),
 					],
 					ephemeral: true,
 				})
@@ -122,7 +122,7 @@ export class ComponentInteraction extends Component.Interaction {
 				return context.interaction.reply({
 					embeds: [
 						super
-							.userEmbedError(context.interaction.user, translations.title())
+							.userEmbedError(context.interaction.member, translations.title())
 							.setDescription(translations.description()),
 					],
 					ephemeral: true,
@@ -141,7 +141,9 @@ export class ComponentInteraction extends Component.Interaction {
 
 		if (!success) {
 			return interaction.reply({
-				embeds: [super.userEmbedError(interaction.user, translations.title()).setDescription(zodErrorToString(error))],
+				embeds: [
+					super.userEmbedError(interaction.member, translations.title()).setDescription(zodErrorToString(error)),
+				],
 			});
 		}
 
@@ -153,7 +155,7 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!row) {
 			return interaction.reply({
 				embeds: [
-					super.userEmbedError(interaction.user, translations.title()).setDescription(translations.description()),
+					super.userEmbedError(interaction.member, translations.title()).setDescription(translations.description()),
 				],
 			});
 		}
@@ -183,7 +185,7 @@ export class ComponentInteraction extends Component.Interaction {
 			return interaction
 				.reply({
 					embeds: [
-						super.userEmbedError(interaction.user, translations.title()).setDescription(translations.description()),
+						super.userEmbedError(interaction.member, translations.title()).setDescription(translations.description()),
 					],
 					ephemeral: true,
 				})
@@ -261,7 +263,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 				return interaction.reply({
 					embeds: [
-						super.userEmbedError(interaction.user, translations.title()).setDescription(translations.description()),
+						super.userEmbedError(interaction.member, translations.title()).setDescription(translations.description()),
 					],
 					ephemeral: true,
 				});
@@ -271,14 +273,14 @@ export class ModalInteraction extends Modal.Interaction {
 
 	@DeferReply({ ephemeral: true })
 	private async renameTitle({ interaction }: Modal.Context) {
-		const { channel, fields, guild, guildLocale, locale, member, user } = interaction;
+		const { channel, fields, guild, guildLocale, locale, member } = interaction;
 		const translations = translate(locale).tickets.threads.categories.actions;
 
 		if (channel?.type !== ChannelType.PrivateThread && channel?.type !== ChannelType.PublicThread) {
 			return interaction.editReply({
 				embeds: [
 					super
-						.userEmbedError(user, translations._errorIfNotTicketChannel.title())
+						.userEmbedError(member, translations._errorIfNotTicketChannel.title())
 						.setDescription(translations._errorIfNotTicketChannel.description()),
 				],
 			});
@@ -288,7 +290,7 @@ export class ModalInteraction extends Modal.Interaction {
 			return interaction.editReply({
 				embeds: [
 					super
-						.userEmbedError(user, translations.renameTitle.modal.errors.notEditable.title())
+						.userEmbedError(member, translations.renameTitle.modal.errors.notEditable.title())
 						.setDescription(translations.renameTitle.modal.errors.notEditable.description()),
 				],
 			});
@@ -306,11 +308,11 @@ export class ModalInteraction extends Modal.Interaction {
 			.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id));
 
 		if (!row?.managers.some((id) => member.roles.resolve(id))) {
-			if (row?.authorId !== user.id) {
+			if (row?.authorId !== member.id) {
 				return interaction.editReply({
 					embeds: [
 						super
-							.userEmbedError(user, translations._errorIfNotTicketAuthorOrManager.title())
+							.userEmbedError(member, translations._errorIfNotTicketAuthorOrManager.title())
 							.setDescription(translations._errorIfNotTicketAuthorOrManager.description()),
 					],
 				});
@@ -321,7 +323,7 @@ export class ModalInteraction extends Modal.Interaction {
 			if (!authorPermissions.has(ThreadTicketActionsPermissionBitField.Flags.RenameTitle)) {
 				return interaction.editReply({
 					embeds: [
-						this.userEmbedError(user, translations._errorIfNoAuthorPermissions.title()).setDescription(
+						this.userEmbedError(member, translations._errorIfNoAuthorPermissions.title()).setDescription(
 							translations._errorIfNoAuthorPermissions.description(),
 						),
 					],
@@ -336,7 +338,7 @@ export class ModalInteraction extends Modal.Interaction {
 			return interaction.editReply({
 				embeds: [
 					super
-						.userEmbedError(interaction.user, translations.renameTitle.modal.errors.tooLong.title())
+						.userEmbedError(interaction.member, translations.renameTitle.modal.errors.tooLong.title())
 						.setDescription(translations.renameTitle.modal.errors.tooLong.description()),
 				],
 			});
@@ -346,7 +348,7 @@ export class ModalInteraction extends Modal.Interaction {
 		const guildSuccessTranslations =
 			translate(guildLocale).tickets.threads.categories.actions.renameTitle.modal.success;
 		const embed = super
-			.userEmbed(user)
+			.userEmbed(member)
 			.setColor(Colors.DarkGreen)
 			.setTitle(successTranslations.title())
 			.setDescription(successTranslations.user.description({ oldTitle, newTitle }));

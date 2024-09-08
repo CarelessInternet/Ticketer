@@ -20,7 +20,9 @@ export default class extends Command.Interaction {
 		const { shard } = interaction.client;
 
 		if (!shard) {
-			return interaction.editReply({ content: 'No shard for the bot could be found.' });
+			return interaction.editReply({
+				embeds: [super.userEmbedError(interaction.member).setDescription('No shard for the bot could be found.')],
+			});
 		}
 
 		const clientsStats = [
@@ -53,8 +55,7 @@ export default class extends Command.Interaction {
 		const [channelSize, channelSizeWithoutThreads, emojiSize, guildSize, memberSize, userSize] =
 			await Promise.all(clientsStats);
 
-		const embed = super
-			.userEmbed(interaction.user)
+		const embed = super.embed
 			.setTitle('Bot Statistics')
 			.setDescription("The data below shows information about the bot's statistics.")
 			.setFields(

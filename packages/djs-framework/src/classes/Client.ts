@@ -1,6 +1,16 @@
-import type { Autocomplete, BaseInteraction, Command, Component, Event, Modal } from '.';
+import {
+	type Autocomplete,
+	type BaseInteraction,
+	type Command,
+	type Component,
+	type Event,
+	Guards,
+	type InteractionConstructableTypes,
+	type Modal,
+	type Subcommand,
+	glob,
+} from '..';
 import { Collection, Client as DiscordClient, Routes, type Snowflake } from 'discord.js';
-import { Guards, glob } from '../index';
 
 /**
  * The extended version of the discord.js Client.
@@ -9,10 +19,11 @@ import { Guards, glob } from '../index';
 export class Client extends DiscordClient {
 	public readonly events = new Collection<string, Event.Handler>();
 
+	public readonly autocompletes = new Collection<string, Autocomplete.Interaction>();
 	public readonly commands = new Collection<string, Command.Interaction>();
 	public readonly components = new Collection<string, Component.Interaction>();
-	public readonly autocompletes = new Collection<string, Autocomplete.Interaction>();
 	public readonly modals = new Collection<string, Modal.Interaction>();
+	public readonly subcommands = new Collection<string, Subcommand.Interaction>();
 
 	/**
 	 * Initializes events and commands.
@@ -35,6 +46,10 @@ export class Client extends DiscordClient {
 		const interactions = await this.fetchInteractions(commandsFolder);
 
 		for (const interaction of interactions) {
+			if (Guards.isAutocomplete(interaction)) {
+				this.autocompletes.set(interaction.name, interaction);
+			}
+
 			if (Guards.isCommand(interaction)) {
 				this.commands.set(interaction.data.name, interaction);
 			}
@@ -45,14 +60,14 @@ export class Client extends DiscordClient {
 				}
 			}
 
-			if (Guards.isAutocomplete(interaction)) {
-				this.autocompletes.set(interaction.name, interaction);
-			}
-
 			if (Guards.isModal(interaction)) {
 				for (const id of interaction.customIds) {
 					this.modals.set(id, interaction);
 				}
+			}
+
+			if (Guards.isSubcommand(interaction)) {
+				this.subcommands.set(interaction.data.parentCommandName, interaction);
 			}
 		}
 	}
@@ -65,10 +80,11 @@ export class Client extends DiscordClient {
 		const events: Event.Handler[] = [];
 
 		for await (const file of files) {
-			const { default: Event }: { default?: Event.Constructable } = await import(file);
+			const { default: ImportedEvent }: { default?: Event.Constructable } = await import(file);
+			const eventAsClass = ImportedEvent ? new ImportedEvent(this) : undefined;
 
-			if (Event) {
-				events.push(new Event(this));
+			if (Guards.isEvent(eventAsClass)) {
+				events.push(eventAsClass);
 			}
 		}
 
@@ -87,8 +103,10 @@ export class Client extends DiscordClient {
 			const values = Object.values(interactions) as ValueOf<Interactions>[];
 
 			for (const Interaction of values) {
-				if (Interaction) {
-					commands.push(new Interaction(this));
+				const interactionAsClass = new Interaction(this);
+
+				if (Guards.isInteraction(interactionAsClass)) {
+					commands.push(interactionAsClass);
 				}
 			}
 		}
@@ -137,11 +155,6 @@ export interface ClientDeployOptions {
 	token?: Snowflake;
 }
 
-interface Interactions {
-	default?: Command.Constructable;
-	ComponentInteraction?: Component.Constructable;
-	AutocompleteInteraction?: Autocomplete.Constructable;
-	ModalInteraction?: Modal.Constructable;
-}
+type Interactions = Record<string, InteractionConstructableTypes>;
 
 type ValueOf<T> = T[keyof T];

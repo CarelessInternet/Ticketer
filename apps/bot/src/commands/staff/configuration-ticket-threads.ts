@@ -660,7 +660,7 @@ export class ComponentInteraction extends Component.Interaction {
 			case super.dynamicCustomId('ticket_threads_category_view_previous'):
 			case super.dynamicCustomId('ticket_threads_category_view_next'): {
 				if (interaction.isButton()) {
-					this.categoryView({ interaction });
+					void this.categoryView({ interaction });
 				}
 
 				break;
@@ -1000,7 +1000,7 @@ export class ComponentInteraction extends Component.Interaction {
 		const { success, error, page } = goToPage.call(this, interaction);
 
 		if (!success) {
-			return void interaction.editReply({
+			return interaction.editReply({
 				components: [],
 				embeds: [super.userEmbedError(interaction.member).setDescription(error)],
 			});

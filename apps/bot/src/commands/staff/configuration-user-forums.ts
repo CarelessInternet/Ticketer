@@ -311,7 +311,7 @@ export class ComponentInteraction extends Component.Interaction {
 			case super.dynamicCustomId('ticket_user_forums_view_previous'):
 			case super.dynamicCustomId('ticket_user_forums_view_next'): {
 				if (interaction.isButton()) {
-					this.configurationOverview({ interaction });
+					void this.configurationOverview({ interaction });
 				}
 
 				break;
@@ -448,7 +448,7 @@ export class ComponentInteraction extends Component.Interaction {
 		const { success, error, page } = goToPage.call(this, context.interaction);
 
 		if (!success) {
-			return void context.interaction.editReply({
+			return context.interaction.editReply({
 				components: [],
 				embeds: [super.userEmbedError(context.interaction.member).setDescription(error)],
 			});

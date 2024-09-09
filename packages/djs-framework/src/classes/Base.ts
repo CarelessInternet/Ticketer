@@ -1,11 +1,6 @@
 import { Colors, EmbedBuilder, type GuildMember, type User } from 'discord.js';
-import type { Client } from './index';
+import type { Client } from '.';
 import { env } from 'node:process';
-
-interface ExtractCustomId {
-	customId: string;
-	dynamicValue?: string;
-}
 
 /**
  * The base for all executable classes.
@@ -74,4 +69,9 @@ export abstract class Base {
 	// Type `unknown` is more suitable but gave errors.
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public abstract execute(...parameters: unknown[]): any;
+}
+
+interface ExtractCustomId {
+	customId: string;
+	dynamicValue?: string;
 }

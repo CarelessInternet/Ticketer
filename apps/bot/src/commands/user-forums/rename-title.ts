@@ -1,7 +1,7 @@
 import { Component, DeferReply, Modal } from '@ticketer/djs-framework';
 import { UserForums } from '@/utils';
 
-export class ComponentInteraction extends Component.Interaction {
+export default class extends Component.Interaction {
 	public readonly customIds = [super.customId('ticket_user_forums_thread_rename_title')];
 
 	public execute(context: Component.Context) {

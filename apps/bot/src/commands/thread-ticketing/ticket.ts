@@ -71,16 +71,52 @@ export default class extends Command.Interaction {
 	}
 }
 
+export class TicketButtonsInteraction extends Component.Interaction {
+	public readonly customIds = [
+		super.customId('ticket_threads_category_create_lock'),
+		super.customId('ticket_threads_category_create_close'),
+		super.customId('ticket_threads_category_create_lock_and_close'),
+		super.customId('ticket_threads_category_create_delete'),
+	];
+
+	@DeferReply({ ephemeral: true })
+	public execute(context: Component.Context) {
+		const { customId } = super.extractCustomId(context.interaction.customId);
+
+		switch (customId) {
+			case super.customId('ticket_threads_category_create_lock_and_close'):
+			case super.customId('ticket_threads_category_create_lock'): {
+				return ThreadTicketing.lockTicket.call(this, context, context.interaction.customId.includes('lock_and_close'));
+			}
+			case super.customId('ticket_threads_category_create_close'): {
+				return ThreadTicketing.closeTicket.call(this, context);
+			}
+			case super.customId('ticket_threads_category_create_delete'): {
+				return ThreadTicketing.deleteTicket.call(this, context);
+			}
+			default: {
+				const translations = translate(context.interaction.locale).tickets.threads.categories.createModal.errors
+					.invalidCustomId;
+
+				return context.interaction.reply({
+					embeds: [
+						super
+							.userEmbedError(context.interaction.member, translations.title())
+							.setDescription(translations.description()),
+					],
+					ephemeral: true,
+				});
+			}
+		}
+	}
+}
+
 export class ComponentInteraction extends Component.Interaction {
 	public readonly customIds = [
 		super.customId('ticket_threads_categories_create_list'),
 		super.dynamicCustomId('ticket_threads_categories_create_list_proxy'),
 		super.customId('ticket_threads_categories_create_list_panel'),
 		super.customId('ticket_threads_category_create_rename_title'),
-		super.customId('ticket_threads_category_create_lock'),
-		super.customId('ticket_threads_category_create_close'),
-		super.customId('ticket_threads_category_create_lock_and_close'),
-		super.customId('ticket_threads_category_create_delete'),
 	];
 
 	public execute(context: Component.Context) {
@@ -99,21 +135,7 @@ export class ComponentInteraction extends Component.Interaction {
 				return context.interaction.isButton() && this.panelTicket(context);
 			}
 			case super.customId('ticket_threads_category_create_rename_title'): {
-				void ThreadTicketing.renameTitleModal.call(this, context);
-				return;
-			}
-			case super.customId('ticket_threads_category_create_lock_and_close'):
-			case super.customId('ticket_threads_category_create_lock'): {
-				void this.lockTicket(context);
-				return;
-			}
-			case super.customId('ticket_threads_category_create_close'): {
-				void this.closeTicket(context);
-				return;
-			}
-			case super.customId('ticket_threads_category_create_delete'): {
-				void this.deleteTicket(context);
-				return;
+				return void ThreadTicketing.renameTitleModal.call(this, context);
 			}
 			default: {
 				const translations = translate(context.interaction.locale).tickets.threads.categories.createModal.errors
@@ -223,21 +245,6 @@ export class ComponentInteraction extends Component.Interaction {
 				})
 				.catch(() => false);
 		}
-	}
-
-	@DeferReply({ ephemeral: true })
-	private lockTicket(context: Component.Context) {
-		return ThreadTicketing.lockTicket.call(this, context, context.interaction.customId.includes('lock_and_close'));
-	}
-
-	@DeferReply({ ephemeral: true })
-	private closeTicket(context: Component.Context) {
-		return ThreadTicketing.closeTicket.call(this, context);
-	}
-
-	@DeferReply({ ephemeral: true })
-	private deleteTicket(context: Component.Context) {
-		return ThreadTicketing.deleteTicket.call(this, context);
 	}
 }
 

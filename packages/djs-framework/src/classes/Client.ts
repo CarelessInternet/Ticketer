@@ -98,11 +98,16 @@ export class Client extends DiscordClient {
 		const files = await glob(path);
 		const commands: BaseInteraction.Interaction[] = [];
 
+		// https://stackoverflow.com/a/30760236
+		const isClass = (object: unknown) => typeof object === 'function' && /^\s*class\s+/.test(object.toString());
+
 		for await (const file of files) {
 			const interactions: Interactions = await import(file);
 			const values = Object.values(interactions) as ValueOf<Interactions>[];
 
 			for (const Interaction of values) {
+				if (!isClass(Interaction)) continue;
+
 				const interactionAsClass = new Interaction(this);
 
 				if (Guards.isInteraction(interactionAsClass)) {

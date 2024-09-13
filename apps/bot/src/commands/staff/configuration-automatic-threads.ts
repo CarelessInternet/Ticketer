@@ -291,51 +291,25 @@ export default class extends Command.Interaction {
 		});
 	}
 }
+export class ConfigurationMenuInteraction extends Component.Interaction {
+	public readonly customIds = [super.dynamicCustomId('ticket_automatic_threads_configuration_menu')];
 
-export class ComponentInteraction extends Component.Interaction {
-	public readonly customIds = [
-		super.dynamicCustomId('ticket_automatic_threads_configuration_menu'),
-		super.dynamicCustomId('ticket_automatic_threads_configuration_managers'),
-		super.dynamicCustomId('ticket_automatic_threads_view_previous'),
-		super.dynamicCustomId('ticket_automatic_threads_view_next'),
-	];
-
-	public execute({ interaction }: Component.Context) {
-		const { customId } = super.extractCustomId(interaction.customId);
-
-		switch (customId) {
-			case super.dynamicCustomId('ticket_automatic_threads_configuration_menu'): {
-				return interaction.isStringSelectMenu() && this.handleConfigurationMenu({ interaction });
-			}
-			case super.dynamicCustomId('ticket_automatic_threads_configuration_managers'): {
-				return interaction.isRoleSelectMenu() && this.updateManagers({ interaction });
-			}
-			case super.dynamicCustomId('ticket_automatic_threads_view_previous'):
-			case super.dynamicCustomId('ticket_automatic_threads_view_next'): {
-				if (interaction.isButton()) {
-					void this.configurationOverview({ interaction });
-				}
-
-				break;
-			}
-			default: {
-				return interaction.reply({
-					embeds: [
-						super.userEmbedError(interaction.member).setDescription('The select menu custom ID could not be found.'),
-					],
-					ephemeral: true,
-				});
-			}
-		}
-	}
-
-	private handleConfigurationMenu(context: Component.Context<'string'>) {
+	public execute(context: Component.Context<'string'>) {
 		switch (context.interaction.values.at(0)) {
 			case 'message_title_description': {
 				return this.openingMessage(context);
 			}
 			case 'managers': {
-				return this.managersMenu(context);
+				const { dynamicValue } = super.extractCustomId(context.interaction.customId, true);
+				const managersMenu = new RoleSelectMenuBuilder()
+					.setCustomId(super.customId('ticket_automatic_threads_configuration_managers', dynamicValue))
+					.setMinValues(0)
+					.setMaxValues(10)
+					.setPlaceholder('Choose the managers of the automatic threads.');
+
+				const row = new ActionRowBuilder<RoleSelectMenuBuilder>().setComponents(managersMenu);
+
+				return context.interaction.reply({ components: [row] });
 			}
 			default: {
 				return context.interaction.reply({
@@ -395,18 +369,39 @@ export class ComponentInteraction extends Component.Interaction {
 
 		void openingMessageModal.call(this, context, { description, id, title });
 	}
+}
 
-	private managersMenu({ interaction }: Component.Context<'string'>) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
-		const managersMenu = new RoleSelectMenuBuilder()
-			.setCustomId(super.customId('ticket_automatic_threads_configuration_managers', dynamicValue))
-			.setMinValues(0)
-			.setMaxValues(10)
-			.setPlaceholder('Choose the managers of the automatic threads.');
+export class ComponentInteraction extends Component.Interaction {
+	public readonly customIds = [
+		super.dynamicCustomId('ticket_automatic_threads_configuration_managers'),
+		super.dynamicCustomId('ticket_automatic_threads_view_previous'),
+		super.dynamicCustomId('ticket_automatic_threads_view_next'),
+	];
 
-		const row = new ActionRowBuilder<RoleSelectMenuBuilder>().setComponents(managersMenu);
+	public execute({ interaction }: Component.Context) {
+		const { customId } = super.extractCustomId(interaction.customId);
 
-		return interaction.reply({ components: [row] });
+		switch (customId) {
+			case super.dynamicCustomId('ticket_automatic_threads_configuration_managers'): {
+				return interaction.isRoleSelectMenu() && this.updateManagers({ interaction });
+			}
+			case super.dynamicCustomId('ticket_automatic_threads_view_previous'):
+			case super.dynamicCustomId('ticket_automatic_threads_view_next'): {
+				if (interaction.isButton()) {
+					void this.configurationOverview({ interaction });
+				}
+
+				break;
+			}
+			default: {
+				return interaction.reply({
+					embeds: [
+						super.userEmbedError(interaction.member).setDescription('The select menu custom ID could not be found.'),
+					],
+					ephemeral: true,
+				});
+			}
+		}
 	}
 
 	@DeferUpdate

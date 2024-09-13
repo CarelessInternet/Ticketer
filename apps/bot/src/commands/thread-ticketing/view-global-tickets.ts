@@ -121,7 +121,7 @@ export class ComponentInteraction extends Component.Interaction {
 		const { success, additionalData, error, page } = goToPage.call(this, context.interaction);
 
 		if (!success) {
-			return void context.interaction.editReply({
+			return context.interaction.editReply({
 				components: [],
 				embeds: [super.userEmbedError(context.interaction.member).setDescription(error)],
 			});

@@ -8,11 +8,10 @@ import {
 	type StringSelectMenuInteraction,
 	type UserSelectMenuInteraction,
 } from 'discord.js';
-import { BaseInteraction } from './index';
+import { BaseInteraction } from '.';
 
 /**
  * The interaction for message components.
- * @description "ComponentInteraction" should be the derived class' exported name.
  * @see {@link https://discord.js.org/#/docs/discord.js/main/class/MessageComponentInteraction}
  */
 export abstract class Interaction extends BaseInteraction.Interaction {

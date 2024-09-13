@@ -3,6 +3,7 @@ import {
 	type ChatInputCommandInteraction,
 	type CommandInteraction,
 	ContextMenuCommandBuilder,
+	InteractionContextType,
 	InteractionType,
 	type MessageContextMenuCommandInteraction,
 	SlashCommandBuilder,
@@ -10,18 +11,10 @@ import {
 	type SlashCommandSubcommandsOnlyBuilder,
 	type UserContextMenuCommandInteraction,
 } from 'discord.js';
-import { BaseInteraction } from './index';
-
-export type Data =
-	| SlashCommandBuilder
-	| SlashCommandOptionsOnlyBuilder
-	| SlashCommandSubcommandsOnlyBuilder
-	| Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
-	| ContextMenuCommandBuilder;
+import { BaseInteraction } from '.';
 
 /**
  * The interaction for application commands. This is the main endpoint for interactions.
- * @description The derived class should be exported as default.
  * @see {@link https://discord.js.org/#/docs/discord.js/main/class/CommandInteraction}
  */
 export abstract class Interaction extends BaseInteraction.Interaction {
@@ -34,23 +27,34 @@ export abstract class Interaction extends BaseInteraction.Interaction {
 	public abstract readonly data: Data;
 
 	protected get SlashBuilder() {
-		return new SlashCommandBuilder().setDMPermission(false);
+		return new SlashCommandBuilder().setContexts(InteractionContextType.Guild);
 	}
 
 	protected get ContextUserBuilder() {
 		Reflect.set(this, 'commandType', ApplicationCommandType.User);
 
-		return new ContextMenuCommandBuilder().setDMPermission(false).setType(ApplicationCommandType.User);
+		return new ContextMenuCommandBuilder()
+			.setContexts(InteractionContextType.Guild)
+			.setType(ApplicationCommandType.User);
 	}
 
 	protected get ContextMessageBuilder() {
 		Reflect.set(this, 'commandType', ApplicationCommandType.Message);
 
-		return new ContextMenuCommandBuilder().setDMPermission(false).setType(ApplicationCommandType.Message);
+		return new ContextMenuCommandBuilder()
+			.setContexts(InteractionContextType.Guild)
+			.setType(ApplicationCommandType.Message);
 	}
 
 	public abstract execute(parameters: Context<Types>): unknown;
 }
+
+export type Data =
+	| SlashCommandBuilder
+	| SlashCommandOptionsOnlyBuilder
+	| SlashCommandSubcommandsOnlyBuilder
+	| Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
+	| ContextMenuCommandBuilder;
 
 export type Types = 'chat' | 'message' | 'user' | undefined;
 

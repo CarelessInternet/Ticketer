@@ -43,13 +43,13 @@ export default class extends Command.Interaction {
 			const status = client.ws.status;
 			const uptime = client.uptime;
 			const servers = client.guilds.cache.size;
-			const users = client.guilds.cache.reduce((accumulator, guild) => accumulator + guild.memberCount, 0);
+			const memberCount = client.guilds.cache.reduce((accumulator, guild) => accumulator + guild.memberCount, 0);
 
 			const { getHeapStatistics } = await import('node:v8');
 			const heapSize = getHeapStatistics().total_heap_size / 1024 / 1024;
 			const ramInMegabytes = Math.round((heapSize + Number.EPSILON) * 100) / 100;
 
-			return { ping, ramInMegabytes, servers, status, uptime, users };
+			return { memberCount, ping, ramInMegabytes, servers, status, uptime };
 		});
 
 		const [channelSize, channelSizeWithoutThreads, emojiSize, guildSize, memberSize, userSize] =
@@ -101,7 +101,7 @@ export default class extends Command.Interaction {
 			value += `* Servers: ${shard.servers.toLocaleString()}\n`;
 			value += `* Status: ${Status[shard.status].toString()}\n`;
 			value += `* Up Since: ${shard.uptime ? formatDateLong(new Date(Date.now() - shard.uptime)) : 'Unknown'}\n`;
-			value += `* Users: ${shard.users.toLocaleString()}\n\n`;
+			value += `* Member Count: ${shard.memberCount.toLocaleString()}\n\n`;
 
 			return accumulator + value;
 		}, '');

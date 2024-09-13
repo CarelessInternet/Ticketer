@@ -1,5 +1,5 @@
-import { type BaseInteraction, type InteractionType } from 'discord.js';
-import { Base } from '../index';
+import type { BaseInteraction, InteractionType } from 'discord.js';
+import { Base } from '..';
 
 /**
  * Provides the base layer for all interactions. Interactions are separated based on the interaction type.

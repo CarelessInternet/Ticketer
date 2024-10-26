@@ -81,6 +81,7 @@ function categoryViewEmbed(
 				{
 					name: 'Opening Message Title',
 					value: ticketThreadsOpeningMessageTitle({
+						categoryEmoji: category.categoryEmoji,
 						categoryTitle: category.categoryTitle,
 						displayName: context.interaction.member.displayName,
 						locale: context.interaction.locale,

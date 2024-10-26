@@ -4,11 +4,9 @@ import { and, count, database, desc, eq, ticketThreadsCategories, ticketsThreads
 import { getTranslations, translate } from '@/i18n';
 import { channelMention } from 'discord.js';
 
-type TicketState = typeof ticketsThreads.$inferSelect.state;
-
 interface ViewTicketsOptions {
 	page?: number;
-	state?: TicketState | null;
+	state?: ThreadTicketing.TicketState | null;
 }
 
 async function viewTickets(
@@ -114,7 +112,10 @@ export default class extends Command.Interaction {
 	@DeferReply({ ephemeral: true })
 	public execute(context: Command.Context<'chat'>) {
 		void viewTickets.call(this, context, {
-			state: context.interaction.options.getString(dataTranslations.options[0].name(), false) as TicketState,
+			state: context.interaction.options.getString(
+				dataTranslations.options[0].name(),
+				false,
+			) as ThreadTicketing.TicketState,
 		});
 	}
 }

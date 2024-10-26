@@ -7,7 +7,7 @@ export default {
 	categories: {
 		configuration: {
 			openingMessage: {
-				title: '{category}: Ny Stödbiljett',
+				title: 'Ny Stödbiljett',
 				description: '{member} skapade en ny stödbiljett i {category} kategorin!',
 			},
 		},

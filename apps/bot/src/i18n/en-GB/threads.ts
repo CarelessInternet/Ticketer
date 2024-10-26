@@ -5,7 +5,7 @@ export default {
 	categories: {
 		configuration: {
 			openingMessage: {
-				title: '{category:string}: New Support Ticket',
+				title: 'New Support Ticket',
 				description: '{member:string} created a new support ticket in the {category:string} category!',
 			},
 		},

@@ -1,13 +1,11 @@
+import { type APIApplicationCommandOptionChoice, PermissionFlagsBits, channelMention, userMention } from 'discord.js';
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
-import { PermissionFlagsBits, channelMention, userMention } from 'discord.js';
 import { ThreadTicketing, goToPage, messageWithPagination, withPagination } from '@/utils';
 import { and, count, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 import { getTranslations } from '@/i18n';
 
-type TicketState = typeof ticketsThreads.$inferSelect.state;
-
 interface ViewGlobalTicketsOptions {
-	state?: TicketState;
+	state?: ThreadTicketing.TicketState;
 	page?: number;
 }
 
@@ -94,18 +92,21 @@ export default class extends Command.Interaction {
 				.setDescription("Filter by the tickets' states.")
 				.setRequired(false)
 				.setChoices(
-					...ticketsThreads.state.enumValues.map((state) => ({
-						name: ThreadTicketing.ticketState(state),
-						name_localizations: getTranslations(`tickets.threads.categories.ticketState.${state}`),
-						value: state,
-					})),
+					...ticketsThreads.state.enumValues.map(
+						(state) =>
+							({
+								name: ThreadTicketing.ticketState(state),
+								name_localizations: getTranslations(`tickets.threads.categories.ticketState.${state}`),
+								value: state,
+							}) satisfies APIApplicationCommandOptionChoice<string>,
+					),
 				),
 		);
 
 	@DeferReply()
 	public execute(context: Command.Context<'chat'>) {
 		void viewGlobalTickets.call(this, context, {
-			state: context.interaction.options.getString('state', false) as TicketState,
+			state: context.interaction.options.getString('state', false) as ThreadTicketing.TicketState,
 		});
 	}
 }

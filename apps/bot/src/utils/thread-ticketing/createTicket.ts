@@ -235,6 +235,7 @@ export async function createTicket(
 	await database.insert(ticketsThreads).values({ authorId: member.id, categoryId, guildId, threadId: thread.id });
 
 	const messageEmbed = ticketThreadsOpeningMessageEmbed({
+		categoryEmoji: configuration.ticketThreadsCategories.categoryEmoji,
 		categoryTitle: configuration.ticketThreadsCategories.categoryTitle,
 		description: configuration.ticketThreadsCategories.openingMessageDescription,
 		embed: this.embed,

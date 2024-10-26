@@ -711,10 +711,9 @@ type RootTranslation = {
 				configuration: {
 					openingMessage: {
 						/**
-						 * {​c​a​t​e​g​o​r​y​}​:​ ​N​e​w​ ​S​u​p​p​o​r​t​ ​T​i​c​k​e​t
-						 * @param {string} category
+						 * N​e​w​ ​S​u​p​p​o​r​t​ ​T​i​c​k​e​t
 						 */
-						title: RequiredParams<'category'>
+						title: string
 						/**
 						 * {​m​e​m​b​e​r​}​ ​c​r​e​a​t​e​d​ ​a​ ​n​e​w​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​i​n​ ​t​h​e​ ​{​c​a​t​e​g​o​r​y​}​ ​c​a​t​e​g​o​r​y​!
 						 * @param {string} category
@@ -2125,9 +2124,9 @@ export type TranslationFunctions = {
 				configuration: {
 					openingMessage: {
 						/**
-						 * {category}: New Support Ticket
+						 * New Support Ticket
 						 */
-						title: (arg: { category: string }) => LocalizedString
+						title: () => LocalizedString
 						/**
 						 * {member} created a new support ticket in the {category} category!
 						 */

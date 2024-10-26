@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { fixupPluginRules } from '@eslint/compat';
 import drizzle from 'eslint-plugin-drizzle';
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import tseslint from './tseslint.mjs';
 import unicorn from 'eslint-plugin-unicorn';
 import prettier from 'eslint-plugin-prettier/recommended';
 
@@ -30,6 +30,7 @@ export default tseslint.config(
 		ignores: ['node_modules/'],
 		rules: {
 			'@typescript-eslint/consistent-type-imports': 'error',
+			'@typescript-eslint/no-unsafe-enum-comparison': 'off',
 			'drizzle/enforce-delete-with-where': [
 				'error',
 				{

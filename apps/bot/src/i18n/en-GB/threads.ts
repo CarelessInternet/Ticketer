@@ -61,7 +61,8 @@ export default {
 				},
 				noPermissions: {
 					title: ERROR_TITLE,
-					description: "I don't have the required permissions in the channel to create a ticket: {permissions:string}.",
+					description:
+						'I do not have the required permissions in the channel to create a ticket: {permissions:string}.',
 				},
 				tooManyTickets: {
 					title: ERROR_TITLE,

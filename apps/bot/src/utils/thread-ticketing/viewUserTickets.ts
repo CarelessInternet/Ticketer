@@ -1,7 +1,7 @@
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
 import { type Snowflake, channelMention } from 'discord.js';
 import { ThreadTicketing, managerIntersection, messageWithPagination, withPagination } from '..';
-import { and, count, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
+import { and, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 
 interface ViewUserTicketsOptions {
 	page?: number;
@@ -42,12 +42,12 @@ export async function viewUserTickets(
 			query,
 		});
 
-		const [row] = await tx
-			.select({ amount: count() })
-			.from(ticketsThreads)
-			.where(and(eq(ticketsThreads.guildId, interaction.guildId), eq(ticketsThreads.authorId, user.id)));
+		const globalAmount = await tx.$count(
+			ticketsThreads,
+			and(eq(ticketsThreads.guildId, interaction.guildId), eq(ticketsThreads.authorId, user.id)),
+		);
 
-		return { globalAmount: row?.amount, tickets };
+		return { globalAmount, tickets };
 	});
 
 	const embeds = tickets.map((ticket) =>
@@ -82,7 +82,7 @@ export async function viewUserTickets(
 			parse: [],
 		},
 		components,
-		content: `Total amount of tickets by ${user.toString()} in the server: ${String(globalAmount ?? 0)}.`,
+		content: `Total amount of tickets by ${user.toString()} in the server: ${globalAmount.toString()}.`,
 		embeds,
 	});
 }

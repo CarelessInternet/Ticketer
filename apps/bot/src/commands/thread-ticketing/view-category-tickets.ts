@@ -26,6 +26,12 @@ async function viewCategoryTickets(
 	if (categoryId && Number.isNaN(id)) return;
 
 	const { globalAmount, tickets } = await database.transaction(async (tx) => {
+		const whereQuery = and(
+			eq(ticketsThreads.guildId, interaction.guildId),
+			managerIntersection(ticketThreadsCategories.managers, interaction.member.roles),
+			categoryId ? eq(ticketsThreads.categoryId, id) : undefined,
+		);
+
 		const query = tx
 			.select({
 				categoryEmoji: ticketThreadsCategories.categoryEmoji,
@@ -35,13 +41,7 @@ async function viewCategoryTickets(
 				userId: ticketsThreads.authorId,
 			})
 			.from(ticketsThreads)
-			.where(
-				and(
-					eq(ticketsThreads.guildId, interaction.guildId),
-					managerIntersection(ticketThreadsCategories.managers, interaction.member.roles),
-					categoryId ? eq(ticketsThreads.categoryId, id) : undefined,
-				),
-			)
+			.where(whereQuery)
 			.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id))
 			.orderBy(asc(ticketsThreads.categoryId))
 			.$dynamic();
@@ -51,13 +51,13 @@ async function viewCategoryTickets(
 			pageSize: PAGE_SIZE,
 			query,
 		});
-
-		const [row] = await tx
-			.select({ amount: count() })
+		const [totalAmount] = await tx
+			.select({ count: count() })
 			.from(ticketsThreads)
-			.where(eq(ticketsThreads.guildId, interaction.guildId));
+			.where(whereQuery)
+			.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id));
 
-		return { globalAmount: row?.amount, tickets };
+		return { globalAmount: totalAmount?.count, tickets };
 	});
 
 	const embeds = tickets.map((ticket) =>
@@ -102,7 +102,7 @@ async function viewCategoryTickets(
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName('view-category-tickets')
-		.setDescription('View your tickets to resolve as a manager.')
+		.setDescription('View the tickets in a specific category.')
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageThreads)
 		.addStringOption((option) =>
 			option

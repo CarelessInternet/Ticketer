@@ -155,7 +155,7 @@ export interface ClientDeployOptions {
 	 */
 	guildId?: Snowflake;
 	/**
-	 * Required if the token hasn't already been set in the client.
+	 * Required if the token has not already been set in the client.
 	 */
 	token?: Snowflake;
 }

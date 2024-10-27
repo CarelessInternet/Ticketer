@@ -1,7 +1,7 @@
 import { type APIApplicationCommandOptionChoice, PermissionFlagsBits, channelMention, userMention } from 'discord.js';
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
 import { ThreadTicketing, goToPage, messageWithPagination, withPagination } from '@/utils';
-import { and, count, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
+import { and, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 import { getTranslations } from '@/i18n';
 
 interface ViewGlobalTicketsOptions {
@@ -36,13 +36,9 @@ async function viewGlobalTickets(
 			pageSize: PAGE_SIZE,
 			query,
 		});
+		const globalAmount = await tx.$count(ticketsThreads, eq(ticketsThreads.guildId, interaction.guildId));
 
-		const [row] = await tx
-			.select({ amount: count() })
-			.from(ticketsThreads)
-			.where(eq(ticketsThreads.guildId, interaction.guildId));
-
-		return { globalAmount: row?.amount, tickets };
+		return { globalAmount, tickets };
 	});
 
 	const embeds = tickets.map((ticket) =>
@@ -77,7 +73,7 @@ async function viewGlobalTickets(
 
 	return interaction.editReply({
 		components,
-		content: `Total amount of tickets in the server: ${String(globalAmount ?? 0)}.`,
+		content: `Total amount of tickets in the server: ${globalAmount.toString()}.`,
 		embeds,
 	});
 }

@@ -844,7 +844,7 @@ type RootTranslation = {
 							 */
 							title: string
 							/**
-							 * I​ ​d​o​n​'​t​ ​h​a​v​e​ ​t​h​e​ ​r​e​q​u​i​r​e​d​ ​p​e​r​m​i​s​s​i​o​n​s​ ​i​n​ ​t​h​e​ ​c​h​a​n​n​e​l​ ​t​o​ ​c​r​e​a​t​e​ ​a​ ​t​i​c​k​e​t​:​ ​{​p​e​r​m​i​s​s​i​o​n​s​}​.
+							 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​r​e​q​u​i​r​e​d​ ​p​e​r​m​i​s​s​i​o​n​s​ ​i​n​ ​t​h​e​ ​c​h​a​n​n​e​l​ ​t​o​ ​c​r​e​a​t​e​ ​a​ ​t​i​c​k​e​t​:​ ​{​p​e​r​m​i​s​s​i​o​n​s​}​.
 							 * @param {string} permissions
 							 */
 							description: RequiredParams<'permissions'>
@@ -2255,7 +2255,7 @@ export type TranslationFunctions = {
 							 */
 							title: () => LocalizedString
 							/**
-							 * I don't have the required permissions in the channel to create a ticket: {permissions}.
+							 * I do not have the required permissions in the channel to create a ticket: {permissions}.
 							 */
 							description: (arg: { permissions: string }) => LocalizedString
 						}

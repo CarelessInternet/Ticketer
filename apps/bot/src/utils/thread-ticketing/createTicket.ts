@@ -13,7 +13,6 @@ import {
 } from 'discord.js';
 import {
 	and,
-	count,
 	database,
 	eq,
 	ticketThreadsCategories,
@@ -169,19 +168,16 @@ export async function createTicket(
 		});
 	}
 
-	const [result] = await database
-		.select({ amount: count() })
-		.from(ticketsThreads)
-		.where(
-			and(
-				eq(ticketsThreads.authorId, member.id),
-				eq(ticketsThreads.guildId, guildId),
-				eq(ticketsThreads.state, 'active'),
-			),
-		);
+	const globalTicketsAmount = await database.$count(
+		ticketsThreads,
+		and(
+			eq(ticketsThreads.authorId, member.id),
+			eq(ticketsThreads.guildId, guildId),
+			eq(ticketsThreads.state, 'active'),
+		),
+	);
 
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	if (result!.amount >= configuration.ticketThreadsConfigurations.activeTickets) {
+	if (globalTicketsAmount >= configuration.ticketThreadsConfigurations.activeTickets) {
 		return interaction.editReply({
 			components: [],
 			embeds: [

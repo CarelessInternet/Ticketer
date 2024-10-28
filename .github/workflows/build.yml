@@ -11,14 +11,12 @@ jobs:
       matrix:
         node-version: [22]
     steps:
-    - uses: actions/checkout@v3
-    - uses: pnpm/action-setup@v3
-      with:
-        version: 9
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'pnpm'
-    - run: pnpm i
-    - run: pnpm build
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - run: pnpm i
+      - run: pnpm build

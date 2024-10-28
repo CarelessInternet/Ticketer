@@ -3,7 +3,6 @@
 import {
 	Code,
 	Cookie,
-	Github,
 	Globe,
 	Menu,
 	MessageCircleQuestion,
@@ -33,6 +32,7 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { Button } from '@/components/ui/button';
+import { SiGithub as GitHub } from '@icons-pack/react-simple-icons';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { cn } from '@/lib/utils';
@@ -146,7 +146,7 @@ const tooltipLinkItems = [
 	{
 		content: 'GitHub Repository',
 		href: 'https://github.com/CarelessInternet/Ticketer',
-		icon: <Github />,
+		icon: <GitHub />,
 	},
 ] as const;
 

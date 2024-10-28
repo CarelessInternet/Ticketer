@@ -1,4 +1,10 @@
-import { ActivityType, Locale, PermissionFlagsBits, PresenceUpdateStatus } from 'discord.js';
+import {
+	type APIApplicationCommandOptionChoice,
+	ActivityType,
+	Locale,
+	PermissionFlagsBits,
+	PresenceUpdateStatus,
+} from 'discord.js';
 import { Command, DeferReply } from '@ticketer/djs-framework';
 import { getTranslations, translate } from '@/i18n';
 
@@ -30,12 +36,15 @@ export default class extends Command.Interaction {
 				.setChoices(
 					...(Object.keys(PresenceUpdateStatus) as (keyof typeof PresenceUpdateStatus)[])
 						.filter((name) => name !== 'Offline' && !Number.isInteger(name))
-						// @ts-expect-error: The type below is correct.
-						.map((name: Exclude<keyof typeof PresenceUpdateStatus, 'Offline'>) => ({
-							name: dataTranslations.options[1].choices[name](),
-							name_localizations: getTranslations(`commands.bot-custom-status.data.options.1.choices.${name}`),
-							value: name,
-						})),
+						.map(
+							// @ts-expect-error: The type below is correct.
+							(name: Exclude<keyof typeof PresenceUpdateStatus, 'Offline'>) =>
+								({
+									name: dataTranslations.options[1].choices[name](),
+									name_localizations: getTranslations(`commands.bot-custom-status.data.options.1.choices.${name}`),
+									value: name,
+								}) satisfies APIApplicationCommandOptionChoice<string>,
+						),
 				),
 		);
 	public readonly ownerOnly = true;

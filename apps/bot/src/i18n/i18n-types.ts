@@ -711,10 +711,9 @@ type RootTranslation = {
 				configuration: {
 					openingMessage: {
 						/**
-						 * {​c​a​t​e​g​o​r​y​}​:​ ​N​e​w​ ​S​u​p​p​o​r​t​ ​T​i​c​k​e​t
-						 * @param {string} category
+						 * N​e​w​ ​S​u​p​p​o​r​t​ ​T​i​c​k​e​t
 						 */
-						title: RequiredParams<'category'>
+						title: string
 						/**
 						 * {​m​e​m​b​e​r​}​ ​c​r​e​a​t​e​d​ ​a​ ​n​e​w​ ​s​u​p​p​o​r​t​ ​t​i​c​k​e​t​ ​i​n​ ​t​h​e​ ​{​c​a​t​e​g​o​r​y​}​ ​c​a​t​e​g​o​r​y​!
 						 * @param {string} category
@@ -845,7 +844,7 @@ type RootTranslation = {
 							 */
 							title: string
 							/**
-							 * I​ ​d​o​n​'​t​ ​h​a​v​e​ ​t​h​e​ ​r​e​q​u​i​r​e​d​ ​p​e​r​m​i​s​s​i​o​n​s​ ​i​n​ ​t​h​e​ ​c​h​a​n​n​e​l​ ​t​o​ ​c​r​e​a​t​e​ ​a​ ​t​i​c​k​e​t​:​ ​{​p​e​r​m​i​s​s​i​o​n​s​}​.
+							 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​r​e​q​u​i​r​e​d​ ​p​e​r​m​i​s​s​i​o​n​s​ ​i​n​ ​t​h​e​ ​c​h​a​n​n​e​l​ ​t​o​ ​c​r​e​a​t​e​ ​a​ ​t​i​c​k​e​t​:​ ​{​p​e​r​m​i​s​s​i​o​n​s​}​.
 							 * @param {string} permissions
 							 */
 							description: RequiredParams<'permissions'>
@@ -2125,9 +2124,9 @@ export type TranslationFunctions = {
 				configuration: {
 					openingMessage: {
 						/**
-						 * {category}: New Support Ticket
+						 * New Support Ticket
 						 */
-						title: (arg: { category: string }) => LocalizedString
+						title: () => LocalizedString
 						/**
 						 * {member} created a new support ticket in the {category} category!
 						 */
@@ -2256,7 +2255,7 @@ export type TranslationFunctions = {
 							 */
 							title: () => LocalizedString
 							/**
-							 * I don't have the required permissions in the channel to create a ticket: {permissions}.
+							 * I do not have the required permissions in the channel to create a ticket: {permissions}.
 							 */
 							description: (arg: { permissions: string }) => LocalizedString
 						}

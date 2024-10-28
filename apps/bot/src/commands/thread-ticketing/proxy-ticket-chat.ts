@@ -19,7 +19,7 @@ export default class extends Command.Interaction {
 	public async execute({ interaction }: Command.Context<'chat'>) {
 		const user = interaction.options.getUser('member', true);
 		const categories = await ThreadTicketing.categoryList({
-			filterManagerIds: [...interaction.member.roles.cache.keys()],
+			filterManagerIds: interaction.member.roles,
 			guildId: interaction.guildId,
 		});
 
@@ -58,7 +58,7 @@ export default class extends Command.Interaction {
 			return interaction
 				.reply({
 					components: [
-						ThreadTicketing.categoryListSelectMenu({
+						ThreadTicketing.categoryListSelectMenuRow({
 							categories,
 							customId: super.customId('ticket_threads_categories_create_list_proxy', user.id),
 							locale: interaction.locale,

@@ -5,5 +5,5 @@ import fg from 'fast-glob';
  * @returns All TypeScript file paths found within the directories.
  */
 export async function glob(path: string) {
-	return await fg(`${path}/**/*.ts`);
+	return fg(`${path}/**/*.ts`);
 }

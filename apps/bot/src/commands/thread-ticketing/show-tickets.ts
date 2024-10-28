@@ -1,14 +1,12 @@
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
 import { ThreadTicketing, goToPage, messageWithPagination, withPagination } from '@/utils';
-import { and, count, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
+import { and, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
 import { getTranslations, translate } from '@/i18n';
 import { channelMention } from 'discord.js';
 
-type TicketState = typeof ticketsThreads.$inferSelect.state;
-
 interface ViewTicketsOptions {
 	page?: number;
-	state?: TicketState | null;
+	state?: ThreadTicketing.TicketState | null;
 }
 
 async function viewTickets(
@@ -43,13 +41,9 @@ async function viewTickets(
 			pageSize: PAGE_SIZE,
 			query,
 		});
+		const globalAmount = await tx.$count(ticketsThreads, eq(ticketsThreads.guildId, interaction.guildId));
 
-		const [row] = await tx
-			.select({ amount: count() })
-			.from(ticketsThreads)
-			.where(eq(ticketsThreads.guildId, interaction.guildId));
-
-		return { globalAmount: row?.amount, tickets };
+		return { globalAmount, tickets };
 	});
 
 	const translations = translate(interaction.locale).commands['show-tickets'].command;
@@ -83,7 +77,7 @@ async function viewTickets(
 
 	return interaction.editReply({
 		components,
-		content: translations.content({ amount: globalAmount ?? 0 }),
+		content: translations.content({ amount: globalAmount }),
 		embeds,
 	});
 }
@@ -114,7 +108,10 @@ export default class extends Command.Interaction {
 	@DeferReply({ ephemeral: true })
 	public execute(context: Command.Context<'chat'>) {
 		void viewTickets.call(this, context, {
-			state: context.interaction.options.getString(dataTranslations.options[0].name(), false) as TicketState,
+			state: context.interaction.options.getString(
+				dataTranslations.options[0].name(),
+				false,
+			) as ThreadTicketing.TicketState,
 		});
 	}
 }

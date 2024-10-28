@@ -5,35 +5,45 @@ import {
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder,
 } from 'discord.js';
-import { database, eq, ticketThreadsCategories } from '@ticketer/database';
+import { type ManagerIntersectionRoles, managerIntersection } from '..';
+import { and, database, eq, ticketThreadsCategories } from '@ticketer/database';
 import type { BaseInteraction } from '@ticketer/djs-framework';
 import { translate } from '@/i18n';
 
 interface CategoryListOptions {
-	filterManagerIds?: Snowflake[];
+	filterManagerIds?: ManagerIntersectionRoles;
 	guildId: Snowflake;
 }
 
 export async function categoryList({ filterManagerIds, guildId }: CategoryListOptions) {
-	const rawCategories = await database
-		.select()
-		.from(ticketThreadsCategories)
-		.where(eq(ticketThreadsCategories.guildId, guildId))
-		// Limited at 25 because that is the maximum amount of select menu options.
-		.limit(25);
+	const whereQuery = filterManagerIds
+		? and(
+				eq(ticketThreadsCategories.guildId, guildId),
+				managerIntersection(ticketThreadsCategories.managers, filterManagerIds),
+			)
+		: eq(ticketThreadsCategories.guildId, guildId);
 
-	return filterManagerIds && filterManagerIds.length > 0
-		? rawCategories.filter((category) => category.managers.some((id) => filterManagerIds.includes(id)))
-		: rawCategories;
+	// Limited at 25 because that is the maximum amount of select menu options.
+	return database.select().from(ticketThreadsCategories).where(whereQuery).limit(25);
 }
 
 interface CategoryListSelectMenuOptions {
 	categories: Awaited<ReturnType<typeof categoryList>>;
 	customId: BaseInteraction.CustomIds[number];
 	locale: Locale;
+	maxValues?: number;
+	minValues?: number;
+	placeholder?: string;
 }
 
-export function categoryListSelectMenu({ categories, customId, locale }: CategoryListSelectMenuOptions) {
+export function categoryListSelectMenuRow({
+	categories,
+	customId,
+	locale,
+	maxValues = 1,
+	minValues = 1,
+	placeholder,
+}: CategoryListSelectMenuOptions) {
 	const translations = translate(locale).tickets.threads.categories.categoryList;
 	const options = categories.map((category) =>
 		(category.categoryEmoji
@@ -47,9 +57,9 @@ export function categoryListSelectMenu({ categories, customId, locale }: Categor
 
 	const menu = new StringSelectMenuBuilder()
 		.setCustomId(customId)
-		.setMinValues(1)
-		.setMaxValues(1)
-		.setPlaceholder(translations.placeholder())
+		.setMinValues(minValues)
+		.setMaxValues(maxValues)
+		.setPlaceholder(placeholder ?? translations.placeholder())
 		.setOptions(options);
 
 	return new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(menu);

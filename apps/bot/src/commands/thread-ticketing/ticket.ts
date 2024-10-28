@@ -58,7 +58,7 @@ export default class extends Command.Interaction {
 			return interaction
 				.reply({
 					components: [
-						ThreadTicketing.categoryListSelectMenu({
+						ThreadTicketing.categoryListSelectMenuRow({
 							categories,
 							customId: super.customId('ticket_threads_categories_create_list'),
 							locale: interaction.locale,
@@ -235,7 +235,7 @@ export class ComponentInteraction extends Component.Interaction {
 			return interaction
 				.reply({
 					components: [
-						ThreadTicketing.categoryListSelectMenu({
+						ThreadTicketing.categoryListSelectMenuRow({
 							categories,
 							customId: super.customId('ticket_threads_categories_create_list'),
 							locale: interaction.locale,

@@ -1,4 +1,5 @@
 import { Colors, type EmbedBuilder, type GuildMember, type Locale, inlineCode } from 'discord.js';
+import { ThreadTicketing } from '..';
 import type { ticketThreadsCategories } from '@ticketer/database';
 import { translate } from '@/i18n';
 
@@ -13,6 +14,7 @@ interface BaseMessageOptions {
 }
 
 interface MessageTitleOptions extends BaseOptions, BaseMessageOptions {
+	categoryEmoji: Columns['categoryEmoji'];
 	displayName: GuildMember['displayName'];
 	title: Columns['openingMessageTitle'];
 }
@@ -44,10 +46,16 @@ const replaceMessageDescription = ({ categoryTitle, memberMention, messageDescri
 const translations = (locale: BaseOptions['locale']) => translate(locale).tickets.threads.categories.configuration;
 
 // Use the user-defined texts if possible, otherwise use the inbuilt localised texts.
-export const ticketThreadsOpeningMessageTitle = ({ categoryTitle, displayName, locale, title }: MessageTitleOptions) =>
+export const ticketThreadsOpeningMessageTitle = ({
+	categoryEmoji,
+	categoryTitle,
+	displayName,
+	locale,
+	title,
+}: MessageTitleOptions) =>
 	title
 		? replaceMessageTitle({ categoryTitle, displayName, messageTitle: title })
-		: translations(locale).openingMessage.title({ category: categoryTitle });
+		: ThreadTicketing.titleAndEmoji(categoryTitle, categoryEmoji) + ': ' + translations(locale).openingMessage.title();
 
 export const ticketThreadsOpeningMessageDescription = ({
 	categoryTitle,
@@ -63,6 +71,7 @@ export const ticketThreadsOpeningMessageDescription = ({
 			});
 
 interface MessageEmbedOptions extends BaseOptions, BaseMessageOptions {
+	categoryEmoji: Columns['categoryEmoji'];
 	description: MessageDescriptionOptions['description'];
 	embed: EmbedBuilder;
 	member: GuildMember;
@@ -70,6 +79,7 @@ interface MessageEmbedOptions extends BaseOptions, BaseMessageOptions {
 }
 
 export const ticketThreadsOpeningMessageEmbed = ({
+	categoryEmoji,
 	categoryTitle,
 	description,
 	embed,
@@ -79,7 +89,15 @@ export const ticketThreadsOpeningMessageEmbed = ({
 }: MessageEmbedOptions) =>
 	embed
 		.setColor(Colors.Fuchsia)
-		.setTitle(ticketThreadsOpeningMessageTitle({ categoryTitle, displayName: member.displayName, locale, title }))
+		.setTitle(
+			ticketThreadsOpeningMessageTitle({
+				categoryEmoji,
+				categoryTitle,
+				displayName: member.displayName,
+				locale,
+				title,
+			}),
+		)
 		.setDescription(
 			ticketThreadsOpeningMessageDescription({ categoryTitle, description, locale, memberMention: member.toString() }),
 		);

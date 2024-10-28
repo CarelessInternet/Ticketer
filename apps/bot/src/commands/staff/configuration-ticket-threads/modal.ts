@@ -1,7 +1,6 @@
 import { DeferReply, Modal } from '@ticketer/djs-framework';
 import {
 	and,
-	count,
 	database,
 	eq,
 	ticketThreadsCategories,
@@ -85,11 +84,7 @@ export default class extends Modal.Interaction {
 					and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)),
 				);
 		} else {
-			const [row] = await database
-				.select({ amount: count() })
-				.from(ticketThreadsCategories)
-				.where(eq(ticketThreadsCategories.guildId, guildId));
-			const amount = row?.amount ?? 0;
+			const amount = await database.$count(ticketThreadsCategories, eq(ticketThreadsCategories.guildId, guildId));
 
 			if (amount >= MAXIMUM_CATEGORY_AMOUNT) {
 				return interaction.editReply({

@@ -3,7 +3,7 @@ import { PermissionFlagsBits } from 'discord.js';
 import { ThreadTicketing } from '@/utils';
 import { translate } from '@/i18n';
 
-const dataTranslations = translate().commands['proxy-ticket-chat'].data;
+const dataTranslations = translate().commands['proxy-ticket'].chat.data;
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName(dataTranslations.name())

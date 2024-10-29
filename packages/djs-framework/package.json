@@ -17,7 +17,7 @@
 	},
 	"devDependencies": {
 		"@ticketer/eslint-config": "workspace:*",
-		"@types/node": "^22.8.1",
+		"@types/node": "^22.8.4",
 		"tsx": "^4.19.2"
 	}
 }

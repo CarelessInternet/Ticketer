@@ -7,7 +7,7 @@
 		"debug": "pnpm run dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "eslint ."
+		"lint": "next lint"
 	},
 	"dependencies": {
 		"@icons-pack/react-simple-icons": "^10.1.0",
@@ -22,7 +22,7 @@
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
 		"lucide-react": "^0.454.0",
-		"next": "15.0.1",
+		"next": "15.0.2",
 		"next-themes": "^0.3.0",
 		"react": "19.0.0-rc-cae764ce-20241025",
 		"react-dom": "19.0.0-rc-cae764ce-20241025",
@@ -30,11 +30,11 @@
 		"tailwindcss-animate": "^1.0.7"
 	},
 	"devDependencies": {
-		"@eslint/compat": "^1.2.1",
+		"@eslint/compat": "^1.2.2",
 		"@eslint/eslintrc": "^3.1.0",
-		"@next/eslint-plugin-next": "15.0.1",
+		"@next/eslint-plugin-next": "15.0.2",
 		"@ticketer/eslint-config": "workspace:*",
-		"@types/node": "^22.8.1",
+		"@types/node": "^22.8.4",
 		"@types/react": "^18.3.12",
 		"@types/react-dom": "^18.3.1",
 		"autoprefixer": "^10.4.20",

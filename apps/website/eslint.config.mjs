@@ -15,13 +15,9 @@ const compat = new FlatCompat({
 });
 
 export default tseslint.config(
+	...fixupConfigRules(compat.config(next.configs['core-web-vitals'])),
 	{
-		extends: [
-			...config,
-			...fixupConfigRules(compat.config(next.configs['core-web-vitals'])),
-			...tseslint.configs.strictTypeChecked,
-			...tseslint.configs.stylisticTypeChecked,
-		],
+		extends: [...config, ...tseslint.configs.strictTypeChecked, ...tseslint.configs.stylisticTypeChecked],
 		languageOptions: {
 			globals: {
 				React: true,

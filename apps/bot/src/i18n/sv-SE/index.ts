@@ -37,6 +37,42 @@ const sv_SE = {
 				],
 			},
 		},
+		'bot-statistics': {
+			data: {
+				name: 'bot-statistik',
+				description: 'Visa statistiken av boten.',
+				options: [
+					{
+						name: 'gömd',
+						description: 'Huruvida meddelandet ska visas till dig eller alla.',
+					},
+				],
+			},
+			command: {
+				errors: {
+					noShard: {
+						description: 'Ingen partition for boten kunde hittas.',
+					},
+				},
+				embeds: [
+					{
+						title: 'Bot Statistik',
+						description: 'Datan nedan visar information om botens statistik.',
+						fields: [
+							'Cachad Användare',
+							'Kanaler + Trådar',
+							'Kanaler - Trådar',
+							'Emojis',
+							'Servrar',
+							'Servermedlemmar',
+							'Individuella Partitioner',
+						],
+						fallbackFieldValue: 'Okänd',
+						shardsStats: ['Partition', 'Ping', 'RAM-användande', 'Servrar', 'Status', 'Upp Sedan', 'Medlemsantal'],
+					},
+				],
+			},
+		},
 		close: {
 			data: {
 				name: 'stänga',
@@ -135,21 +171,23 @@ const sv_SE = {
 				],
 			},
 		},
-		'proxy-ticket-chat': {
-			data: {
-				name: 'ombud-stödbiljett',
-				description: 'Skapa en stödbiljett genom ombud för en medlem.',
-				options: [
-					{
-						name: 'medlem',
-						description: 'Medlemmen som du vill skapa en stödbiljett för.',
-					},
-				],
+		'proxy-ticket': {
+			chat: {
+				data: {
+					name: 'ombud-stödbiljett',
+					description: 'Skapa en stödbiljett genom ombud för en medlem.',
+					options: [
+						{
+							name: 'medlem',
+							description: 'Medlemmen som du vill skapa en stödbiljett för.',
+						},
+					],
+				},
 			},
-		},
-		'proxy-ticket-user': {
-			data: {
-				name: 'Skapa Stödbiljett genom Ombud',
+			'context-user': {
+				data: {
+					name: 'Skapa Stödbiljett genom Ombud',
+				},
 			},
 		},
 		purge: {
@@ -220,6 +258,42 @@ const sv_SE = {
 			data: {
 				name: 'stödbiljett',
 				description: 'Skapa en stödbiljett inom en kategori.',
+			},
+		},
+		'view-user-tickets': {
+			chat: {
+				data: {
+					name: 'visa-användare-stödbiljetter',
+					description: 'Visa en användarens trådstödbiljetter.',
+					options: [
+						{
+							name: 'medlem',
+							description: 'Medlemmens vars stödbiljetter du vill se.',
+						},
+					],
+				},
+			},
+			'context-user': {
+				data: {
+					name: 'Visa Användarens Stödbiljetter',
+				},
+			},
+			common: {
+				command: {
+					content: 'Det totala beloppet av stödbiljetter från {member} i servern: {amount}.',
+					embeds: [
+						{
+							fields: [
+								{
+									name: 'Trådkanal',
+								},
+								{
+									name: 'Läge',
+								},
+							],
+						},
+					],
+				},
 			},
 		},
 	},

@@ -1,4 +1,3 @@
-export * from './capitalise';
 export * from './DeepPartial';
 export * from './extractEmoji';
 export * from './fetchChannel';

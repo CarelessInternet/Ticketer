@@ -37,6 +37,42 @@ const en_GB = {
 				],
 			},
 		},
+		'bot-statistics': {
+			data: {
+				name: 'bot-statistics',
+				description: 'Show the statistics of the bot.',
+				options: [
+					{
+						name: 'hidden',
+						description: 'Whether the message should be shown to you or everybody.',
+					},
+				],
+			},
+			command: {
+				errors: {
+					noShard: {
+						description: 'No shard for the bot could be found.',
+					},
+				},
+				embeds: [
+					{
+						title: 'Bot Statistics',
+						description: "The data below shows information about the bot's statistics.",
+						fields: [
+							'Cached Users',
+							'Channels + Threads',
+							'Channels - Threads',
+							'Emojis',
+							'Servers',
+							'Server Members',
+							'Individual Shards',
+						],
+						fallbackFieldValue: 'Unknown',
+						shardsStats: ['Shard', 'Ping', 'RAM Usage', 'Servers', 'Status', 'Up Since', 'Member Count'],
+					},
+				],
+			},
+		},
 		close: {
 			data: {
 				name: 'close',
@@ -135,21 +171,23 @@ const en_GB = {
 				],
 			},
 		},
-		'proxy-ticket-chat': {
-			data: {
-				name: 'proxy-ticket',
-				description: 'Create a ticket by proxy for a member.',
-				options: [
-					{
-						name: 'member',
-						description: 'The member who you want to create a ticket for.',
-					},
-				],
+		'proxy-ticket': {
+			chat: {
+				data: {
+					name: 'proxy-ticket',
+					description: 'Create a ticket by proxy for a member.',
+					options: [
+						{
+							name: 'member',
+							description: 'The member who you want to create a ticket for.',
+						},
+					],
+				},
 			},
-		},
-		'proxy-ticket-user': {
-			data: {
-				name: 'Create Ticket by Proxy',
+			'context-user': {
+				data: {
+					name: 'Create Ticket by Proxy',
+				},
 			},
 		},
 		purge: {
@@ -220,6 +258,42 @@ const en_GB = {
 			data: {
 				name: 'ticket',
 				description: 'Create a support ticket within a category.',
+			},
+		},
+		'view-user-tickets': {
+			chat: {
+				data: {
+					name: 'view-user-tickets',
+					description: "View a user's thread tickets.",
+					options: [
+						{
+							name: 'member',
+							description: 'The member whose tickets you want to see.',
+						},
+					],
+				},
+			},
+			'context-user': {
+				data: {
+					name: "View User's Tickets",
+				},
+			},
+			common: {
+				command: {
+					content: 'Total amount of tickets by {member:string} in the server: {amount:number}.',
+					embeds: [
+						{
+							fields: [
+								{
+									name: 'Thread Channel',
+								},
+								{
+									name: 'State',
+								},
+							],
+						},
+					],
+				},
 			},
 		},
 	},

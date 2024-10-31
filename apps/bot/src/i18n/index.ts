@@ -27,7 +27,7 @@ export const getTranslations = (key: Leaves<TranslationFunctions>) => {
 };
 
 /**
- * @param language If no language is specified, it defaults to (British) English.
+ * @param language If no language is specified or is not supported, it defaults to (British) English.
  */
 export const translate = (language?: Locale | Locales) =>
 	locales.includes(language as Locales) ? L[language as Locales] : L[Locale.EnglishGB];

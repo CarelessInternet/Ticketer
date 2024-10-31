@@ -1,14 +1,13 @@
 import {
 	type APIApplicationCommandOptionChoice,
 	ActivityType,
-	Locale,
 	PermissionFlagsBits,
 	PresenceUpdateStatus,
 } from 'discord.js';
 import { Command, DeferReply } from '@ticketer/djs-framework';
 import { getTranslations, translate } from '@/i18n';
 
-const dataTranslations = translate(Locale.EnglishGB).commands['bot-custom-status'].data;
+const dataTranslations = translate().commands['bot-custom-status'].data;
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName(dataTranslations.name())

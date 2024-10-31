@@ -25,7 +25,7 @@ async function viewCategoryTickets(
 
 	if (categoryId && Number.isNaN(id)) return;
 
-	const { globalAmount, tickets } = await database.transaction(async (tx) => {
+	const { tickets, totalAmount } = await database.transaction(async (tx) => {
 		const whereQuery = and(
 			eq(ticketsThreads.guildId, interaction.guildId),
 			managerIntersection(ticketThreadsCategories.managers, interaction.member.roles),
@@ -57,7 +57,7 @@ async function viewCategoryTickets(
 			.where(whereQuery)
 			.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id));
 
-		return { globalAmount: totalAmount?.count, tickets };
+		return { totalAmount: totalAmount?.count, tickets };
 	});
 
 	const embeds = tickets.map((ticket) =>
@@ -95,7 +95,7 @@ async function viewCategoryTickets(
 
 	return interaction.editReply({
 		components,
-		content: `Total amount of tickets in the server: ${String(globalAmount ?? 0)}.`,
+		content: `Total amount of the category's tickets in the server: ${String(totalAmount ?? 0)}.`,
 		embeds,
 	});
 }

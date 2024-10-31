@@ -82,6 +82,116 @@ type RootTranslation = {
 				}
 			}
 		}
+		'bot-statistics': {
+			data: {
+				/**
+				 * b​o​t​-​s​t​a​t​i​s​t​i​c​s
+				 */
+				name: string
+				/**
+				 * S​h​o​w​ ​t​h​e​ ​s​t​a​t​i​s​t​i​c​s​ ​o​f​ ​t​h​e​ ​b​o​t​.
+				 */
+				description: string
+				options: {
+					'0': {
+						/**
+						 * h​i​d​d​e​n
+						 */
+						name: string
+						/**
+						 * W​h​e​t​h​e​r​ ​t​h​e​ ​m​e​s​s​a​g​e​ ​s​h​o​u​l​d​ ​b​e​ ​s​h​o​w​n​ ​t​o​ ​y​o​u​ ​o​r​ ​e​v​e​r​y​b​o​d​y​.
+						 */
+						description: string
+					}
+				}
+			}
+			command: {
+				errors: {
+					noShard: {
+						/**
+						 * N​o​ ​s​h​a​r​d​ ​f​o​r​ ​t​h​e​ ​b​o​t​ ​c​o​u​l​d​ ​b​e​ ​f​o​u​n​d​.
+						 */
+						description: string
+					}
+				}
+				embeds: {
+					'0': {
+						/**
+						 * B​o​t​ ​S​t​a​t​i​s​t​i​c​s
+						 */
+						title: string
+						/**
+						 * T​h​e​ ​d​a​t​a​ ​b​e​l​o​w​ ​s​h​o​w​s​ ​i​n​f​o​r​m​a​t​i​o​n​ ​a​b​o​u​t​ ​t​h​e​ ​b​o​t​'​s​ ​s​t​a​t​i​s​t​i​c​s​.
+						 */
+						description: string
+						fields: {
+							/**
+							 * C​a​c​h​e​d​ ​U​s​e​r​s
+							 */
+							'0': string
+							/**
+							 * C​h​a​n​n​e​l​s​ ​+​ ​T​h​r​e​a​d​s
+							 */
+							'1': string
+							/**
+							 * C​h​a​n​n​e​l​s​ ​-​ ​T​h​r​e​a​d​s
+							 */
+							'2': string
+							/**
+							 * E​m​o​j​i​s
+							 */
+							'3': string
+							/**
+							 * S​e​r​v​e​r​s
+							 */
+							'4': string
+							/**
+							 * S​e​r​v​e​r​ ​M​e​m​b​e​r​s
+							 */
+							'5': string
+							/**
+							 * I​n​d​i​v​i​d​u​a​l​ ​S​h​a​r​d​s
+							 */
+							'6': string
+						}
+						/**
+						 * U​n​k​n​o​w​n
+						 */
+						fallbackFieldValue: string
+						shardsStats: {
+							/**
+							 * S​h​a​r​d
+							 */
+							'0': string
+							/**
+							 * P​i​n​g
+							 */
+							'1': string
+							/**
+							 * R​A​M​ ​U​s​a​g​e
+							 */
+							'2': string
+							/**
+							 * S​e​r​v​e​r​s
+							 */
+							'3': string
+							/**
+							 * S​t​a​t​u​s
+							 */
+							'4': string
+							/**
+							 * U​p​ ​S​i​n​c​e
+							 */
+							'5': string
+							/**
+							 * M​e​m​b​e​r​ ​C​o​u​n​t
+							 */
+							'6': string
+						}
+					}
+				}
+			}
+		}
 		close: {
 			data: {
 				/**
@@ -286,36 +396,38 @@ type RootTranslation = {
 				}
 			}
 		}
-		'proxy-ticket-chat': {
-			data: {
-				/**
-				 * p​r​o​x​y​-​t​i​c​k​e​t
-				 */
-				name: string
-				/**
-				 * C​r​e​a​t​e​ ​a​ ​t​i​c​k​e​t​ ​b​y​ ​p​r​o​x​y​ ​f​o​r​ ​a​ ​m​e​m​b​e​r​.
-				 */
-				description: string
-				options: {
-					'0': {
-						/**
-						 * m​e​m​b​e​r
-						 */
-						name: string
-						/**
-						 * T​h​e​ ​m​e​m​b​e​r​ ​w​h​o​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​c​r​e​a​t​e​ ​a​ ​t​i​c​k​e​t​ ​f​o​r​.
-						 */
-						description: string
+		'proxy-ticket': {
+			chat: {
+				data: {
+					/**
+					 * p​r​o​x​y​-​t​i​c​k​e​t
+					 */
+					name: string
+					/**
+					 * C​r​e​a​t​e​ ​a​ ​t​i​c​k​e​t​ ​b​y​ ​p​r​o​x​y​ ​f​o​r​ ​a​ ​m​e​m​b​e​r​.
+					 */
+					description: string
+					options: {
+						'0': {
+							/**
+							 * m​e​m​b​e​r
+							 */
+							name: string
+							/**
+							 * T​h​e​ ​m​e​m​b​e​r​ ​w​h​o​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​c​r​e​a​t​e​ ​a​ ​t​i​c​k​e​t​ ​f​o​r​.
+							 */
+							description: string
+						}
 					}
 				}
 			}
-		}
-		'proxy-ticket-user': {
-			data: {
-				/**
-				 * C​r​e​a​t​e​ ​T​i​c​k​e​t​ ​b​y​ ​P​r​o​x​y
-				 */
-				name: string
+			'context-user': {
+				data: {
+					/**
+					 * C​r​e​a​t​e​ ​T​i​c​k​e​t​ ​b​y​ ​P​r​o​x​y
+					 */
+					name: string
+				}
 			}
 		}
 		purge: {
@@ -450,6 +562,68 @@ type RootTranslation = {
 				description: string
 			}
 		}
+		'view-user-tickets': {
+			chat: {
+				data: {
+					/**
+					 * v​i​e​w​-​u​s​e​r​-​t​i​c​k​e​t​s
+					 */
+					name: string
+					/**
+					 * V​i​e​w​ ​a​ ​u​s​e​r​'​s​ ​t​h​r​e​a​d​ ​t​i​c​k​e​t​s​.
+					 */
+					description: string
+					options: {
+						'0': {
+							/**
+							 * m​e​m​b​e​r
+							 */
+							name: string
+							/**
+							 * T​h​e​ ​m​e​m​b​e​r​ ​w​h​o​s​e​ ​t​i​c​k​e​t​s​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​s​e​e​.
+							 */
+							description: string
+						}
+					}
+				}
+			}
+			'context-user': {
+				data: {
+					/**
+					 * V​i​e​w​ ​U​s​e​r​'​s​ ​T​i​c​k​e​t​s
+					 */
+					name: string
+				}
+			}
+			common: {
+				command: {
+					/**
+					 * T​o​t​a​l​ ​a​m​o​u​n​t​ ​o​f​ ​t​i​c​k​e​t​s​ ​b​y​ ​{​m​e​m​b​e​r​}​ ​i​n​ ​t​h​e​ ​s​e​r​v​e​r​:​ ​{​a​m​o​u​n​t​}​.
+					 * @param {number} amount
+					 * @param {string} member
+					 */
+					content: RequiredParams<'amount' | 'member'>
+					embeds: {
+						'0': {
+							fields: {
+								'0': {
+									/**
+									 * T​h​r​e​a​d​ ​C​h​a​n​n​e​l
+									 */
+									name: string
+								}
+								'1': {
+									/**
+									 * S​t​a​t​e
+									 */
+									name: string
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	events: {
 		interactionCreate: {
@@ -484,6 +658,22 @@ type RootTranslation = {
 				 * @param {string} member
 				 */
 				message: RequiredParams<'member'>
+			}
+		}
+	}
+	miscellaneous: {
+		paginationButtons: {
+			next: {
+				/**
+				 * N​e​x​t​ ​P​a​g​e
+				 */
+				label: string
+			}
+			previous: {
+				/**
+				 * P​r​e​v​i​o​u​s​ ​P​a​g​e
+				 */
+				label: string
 			}
 		}
 	}
@@ -1507,6 +1697,116 @@ export type TranslationFunctions = {
 				}
 			}
 		}
+		'bot-statistics': {
+			data: {
+				/**
+				 * bot-statistics
+				 */
+				name: () => LocalizedString
+				/**
+				 * Show the statistics of the bot.
+				 */
+				description: () => LocalizedString
+				options: {
+					'0': {
+						/**
+						 * hidden
+						 */
+						name: () => LocalizedString
+						/**
+						 * Whether the message should be shown to you or everybody.
+						 */
+						description: () => LocalizedString
+					}
+				}
+			}
+			command: {
+				errors: {
+					noShard: {
+						/**
+						 * No shard for the bot could be found.
+						 */
+						description: () => LocalizedString
+					}
+				}
+				embeds: {
+					'0': {
+						/**
+						 * Bot Statistics
+						 */
+						title: () => LocalizedString
+						/**
+						 * The data below shows information about the bot's statistics.
+						 */
+						description: () => LocalizedString
+						fields: {
+							/**
+							 * Cached Users
+							 */
+							'0': () => LocalizedString
+							/**
+							 * Channels + Threads
+							 */
+							'1': () => LocalizedString
+							/**
+							 * Channels - Threads
+							 */
+							'2': () => LocalizedString
+							/**
+							 * Emojis
+							 */
+							'3': () => LocalizedString
+							/**
+							 * Servers
+							 */
+							'4': () => LocalizedString
+							/**
+							 * Server Members
+							 */
+							'5': () => LocalizedString
+							/**
+							 * Individual Shards
+							 */
+							'6': () => LocalizedString
+						}
+						/**
+						 * Unknown
+						 */
+						fallbackFieldValue: () => LocalizedString
+						shardsStats: {
+							/**
+							 * Shard
+							 */
+							'0': () => LocalizedString
+							/**
+							 * Ping
+							 */
+							'1': () => LocalizedString
+							/**
+							 * RAM Usage
+							 */
+							'2': () => LocalizedString
+							/**
+							 * Servers
+							 */
+							'3': () => LocalizedString
+							/**
+							 * Status
+							 */
+							'4': () => LocalizedString
+							/**
+							 * Up Since
+							 */
+							'5': () => LocalizedString
+							/**
+							 * Member Count
+							 */
+							'6': () => LocalizedString
+						}
+					}
+				}
+			}
+		}
 		close: {
 			data: {
 				/**
@@ -1707,36 +2007,38 @@ export type TranslationFunctions = {
 				}
 			}
 		}
-		'proxy-ticket-chat': {
-			data: {
-				/**
-				 * proxy-ticket
-				 */
-				name: () => LocalizedString
-				/**
-				 * Create a ticket by proxy for a member.
-				 */
-				description: () => LocalizedString
-				options: {
-					'0': {
-						/**
-						 * member
-						 */
-						name: () => LocalizedString
-						/**
-						 * The member who you want to create a ticket for.
-						 */
-						description: () => LocalizedString
+		'proxy-ticket': {
+			chat: {
+				data: {
+					/**
+					 * proxy-ticket
+					 */
+					name: () => LocalizedString
+					/**
+					 * Create a ticket by proxy for a member.
+					 */
+					description: () => LocalizedString
+					options: {
+						'0': {
+							/**
+							 * member
+							 */
+							name: () => LocalizedString
+							/**
+							 * The member who you want to create a ticket for.
+							 */
+							description: () => LocalizedString
+						}
 					}
 				}
 			}
-		}
-		'proxy-ticket-user': {
-			data: {
-				/**
-				 * Create Ticket by Proxy
-				 */
-				name: () => LocalizedString
+			'context-user': {
+				data: {
+					/**
+					 * Create Ticket by Proxy
+					 */
+					name: () => LocalizedString
+				}
 			}
 		}
 		purge: {
@@ -1869,6 +2171,66 @@ export type TranslationFunctions = {
 				description: () => LocalizedString
 			}
 		}
+		'view-user-tickets': {
+			chat: {
+				data: {
+					/**
+					 * view-user-tickets
+					 */
+					name: () => LocalizedString
+					/**
+					 * View a user's thread tickets.
+					 */
+					description: () => LocalizedString
+					options: {
+						'0': {
+							/**
+							 * member
+							 */
+							name: () => LocalizedString
+							/**
+							 * The member whose tickets you want to see.
+							 */
+							description: () => LocalizedString
+						}
+					}
+				}
+			}
+			'context-user': {
+				data: {
+					/**
+					 * View User's Tickets
+					 */
+					name: () => LocalizedString
+				}
+			}
+			common: {
+				command: {
+					/**
+					 * Total amount of tickets by {member} in the server: {amount}.
+					 */
+					content: (arg: { amount: number, member: string }) => LocalizedString
+					embeds: {
+						'0': {
+							fields: {
+								'0': {
+									/**
+									 * Thread Channel
+									 */
+									name: () => LocalizedString
+								}
+								'1': {
+									/**
+									 * State
+									 */
+									name: () => LocalizedString
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	events: {
 		interactionCreate: {
@@ -1899,6 +2261,22 @@ export type TranslationFunctions = {
 				 * {member} has left the server.
 				 */
 				message: (arg: { member: string }) => LocalizedString
+			}
+		}
+	}
+	miscellaneous: {
+		paginationButtons: {
+			next: {
+				/**
+				 * Next Page
+				 */
+				label: () => LocalizedString
+			}
+			previous: {
+				/**
+				 * Previous Page
+				 */
+				label: () => LocalizedString
 			}
 		}
 	}

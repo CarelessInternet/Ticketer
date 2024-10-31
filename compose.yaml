@@ -12,7 +12,7 @@ name: 'ticketer'
 # https://github.com/docker/awesome-compose
 
 # Run this to start the database and bot:
-# docker compose --env-file ./.env.database.production.local --env-file ./.env.bot.production.local -f compose.yaml up -d
+# docker compose --env-file ./.env.database.production.local -f compose.yaml up -d
 
 # Run this to deploy the commands:
 # docker exec ticketer-bot sh -c "cd /src/apps/bot && pnpm commands:deploy:production"
@@ -57,7 +57,7 @@ services:
       - .env.bot.production.local
       - .env.database.production.local
     # https://stackoverflow.com/a/64436008/12425926
-    # Reads the environment variables at build time from a specified file
+    # Reads the following environment variables at build time from a specified file
     # and also exposes them at container run-time when running "docker compose (--env-file)".
     environment:
       - NODE_ENV=production

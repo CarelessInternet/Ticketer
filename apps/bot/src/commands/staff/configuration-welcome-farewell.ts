@@ -14,10 +14,13 @@ import {
 	roleMention,
 } from 'discord.js';
 import { Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
-import { capitalise, farewellEmbed, welcomeEmbed, zodErrorToString } from '@/utils';
 import { database, eq, not, welcomeAndFarewell, welcomeAndFarewellInsertSchema } from '@ticketer/database';
+import { farewellEmbed, welcomeEmbed, zodErrorToString } from '@/utils';
 
 type InsertWithoutGuildId = Omit<typeof welcomeAndFarewell.$inferInsert, 'guildId'>;
+
+const capitalise = <T extends string>(text: T) =>
+	text.replace(/./, (character) => character.toUpperCase()) as Capitalize<T>;
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName('configuration-welcome-farewell')

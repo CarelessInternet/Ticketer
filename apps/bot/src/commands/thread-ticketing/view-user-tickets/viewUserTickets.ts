@@ -1,7 +1,8 @@
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
 import { type Snowflake, channelMention } from 'discord.js';
-import { ThreadTicketing, managerIntersection, messageWithPagination, withPagination } from '..';
+import { ThreadTicketing, managerIntersection, messageWithPagination, withPagination } from '@/utils';
 import { and, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
+import { translate } from '@/i18n';
 
 interface ViewUserTicketsOptions {
 	page?: number;
@@ -50,23 +51,26 @@ export async function viewUserTickets(
 		return { globalAmount, tickets };
 	});
 
+	const translations = translate(interaction.isChatInputCommand() ? interaction.guildLocale : interaction.locale)
+		.commands['view-user-tickets'].common.command;
 	const embeds = tickets.map((ticket) =>
 		this.userEmbed(user)
 			.setTitle(ThreadTicketing.titleAndEmoji(ticket.categoryTitle, ticket.categoryEmoji))
 			.setFields(
 				{
-					name: 'Thread Channel',
+					name: translations.embeds[0].fields[0].name(),
 					value: channelMention(ticket.threadId),
 					inline: true,
 				},
 				{
-					name: 'State',
+					name: translations.embeds[0].fields[1].name(),
 					value: ThreadTicketing.ticketState(ticket.state),
 					inline: true,
 				},
 			),
 	);
 	const components = messageWithPagination({
+		locale: interaction.ephemeral ? interaction.locale : interaction.guildLocale,
 		previous: {
 			customId: this.customId('ticket_threads_categories_view_user_previous', `${page.toString()}_${user.id}`),
 			disabled: page === 0,
@@ -82,7 +86,7 @@ export async function viewUserTickets(
 			parse: [],
 		},
 		components,
-		content: `Total amount of tickets by ${user.toString()} in the server: ${globalAmount.toString()}.`,
+		content: translations.content({ amount: globalAmount, member: user.toString() }),
 		embeds,
 	});
 }

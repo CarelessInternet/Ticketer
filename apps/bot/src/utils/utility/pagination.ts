@@ -1,5 +1,6 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type InteractionReplyOptions, type Locale } from 'discord.js';
 import { type MySqlSelect } from '@ticketer/database';
+import { translate } from '@/i18n';
 
 interface WithPaginationOptions<T extends MySqlSelect> {
 	page: number;
@@ -18,24 +19,28 @@ interface ButtonInfo {
 }
 
 interface EmbedWithPaginationOptions {
-	previous: ButtonInfo;
+	locale?: Locale;
 	next: ButtonInfo;
+	previous: ButtonInfo;
 }
 
 export function messageWithPagination({
-	previous,
+	locale,
 	next,
+	previous,
 }: EmbedWithPaginationOptions): InteractionReplyOptions['components'] {
+	const translations = translate(locale).miscellaneous.paginationButtons;
+
 	const previousPageButton = new ButtonBuilder()
 		.setCustomId(previous.customId)
 		.setEmoji('⏮')
-		.setLabel(previous.label ?? 'Previous Page')
+		.setLabel(previous.label ?? translations.previous.label())
 		.setStyle(ButtonStyle.Primary)
 		.setDisabled(previous.disabled);
 	const nextPageButton = new ButtonBuilder()
 		.setCustomId(next.customId)
 		.setEmoji('⏭')
-		.setLabel(next.label ?? 'Next Page')
+		.setLabel(next.label ?? translations.next.label())
 		.setStyle(ButtonStyle.Success)
 		.setDisabled(next.disabled);
 

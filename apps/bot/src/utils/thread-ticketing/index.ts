@@ -8,4 +8,3 @@ export * from './ticketActions';
 export * from './ticketModal';
 export * from './ticketState';
 export * from './titleAndEmoji';
-export * from './viewUserTickets';

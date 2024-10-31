@@ -1,42 +1,78 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/restrict-template-expressions */
+
 import { Command, DeferReply } from '@ticketer/djs-framework';
 import { PermissionFlagsBits, Status, codeBlock } from 'discord.js';
+import { getTranslations, translate } from '@/i18n';
 import { formatDateLong } from '@/utils';
 
+const dataTranslations = translate().commands['bot-statistics'].data;
+
 export default class extends Command.Interaction {
-	public readonly data = super.SlashBuilder.setName('bot-statistics')
-		.setDescription('Show the statistics of the bot.')
+	public readonly data = super.SlashBuilder.setName(dataTranslations.name())
+		.setNameLocalizations(getTranslations('commands.bot-statistics.data.name'))
+		.setDescription(dataTranslations.description())
+		.setDescriptionLocalizations(getTranslations('commands.bot-statistics.data.description'))
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 		.addBooleanOption((option) =>
 			option
-				.setName('hidden')
-				.setDescription('Whether the message should be shown to you or everybody.')
+				.setName(dataTranslations.options[0].name())
+				.setNameLocalizations(getTranslations('commands.bot-statistics.data.options.0.name'))
+				.setDescription(dataTranslations.options[0].description())
+				.setDescriptionLocalizations(getTranslations('commands.bot-statistics.data.options.0.description'))
 				.setRequired(false),
 		);
 	public readonly ownerOnly = true;
 	public readonly guildOnly = true;
 
-	@DeferReply({ name: 'hidden', ephemeral: true })
+	@DeferReply({ name: dataTranslations.options[0].name(), ephemeral: true })
 	public async execute({ interaction }: Command.Context<'chat'>) {
+		const translations = translate(interaction.locale).commands['bot-statistics'].command;
 		const { shard } = interaction.client;
 
 		if (!shard) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription('No shard for the bot could be found.')],
+				embeds: [super.userEmbedError(interaction.member).setDescription(translations.errors.noShard.description())],
 			});
 		}
 
+		interface ClientsStats {
+			emoji: string;
+			value: Promise<number[]>;
+		}
+
 		const clientsStats = [
-			shard.fetchClientValues('channels.cache.size'),
-			shard.broadcastEval((client) =>
-				client.guilds.cache.reduce((accumulator, guild) => accumulator + guild.channels.channelCountWithoutThreads, 0),
-			),
-			shard.fetchClientValues('emojis.cache.size'),
-			shard.fetchClientValues('guilds.cache.size'),
-			shard.broadcastEval((client) =>
-				client.guilds.cache.reduce((accumulator, guild) => accumulator + guild.memberCount, 0),
-			),
-			shard.fetchClientValues('users.cache.size'),
-		] as Promise<number[]>[];
+			{
+				emoji: '👤',
+				value: shard.fetchClientValues('users.cache.size'),
+			},
+			{
+				emoji: '📺',
+				value: shard.fetchClientValues('channels.cache.size'),
+			},
+			{
+				emoji: '💻',
+				value: shard.broadcastEval((client) =>
+					client.guilds.cache.reduce(
+						(accumulator, guild) => accumulator + guild.channels.channelCountWithoutThreads,
+						0,
+					),
+				),
+			},
+			{
+				emoji: '💩',
+				value: shard.fetchClientValues('emojis.cache.size'),
+			},
+			{
+				emoji: '📊',
+				value: shard.fetchClientValues('guilds.cache.size'),
+			},
+			{
+				emoji: '👥',
+				value: shard.broadcastEval((client) =>
+					client.guilds.cache.reduce((accumulator, guild) => accumulator + guild.memberCount, 0),
+				),
+			},
+		] as ClientsStats[];
 
 		const shardsStats = await shard.broadcastEval(async (client) => {
 			const ping = client.ws.ping;
@@ -52,62 +88,40 @@ export default class extends Command.Interaction {
 			return { memberCount, ping, ramInMegabytes, servers, status, uptime };
 		});
 
-		const [channelSize, channelSizeWithoutThreads, emojiSize, guildSize, memberSize, userSize] =
-			await Promise.all(clientsStats);
-
+		const resolvedStats = await Promise.all(clientsStats.map((stat) => stat.value));
 		const embed = super.embed
-			.setTitle('Bot Statistics')
-			.setDescription("The data below shows information about the bot's statistics.")
-			.setFields(
-				{
-					name: '👤 Cached Users',
-					value: userSize?.reduce((accumulator, size) => accumulator + size, 0).toLocaleString() ?? 'Unknown',
-					inline: true,
-				},
-				{
-					name: '📺 Channels + Threads',
-					value: channelSize?.reduce((accumulator, size) => accumulator + size, 0).toLocaleString() ?? 'Unknown',
-					inline: true,
-				},
-				{
-					name: '💻 Channels - Threads',
-					value:
-						channelSizeWithoutThreads?.reduce((accumulator, size) => accumulator + size, 0).toLocaleString() ??
-						'Unknown',
-					inline: true,
-				},
-				{
-					name: '💩 Emojis',
-					value: emojiSize?.reduce((accumulator, size) => accumulator + size, 0).toLocaleString() ?? 'Unknown',
-					inline: true,
-				},
-				{
-					name: '📊 Servers',
-					value: guildSize?.reduce((accumulator, size) => accumulator + size, 0).toLocaleString() ?? 'Unknown',
-					inline: true,
-				},
-				{
-					name: '👥 Server Members',
-					value: memberSize?.reduce((accumulator, size) => accumulator + size, 0).toLocaleString() ?? 'Unknown',
-					inline: true,
-				},
-			);
+			.setTitle(translations.embeds[0].title())
+			.setDescription(translations.embeds[0].description());
+
+		for (let index = 0; index < clientsStats.length; index++) {
+			embed.addFields({
+				// @ts-expect-error: The index should not go out of bounds.
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				name: `${clientsStats.at(index)!.emoji} ${translations.embeds[0].fields[index]?.()}`,
+				value:
+					resolvedStats
+						.at(index)
+						?.reduce((accumulator, value) => accumulator + value, 0)
+						.toLocaleString() ?? translations.embeds[0].fallbackFieldValue(),
+				inline: true,
+			});
+		}
 
 		// eslint-disable-next-line unicorn/no-array-reduce
 		const shardsStatsAsString = shardsStats.reduce((accumulator, shard, index) => {
-			let value = `# Shard ${index.toLocaleString()}\n\n`;
-			value += `* Ping: ${shard.ping.toLocaleString()} ms\n`;
-			value += `* RAM Usage: ${shard.ramInMegabytes.toString()} MB\n`;
-			value += `* Servers: ${shard.servers.toLocaleString()}\n`;
-			value += `* Status: ${Status[shard.status].toString()}\n`;
-			value += `* Up Since: ${shard.uptime ? formatDateLong(new Date(Date.now() - shard.uptime)) : 'Unknown'}\n`;
-			value += `* Member Count: ${shard.memberCount.toLocaleString()}\n\n`;
+			let value = `# ${translations.embeds[0].shardsStats[0]()} ${index.toLocaleString()}\n\n`;
+			value += `* ${translations.embeds[0].shardsStats[1]()}: ${shard.ping.toLocaleString()} ms\n`;
+			value += `* ${translations.embeds[0].shardsStats[2]()}: ${shard.ramInMegabytes.toString()} MB\n`;
+			value += `* ${translations.embeds[0].shardsStats[3]()}: ${shard.servers.toLocaleString()}\n`;
+			value += `* ${translations.embeds[0].shardsStats[4]()}: ${Status[shard.status].toString()}\n`;
+			value += `* ${translations.embeds[0].shardsStats[5]()}: ${shard.uptime ? formatDateLong(new Date(Date.now() - shard.uptime)) : translations.embeds[0].fallbackFieldValue()}\n`;
+			value += `* ${translations.embeds[0].shardsStats[6]()}: ${shard.memberCount.toLocaleString()}\n\n`;
 
 			return accumulator + value;
 		}, '');
 
 		embed.addFields({
-			name: 'Individual Shards',
+			name: translations.embeds[0].fields[6](),
 			value: codeBlock('markdown', shardsStatsAsString),
 		});
 

@@ -1,9 +1,9 @@
 import { Command, DeferReply } from '@ticketer/djs-framework';
-import { Locale, PermissionFlagsBits } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
+import { PermissionFlagsBits } from 'discord.js';
 import { viewUserTickets } from './viewUserTickets';
 
-const dataTranslations = translate(Locale.EnglishGB).commands['view-user-tickets']['context-user'].data;
+const dataTranslations = translate().commands['view-user-tickets']['context-user'].data;
 
 export default class extends Command.Interaction {
 	public readonly data = super.ContextUserBuilder.setName(dataTranslations.name())

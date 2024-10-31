@@ -1,10 +1,10 @@
 import { Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
-import { Locale, PermissionFlagsBits } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
+import { PermissionFlagsBits } from 'discord.js';
 import { goToPage } from '@/utils';
 import { viewUserTickets } from './viewUserTickets';
 
-const dataTranslations = translate(Locale.EnglishGB).commands['view-user-tickets'].chat.data;
+const dataTranslations = translate().commands['view-user-tickets'].chat.data;
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName(dataTranslations.name())

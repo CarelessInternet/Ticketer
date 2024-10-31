@@ -314,6 +314,16 @@ const sv_SE = {
 			},
 		},
 	},
+	miscellaneous: {
+		paginationButtons: {
+			next: {
+				label: 'Nästa Sida',
+			},
+			previous: {
+				label: 'Föregående Sida',
+			},
+		},
+	},
 	tickets: {
 		errors: {
 			invalidTicket: {

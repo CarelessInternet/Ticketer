@@ -63,6 +63,7 @@ async function viewTickets(
 	);
 
 	const components = messageWithPagination({
+		locale: interaction.locale,
 		previous: {
 			customId: this.customId('ticket_threads_categories_view_tickets_previous', `${page.toString()}_${state ?? ''}`),
 			disabled: page === 0,

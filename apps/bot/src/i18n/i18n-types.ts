@@ -661,6 +661,22 @@ type RootTranslation = {
 			}
 		}
 	}
+	miscellaneous: {
+		paginationButtons: {
+			next: {
+				/**
+				 * N​e​x​t​ ​P​a​g​e
+				 */
+				label: string
+			}
+			previous: {
+				/**
+				 * P​r​e​v​i​o​u​s​ ​P​a​g​e
+				 */
+				label: string
+			}
+		}
+	}
 	tickets: {
 		errors: {
 			invalidTicket: {
@@ -2245,6 +2261,22 @@ export type TranslationFunctions = {
 				 * {member} has left the server.
 				 */
 				message: (arg: { member: string }) => LocalizedString
+			}
+		}
+	}
+	miscellaneous: {
+		paginationButtons: {
+			next: {
+				/**
+				 * Next Page
+				 */
+				label: () => LocalizedString
+			}
+			previous: {
+				/**
+				 * Previous Page
+				 */
+				label: () => LocalizedString
 			}
 		}
 	}

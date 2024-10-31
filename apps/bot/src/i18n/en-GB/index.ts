@@ -314,6 +314,16 @@ const en_GB = {
 			},
 		},
 	},
+	miscellaneous: {
+		paginationButtons: {
+			next: {
+				label: 'Next Page',
+			},
+			previous: {
+				label: 'Previous Page',
+			},
+		},
+	},
 	tickets: {
 		errors: {
 			invalidTicket: {

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/restrict-template-expressions */
 
 import { Command, DeferReply } from '@ticketer/djs-framework';
-import { Locale, PermissionFlagsBits, Status, codeBlock } from 'discord.js';
+import { PermissionFlagsBits, Status, codeBlock } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
 import { formatDateLong } from '@/utils';
 
-const dataTranslations = translate(Locale.EnglishGB).commands['bot-statistics'].data;
+const dataTranslations = translate().commands['bot-statistics'].data;
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName(dataTranslations.name())

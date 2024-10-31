@@ -70,6 +70,7 @@ export async function viewUserTickets(
 			),
 	);
 	const components = messageWithPagination({
+		locale: interaction.ephemeral ? interaction.locale : interaction.guildLocale,
 		previous: {
 			customId: this.customId('ticket_threads_categories_view_user_previous', `${page.toString()}_${user.id}`),
 			disabled: page === 0,

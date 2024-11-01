@@ -8,7 +8,7 @@ export const environment = createEnv({
 	server: {
 		DB_HOST: z.string().default('ticketer-development-database'),
 		DB_PORT: z.coerce.number().default(3307),
-		DB_DATABASE: z.string().default('ticketer'),
+		DB_DATABASE: z.string().default('Ticketer'),
 		DB_USER: z.string().default('dev_container'),
 		DB_PASSWORD: z.string().default('12345678'),
 	},

@@ -1,25 +1,13 @@
 'use client';
 
 import {
-	Code,
-	Cookie,
-	Globe,
-	Menu,
-	MessageCircleQuestion,
-	Moon,
-	PlusCircle,
-	Scale,
-	Server,
-	Sun,
-	Terminal,
-} from 'lucide-react';
-import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type { HTMLAttributes, JSX, PropsWithChildren } from 'react';
+import { Menu, MessageCircleQuestion, Moon, PlusCircle, Sun } from 'lucide-react';
 import {
 	NavigationMenu,
 	NavigationMenuContent,
@@ -36,6 +24,7 @@ import { SiGithub as GitHub } from '@icons-pack/react-simple-icons';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { cn } from '@/lib/utils';
+import { internalRoutes } from '@/lib/routes';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 
@@ -171,22 +160,11 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 								<NavigationMenuTrigger>Documentation</NavigationMenuTrigger>
 								<NavigationMenuContent>
 									<ul className="grid w-[300px] gap-3 px-2 py-4 md:w-[400px]">
-										<ListItem href="/docs/commands" icon={<Terminal />} title="Commands">
-											View some of the most popular and important commands in Ticketer.
-										</ListItem>
-										<ListItem href="/docs/self-hosting" icon={<Server />} title="Self-Hosting">
-											Learn how to self-host the Ticketer bot on any computer that supports Docker.
-										</ListItem>
-										<ListItem href="/docs/development" icon={<Code />} title="Development">
-											Instructions on how to develop the Ticketer bot.
-										</ListItem>
-										<ListItem
-											href="/docs/contributing-to-localisation"
-											icon={<Globe />}
-											title="Contributing to Localisation"
-										>
-											Instructions on how to add language translations to the Ticketer bot.
-										</ListItem>
+										{internalRoutes.documentation.map((route) => (
+											<ListItem key={route.title} href={route.href} icon={route.icon} title={route.title}>
+												{route.description}
+											</ListItem>
+										))}
 									</ul>
 								</NavigationMenuContent>
 							</NavigationMenuItem>
@@ -196,12 +174,11 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 								<NavigationMenuTrigger>Legal</NavigationMenuTrigger>
 								<NavigationMenuContent>
 									<ul className="grid w-[300px] gap-3 px-2 py-4 md:w-[400px]">
-										<ListItem href="/legal/privacy-policy" icon={<Cookie />} title="Privacy Policy">
-											Read the privacy policy for Ticketer.
-										</ListItem>
-										<ListItem href="/legal/terms-of-service" icon={<Scale />} title="Terms of Service">
-											Read the terms of service for Ticketer.
-										</ListItem>
+										{internalRoutes.legal.map((route) => (
+											<ListItem key={route.title} href={route.href} icon={route.icon} title={route.title}>
+												{route.description}
+											</ListItem>
+										))}
 									</ul>
 								</NavigationMenuContent>
 							</NavigationMenuItem>

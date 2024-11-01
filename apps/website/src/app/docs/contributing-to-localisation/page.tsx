@@ -1,9 +1,21 @@
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
-import Image from 'next/image';
+import Image from '@/components/Image';
+import type { Metadata } from 'next';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
 import Title from '@/components/Title';
+
+export const metadata = {
+	title: 'Ticketer - Contributing to Localisation',
+	description: 'Tutorial on how to help with the localisation of Ticketer.',
+	openGraph: {
+		title: 'Ticketer - Contributing to Localisation',
+		description: 'Tutorial on how to help with the localisation of Ticketer.',
+	},
+} satisfies Metadata;
+
+// TODO: add how-to for the website as well
 
 export default function Page() {
 	return (
@@ -26,9 +38,9 @@ export default function Page() {
 				</Paragraph>
 			</Divider>
 			<Divider>
-				<ScrollLink target="what-locales-are-supported">What locales are supported?</ScrollLink>
+				<ScrollLink target="what-locales-can-be-supported">What locales can be supported?</ScrollLink>
 				<Paragraph>
-					The locales that are supported can be found in the{' '}
+					The locales that can be supported are found in the{' '}
 					<ExternalLink href="https://discord.com/developers/docs/reference#locales">
 						Discord Developers Documentation Reference
 					</ExternalLink>

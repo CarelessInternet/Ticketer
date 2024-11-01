@@ -1,20 +1,20 @@
 import CodeBlock from '@/components/CodeBlock';
 import Divider from '@/components/Divider';
-import Image from 'next/image';
+import Image from '@/components/Image';
 import type { Metadata } from 'next';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
 import SectionDivider from '@/components/SectionDivider';
 import Title from '@/components/Title';
 
-export const metadata: Metadata = {
+export const metadata = {
 	title: 'Ticketer - Commands',
 	description: 'Documentation on the popular and important commands by the Ticketer bot.',
 	openGraph: {
 		title: 'Ticketer - Commands',
 		description: 'Documentation on the popular and important commands by the Ticketer bot.',
 	},
-};
+} satisfies Metadata;
 
 export default function Page() {
 	return (
@@ -27,7 +27,7 @@ export default function Page() {
 				<ScrollLink target="thread-tickets">Thread Tickets</ScrollLink>
 				<Paragraph>
 					The main focus of the bot is on threads which act as tickets. There are several parts to this feature which
-					may seem daunting at first, but play out nicely in practice.
+					may seem daunting at first, but play out well in practice.
 				</Paragraph>
 				<SectionDivider header="Configuring Thread Tickets">
 					<Paragraph>
@@ -83,6 +83,14 @@ export default function Page() {
 						height={216}
 					/>
 				</SectionDivider>
+				<SectionDivider header="Ticket Actions">
+					<Paragraph>
+						There are multiple actions you can do on a ticket. This includes renaming the title, locking the thread,
+						closing the thread, locking and closing the thread, and finally deleting the ticket. As a ticket author or
+						manager, you can run these actions either through the commands or the buttons in the original ticket
+						message.
+					</Paragraph>
+				</SectionDivider>
 			</Divider>
 			<Divider>
 				<ScrollLink target="user-forums">User Forums</ScrollLink>
@@ -115,6 +123,13 @@ export default function Page() {
 					width={720}
 					height={405}
 				/>
+			</Divider>
+			<Divider>
+				<ScrollLink target="miscellaneous">Miscellaneous</ScrollLink>
+				<Paragraph>A popular command for server moderators is the common purge command:</Paragraph>
+				<CodeBlock clipboardText="/purge" slashCommand>
+					<span>purge</span>
+				</CodeBlock>
 			</Divider>
 		</>
 	);

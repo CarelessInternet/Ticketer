@@ -1,9 +1,19 @@
 import CodeBlock from '@/components/CodeBlock';
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
+import type { Metadata } from 'next';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
 import Title from '@/components/Title';
+
+export const metadata = {
+	title: 'Ticketer - Development',
+	description: 'Tutorial on how to get started on developing the Ticketer codebase.',
+	openGraph: {
+		title: 'Ticketer - Development',
+		description: 'Tutorial on how to get started on developing the Ticketer codebase.',
+	},
+} satisfies Metadata;
 
 export default function Page() {
 	return (

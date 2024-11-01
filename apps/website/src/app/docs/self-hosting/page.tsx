@@ -42,14 +42,14 @@ const botEnvironmentTemplate = `
 	DISCORD_OWNER_ID=""
 `;
 
-export const metadata: Metadata = {
+export const metadata = {
 	title: 'Ticketer - Self-Hosting',
 	description: 'Documentation on how to self-host the Ticketer bot.',
 	openGraph: {
 		title: 'Ticketer - Self-Hosting',
 		description: 'Documentation on how to self-host the Ticketer bot.',
 	},
-};
+} satisfies Metadata;
 
 export default function Page() {
 	return (

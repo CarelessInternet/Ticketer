@@ -38,7 +38,8 @@
 				"dbaeumer.vscode-eslint",
 				"esbenp.prettier-vscode",
 				"bradlc.vscode-tailwindcss",
-				"wix.vscode-import-cost"
+				"wix.vscode-import-cost",
+				"github.vscode-github-actions"
 			],
 			"settings": {
 				"git.enabled": true,

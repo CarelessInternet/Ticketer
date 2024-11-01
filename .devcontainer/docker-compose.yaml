@@ -1,20 +1,25 @@
-version: '3.8'
+name: 'ticketer-development'
 
 services:
   database:
     container_name: ticketer-development-database
-    extends:
-      file: ../base-compose.yaml
-      service: database
+    image: mariadb:11
+    restart: always
+    healthcheck:
+      test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
+      interval: 10s
+      retries: 3
+      start_period: 10s
     networks:
       - ticketer-development-database-network
     volumes:
       - ticketer-development-database-data:/var/lib/mysql
     environment:
-      - MARIADB_DATABASE=ticketer
-      - MARIADB_USER=dev_container
-      - MARIADB_PASSWORD=12345678
-      - MYSQL_TCP_PORT=3307
+      MARIADB_DATABASE: "Ticketer"
+      MARIADB_USER: "dev_container"
+      MARIADB_PASSWORD: "12345678"
+      MYSQL_TCP_PORT: 3307
+      MARIADB_RANDOM_ROOT_PASSWORD: true
     ports:
       - "3307:3307"
 
@@ -25,13 +30,11 @@ services:
     # docker-compose.yml file (the first in the devcontainer.json "dockerComposeFile"
     # array). The sample below assumes your primary file is in the root of your project.
     container_name: ticketer-development-bot
-    extends:
-      file: ../base-compose.yaml
-      service: bot
     build:
       context: .
       dockerfile: ./bot/Dockerfile
     image: ticketer-bot:development
+    restart: unless-stopped
     depends_on:
       database:
         condition: service_healthy
@@ -40,16 +43,8 @@ services:
     volumes:
       # Update this to wherever you want VS Code to mount the folder of your project
       - ..:/workspaces:cached
-
-    # Uncomment the next four lines if you will use a ptrace-based debugger like C++, Go, and Rust.
-    # cap_add:
-    #   - SYS_PTRACE
-    # security_opt:
-    #   - seccomp:unconfined
-
     # Overrides default command so things don't shut down after the process ends.
     command: /bin/sh -c "while sleep 1000; do :; done"
-
     environment:
       - NODE_ENV=development
 

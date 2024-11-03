@@ -1,4 +1,4 @@
-import type { PageProperties } from '@/i18n/config';
+import type { PageProperties } from '@/i18n/routing';
 import { Toaster } from '@/components/ui/toaster';
 import { setRequestLocale } from 'next-intl/server';
 

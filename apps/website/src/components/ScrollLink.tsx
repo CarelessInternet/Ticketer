@@ -19,10 +19,12 @@ export default function ScrollLink({
 			target="_self"
 			id={target}
 			tabIndex={0}
-			className={cn('text-foreground dark:text-foreground text-2xl font-bold sm:text-3xl', className)}
+			className={cn('!text-inherit', className)}
 			{...properties}
 		>
-			{children}
+			<h2 className="text-foreground dark:text-foreground text-2xl font-bold hover:underline sm:text-3xl">
+				{children}
+			</h2>
 		</InternalLink>
 	);
 }

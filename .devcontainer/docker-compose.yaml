@@ -21,7 +21,7 @@ services:
       MYSQL_TCP_PORT: 3307
       MARIADB_RANDOM_ROOT_PASSWORD: true
     ports:
-      - "3307:3307"
+      - 3307:3307
 
   # Update this to the name of the service you want to work with in your docker-compose.yml file
   bot:

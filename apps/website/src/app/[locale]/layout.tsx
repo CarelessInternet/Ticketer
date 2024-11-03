@@ -1,5 +1,5 @@
 import '../globals.css';
-import type { Locale, PageProperties } from '@/i18n/config';
+import { type Locale, type PageProperties, routing } from '@/i18n/routing';
 import { Analytics } from '@vercel/analytics/react';
 import { DM_Sans } from 'next/font/google';
 import Footer from '@/components/Footer';
@@ -9,7 +9,6 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { ThemeProvider } from 'next-themes';
 import { cn } from '@/lib/utils';
 import { notFound } from 'next/navigation';
-import { routing } from '@/i18n/routing';
 import { setRequestLocale } from 'next-intl/server';
 
 const font = DM_Sans({ subsets: ['latin'], variable: '--font-sans' });

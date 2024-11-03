@@ -2,7 +2,7 @@ import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
 import InternalLink from '@/components/InternalLink';
 import type { Metadata } from 'next';
-import type { PageProperties } from '@/i18n/config';
+import type { PageProperties } from '@/i18n/routing';
 import Paragraph from '@/components/Paragraph';
 import type { PropsWithChildren } from 'react';
 import ScrollLink from '@/components/ScrollLink';

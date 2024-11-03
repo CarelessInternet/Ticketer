@@ -2,7 +2,7 @@ import CodeBlock from '@/components/CodeBlock';
 import Divider from '@/components/Divider';
 import Image from '@/components/Image';
 import type { Metadata } from 'next';
-import type { PageProperties } from '@/i18n/config';
+import type { PageProperties } from '@/i18n/routing';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
 import SectionDivider from '@/components/SectionDivider';

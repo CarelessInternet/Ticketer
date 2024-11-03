@@ -26,7 +26,7 @@ export default function CodeBlock({
 	const saveToClipboard = (text: string) =>
 		navigator.clipboard
 			.writeText(text)
-			.then(() => toast({ title: 'Copied to Clipboard!' }))
+			.then(() => toast({ title: 'Copied to clipboard!' }))
 			.catch((error: unknown) => {
 				console.error(error);
 			});

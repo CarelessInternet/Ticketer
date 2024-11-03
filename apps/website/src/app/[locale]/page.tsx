@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import InternalLink from '@/components/InternalLink';
-import type { PageProperties } from '@/i18n/config';
+import type { PageProperties } from '@/i18n/routing';
 import { Plus } from 'lucide-react';
 import { setRequestLocale } from 'next-intl/server';
 

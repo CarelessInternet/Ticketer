@@ -1,91 +1,24 @@
-'use client';
-
-import type { AnchorHTMLAttributes, HTMLAttributes, JSX, PropsWithChildren } from 'react';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Menu, MessageCircleQuestion, Moon, PlusCircle, Sun } from 'lucide-react';
+import type { HTMLAttributes, JSX, PropsWithChildren } from 'react';
+import { Menu, MessageCircleQuestion, PlusCircle } from 'lucide-react';
 import {
 	NavigationMenu,
 	NavigationMenuContent,
 	NavigationMenuItem,
-	NavigationMenuLink,
 	NavigationMenuList,
 	NavigationMenuTrigger,
-	navigationMenuTriggerStyle,
-} from './ui/navigation-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
-import { type WithRequired, cn } from '@/lib/utils';
+} from '../ui/navigation-menu';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { Button } from '@/components/ui/button';
-import ExternalLink from './ExternalLink';
+import ExternalLink from '../ExternalLink';
 import { SiGithub as GitHub } from '@icons-pack/react-simple-icons';
 import Image from 'next/image';
-import InternalLink from './InternalLink';
-import { Link as LocalisedLink } from '@/i18n/routing';
+import InternalLink from '../InternalLink';
+import Link from './Link';
+import LocaleSwitcher from './LocaleSwitcher';
+import ThemeSwitcher from './ThemeSwitcher';
+import { cn } from '@/lib/utils';
 import { internalRoutes } from '@/lib/routes';
-import { usePathname } from '@/i18n/routing';
-import { useTheme } from 'next-themes';
-
-// TODO: add locale switcher
-
-function ThemeSwitcher() {
-	const { setTheme } = useTheme();
-
-	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<Button variant="outline" size="icon" className="duration-0 dark:hover:text-cyan-400 dark:focus:text-cyan-400">
-					<Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-					<Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-					<span className="sr-only">Toggle theme</span>
-				</Button>
-			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end">
-				<DropdownMenuItem
-					onClick={() => {
-						setTheme('light');
-					}}
-				>
-					Light
-				</DropdownMenuItem>
-				<DropdownMenuItem
-					onClick={() => {
-						setTheme('dark');
-					}}
-				>
-					Dark
-				</DropdownMenuItem>
-				<DropdownMenuItem
-					onClick={() => {
-						setTheme('system');
-					}}
-				>
-					System
-				</DropdownMenuItem>
-			</DropdownMenuContent>
-		</DropdownMenu>
-	);
-}
-
-function Link({
-	children,
-	className,
-	href,
-}: PropsWithChildren<WithRequired<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>>) {
-	const isActive = usePathname() === href;
-
-	return (
-		<LocalisedLink href={href} legacyBehavior passHref>
-			<NavigationMenuLink className={cn(navigationMenuTriggerStyle(), className)} active={isActive}>
-				{children}
-			</NavigationMenuLink>
-		</LocalisedLink>
-	);
-}
 
 function ListItem({
 	children,
@@ -108,33 +41,46 @@ function ListItem({
 	);
 }
 
-interface TooltipLinkItems {
+interface TooltipItems {
 	content: string;
+}
+
+function TooltipItem({ content, children }: PropsWithChildren<TooltipItems>) {
+	return (
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger className="dark:hover:text-cyan-400 dark:focus:text-cyan-400" asChild>
+					{children}
+				</TooltipTrigger>
+				<TooltipContent>
+					<p>{content}</p>
+				</TooltipContent>
+			</Tooltip>
+		</TooltipProvider>
+	);
+}
+
+interface TooltipLinkItems extends TooltipItems {
 	external?: boolean;
 	href: string;
 	icon: JSX.Element;
 }
 
-function TooltipLinkItem({ children, external, href, icon }: PropsWithChildren<Omit<TooltipLinkItems, 'content'>>) {
+function TooltipLinkItem({ content, external, href, icon }: PropsWithChildren<TooltipLinkItems>) {
 	return (
-		<TooltipProvider>
-			<Tooltip>
-				<TooltipTrigger className="dark:hover:text-cyan-400 dark:focus:text-cyan-400" asChild>
-					<Button variant="outline" size="icon" asChild>
-						{external ? (
-							<ExternalLink href={href} noDefaultStyles>
-								{icon}
-							</ExternalLink>
-						) : (
-							<InternalLink href={href} noLocalisation noDefaultStyles>
-								{icon}
-							</InternalLink>
-						)}
-					</Button>
-				</TooltipTrigger>
-				<TooltipContent>{children}</TooltipContent>
-			</Tooltip>
-		</TooltipProvider>
+		<TooltipItem content={content}>
+			<Button variant="outline" size="icon" asChild>
+				{external ? (
+					<ExternalLink href={href} noDefaultStyles>
+						{icon}
+					</ExternalLink>
+				) : (
+					<InternalLink href={href} noLocalisation noDefaultStyles>
+						{icon}
+					</InternalLink>
+				)}
+			</Button>
+		</TooltipItem>
 	);
 }
 
@@ -161,7 +107,7 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 	return (
 		<header className={cn(className)} {...properties}>
 			<nav className="flex items-center border-b py-2">
-				<div className="mx-8 flex flex-1 justify-around sm:mx-24 md:mx-32 lg:mx-40">
+				<div className="mx-8 flex flex-1 justify-around sm:mx-20 md:mx-32 lg:mx-40">
 					<NavigationMenu className="hidden max-w-none justify-start sm:flex">
 						<NavigationMenuList>
 							<NavigationMenuItem className="flex flex-1 flex-row items-center space-x-2">
@@ -192,8 +138,8 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 								<NavigationMenuTrigger>Legal</NavigationMenuTrigger>
 								<NavigationMenuContent>
 									<ul className="grid w-[300px] gap-3 px-2 py-4 md:w-[400px]">
-										{internalRoutes.legal.map((route) => (
-											<ListItem key={route.title} href={route.href} icon={route.icon} title={route.title}>
+										{internalRoutes.legal.map((route, index) => (
+											<ListItem key={index} href={route.href} icon={route.icon} title={route.title}>
 												{route.description}
 											</ListItem>
 										))}
@@ -203,7 +149,7 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 						</NavigationMenuList>
 					</NavigationMenu>
 					<div className="flex flex-1 items-center justify-end">
-						<div className="block md:hidden">
+						<div className="block lg:hidden">
 							<Sheet>
 								<SheetTrigger>
 									<Button variant="outline" size="icon" asChild aria-label="Open Drawer">
@@ -217,12 +163,19 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 									<div className="space-y-4">
 										{tooltipLinkItems.map((item, index) => (
 											<div key={index} className="flex items-center space-x-2">
-												<TooltipLinkItem external={item.external} href={item.href} icon={item.icon}>
-													{item.content}
-												</TooltipLinkItem>
+												<TooltipLinkItem
+													content={item.content}
+													external={item.external}
+													href={item.href}
+													icon={item.icon}
+												/>
 												<p>{item.content}</p>
 											</div>
 										))}
+										<div className="flex items-center space-x-2">
+											<LocaleSwitcher />
+											<p>Change Locale</p>
+										</div>
 										<div className="flex items-center space-x-2">
 											<ThemeSwitcher />
 											<p>Change Theme</p>
@@ -231,13 +184,26 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 								</SheetContent>
 							</Sheet>
 						</div>
-						<div className="hidden space-x-2 md:flex">
+						<div className="hidden space-x-2 lg:flex">
 							{tooltipLinkItems.map((item, index) => (
-								<TooltipLinkItem key={index} external={item.external} href={item.href} icon={item.icon}>
-									{item.content}
-								</TooltipLinkItem>
+								<TooltipLinkItem
+									key={index}
+									content={item.content}
+									external={item.external}
+									href={item.href}
+									icon={item.icon}
+								/>
 							))}
-							<ThemeSwitcher />
+							<TooltipItem content="Change Locale">
+								<div>
+									<LocaleSwitcher />
+								</div>
+							</TooltipItem>
+							<TooltipItem content="Change Theme">
+								<div>
+									<ThemeSwitcher />
+								</div>
+							</TooltipItem>
 						</div>
 					</div>
 				</div>

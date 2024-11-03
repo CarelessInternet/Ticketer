@@ -1,6 +1,6 @@
 import Divider from '@/components/Divider';
 import type { Metadata } from 'next';
-import type { PageProperties } from '@/i18n/config';
+import type { PageProperties } from '@/i18n/routing';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
 import Title from '@/components/Title';

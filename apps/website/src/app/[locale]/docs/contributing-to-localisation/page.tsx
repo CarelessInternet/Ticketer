@@ -2,9 +2,11 @@ import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
 import Image from '@/components/Image';
 import type { Metadata } from 'next';
+import type { PageProperties } from '@/i18n/config';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
 import Title from '@/components/Title';
+import { setRequestLocale } from 'next-intl/server';
 
 export const metadata = {
 	title: 'Ticketer - Contributing to Localisation',
@@ -17,7 +19,11 @@ export const metadata = {
 
 // TODO: add how-to for the website as well
 
-export default function Page() {
+export default async function Page({ params }: PageProperties) {
+	const { locale } = await params;
+
+	setRequestLocale(locale);
+
 	return (
 		<>
 			<Divider>
@@ -56,7 +62,7 @@ export default function Page() {
 					something like this afterwards:
 				</Paragraph>
 				<Image
-					src="/localisation-example-folder.png"
+					src="/images/localisation-example-folder.png"
 					alt="Picture of an example localisation folder."
 					width={384}
 					height={216}
@@ -65,7 +71,12 @@ export default function Page() {
 					Then, you should run the &quot;i18n&quot; NPM script on the bottom left of your explorer. This will generate
 					the types required, as well as type checking the files for any missing or invalid localisations.
 				</Paragraph>
-				<Image src="/localisation-i18n-npm-script.png" alt="Picture of the i18n npm script." width={384} height={216} />
+				<Image
+					src="/images/localisation-i18n-npm-script.png"
+					alt="Picture of the i18n npm script."
+					width={384}
+					height={216}
+				/>
 				<Paragraph>
 					Finally, you can start editing the files and add the correct translations for your locale of choice! If you
 					need a reference for the translation, you can open the British English file variant and translate accordingly.

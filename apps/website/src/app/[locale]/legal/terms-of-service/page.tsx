@@ -1,8 +1,10 @@
 import Divider from '@/components/Divider';
 import type { Metadata } from 'next';
+import type { PageProperties } from '@/i18n/config';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
 import Title from '@/components/Title';
+import { setRequestLocale } from 'next-intl/server';
 
 export const metadata: Metadata = {
 	title: 'Ticketer - Terms of Service',
@@ -13,7 +15,11 @@ export const metadata: Metadata = {
 	},
 };
 
-export default function Page() {
+export default async function Page({ params }: PageProperties) {
+	const { locale } = await params;
+
+	setRequestLocale(locale);
+
 	return (
 		<>
 			<Divider>

@@ -3,9 +3,13 @@ import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
 import InternalLink from '@/components/InternalLink';
 import type { Metadata } from 'next';
+import type { PageProperties } from '@/i18n/config';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
 import Title from '@/components/Title';
+import { setRequestLocale } from 'next-intl/server';
+
+// TODO: update tutorial to use ghcr.io with compose.yml, as well as using a code syntax highlighter
 
 function EnvironmentHighlight({
 	name,
@@ -51,7 +55,11 @@ export const metadata = {
 	},
 } satisfies Metadata;
 
-export default function Page() {
+export default async function Page({ params }: PageProperties) {
+	const { locale } = await params;
+
+	setRequestLocale(locale);
+
 	return (
 		<>
 			<Divider>

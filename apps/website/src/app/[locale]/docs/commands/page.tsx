@@ -2,10 +2,12 @@ import CodeBlock from '@/components/CodeBlock';
 import Divider from '@/components/Divider';
 import Image from '@/components/Image';
 import type { Metadata } from 'next';
+import type { PageProperties } from '@/i18n/config';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
 import SectionDivider from '@/components/SectionDivider';
 import Title from '@/components/Title';
+import { setRequestLocale } from 'next-intl/server';
 
 export const metadata = {
 	title: 'Ticketer - Commands',
@@ -16,7 +18,11 @@ export const metadata = {
 	},
 } satisfies Metadata;
 
-export default function Page() {
+export default async function Page({ params }: PageProperties) {
+	const { locale } = await params;
+
+	setRequestLocale(locale);
+
 	return (
 		<>
 			<Divider>
@@ -54,7 +60,7 @@ export default function Page() {
 						<span>configuration-ticket-threads categories edit</span>
 					</CodeBlock>
 					<Image
-						src="/commands-thread-tickets-edit.png"
+						src="/images/commands-thread-tickets-edit.png"
 						alt="Picture of the ticket threads edit select menu."
 						width={384}
 						height={216}
@@ -66,7 +72,12 @@ export default function Page() {
 						<span>ticket</span>
 					</CodeBlock>
 					<Paragraph>An example of a ticket looks like the following picture:</Paragraph>
-					<Image src="/thread-tickets-ticket.png" alt="Picture of a new thread ticket." width={720} height={405} />
+					<Image
+						src="/images/thread-tickets-ticket.png"
+						alt="Picture of a new thread ticket."
+						width={720}
+						height={405}
+					/>
 				</SectionDivider>
 				<SectionDivider header="Creating a Panel">
 					<Paragraph>
@@ -77,7 +88,7 @@ export default function Page() {
 						<span>panel</span>
 					</CodeBlock>
 					<Image
-						src="/commands-thread-tickets-panel.png"
+						src="/images/commands-thread-tickets-panel.png"
 						alt="Picture of the ticket threads panel."
 						width={384}
 						height={216}
@@ -102,7 +113,7 @@ export default function Page() {
 					<span>configuration-user-forums create</span>
 				</CodeBlock>
 				<Image
-					src="/user-forums-message.png"
+					src="/images/user-forums-message.png"
 					alt="Picture of the user forums thread message."
 					width={720}
 					height={405}
@@ -118,7 +129,7 @@ export default function Page() {
 					<span>configuration-automatic-threads create</span>
 				</CodeBlock>
 				<Image
-					src="/automatic-threads-thread.png"
+					src="/images/automatic-threads-thread.png"
 					alt="Picture of the automatic threads message and thread."
 					width={720}
 					height={405}

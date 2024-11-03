@@ -1,12 +1,16 @@
-import './globals.css';
+import '../globals.css';
+import type { Locale, PageProperties } from '@/i18n/config';
 import { Analytics } from '@vercel/analytics/react';
 import { DM_Sans } from 'next/font/google';
+import Footer from '@/components/Footer';
 import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
-import type { PropsWithChildren } from 'react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { ThemeProvider } from 'next-themes';
 import { cn } from '@/lib/utils';
+import { notFound } from 'next/navigation';
+import { routing } from '@/i18n/routing';
+import { setRequestLocale } from 'next-intl/server';
 
 const font = DM_Sans({ subsets: ['latin'], variable: '--font-sans' });
 const baseURL = new URL(
@@ -33,13 +37,32 @@ export const metadata: Metadata = {
 	metadataBase: baseURL,
 };
 
-export default function RootLayout({ children }: PropsWithChildren) {
+// eslint-disable-next-line unicorn/prevent-abbreviations
+export function generateStaticParams() {
+	return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function RootLayout({ children, params }: PageProperties) {
+	const { locale } = await params;
+
+	if (!routing.locales.includes(locale as Locale)) {
+		notFound();
+	}
+
+	// Enable static rendering.
+	// https://next-intl-docs.vercel.app/docs/getting-started/app-router/with-i18n-routing#static-rendering
+	// https://github.com/amannn/next-intl/issues/663
+	setRequestLocale(locale);
+
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className={cn('bg-background min-h-screen font-sans antialiased', font.variable)}>
 				<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-					<Navbar className="pb-4" />
-					<div className="mx-8 sm:mx-16">{children}</div>
+					<div className="flex h-screen flex-col">
+						<Navbar className="mb-4" />
+						<div className="mx-8 grow sm:mx-16">{children}</div>
+						<Footer className="mt-8" />
+					</div>
 				</ThemeProvider>
 				<Analytics />
 				<SpeedInsights />

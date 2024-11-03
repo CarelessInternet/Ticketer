@@ -1,11 +1,17 @@
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import InternalLink from '@/components/InternalLink';
+import type { PageProperties } from '@/i18n/config';
 import { Plus } from 'lucide-react';
+import { setRequestLocale } from 'next-intl/server';
 
-export default function Home() {
+export default async function Home({ params }: PageProperties) {
+	const { locale } = await params;
+
+	setRequestLocale(locale);
+
 	return (
 		<main className="flex flex-col items-center">
-			<section className="flex h-[85vh] flex-col justify-center">
+			<section className="flex h-[79vh] flex-col justify-center">
 				<div className="inline-block pb-4 text-center">
 					<h1 className="inline bg-gradient-to-r from-indigo-400 to-cyan-500 bg-clip-text text-4xl font-bold tracking-tight text-transparent">
 						Your Discord bot for{' '}
@@ -17,10 +23,10 @@ export default function Home() {
 				</div>
 				<div className="flex justify-center">
 					<Button variant="outline" asChild className="w-fit">
-						<Link href="/links/discord/invite" target="_blank">
+						<InternalLink href="/links/discord/invite" noLocalisation noDefaultStyles>
 							<Plus />
 							Invite to your Discord Server
-						</Link>
+						</InternalLink>
 					</Button>
 				</div>
 			</section>

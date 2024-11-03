@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import { redirect } from '@/i18n/routing';
 
 export default function Page() {
-	redirect('https://discord.gg/9FHagm6343');
+	redirect({ href: 'https://discord.gg/9FHagm6343', locale: 'does not matter' });
 }

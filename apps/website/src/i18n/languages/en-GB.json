@@ -1,5 +1,64 @@
 {
 	"layout": {
-		"test": "Hiii"
+		"navbar": {
+			"navigation": {
+				"documentation": {
+					"title": "Documentation",
+					"routes": {
+						"commands": {
+							"title": "Commands",
+							"description": "View some of the most popular and important commands in Ticketer."
+						},
+						"self-hosting": {
+							"title": "Self-Hosting",
+							"description": "Learn how to self-host the Ticketer bot on any computer that supports Docker."
+						},
+						"development": {
+							"title": "Development",
+							"description": "Instructions on how to develop Ticketer."
+						},
+						"contributing-to-localisation": {
+							"title": "Contributing to Localisation",
+							"description": "Instructions on how to add language translations in Ticketer."
+						}
+					}
+				},
+				"legal": {
+					"title": "Legal",
+					"routes": {
+						"privacy-policy": {
+							"title": "Privacy Policy",
+							"description": "Read the privacy policy for Ticketer."
+						},
+						"terms-of-service": {
+							"title": "Terms of Service",
+							"description": "Read the terms of service for Ticketer."
+						}
+					}
+				}
+			},
+			"items": {
+				"sidebar": "Links & Theme",
+				"invite": "Invite to Discord Server",
+				"support": "Discord Support Server",
+				"github": "GitHub Repository",
+				"theme": {
+					"toggle": {
+						"light": "Light",
+						"dark": "Dark",
+						"system": "System"
+					},
+					"change": "Change Theme"
+				},
+				"locale": {
+					"toggle": {
+						"en-GB": "English (Great Britain)",
+						"en-US": "English (United States)",
+						"sv-SE": "Swedish (Sweden)"
+					},
+					"change": "Change Language"
+				}
+			}
+		}
 	}
 }

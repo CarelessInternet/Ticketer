@@ -1,5 +1,64 @@
 {
 	"layout": {
-		"test": "Hejjjj"
+		"navbar": {
+			"navigation": {
+				"documentation": {
+					"title": "Dokumentation",
+					"routes": {
+						"commands": {
+							"title": "Kommandon",
+							"description": "Visa några av de mest populära och viktiga kommandona i Ticketer."
+						},
+						"self-hosting": {
+							"title": "Självhostning",
+							"description": "Lära hur man självhostar Ticketer boten på vilken dator som helst som stöder Docker."
+						},
+						"development": {
+							"title": "Utveckling",
+							"description": "Instruktioner på hur man utvecklar Ticketer."
+						},
+						"contributing-to-localisation": {
+							"title": "Bidra till Lokalisering",
+							"description": "Instruktioner på hur man lägger till språköversättningar i Ticketer."
+						}
+					}
+				},
+				"legal": {
+					"title": "Jurdiska",
+					"routes": {
+						"privacy-policy": {
+							"title": "Sekretesspolicy",
+							"description": "Läs sekretesspolicyn för Ticketer."
+						},
+						"terms-of-service": {
+							"title": "Användarvillkor",
+							"description": "Läs användarvillkoren för Ticketer."
+						}
+					}
+				}
+			},
+			"items": {
+				"sidebar": "Länkar & Tema",
+				"invite": "Bjud in till Discord-servern",
+				"support": "Discord Stödserver",
+				"github": "GitHub-förvaret",
+				"theme": {
+					"toggle": {
+						"light": "Ljus",
+						"dark": "Mörk",
+						"system": "System"
+					},
+					"change": "Byt Tema"
+				},
+				"locale": {
+					"toggle": {
+						"en-GB": "Engelska (Storbritannien)",
+						"en-US": "Engelska (Förenta staterna)",
+						"sv-SE": "Svenska (Sverige)"
+					},
+					"change": "Byt Språk"
+				}
+			}
+		}
 	}
 }

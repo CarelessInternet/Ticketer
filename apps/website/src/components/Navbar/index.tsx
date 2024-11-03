@@ -1,5 +1,5 @@
+import { Code, Cookie, Globe, Menu, MessageCircleQuestion, PlusCircle, Scale, Server, Terminal } from 'lucide-react';
 import type { HTMLAttributes, JSX, PropsWithChildren } from 'react';
-import { Menu, MessageCircleQuestion, PlusCircle } from 'lucide-react';
 import {
 	NavigationMenu,
 	NavigationMenuContent,
@@ -18,7 +18,7 @@ import Link from './Link';
 import LocaleSwitcher from './LocaleSwitcher';
 import ThemeSwitcher from './ThemeSwitcher';
 import { cn } from '@/lib/utils';
-import { internalRoutes } from '@/lib/routes';
+import { getTranslations } from 'next-intl/server';
 
 function ListItem({
 	children,
@@ -84,30 +84,111 @@ function TooltipLinkItem({ content, external, href, icon }: PropsWithChildren<To
 	);
 }
 
-const tooltipLinkItems = [
-	{
-		content: 'Invite to Discord Server',
-		href: '/links/discord/invite',
-		icon: <PlusCircle />,
-	},
-	{
-		content: 'Discord Support Server',
-		href: '/links/discord/support',
-		icon: <MessageCircleQuestion />,
-	},
-	{
-		content: 'GitHub Repository',
-		external: true,
-		href: 'https://github.com/CarelessInternet/Ticketer',
-		icon: <GitHub />,
-	},
-] satisfies TooltipLinkItems[];
+interface Route {
+	description: string;
+	href: string;
+	icon: JSX.Element;
+	title: string;
+}
 
-export default function Navbar({ className, ...properties }: HTMLAttributes<HTMLElement>) {
+interface RouteMenu {
+	documentation: Route[];
+	legal: Route[];
+}
+
+export default async function Navbar({ className, ...properties }: HTMLAttributes<HTMLElement>) {
+	const t = await getTranslations('layout.navbar');
+
+	const routes = {
+		documentation: [
+			{
+				description: t('navigation.documentation.routes.commands.description'),
+				href: '/docs/commands',
+				icon: <Terminal />,
+				title: t('navigation.documentation.routes.commands.title'),
+			},
+			{
+				description: t('navigation.documentation.routes.self-hosting.description'),
+				href: '/docs/self-hosting',
+				icon: <Server />,
+				title: t('navigation.documentation.routes.self-hosting.title'),
+			},
+			{
+				description: t('navigation.documentation.routes.development.description'),
+				href: '/docs/development',
+				icon: <Code />,
+				title: t('navigation.documentation.routes.development.title'),
+			},
+			{
+				description: t('navigation.documentation.routes.contributing-to-localisation.description'),
+				href: '/docs/contributing-to-localisation',
+				icon: <Globe />,
+				title: t('navigation.documentation.routes.contributing-to-localisation.title'),
+			},
+		],
+		legal: [
+			{
+				description: t('navigation.legal.routes.privacy-policy.description'),
+				href: '/legal/privacy-policy',
+				icon: <Cookie />,
+				title: t('navigation.legal.routes.privacy-policy.title'),
+			},
+			{
+				description: t('navigation.legal.routes.terms-of-service.description'),
+				href: '/legal/terms-of-service',
+				icon: <Scale />,
+				title: t('navigation.legal.routes.terms-of-service.title'),
+			},
+		],
+	} satisfies RouteMenu;
+
+	const tooltipLinkItems = [
+		{
+			content: t('items.invite'),
+			href: '/links/discord/invite',
+			icon: <PlusCircle />,
+		},
+		{
+			content: t('items.support'),
+			href: '/links/discord/support',
+			icon: <MessageCircleQuestion />,
+		},
+		{
+			content: t('items.github'),
+			external: true,
+			href: 'https://github.com/CarelessInternet/Ticketer',
+			icon: <GitHub />,
+		},
+	] satisfies TooltipLinkItems[];
+
+	function LocaleComponent() {
+		return (
+			<LocaleSwitcher
+				translations={{
+					'en-GB': t('items.locale.toggle.en-GB'),
+					'en-US': t('items.locale.toggle.en-US'),
+					'sv-SE': t('items.locale.toggle.sv-SE'),
+				}}
+			/>
+		);
+	}
+
+	function ThemeComponent() {
+		return (
+			<ThemeSwitcher
+				translations={{
+					dark: t('items.theme.toggle.dark'),
+					light: t('items.theme.toggle.light'),
+					system: t('items.theme.toggle.system'),
+				}}
+			/>
+		);
+	}
+
 	return (
 		<header className={cn(className)} {...properties}>
 			<nav className="flex items-center border-b py-2">
-				<div className="mx-8 flex flex-1 justify-around sm:mx-20 md:mx-32 lg:mx-40">
+				<div className="mx-8 flex flex-1 justify-around sm:mx-14 md:mx-28 lg:mx-40">
 					<NavigationMenu className="hidden max-w-none justify-start sm:flex">
 						<NavigationMenuList>
 							<NavigationMenuItem className="flex flex-1 flex-row items-center space-x-2">
@@ -121,10 +202,10 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 					<NavigationMenu className="max-w-none justify-start sm:justify-center">
 						<NavigationMenuList>
 							<NavigationMenuItem>
-								<NavigationMenuTrigger>Documentation</NavigationMenuTrigger>
+								<NavigationMenuTrigger>{t('navigation.documentation.title')}</NavigationMenuTrigger>
 								<NavigationMenuContent>
 									<ul className="grid w-[300px] gap-3 px-2 py-4 md:w-[400px]">
-										{internalRoutes.documentation.map((route) => (
+										{routes.documentation.map((route) => (
 											<ListItem key={route.title} href={route.href} icon={route.icon} title={route.title}>
 												{route.description}
 											</ListItem>
@@ -135,10 +216,10 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 						</NavigationMenuList>
 						<NavigationMenuList>
 							<NavigationMenuItem>
-								<NavigationMenuTrigger>Legal</NavigationMenuTrigger>
+								<NavigationMenuTrigger>{t('navigation.legal.title')}</NavigationMenuTrigger>
 								<NavigationMenuContent>
 									<ul className="grid w-[300px] gap-3 px-2 py-4 md:w-[400px]">
-										{internalRoutes.legal.map((route, index) => (
+										{routes.legal.map((route, index) => (
 											<ListItem key={index} href={route.href} icon={route.icon} title={route.title}>
 												{route.description}
 											</ListItem>
@@ -158,7 +239,7 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 								</SheetTrigger>
 								<SheetContent side="right">
 									<SheetHeader className="pb-2">
-										<SheetTitle>Links & Theme</SheetTitle>
+										<SheetTitle>{t('items.sidebar')}</SheetTitle>
 									</SheetHeader>
 									<div className="space-y-4">
 										{tooltipLinkItems.map((item, index) => (
@@ -173,12 +254,12 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 											</div>
 										))}
 										<div className="flex items-center space-x-2">
-											<LocaleSwitcher />
-											<p>Change Locale</p>
+											<LocaleComponent />
+											<p>{t('items.locale.change')}</p>
 										</div>
 										<div className="flex items-center space-x-2">
-											<ThemeSwitcher />
-											<p>Change Theme</p>
+											<ThemeComponent />
+											<p>{t('items.theme.change')}</p>
 										</div>
 									</div>
 								</SheetContent>
@@ -194,14 +275,14 @@ export default function Navbar({ className, ...properties }: HTMLAttributes<HTML
 									icon={item.icon}
 								/>
 							))}
-							<TooltipItem content="Change Locale">
+							<TooltipItem content={t('items.locale.change')}>
 								<div>
-									<LocaleSwitcher />
+									<LocaleComponent />
 								</div>
 							</TooltipItem>
-							<TooltipItem content="Change Theme">
+							<TooltipItem content={t('items.theme.change')}>
 								<div>
-									<ThemeSwitcher />
+									<ThemeComponent />
 								</div>
 							</TooltipItem>
 						</div>

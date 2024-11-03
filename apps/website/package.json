@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "next dev --turbopack --port 2027",
 		"debug": "pnpm run dev",
-		"build": "next build",
+		"build": "NODE_ENV=production next build",
 		"start": "next start",
 		"lint": "next lint"
 	},

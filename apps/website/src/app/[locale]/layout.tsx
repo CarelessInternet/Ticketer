@@ -1,5 +1,5 @@
 import '../globals.css';
-import { type Locale, type PageProperties, routing } from '@/i18n/routing';
+import { type LayoutProperties, type Locale, routing } from '@/i18n/routing';
 import { Analytics } from '@vercel/analytics/react';
 import { DM_Sans } from 'next/font/google';
 import Footer from '@/components/Footer';
@@ -41,7 +41,7 @@ export function generateStaticParams() {
 	return routing.locales.map((locale) => ({ locale }));
 }
 
-export default async function RootLayout({ children, params }: PageProperties) {
+export default async function RootLayout({ children, params }: LayoutProperties) {
 	const { locale } = await params;
 
 	if (!routing.locales.includes(locale as Locale)) {
@@ -54,7 +54,7 @@ export default async function RootLayout({ children, params }: PageProperties) {
 	setRequestLocale(locale);
 
 	return (
-		<html lang="en" suppressHydrationWarning>
+		<html lang={locale.slice(0, 2)} suppressHydrationWarning>
 			<body className={cn('bg-background min-h-screen font-sans antialiased', font.variable)}>
 				<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
 					<div className="flex h-screen flex-col">

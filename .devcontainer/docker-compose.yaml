@@ -46,7 +46,7 @@ services:
     # Overrides default command so things don't shut down after the process ends.
     command: /bin/sh -c "while sleep 1000; do :; done"
     environment:
-      - NODE_ENV=development
+      NODE_ENV: "development"
 
 # Important to make connections from the bot to the database work!
 networks:

@@ -5,7 +5,11 @@ import { Moon, Sun } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useTheme } from 'next-themes';
 
-export default function ThemeSwitcher() {
+export default function ThemeSwitcher({
+	translations,
+}: {
+	translations: { light: string; dark: string; system: string };
+}) {
 	const { setTheme } = useTheme();
 
 	return (
@@ -23,21 +27,21 @@ export default function ThemeSwitcher() {
 						setTheme('light');
 					}}
 				>
-					☀️ Light
+					☀️ {translations.light}
 				</DropdownMenuItem>
 				<DropdownMenuItem
 					onClick={() => {
 						setTheme('dark');
 					}}
 				>
-					🌙 Dark
+					🌙 {translations.dark}
 				</DropdownMenuItem>
 				<DropdownMenuItem
 					onClick={() => {
 						setTheme('system');
 					}}
 				>
-					🖥️ System
+					🖥️ {translations.system}
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

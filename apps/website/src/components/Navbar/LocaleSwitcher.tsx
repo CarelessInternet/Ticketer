@@ -5,10 +5,8 @@ import { GB, SE, US } from 'country-flag-icons/react/3x2';
 import { type Locale, usePathname, useRouter } from '@/i18n/routing';
 import { Button } from '../ui/button';
 import { Languages } from 'lucide-react';
-// import { useTranslations } from 'next-intl';
 
-export default function LocaleSwitcher() {
-	// const t = useTranslations('layout.navbar.locale.toggle');
+export default function LocaleSwitcher({ translations }: { translations: Record<Locale, string> }) {
 	const pathname = usePathname();
 	const router = useRouter();
 
@@ -31,8 +29,7 @@ export default function LocaleSwitcher() {
 					}}
 				>
 					<GB className="mr-2 h-4 w-4" />
-					{/* {t('en-GB')} */}
-					British English
+					{translations['en-GB']}
 				</DropdownMenuItem>
 				<DropdownMenuItem
 					onClick={() => {
@@ -40,8 +37,7 @@ export default function LocaleSwitcher() {
 					}}
 				>
 					<US className="mr-2 h-4 w-4" />
-					{/* {t('en-US')} */}
-					American English
+					{translations['en-US']}
 				</DropdownMenuItem>
 				<DropdownMenuItem
 					onClick={() => {
@@ -49,8 +45,7 @@ export default function LocaleSwitcher() {
 					}}
 				>
 					<SE className="mr-2 h-4 w-4" />
-					{/* {t('sv-SE')} */}
-					Svenska
+					{translations['sv-SE']}
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

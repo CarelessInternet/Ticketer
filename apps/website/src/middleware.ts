@@ -15,6 +15,6 @@ export const config = {
 		 * - favicon.ico, sitemap.xml, robots.txt (metadata files)
 		 * - link routes (which redirect and therefore do not need localisations)
 		 */
-		'/((?!api|_vercel|_next/static|_next/image|images|favicon.ico|sitemap.xml|robots.txt|links).*)',
+		'/((?!api|_vercel/insights|_vercel/speed-insights|_next/static|_next/image|images|favicon.ico|sitemap.xml|robots.txt|links).*)',
 	],
 };

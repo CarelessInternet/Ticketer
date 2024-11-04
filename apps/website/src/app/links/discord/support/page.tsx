@@ -1,5 +1,6 @@
-import { redirect } from '@/i18n/routing';
+// eslint-disable-next-line no-restricted-imports
+import { redirect } from 'next/navigation';
 
 export default function Page() {
-	redirect({ href: 'https://discord.gg/9FHagm6343', locale: 'does not matter' });
+	redirect('https://discord.gg/9FHagm6343');
 }

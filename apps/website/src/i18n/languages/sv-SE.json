@@ -11,7 +11,7 @@
 						},
 						"self-hosting": {
 							"title": "Självhostning",
-							"description": "Lära hur man självhostar Ticketer boten på vilken dator som helst som stöder Docker."
+							"description": "Lär hur man självhostar Ticketer boten på vilken dator som helst som stöder Docker."
 						},
 						"development": {
 							"title": "Utveckling",

@@ -1,6 +1,6 @@
 import '../globals.css';
-import { type LayoutProperties, type Locale, routing } from '@/i18n/routing';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { type LayoutProperties, type Locale, type PageProperties, routing } from '@/i18n/routing';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { Analytics } from '@vercel/analytics/react';
 import { DM_Sans } from 'next/font/google';
 import Footer from '@/components/Footer';
@@ -10,12 +10,20 @@ import { NextIntlClientProvider } from 'next-intl';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { ThemeProvider } from 'next-themes';
 import { cn } from '@/lib/utils';
+import { mergeMetadata } from '@/lib/mergeMetadata';
 import { notFound } from 'next/navigation';
 
 const font = DM_Sans({ subsets: ['latin'], variable: '--font-sans' });
 const baseURL = new URL(
 	process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : `http://localhost:${process.env.PORT ?? String(2027)}`,
 );
+
+export async function generateMetadata({ params }: PageProperties): Promise<Metadata> {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: 'pages.index.metadata' });
+
+	return mergeMetadata({ description: t('description'), locale, title: t('title') });
+}
 
 export const metadata: Metadata = {
 	title: 'Ticketer',

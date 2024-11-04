@@ -10,6 +10,7 @@ import ScrollLink from '@/components/ScrollLink';
 import SectionDivider from '@/components/SectionDivider';
 import Title from '@/components/Title';
 import { formatDate } from '@/lib/utils';
+import { mergeMetadata } from '@/lib/mergeMetadata';
 
 function List({ children }: PropsWithChildren) {
 	return <ul className="list-disc pb-4 pl-10 font-medium">{children}</ul>;
@@ -19,14 +20,7 @@ export async function generateMetadata({ params }: PageProperties): Promise<Meta
 	const { locale } = await params;
 	const t = await getTranslations({ locale, namespace: 'layout.navbar.navigation.legal.routes.privacy-policy' });
 
-	return {
-		title: t('title'),
-		description: t('description'),
-		openGraph: {
-			title: t('title'),
-			description: t('description'),
-		},
-	};
+	return mergeMetadata({ description: t('description'), locale, title: t('title') });
 }
 
 export default async function Page({ params }: PageProperties) {

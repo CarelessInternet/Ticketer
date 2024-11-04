@@ -73,6 +73,10 @@
 	},
 	"pages": {
 		"index": {
+			"metadata": {
+				"title": "Homepage",
+				"description": "The Discord bot for creating tickets with threads."
+			},
 			"heading": {
 				"1": "Your Discord bot for",
 				"2": "tickets with threads"

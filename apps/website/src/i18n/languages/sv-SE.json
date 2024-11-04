@@ -73,6 +73,10 @@
 	},
 	"pages": {
 		"index": {
+			"metadata": {
+				"title": "Hemsida",
+				"description": "Discord-boten för att skapa stödbiljetter med trådar."
+			},
 			"heading": {
 				"1": "Din Discord-bot för",
 				"2": "stödbiljetter med trådar"

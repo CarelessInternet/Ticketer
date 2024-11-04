@@ -6,19 +6,13 @@ import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
 import Title from '@/components/Title';
 import { formatDate } from '@/lib/utils';
+import { mergeMetadata } from '@/lib/mergeMetadata';
 
 export async function generateMetadata({ params }: PageProperties): Promise<Metadata> {
 	const { locale } = await params;
 	const t = await getTranslations({ locale, namespace: 'layout.navbar.navigation.legal.routes.terms-of-service' });
 
-	return {
-		title: t('title'),
-		description: t('description'),
-		openGraph: {
-			title: t('title'),
-			description: t('description'),
-		},
-	};
+	return mergeMetadata({ description: t('description'), locale, title: t('title') });
 }
 
 export default async function Page({ params }: PageProperties) {

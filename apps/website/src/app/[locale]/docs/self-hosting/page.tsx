@@ -10,6 +10,7 @@ import ScrollLink from '@/components/ScrollLink';
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import Title from '@/components/Title';
 import dracula from 'react-syntax-highlighter/dist/esm/styles/prism/dracula';
+import { mergeMetadata } from '@/lib/mergeMetadata';
 import yaml from 'react-syntax-highlighter/dist/esm/languages/prism/yaml';
 
 SyntaxHighlighter.registerLanguage('yaml', yaml);
@@ -100,14 +101,7 @@ export async function generateMetadata({ params }: PageProperties): Promise<Meta
 	const { locale } = await params;
 	const t = await getTranslations({ locale, namespace: 'layout.navbar.navigation.documentation.routes.self-hosting' });
 
-	return {
-		title: t('title'),
-		description: t('description'),
-		openGraph: {
-			title: t('title'),
-			description: t('description'),
-		},
-	};
+	return mergeMetadata({ description: t('description'), locale, title: t('title') });
 }
 
 export default async function Page({ params }: PageProperties) {

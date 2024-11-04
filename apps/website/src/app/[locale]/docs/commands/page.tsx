@@ -9,19 +9,13 @@ import RichText from '@/components/RichText';
 import ScrollLink from '@/components/ScrollLink';
 import SectionDivider from '@/components/SectionDivider';
 import Title from '@/components/Title';
+import { mergeMetadata } from '@/lib/mergeMetadata';
 
 export async function generateMetadata({ params }: PageProperties): Promise<Metadata> {
 	const { locale } = await params;
 	const t = await getTranslations({ locale, namespace: 'layout.navbar.navigation.documentation.routes.commands' });
 
-	return {
-		title: t('title'),
-		description: t('description'),
-		openGraph: {
-			title: t('title'),
-			description: t('description'),
-		},
-	};
+	return mergeMetadata({ description: t('description'), locale, title: t('title') });
 }
 
 export default async function Page({ params }: PageProperties) {

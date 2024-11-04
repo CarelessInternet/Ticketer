@@ -7,7 +7,7 @@
 					"routes": {
 						"commands": {
 							"title": "Kommandon",
-							"description": "Visa några av de mest populära och viktiga kommandona i Ticketer."
+							"description": "Se några av de mest populära och viktiga kommandona i Ticketer."
 						},
 						"self-hosting": {
 							"title": "Självhostning",
@@ -27,8 +27,8 @@
 					"title": "Jurdiska",
 					"routes": {
 						"privacy-policy": {
-							"title": "Sekretesspolicy",
-							"description": "Läs sekretesspolicyn för Ticketer."
+							"title": "Integritetspolicy",
+							"description": "Läs integritetspolicyn för Ticketer."
 						},
 						"terms-of-service": {
 							"title": "Användarvillkor",
@@ -57,6 +57,293 @@
 						"sv-SE": "Svenska (Sverige)"
 					},
 					"change": "Byt Språk"
+				}
+			}
+		},
+		"footer": {
+			"license": "Släppt under Apache-2.0 licensen.",
+			"copyright": "Upphovsrätt © Ticketer"
+		}
+	},
+	"components": {
+		"codeblock": {
+			"copied": "Kopierad till urklipp!",
+			"copy": "Kopiera"
+		}
+	},
+	"pages": {
+		"index": {
+			"heading": {
+				"1": "Din Discord-bot för",
+				"2": "stödbiljetter med trådar"
+			},
+			"button": "Bjud in till din Discord-server"
+		},
+		"docs": {
+			"commands": {
+				"heading": {
+					"title": "Ticketer Kommandon",
+					"description": "Läs om några av de viktiga kommandona i Ticketer som moderator eller användare av boten!"
+				},
+				"content": {
+					"thread-tickets": {
+						"title": "Trådstödbiljetter",
+						"description": "Botens huvudfokus ligger på trådar som fungerar som stödbiljetter. Det finns flera delar till denna funktion som kan verka överväldigande till en början, men som fungerar bra i praktiken.",
+						"sections": {
+							"configuring-thread-tickets": {
+								"title": "Konfigurera Trådstödbiljetter",
+								"paragraphs": {
+									"1": "För att komma igång med trådstödbiljetter som moderator, kör underkommandona under underkommando-gruppen <i>/configuration-ticket-threads global-settings</i>. För närvarande finns endast en inställning att konfigurera: antalet aktiva stödbiljetter en användare får ha globalt samtidigt.",
+									"2": "Därefter kan du skapa en kategori med en emoji (valfritt), titel och beskrivning med kommandot nedan.",
+									"3": "Sedan behöver du välja \"stödbiljettansvariga\" som är ansvariga för kategorin samt textkanalen där dessa stödbiljetter hamnar. Dessa inställningar, och fler, finns under underkommandot nedan:"
+								},
+								"imageAlts": {
+									"1": "Bild på menyn för att redigera trådstödbiljetter."
+								}
+							},
+							"creating-a-ticket": {
+								"title": "Skapa en Stödbiljett",
+								"paragraphs": {
+									"1": "För att skapa en stödbiljett, använd kommandot nedan: /ticket",
+									"2": "Ett exempel på en stödbiljett ser ut som följande bild:"
+								},
+								"imageAlts": {
+									"1": "Bild på en ny trådstödbiljett."
+								},
+								"commands": {
+									"1": "stödbiljett"
+								}
+							},
+							"creating-a-panel": {
+								"title": "Skapa en Panel",
+								"paragraphs": {
+									"1": "Om du vill skapa en panel där användare kan klicka på en knapp för att skapa en stödbiljett, använd kommandot nedan. Du kan också redigera titeln och beskrivningen av inbäddningen."
+								},
+								"imageAlts": {
+									"1": "Bild på stödbiljettpanelen."
+								}
+							},
+							"ticket-actions": {
+								"title": "Stödbiljettåtgärder",
+								"paragraphs": {
+									"1": "Det finns flera åtgärder du kan utföra på en stödbiljett. Detta inkluderar att byta namn på titeln, låsa tråden, stänga tråden, låsa och stänga tråden samt slutligen ta bort stödbiljetten. Som stödbiljettskapare eller ansvarig kan du utföra dessa åtgärder antingen via kommandona eller knapparna i det ursprungliga stödbiljettmeddelandet."
+								}
+							}
+						}
+					},
+					"user-forums": {
+						"title": "Användarforum",
+						"description": "Förutom trådstödbiljetter tillhandahåller Ticketer ett sätt att skicka ett meddelande varje gång en ny tråd skapas i ett specificerat forum. Underkommandot för att skapa en ny användarforumkonfiguration är följande:",
+						"imageAlt": "Bild på användarforumets trådmeddelande."
+					},
+					"automatic-threads": {
+						"title": "Automatiska Trådar",
+						"description": "Liknande användarforum kan Ticketer skapa en tråd under ett nytt meddelande som skickas i en specificerad textkanal. Underkommandot nedan kan användas för att skapa en ny konfiguration för automatiska trådar.",
+						"imageAlt": "Bild på meddelandet och tråden för automatiska trådar."
+					},
+					"miscellaneous": {
+						"title": "Övrigt",
+						"description": "Ett populärt kommando för servermoderatorer är det vanliga rensningskommandot:",
+						"command": "rensa"
+					}
+				}
+			},
+			"self-hosting": {
+				"heading": {
+					"title": "Självhosta Ticketer",
+					"description": "Vill du köra Ticketer-boten på din egen dator eller server? Det enda programmet du behöver för att göra detta är <linkDocker>Docker Engine</linkDocker>. Behöver du hjälp? Gå med i <linkSupport>Ticketers stödserver</linkSupport>! Den här guiden antar att du kör Linux för att självhosta boten, men vilket annat operativsystem som helst bör också fungera bra."
+				},
+				"content": {
+					"creating-the-compose-file": {
+						"title": "Skapa Compose-filen",
+						"paragraphs": {
+							"1": "Skapa en mapp med valfritt namn (t.ex. \"Ticketer\") och skapa sedan en fil i den mappen med namnet \"compose.yaml\".",
+							"2": "Kopiera och klistra in följande innehåll i den skapade filen:"
+						}
+					},
+					"environment-variables": {
+						"title": "Miljövariabler",
+						"paragraphs": {
+							"1": "Du behöver autentiseringsuppgifter för Discord-boten/applikationen. Om du inte redan gjort det, skapa en ny <linkDiscordApplication>Discord-applikation</linkDiscordApplication> (aktivera \"Server Members\"-avsikten!) och redigera följande variabler med lämpliga autentiseringsuppgifter i en ny fil med namnet \"<i>.env.bot.production.local</i>\". Variabeln <i>DISCORD_GUILD_ID</i> är servern (ID) där privata kommandon används. Placera uppgifterna inom citattecken för variablerna som har dem!",
+							"2": "Databasen kräver också några autentiseringsuppgifter för att köras. Skapa en fil med namnet \".env.database.production.local\" och skapa sedan inloggningsuppgifter enligt följande mall. Du kan ändra varje variabel till vilket värde du vill förutom <i>DB_HOST</i>."
+						}
+					},
+					"running-the-bot": {
+						"title": "Köra Boten",
+						"paragraphs": {
+							"1": "Nu är det dags att köra boten! Kör följande kommando för att starta databasen och boten (detta kan ta lite tid):",
+							"2": "För att distribuera botens kommandon, kör följande rad:",
+							"3": "När kommandona har distribuerats, kör <i>migrera</i>-kommandot i Discord för att göra eventuella databasuppdateringar som kan behövas:",
+							"4": "Om du vill stoppa databasen och boten, kör kommandona nedan:"
+						},
+						"command": "migrera"
+					},
+					"accessing-the-database": {
+						"title": "Åtkomst till Databasen",
+						"description": "Om du vill komma åt databasen kan du göra det genom att köra de två kommandona nedan och ersätta \"<i>USERNAME</i>\" med användarnamnet du valde i miljövariabeln:"
+					}
+				}
+			},
+			"development": {
+				"title": "Utveckla Ticketer",
+				"paragraphs": {
+					"1": "Den här sidan beskriver hur du startar en <linkVSCode>Visual Studio Code</linkVSCode>-session med hjälp av <linkDevContainers>Dev Containers</linkDevContainers> för att redigera koden i Ticketer.",
+					"2": "Den programvara du behöver ha installerad är <linkDockerDesktop>Docker Desktop</linkDockerDesktop>. <linkDockerEngine>Docker Engine</linkDockerEngine> bör också fungera bra om du inte vill använda Docker Desktop.",
+					"3": "Du behöver också ha Dev Containers-tillägget installerat i Visual Studio Code."
+				},
+				"sections": {
+					"setting-up": {
+						"title": "Komma Igång",
+						"paragraphs": {
+							"1": "Öppna Visual Studio Code och öppna kommandopaletten inuti kodeditorn och kör följande kommando:",
+							"2": "Du blir ombedd att ange en länk till ett repository. Klistra in Ticketers GitHub-länk och välj därefter huvudgrenen (main branch):",
+							"3": "När Dev Containern har startat kan du börja koda. Så enkelt är det! Glöm inte att skapa den nödvändiga utvecklingsmiljöfilen för boten för att kunna köra boten!"
+						}
+					}
+				}
+			},
+			"contributing-to-localisation": {
+				"title": "Bidra till Lokalisering",
+				"description": "Sedan version 3 stöder Ticketer-boten lokalisering baserat på både användarens och serverns språk. Vi välkomnar alla bidrag till lokalisering! Den här sidan förklarar hur du lägger till lokalisering för både boten och webbplatsen. Den här guiden utgår från att du använder <linkVSCode>Visual Studio Code</linkVSCode> för att redigera filerna.",
+				"sections": {
+					"prerequisites-before-contributing": {
+						"title": "Förutsättningar Innan Du Bidrar",
+						"description": "Den här guiden utgår från att du har kunskap om Git och att skapa pull requests om du vill sammanfoga ändringarna i Ticketers kodbas, samt att du redan har konfigurerat kodbasen för att köra den. Om du vill bidra till detta projekt men saknar dessa kunskaper är det dags att lära dig grundläggande Git och GitHub!"
+					},
+					"what-locales-can-be-supported": {
+						"title": "Vilka språk kan stödjas?",
+						"description": "De språk som kan stödjas i boten finns i dokumentationen för <linkDiscordReference>Discord Developers Documentation Reference</linkDiscordReference>. Webbplatsen bör helst ha samma urval av språk som boten, men det är inte ett krav."
+					},
+					"getting-started-bot": {
+						"title": "Komma Igång (Bot)",
+						"paragraphs": {
+							"1": "För att skapa en ny språkversion, skapa en mapp i katalogen <i>/apps/bot/src/i18n</i> med mappnamnet som ett av språken från språklistan, t.ex. \"fr\". För att förenkla processen, kopiera varje fil från mappen \"sv-SE\" och klistra in dem i din nya lokaliseringsmapp. Mappen bör se ut ungefär så här:",
+							"2": "Kör sedan \"i18n\"-kommandot i NPM längst ner till vänster i utforskaren. Detta kommer att generera de nödvändiga typerna och kontrollera filerna för eventuella saknade eller ogiltiga lokaliseringar.",
+							"3": "Slutligen kan du börja redigera filerna och lägga till de korrekta översättningarna för ditt valda språk! Om du behöver en referens för översättningen så kan du öppna den brittiska engelska filen och översätta därefter. Lycka till med översättningen!"
+						},
+						"imageAlts": {
+							"1": "Bild av en exempel-lokaliseringsmapp.",
+							"2": "Bild av i18n NPM-skriptet."
+						}
+					},
+					"getting-started-website": {
+						"title": "Komma Igång (Webbplats)",
+						"description": "Att komma igång med att översätta webbplatsen är enklare; lägg bara till ditt valda språk i <i>locales</i> fältet i <i>/apps/website/src/i18n/routing.ts</i>. Skapa därefter en fil med samma namnkonvention som de andra filerna i mappen languages men med ditt valda språk. Du kan kopiera och klistra in innehållet från <i>sv-SE.json</i> (eller den engelska versionen) precis som i botversionen. För att se dina översättningar, kör \"dev\"-skriptet i NPM och öppna länken."
+					}
+				}
+			}
+		},
+		"legal": {
+			"privacy-policy": {
+				"heading": {
+					"title": "Ticketer Integritetspolicy",
+					"description": "Den här sidan uppdaterades senast den {lastUpdated}."
+				},
+				"sections": {
+					"website": {
+						"title": "Webbplats",
+						"sections": {
+							"1": {
+								"title": "Vilken användarinformation samlas in?",
+								"description": "Den anonyma användarinformation som samlas in av Ticketers webbplats är följande:",
+								"list": {
+									"1": "Geolocation",
+									"2": "Enhetens OS & Version",
+									"3": "Webbläsare & Version",
+									"4": "Enhetstyp"
+								}
+							},
+							"2": {
+								"title": "Hur samlas användarinformationen in?",
+								"description": "Enligt <linkVercelWebAnalytics>Vercel Web Analytics</linkVercelWebAnalytics> identifieras besökare av en hash som skapas från den inkommande förfrågan. Cookies används inte för att spåra användare. Sidvisningar spåras genom webbläsarens inbyggda API."
+							},
+							"3": {
+								"title": "Hur används personuppgifterna?",
+								"description": "Den insamlade informationen används för analytiska syften och kan användas för att förbättra användarupplevelsen."
+							},
+							"4": {
+								"title": "Delas personuppgifterna?",
+								"description": "Denna information skickas till <linkVercel>Vercel</linkVercel> för att tillhandahålla analysdata."
+							},
+							"5": {
+								"title": "Hur kan jag kontakta er för frågor eller bekymmer?",
+								"description": "Du kan gå med i den officiella <linkSupport>Discord-supportservern</linkSupport> för att ställa frågor eller uttrycka bekymmer angående Ticketer."
+							}
+						}
+					},
+					"discord-bot": {
+						"title": "Discord-Bot",
+						"sections": {
+							"1": {
+								"title": "Vad menar ni med \"Discord-data?\"",
+								"description": "Från Discord Developers gamla <linkDiscordPP>integritetspolicy</linkDiscordPP>:",
+								"quote": "“Discord Data” innebär all data som du erhåller via API:erna."
+							},
+							"2": {
+								"title": "Vilken Discord-data lagrar ni?",
+								"paragraphs": {
+									"1": {
+										"text": "Ticketer-boten kan lagra följande relevanta data från Discord när användaren begär det genom ett applikationskommando:",
+										"list": {
+											"1": "Guild-, kanal-, roll- och användar-ID",
+											"2": "Meddelandeinnehåll från modaler",
+											"3": "Data som skickas genom kommandoalternativ"
+										}
+									},
+									"2": {
+										"text": "Dessutom kan Ticketer lagra data som inte begärs genom kommandon, såsom:",
+										"list": {
+											"1": "Trådens status"
+										}
+									}
+								}
+							},
+							"3": {
+								"title": "Varför behöver ni datan?",
+								"description": "All data som Ticketer samlar in är nödvändig för att hålla applikationen igång och fungera som förväntat."
+							},
+							"4": {
+								"title": "Hur använder ni datan?",
+								"description": "Informationen används för att tillhandahålla en kvalitativ användarupplevelse i en Discord-server, till exempel för att skapa supportbiljetter, automatiskt skicka ett meddelande vid trådskapande eller automatiskt skapa en tråd under ett meddelande."
+							},
+							"5": {
+								"title": "Hur länge lagras datan?",
+								"description": "Majoriteten av datan lagras permanent. Ett undantag gäller för trådstödbiljetter, som automatiskt tas bort när tråden tas bort."
+							},
+							"6": {
+								"title": "Delas Discord-data med företag eller personer?",
+								"description": "Nej."
+							},
+							"7": {
+								"title": "Hur kan användare kontakta er om de har bekymmer över er bot?",
+								"description": "De kan gå med i den <linkSupport>officiella supportservern på Discord</linkSupport> eller öppna ett ärende/diskussion på Ticketers GitHub-sida."
+							},
+							"8": {
+								"title": "Hur kan användare få sin data borttagen?",
+								"description": "De kan göra något av ovanstående."
+							}
+						}
+					}
+				}
+			},
+			"terms-of-service": {
+				"heading": {
+					"title": "Ticketer Användarvillkor",
+					"description": "Den här sidan uppdaterades senast den {lastUpdated}."
+				},
+				"sections": {
+					"who-can-use-the-service": {
+						"title": "Vem kan använda tjänsten?",
+						"description": "Genom att använda Ticketer godkänner du både integritetspolicyn och användarvillkoren. Användarvillkoren kan ändras när som helst utan föregående meddelande. Du godkänner även att du är över 13 år, eller över den minimiålder som krävs för att använda Discord i ditt land, beroende på vilket som är högst."
+					},
+					"content": {
+						"title": "Innehåll",
+						"description": "Du är ansvarig för det innehåll som du skapar i all data som lagras på Ticketer. Ticketer filtrerar, verifierar eller stöder inte det innehåll som användare skapar."
+					},
+					"termination": {
+						"title": "Uppsägning",
+						"description": "Ticketer förbehåller sig rätten att radera data utan varning, särskilt om en server bedöms bryta mot exempelvis lagar eller användarvillkor. Dessa åtgärder är oåterkalleliga."
+					}
 				}
 			}
 		}

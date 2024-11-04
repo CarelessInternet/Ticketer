@@ -36,7 +36,7 @@ export default class extends Command.Interaction {
 
 		const commandDocumentation = hyperlink(
 			translations.fields[1].links.commandDocumentation(),
-			new URL('/docs/commands', environment.WEBSITE_URL).toString(),
+			new URL('/en-GB/docs/commands', environment.WEBSITE_URL).toString(),
 		);
 		const website = hyperlink(translations.fields[1].links.website(), environment.WEBSITE_URL);
 		const supportServer = environment.DISCORD_SUPPORT_SERVER

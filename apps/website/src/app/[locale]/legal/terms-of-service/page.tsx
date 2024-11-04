@@ -1,52 +1,50 @@
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Divider from '@/components/Divider';
 import type { Metadata } from 'next';
 import type { PageProperties } from '@/i18n/routing';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
 import Title from '@/components/Title';
-import { setRequestLocale } from 'next-intl/server';
+import { formatDate } from '@/lib/utils';
 
-export const metadata: Metadata = {
-	title: 'Ticketer - Terms of Service',
-	description: 'The terms of service for Ticketer.',
-	openGraph: {
-		title: 'Ticketer - Terms of Service',
-		description: 'The terms of service for Ticketer.',
-	},
-};
+export async function generateMetadata({ params }: PageProperties): Promise<Metadata> {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: 'layout.navbar.navigation.legal.routes.terms-of-service' });
+
+	return {
+		title: t('title'),
+		description: t('description'),
+		openGraph: {
+			title: t('title'),
+			description: t('description'),
+		},
+	};
+}
 
 export default async function Page({ params }: PageProperties) {
 	const { locale } = await params;
 
 	setRequestLocale(locale);
 
+	const t = await getTranslations('pages.legal.terms-of-service');
+
 	return (
 		<>
 			<Divider>
-				<Title>Ticketer Terms of Service</Title>
-				<Paragraph>This page was last updated on 2024-02-08.</Paragraph>
+				<Title>{t('heading.title')}</Title>
+				<Paragraph>{t('heading.description', { lastUpdated: formatDate(new Date('2024-11-04')) })}</Paragraph>
 			</Divider>
 			<Divider>
-				<ScrollLink target="who-can-use-the-service">Who can use the service?</ScrollLink>
-				<Paragraph>
-					By using Ticketer, you are agreeing to both the privacy policy and terms of service. The terms of service may
-					be changed at any moment without notice. You are also agreeing that you are over 13 years old, or above the
-					minimum age to use Discord in your country, whichever is higher.
-				</Paragraph>
+				<ScrollLink target="who-can-use-the-service">{t('sections.who-can-use-the-service.title')}</ScrollLink>
+				<Paragraph>{t('sections.who-can-use-the-service.description')}</Paragraph>
 			</Divider>
 			<Divider>
-				<ScrollLink target="content">Content</ScrollLink>
-				<Paragraph>
-					You are responsible for the content created by you in any stored data on Ticketer. Ticketer does not filter,
-					verify, nor condone the content created by users.
-				</Paragraph>
+				<ScrollLink target="content">{t('sections.content.title')}</ScrollLink>
+				<Paragraph>{t('sections.content.description')}</Paragraph>
 			</Divider>
 			<Divider>
-				<ScrollLink target="termination">Termination</ScrollLink>
-				<Paragraph>
-					Ticketer reserves the right to delete data without warning, especially if a server is found to be violating
-					including but not limited to: laws and terms of services. These actions are irreversible.
-				</Paragraph>
+				<ScrollLink target="termination">{t('sections.termination.title')}</ScrollLink>
+				<Paragraph>{t('sections.termination.description')}</Paragraph>
 			</Divider>
 		</>
 	);

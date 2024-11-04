@@ -5,6 +5,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/t
 import { Copy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from './ui/use-toast';
+import { useTranslations } from 'next-intl';
 
 interface CodeBlockProperties extends HTMLAttributes<HTMLElement> {
 	clipboardText: string;
@@ -22,11 +23,12 @@ export default function CodeBlock({
 	...properties
 }: PropsWithChildren<CodeBlockProperties>) {
 	const { toast } = useToast();
+	const t = useTranslations('components.codeblock');
 
 	const saveToClipboard = (text: string) =>
 		navigator.clipboard
 			.writeText(text)
-			.then(() => toast({ title: 'Copied to clipboard!' }))
+			.then(() => toast({ title: t('copied') }))
 			.catch((error: unknown) => {
 				console.error(error);
 			});
@@ -67,7 +69,7 @@ export default function CodeBlock({
 								/>
 							</TooltipTrigger>
 							<TooltipContent>
-								<p>Copy</p>
+								<p>{t('copy')}</p>
 							</TooltipContent>
 						</Tooltip>
 					</TooltipProvider>

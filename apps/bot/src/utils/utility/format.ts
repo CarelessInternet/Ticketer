@@ -6,7 +6,7 @@ export const formatDateLong = (date = new Date()) =>
 	}).format(date);
 
 export const formatDateShort = (date = new Date()) =>
-	Intl.DateTimeFormat('en-ZA', {
+	Intl.DateTimeFormat('en-CA', {
 		day: '2-digit',
 		month: '2-digit',
 		year: 'numeric',

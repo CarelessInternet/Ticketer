@@ -5,10 +5,12 @@ import { GB, SE, US } from 'country-flag-icons/react/3x2';
 import { type Locale, usePathname, useRouter } from '@/i18n/routing';
 import { Button } from '../ui/button';
 import { Languages } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
-export default function LocaleSwitcher({ translations }: { translations: Record<Locale, string> }) {
+export default function LocaleSwitcher() {
 	const pathname = usePathname();
 	const router = useRouter();
+	const t = useTranslations('layout.navbar.items.locale');
 
 	function goToLocale(locale: Locale) {
 		router.replace(pathname, { locale });
@@ -19,7 +21,7 @@ export default function LocaleSwitcher({ translations }: { translations: Record<
 			<DropdownMenuTrigger asChild>
 				<Button variant="outline" size="icon" className="duration-0 dark:hover:text-cyan-400 dark:focus:text-cyan-400">
 					<Languages />
-					<span className="sr-only">Change locale</span>
+					<span className="sr-only">{t('change')}</span>
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end">
@@ -29,7 +31,7 @@ export default function LocaleSwitcher({ translations }: { translations: Record<
 					}}
 				>
 					<GB className="mr-2 h-4 w-4" />
-					{translations['en-GB']}
+					{t('toggle.en-GB')}
 				</DropdownMenuItem>
 				<DropdownMenuItem
 					onClick={() => {
@@ -37,7 +39,7 @@ export default function LocaleSwitcher({ translations }: { translations: Record<
 					}}
 				>
 					<US className="mr-2 h-4 w-4" />
-					{translations['en-US']}
+					{t('toggle.en-US')}
 				</DropdownMenuItem>
 				<DropdownMenuItem
 					onClick={() => {
@@ -45,7 +47,7 @@ export default function LocaleSwitcher({ translations }: { translations: Record<
 					}}
 				>
 					<SE className="mr-2 h-4 w-4" />
-					{translations['sv-SE']}
+					{t('toggle.sv-SE')}
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

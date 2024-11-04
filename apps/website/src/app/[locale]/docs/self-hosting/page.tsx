@@ -1,15 +1,15 @@
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import CodeBlock from '@/components/CodeBlock';
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
-import InternalLink from '@/components/InternalLink';
 import type { Metadata } from 'next';
 import type { PageProperties } from '@/i18n/routing';
 import Paragraph from '@/components/Paragraph';
+import RichText from '@/components/RichText';
 import ScrollLink from '@/components/ScrollLink';
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import Title from '@/components/Title';
 import dracula from 'react-syntax-highlighter/dist/esm/styles/prism/dracula';
-import { setRequestLocale } from 'next-intl/server';
 import yaml from 'react-syntax-highlighter/dist/esm/languages/prism/yaml';
 
 SyntaxHighlighter.registerLanguage('yaml', yaml);
@@ -96,37 +96,47 @@ function EnvironmentHighlight({
 	);
 }
 
-export const metadata = {
-	title: 'Ticketer - Self-Hosting',
-	description: 'Documentation on how to self-host the Ticketer bot.',
-	openGraph: {
-		title: 'Ticketer - Self-Hosting',
-		description: 'Documentation on how to self-host the Ticketer bot.',
-	},
-} satisfies Metadata;
+export async function generateMetadata({ params }: PageProperties): Promise<Metadata> {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: 'layout.navbar.navigation.documentation.routes.self-hosting' });
+
+	return {
+		title: t('title'),
+		description: t('description'),
+		openGraph: {
+			title: t('title'),
+			description: t('description'),
+		},
+	};
+}
 
 export default async function Page({ params }: PageProperties) {
 	const { locale } = await params;
 
 	setRequestLocale(locale);
 
+	const t = await getTranslations('pages.docs.self-hosting');
+
 	return (
 		<>
 			<Divider>
-				<Title>Self-Hosting Ticketer</Title>
+				<Title>{t('heading.title')}</Title>
 				<Paragraph>
-					Looking to host the Ticketer bot on your own machine or server? The only required software to do so is{' '}
-					<ExternalLink href="https://docs.docker.com/engine/install/">Docker Engine</ExternalLink>. Need help? Join the{' '}
-					<InternalLink href="/links/discord/support">Ticketer support server</InternalLink>! This tutorial assumes you
-					are running Linux to self-host the bot but any other operating system should work fine as well.
+					<RichText>
+						{(tags) =>
+							t.rich('heading.description', {
+								linkDocker: (chunk) => (
+									<ExternalLink href="https://docs.docker.com/engine/install/">{chunk}</ExternalLink>
+								),
+								...tags,
+							})
+						}
+					</RichText>
 				</Paragraph>
 			</Divider>
 			<Divider>
-				<ScrollLink target="creating-the-compose-file">Creating the Compose File</ScrollLink>
-				<Paragraph>
-					Create a directory/folder with any name (like "Ticketer") and then create a file in that directory named
-					"compose.yaml".
-				</Paragraph>
+				<ScrollLink target="creating-the-compose-file">{t('content.creating-the-compose-file.title')}</ScrollLink>
+				<Paragraph>{t('content.creating-the-compose-file.paragraphs.1')}</Paragraph>
 				<CodeBlock clipboardText="mkdir Ticketer && cd Ticketer">
 					<span>
 						<span className="text-green-500">mkdir </span>
@@ -141,20 +151,24 @@ export default async function Page({ params }: PageProperties) {
 						<span>compose.yaml</span>
 					</span>
 				</CodeBlock>
-				<Paragraph>Copy and paste the following content in the created file:</Paragraph>
+				<Paragraph>{t('content.creating-the-compose-file.paragraphs.2')}</Paragraph>
 				<SyntaxHighlighter language="yaml" style={dracula} showLineNumbers>
 					{composeFile}
 				</SyntaxHighlighter>
 			</Divider>
 			<Divider>
-				<ScrollLink target="environment-variables">Environment Variables</ScrollLink>
+				<ScrollLink target="environment-variables">{t('content.environment-variables.title')}</ScrollLink>
 				<Paragraph>
-					You will need the credentials to the Discord bot/application. If you have not already, create a new{' '}
-					<ExternalLink href="https://discord.com/developers/applications">Discord application</ExternalLink> (enable
-					the &quot;Server Members&quot; intent!) and edit the following variables with the appropriate credentials in a
-					new file named &quot;
-					<i>.env.bot.production.local</i>&quot;. The variable <i>DISCORD_GUILD_ID</i> is the server (ID) where private
-					commands go. Put the details inside the quotation marks for the variables that have them!
+					<RichText>
+						{(tags) =>
+							t.rich('content.environment-variables.paragraphs.1', {
+								linkDiscordApplication: (chunk) => (
+									<ExternalLink href="https://discord.com/developers/applications">{chunk}</ExternalLink>
+								),
+								...tags,
+							})
+						}
+					</RichText>
 				</Paragraph>
 				<CodeBlock clipboardText="nano .env.bot.production.local">
 					<span>
@@ -171,9 +185,7 @@ export default async function Page({ params }: PageProperties) {
 					</span>
 				</CodeBlock>
 				<Paragraph>
-					The database also requires a few credentials to run. Create a file named &quot;
-					<i>.env.database.production.local</i>&quot; and then create some login credentials with the following template
-					below. You can change every variable to have whatever value you want except for <i>DB_HOST</i>.
+					<RichText>{(tags) => t.rich('content.environment-variables.paragraphs.2', tags)}</RichText>
 				</Paragraph>
 				<CodeBlock clipboardText="nano .env.database.production.local">
 					<span>
@@ -192,18 +204,15 @@ export default async function Page({ params }: PageProperties) {
 				</CodeBlock>
 			</Divider>
 			<Divider>
-				<ScrollLink target="running-the-bot">Running the Bot</ScrollLink>
-				<Paragraph>
-					Now it is time to run the bot! Run the following command to start the database and bot (this may take some
-					time):
-				</Paragraph>
+				<ScrollLink target="running-the-bot">{t('content.running-the-bot.title')}</ScrollLink>
+				<Paragraph>{t('content.running-the-bot.paragraphs.1')}</Paragraph>
 				<CodeBlock clipboardText="docker compose --env-file ./.env.database.production.local --file compose.yaml up -d">
 					<span>
 						<span className="text-green-500">docker </span>
 						<span>compose --env-file ./.env.database.production.local --file compose.yaml up -d</span>
 					</span>
 				</CodeBlock>
-				<Paragraph>To deploy the application commands of the bot, run the following line:</Paragraph>
+				<Paragraph>{t('content.running-the-bot.paragraphs.2')}</Paragraph>
 				<CodeBlock clipboardText='docker exec ticketer-bot sh -c "cd /src/apps/bot && pnpm commands:deploy:production"'>
 					<span>
 						<span className="text-green-500">docker </span>
@@ -211,13 +220,12 @@ export default async function Page({ params }: PageProperties) {
 					</span>
 				</CodeBlock>
 				<Paragraph>
-					Once the commands have been deployed, run the <i>/migrate</i> command in Discord to deploy any database
-					changes that may be needed:
+					<RichText>{(tags) => t.rich('content.running-the-bot.paragraphs.3', tags)}</RichText>
 				</Paragraph>
-				<CodeBlock clipboardText="/migrate" slashCommand>
-					<span>migrate</span>
+				<CodeBlock clipboardText={'/' + t('content.running-the-bot.command')} slashCommand>
+					<span>{t('content.running-the-bot.command')}</span>
 				</CodeBlock>
-				<Paragraph>If you want to stop the database and bot, run the commands below:</Paragraph>
+				<Paragraph>{t('content.running-the-bot.paragraphs.4')}</Paragraph>
 				<CodeBlock clipboardText="docker container stop ticketer-bot">
 					<span>
 						<span className="text-green-500">docker </span>
@@ -232,10 +240,9 @@ export default async function Page({ params }: PageProperties) {
 				</CodeBlock>
 			</Divider>
 			<Divider>
-				<ScrollLink target="accessing-the-database">Accessing the Database</ScrollLink>
+				<ScrollLink target="accessing-the-database">{t('content.accessing-the-database.title')}</ScrollLink>
 				<Paragraph>
-					If you want to access the database, you can do so by running the two commands below and replacing &quot;
-					<i>USERNAME</i>&quot; with the username you chose in the environment variable:
+					<RichText>{(tags) => t.rich('content.accessing-the-database.description', tags)}</RichText>
 				</Paragraph>
 				<CodeBlock clipboardText="docker exec -it ticketer-database bash">
 					<span>

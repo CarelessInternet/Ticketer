@@ -161,30 +161,6 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 		},
 	] satisfies TooltipLinkItems[];
 
-	function LocaleComponent() {
-		return (
-			<LocaleSwitcher
-				translations={{
-					'en-GB': t('items.locale.toggle.en-GB'),
-					'en-US': t('items.locale.toggle.en-US'),
-					'sv-SE': t('items.locale.toggle.sv-SE'),
-				}}
-			/>
-		);
-	}
-
-	function ThemeComponent() {
-		return (
-			<ThemeSwitcher
-				translations={{
-					dark: t('items.theme.toggle.dark'),
-					light: t('items.theme.toggle.light'),
-					system: t('items.theme.toggle.system'),
-				}}
-			/>
-		);
-	}
-
 	return (
 		<header className={cn(className)} {...properties}>
 			<nav className="flex items-center border-b py-2">
@@ -254,11 +230,11 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 											</div>
 										))}
 										<div className="flex items-center space-x-2">
-											<LocaleComponent />
+											<LocaleSwitcher />
 											<p>{t('items.locale.change')}</p>
 										</div>
 										<div className="flex items-center space-x-2">
-											<ThemeComponent />
+											<ThemeSwitcher />
 											<p>{t('items.theme.change')}</p>
 										</div>
 									</div>
@@ -277,12 +253,12 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 							))}
 							<TooltipItem content={t('items.locale.change')}>
 								<div>
-									<LocaleComponent />
+									<LocaleSwitcher />
 								</div>
 							</TooltipItem>
 							<TooltipItem content={t('items.theme.change')}>
 								<div>
-									<ThemeComponent />
+									<ThemeSwitcher />
 								</div>
 							</TooltipItem>
 						</div>

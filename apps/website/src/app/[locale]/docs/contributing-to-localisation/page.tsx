@@ -1,86 +1,100 @@
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
 import Image from '@/components/Image';
 import type { Metadata } from 'next';
 import type { PageProperties } from '@/i18n/routing';
 import Paragraph from '@/components/Paragraph';
+import RichText from '@/components/RichText';
 import ScrollLink from '@/components/ScrollLink';
 import Title from '@/components/Title';
-import { setRequestLocale } from 'next-intl/server';
 
-export const metadata = {
-	title: 'Ticketer - Contributing to Localisation',
-	description: 'Tutorial on how to help with the localisation of Ticketer.',
-	openGraph: {
-		title: 'Ticketer - Contributing to Localisation',
-		description: 'Tutorial on how to help with the localisation of Ticketer.',
-	},
-} satisfies Metadata;
+export async function generateMetadata({ params }: PageProperties): Promise<Metadata> {
+	const { locale } = await params;
+	const t = await getTranslations({
+		locale,
+		namespace: 'layout.navbar.navigation.documentation.routes.contributing-to-localisation',
+	});
 
-// TODO: add how-to for the website as well
+	return {
+		title: t('title'),
+		description: t('description'),
+		openGraph: {
+			title: t('title'),
+			description: t('description'),
+		},
+	};
+}
 
 export default async function Page({ params }: PageProperties) {
 	const { locale } = await params;
 
 	setRequestLocale(locale);
 
+	const t = await getTranslations('pages.docs.contributing-to-localisation');
+
 	return (
 		<>
 			<Divider>
-				<Title>Contributing to Localisation</Title>
+				<Title>{t('title')}</Title>
 				<Paragraph>
-					Since version 3, the Ticketer bot supports localisation depending on both the user&apos;s and server&apos;s
-					locale. We welcome all localisation contributions! This page will explain how to add localisation files to the
-					bot. This tutorial assumes you are using{' '}
-					<ExternalLink href="https://code.visualstudio.com">Visual Studio Code</ExternalLink> to edit the files.
+					<RichText>
+						{(tags) =>
+							t.rich('description', {
+								linkVSCode: (chunk) => <ExternalLink href="https://code.visualstudio.com">{chunk}</ExternalLink>,
+								...tags,
+							})
+						}
+					</RichText>
 				</Paragraph>
 			</Divider>
 			<Divider>
-				<ScrollLink target="prerequisites-before-contributing">Prerequisites Before Contributing</ScrollLink>
+				<ScrollLink target="prerequisites-before-contributing">
+					{t('sections.prerequisites-before-contributing.title')}
+				</ScrollLink>
+				<Paragraph>{t('sections.prerequisites-before-contributing.description')}</Paragraph>
+			</Divider>
+			<Divider>
+				<ScrollLink target="what-locales-can-be-supported">
+					{t('sections.what-locales-can-be-supported.title')}
+				</ScrollLink>
 				<Paragraph>
-					This tutorial assumes you have knowledge of Git and creating pull requests if you wish to merge the changes
-					into the Ticketer codebase. If you are looking to contribute to this project and do not have those skills yet,
-					it is time to learn some basic Git and GitHub!
+					<RichText>
+						{(tags) =>
+							t.rich('sections.what-locales-can-be-supported.description', {
+								linkDiscordReference: (chunk) => (
+									<ExternalLink href="https://discord.com/developers/docs/reference#locales">{chunk}</ExternalLink>
+								),
+								...tags,
+							})
+						}
+					</RichText>
 				</Paragraph>
 			</Divider>
 			<Divider>
-				<ScrollLink target="what-locales-can-be-supported">What locales can be supported?</ScrollLink>
+				<ScrollLink target="getting-started-bot">{t('sections.getting-started-bot.title')}</ScrollLink>
 				<Paragraph>
-					The locales that can be supported are found in the{' '}
-					<ExternalLink href="https://discord.com/developers/docs/reference#locales">
-						Discord Developers Documentation Reference
-					</ExternalLink>
-					.
-				</Paragraph>
-			</Divider>
-			<Divider>
-				<ScrollLink target="getting-started">Getting Started</ScrollLink>
-				<Paragraph>
-					To create a new locale, create a folder in the <i>/apps/bot/src/i18n</i> directory, with the folder name as
-					one of the locales from the locale list, e.g. &quot;fr&quot;. Next, to make the process easier, copy each file
-					from the &quot;sv-SE&quot; folder and paste them into your new localisation folder. The folder should look
-					something like this afterwards:
+					<RichText>{(tags) => t.rich('sections.getting-started-bot.paragraphs.1', tags)}</RichText>
 				</Paragraph>
 				<Image
 					src="/images/localisation-example-folder.png"
-					alt="Picture of an example localisation folder."
+					alt={t('sections.getting-started-bot.imageAlts.1')}
 					width={384}
 					height={216}
 				/>
-				<Paragraph>
-					Then, you should run the &quot;i18n&quot; NPM script on the bottom left of your explorer. This will generate
-					the types required, as well as type checking the files for any missing or invalid localisations.
-				</Paragraph>
+				<Paragraph>{t('sections.getting-started-bot.paragraphs.2')}</Paragraph>
 				<Image
 					src="/images/localisation-i18n-npm-script.png"
-					alt="Picture of the i18n npm script."
+					alt={t('sections.getting-started-bot.imageAlts.2')}
 					width={384}
 					height={216}
 				/>
+				<Paragraph>{t('sections.getting-started-bot.paragraphs.3')}</Paragraph>
+			</Divider>
+			<Divider>
+				<ScrollLink target="getting-started-website">{t('sections.getting-started-website.title')}</ScrollLink>
 				<Paragraph>
-					Finally, you can start editing the files and add the correct translations for your locale of choice! If you
-					need a reference for the translation, you can open the British English file variant and translate accordingly.
-					Happy translating!
+					<RichText>{(tags) => t.rich('sections.getting-started-website.description', tags)}</RichText>
 				</Paragraph>
 			</Divider>
 		</>

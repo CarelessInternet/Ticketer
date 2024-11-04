@@ -14,9 +14,6 @@ import { mergeMetadata } from '@/lib/mergeMetadata';
 import { notFound } from 'next/navigation';
 
 const font = DM_Sans({ subsets: ['latin'], variable: '--font-sans' });
-const baseURL = new URL(
-	process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : `http://localhost:${process.env.PORT ?? String(2027)}`,
-);
 
 export async function generateMetadata({ params }: PageProperties): Promise<Metadata> {
 	const { locale } = await params;
@@ -24,26 +21,6 @@ export async function generateMetadata({ params }: PageProperties): Promise<Meta
 
 	return mergeMetadata({ description: t('description'), locale, title: t('title') });
 }
-
-export const metadata: Metadata = {
-	title: 'Ticketer',
-	description: 'The Discord bot for creating tickets with threads.',
-	openGraph: {
-		siteName: 'Ticketer',
-		locale: 'en_GB',
-		type: 'website',
-		images: [
-			{
-				url: new URL('/favicon.ico', baseURL),
-				width: 512,
-				height: 512,
-				alt: 'Ticketer logo',
-			},
-		],
-		url: baseURL,
-	},
-	metadataBase: baseURL,
-};
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
 export function generateStaticParams() {

@@ -42,8 +42,10 @@ services:
 
   bot:
     container_name: ticketer-bot
-    # You can change "latest" to any available version such as "3.2.0".
-    image: ghcr.io/carelessinternet/ticketer-bot:latest
+    # You can change to any available version such as "3.2.1".
+    image: ghcr.io/carelessinternet/ticketer-bot:3.2.1
+    # Change the platform to the one on your linux environment (amd64, arm64).
+    platform: linux/arm64
     restart: unless-stopped
     depends_on:
       database:

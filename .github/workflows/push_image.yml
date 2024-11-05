@@ -35,5 +35,5 @@ jobs:
         env:
           DOCKERFILE_ROUTE: ./apps/bot/Dockerfile
         run: |
-          docker build --file ${{ env.DOCKERFILE_ROUTE }} . --no-cache --tag ${{ env.FULL_IMAGE_URL_BOT }}
+          docker build --file ${{ env.DOCKERFILE_ROUTE }} . --no-cache --platform linux/amd64,linux/arm64 --tag ${{ env.FULL_IMAGE_URL_BOT }}
           docker push ${{ env.FULL_IMAGE_URL_BOT }}

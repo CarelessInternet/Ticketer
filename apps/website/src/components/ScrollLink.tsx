@@ -1,15 +1,16 @@
 'use client';
 
-import type { HTMLAttributes, PropsWithChildren } from 'react';
+import type { AnchorHTMLAttributes, PropsWithChildren } from 'react';
+import { type WithRequired, cn } from '@/lib/utils';
 import InternalLink from './InternalLink';
-import { cn } from '@/lib/utils';
-import { usePathname } from 'next/navigation';
+import { usePathname } from '@/i18n/routing';
 
-interface LinkProperties extends HTMLAttributes<HTMLElement> {
-	target: string;
-}
-
-export default function ScrollLink({ children, className, target, ...properties }: PropsWithChildren<LinkProperties>) {
+export default function ScrollLink({
+	children,
+	className,
+	target,
+	...properties
+}: PropsWithChildren<WithRequired<AnchorHTMLAttributes<HTMLAnchorElement>, 'target'>>) {
 	const pathname = usePathname();
 
 	return (
@@ -18,10 +19,12 @@ export default function ScrollLink({ children, className, target, ...properties 
 			target="_self"
 			id={target}
 			tabIndex={0}
-			className={cn('text-foreground dark:text-foreground text-2xl font-bold sm:text-3xl', className)}
+			className={cn('!text-inherit', className)}
 			{...properties}
 		>
-			{children}
+			<h2 className="text-foreground dark:text-foreground text-2xl font-bold hover:underline sm:text-3xl">
+				{children}
+			</h2>
 		</InternalLink>
 	);
 }

@@ -1,3 +1,3 @@
-import type { NextConfig } from 'next';
+import createNextIntlPlugin from 'next-intl/plugin';
 
-export default {} satisfies NextConfig;
+export default createNextIntlPlugin()();

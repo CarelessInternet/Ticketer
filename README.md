@@ -9,6 +9,10 @@ Welcome to the official GitHub page for the Ticketer bot! Here lies the source c
 Consider starring the repository, all stars and forks are appreciated!<br>
 Do not make a public clone of the bot.<br>
 
+## Self-Hosting
+
+If you are looking to self-host the Ticketer bot, please refer to the [page on self-hosting](https://ticketer-careless.vercel.app/en-GB/docs/self-hosting).
+
 ## Issues
 
 For any bug reports, suggestions, or general feedback, please submit an issue or join the support server.

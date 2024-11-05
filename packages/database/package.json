@@ -23,6 +23,6 @@
 	},
 	"devDependencies": {
 		"@ticketer/eslint-config": "workspace:*",
-		"drizzle-kit": "^0.27.0"
+		"drizzle-kit": "^0.27.1"
 	}
 }

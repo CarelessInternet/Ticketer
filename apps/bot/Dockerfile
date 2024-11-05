@@ -11,7 +11,7 @@ ARG NODE_MAJOR_VERSION=22
 ARG PNPM_MAJOR_VERSION=9
 ARG TURBO_MAJOR_VERSION=2
 
-FROM node:${NODE_MAJOR_VERSION}-alpine as base
+FROM node:${NODE_MAJOR_VERSION}-alpine AS base
 RUN --mount=type=cache,target=/root/.npm \
     npm install -g pnpm@${PNPM_MAJOR_VERSION}
 ENV PNPM_HOME="/pnpm"

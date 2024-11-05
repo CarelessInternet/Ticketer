@@ -142,24 +142,37 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 		],
 	} satisfies RouteMenu;
 
-	const tooltipLinkItems = [
-		{
-			content: t('items.invite'),
-			href: '/links/discord/invite',
-			icon: <PlusCircle />,
-		},
-		{
-			content: t('items.support'),
-			href: '/links/discord/support',
-			icon: <MessageCircleQuestion />,
-		},
-		{
-			content: t('items.github'),
-			external: true,
-			href: 'https://github.com/CarelessInternet/Ticketer',
-			icon: <GitHub />,
-		},
-	] satisfies TooltipLinkItems[];
+	function TooltipLinkItems({ inDrawer = false }: { inDrawer?: boolean }) {
+		const items = [
+			{
+				content: t('items.invite'),
+				href: '/links/discord/invite',
+				icon: <PlusCircle />,
+			},
+			{
+				content: t('items.support'),
+				href: '/links/discord/support',
+				icon: <MessageCircleQuestion />,
+			},
+			{
+				content: t('items.github'),
+				external: true,
+				href: 'https://github.com/CarelessInternet/Ticketer',
+				icon: <GitHub />,
+			},
+		] satisfies TooltipLinkItems[];
+
+		if (inDrawer) {
+			return items.map((item, index) => (
+				<div key={index} className="flex items-center space-x-2">
+					<TooltipLinkItem {...item} />
+					<p>{item.content}</p>
+				</div>
+			));
+		}
+
+		return items.map((item, index) => <TooltipLinkItem key={index} {...item} />);
+	}
 
 	return (
 		<header className={cn(className)} {...properties}>
@@ -218,17 +231,7 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 										<SheetTitle>{t('items.sidebar')}</SheetTitle>
 									</SheetHeader>
 									<div className="space-y-4">
-										{tooltipLinkItems.map((item, index) => (
-											<div key={index} className="flex items-center space-x-2">
-												<TooltipLinkItem
-													content={item.content}
-													external={item.external}
-													href={item.href}
-													icon={item.icon}
-												/>
-												<p>{item.content}</p>
-											</div>
-										))}
+										<TooltipLinkItems inDrawer />
 										<div className="flex items-center space-x-2">
 											<LocaleSwitcher />
 											<p>{t('items.locale.change')}</p>
@@ -242,15 +245,7 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 							</Sheet>
 						</div>
 						<div className="hidden space-x-2 lg:flex">
-							{tooltipLinkItems.map((item, index) => (
-								<TooltipLinkItem
-									key={index}
-									content={item.content}
-									external={item.external}
-									href={item.href}
-									icon={item.icon}
-								/>
-							))}
+							<TooltipLinkItems />
 							<TooltipItem content={t('items.locale.change')}>
 								<div>
 									<LocaleSwitcher />

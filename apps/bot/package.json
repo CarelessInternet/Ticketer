@@ -1,6 +1,6 @@
 {
 	"name": "@ticketer/bot",
-	"version": "3.2.3",
+	"version": "3.3.0",
 	"main": "./src/index.ts",
 	"type": "module",
 	"scripts": {

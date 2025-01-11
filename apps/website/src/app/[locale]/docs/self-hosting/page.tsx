@@ -42,7 +42,7 @@ services:
 
   bot:
     container_name: ticketer-bot
-    # You can change "latest" to any available version such as "3.2.3".
+    # You can change "latest" to any available version such as "3.3.0".
     image: ghcr.io/carelessinternet/ticketer-bot:latest
     # Change the platform to the one on your linux environment (amd64, arm64).
     platform: linux/arm64

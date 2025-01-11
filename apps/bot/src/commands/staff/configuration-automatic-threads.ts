@@ -1,6 +1,7 @@
 import {
 	ActionRowBuilder,
 	ChannelType,
+	MessageFlags,
 	ModalBuilder,
 	PermissionFlagsBits,
 	RoleSelectMenuBuilder,
@@ -211,7 +212,7 @@ export default class extends Command.Interaction {
 					embeds: [
 						super.userEmbedError(context.interaction.member).setDescription('The subcommand could not be found.'),
 					],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				});
 			}
 		}
@@ -316,7 +317,7 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 					embeds: [
 						super.userEmbedError(context.interaction.member).setDescription('The selected value could not be found.'),
 					],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				});
 			}
 		}
@@ -334,7 +335,7 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 			return context.interaction
 				.reply({
 					embeds: [super.userEmbedError(context.interaction.member).setDescription(zodErrorToString(error))],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				})
 				.catch(() => false);
 		}
@@ -360,7 +361,7 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 							.userEmbedError(context.interaction.member)
 							.setDescription('No automatic threads configuration for the channel could be found.'),
 					],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				})
 				.catch(() => false);
 		}
@@ -398,7 +399,7 @@ export class ComponentInteraction extends Component.Interaction {
 					embeds: [
 						super.userEmbedError(interaction.member).setDescription('The select menu custom ID could not be found.'),
 					],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				});
 			}
 		}
@@ -462,7 +463,7 @@ export class ModalInteraction extends Modal.Interaction {
 					embeds: [
 						super.userEmbedError(context.interaction.member).setDescription('The modal custom ID could not be found.'),
 					],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				});
 			}
 		}

@@ -26,7 +26,7 @@ export default async function Page({ params }: PageProperties) {
 		<>
 			<Divider>
 				<Title>{t('heading.title')}</Title>
-				<Paragraph>{t('heading.description', { lastUpdated: formatDate(new Date('2024-11-04')) })}</Paragraph>
+				<Paragraph>{t('heading.description', { lastUpdated: formatDate(new Date('2025-01-10')) })}</Paragraph>
 			</Divider>
 			<Divider>
 				<ScrollLink target="who-can-use-the-service">{t('sections.who-can-use-the-service.title')}</ScrollLink>

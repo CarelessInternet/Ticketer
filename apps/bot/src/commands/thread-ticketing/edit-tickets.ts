@@ -1,4 +1,10 @@
-import { type APIApplicationCommandOptionChoice, ChannelType, PermissionFlagsBits, inlineCode } from 'discord.js';
+import {
+	type APIApplicationCommandOptionChoice,
+	ChannelType,
+	MessageFlags,
+	PermissionFlagsBits,
+	inlineCode,
+} from 'discord.js';
 import { Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
 import { ThreadTicketing, managerIntersection } from '@/utils';
 import {
@@ -92,7 +98,7 @@ export default class extends Command.Interaction {
 			default: {
 				return interaction.reply({
 					embeds: [super.userEmbedError(interaction.member).setDescription('The subcommand could not be found.')],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				});
 			}
 		}

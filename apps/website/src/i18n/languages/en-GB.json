@@ -346,7 +346,7 @@
 					},
 					"termination": {
 						"title": "Termination",
-						"description": "Ticketer reserves the right to delete data without warning, especially if a server is found to be violating including but not limited to: laws and terms of services. These actions are irreversible."
+						"description": "Ticketer reserves the right to delete data and/or block Discord guilds (servers) without warning, especially if a server is found to be violating including but not limited to: laws and terms of services. The former action is irreversible."
 					}
 				}
 			}

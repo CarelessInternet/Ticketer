@@ -1,3 +1,4 @@
+import { MessageFlags, TimestampStyles, time } from 'discord.js';
 import { Event } from '@ticketer/djs-framework';
 import { LogExceptions } from '@/utils';
 import { environment } from '@ticketer/env/bot';
@@ -9,6 +10,32 @@ export default class extends Event.Handler {
 	@LogExceptions
 	public execute([interaction]: Event.ArgumentsOf<this['name']>) {
 		if (!interaction.inCachedGuild()) return;
+
+		const blacklist = this.client.guildBlacklists.get(interaction.guildId);
+
+		if (blacklist) {
+			const translations = translate(interaction.locale).events.interactionCreate.blacklisted;
+
+			return (
+				interaction.isRepliable() &&
+				interaction.reply({
+					embeds: [
+						super
+							.userEmbedError(interaction.member, translations.title())
+							.setDescription(translations.description())
+							.setFields([
+								{ name: translations.fields[0].name(), value: blacklist.reason, inline: true },
+								{
+									name: translations.fields[1].name(),
+									value: time(blacklist.timestamp, TimestampStyles.ShortDateTime),
+									inline: true,
+								},
+							]),
+					],
+					flags: [MessageFlags.Ephemeral],
+				})
+			);
+		}
 
 		if (interaction.isAutocomplete()) {
 			return this.client.autocompletes.get(interaction.commandName)?.execute({ interaction });
@@ -50,9 +77,16 @@ export default class extends Event.Handler {
 
 			if (command) {
 				if (command.ownerOnly && interaction.user.id !== environment.DISCORD_OWNER_ID) {
+					const translations = translate(interaction.locale).events.interactionCreate.ownerOnly;
+
 					return interaction.reply({
-						content: translate(interaction.locale).events.interactionCreate.ownerOnly.error(),
-						ephemeral: true,
+						embeds: [
+							super
+								.userEmbedError(interaction.member)
+								.setTitle(translations.title())
+								.setDescription(translations.description()),
+						],
+						flags: [MessageFlags.Ephemeral],
 					});
 				}
 

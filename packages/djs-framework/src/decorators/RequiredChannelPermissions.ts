@@ -1,5 +1,5 @@
 import { type BaseInteraction, type PermissionFlagsValues, getPermissionByValue } from '..';
-import { inlineCode } from 'discord.js';
+import { MessageFlags, inlineCode } from 'discord.js';
 
 export function RequiredChannelPermissions(...permissions: PermissionFlagsValues[]) {
 	return function (_: object, __: string, descriptor: PropertyDescriptor) {
@@ -24,7 +24,7 @@ export function RequiredChannelPermissions(...permissions: PermissionFlagsValues
 
 				return interaction.deferred
 					? interaction.editReply({ embeds: [embed] })
-					: interaction.reply({ embeds: [embed], ephemeral: true });
+					: interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
 			}
 
 			return Reflect.apply(original, this, arguments);

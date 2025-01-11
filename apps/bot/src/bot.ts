@@ -2,6 +2,7 @@ import { GatewayIntentBits, Options } from 'discord.js';
 import { Client } from '@ticketer/djs-framework';
 import { environment } from '@ticketer/env/bot';
 import { fileURLToPath } from 'node:url';
+import { refreshGuildBlacklist } from '@/utils';
 
 const interval = 60;
 const filter = () => () => true;
@@ -26,5 +27,8 @@ await client.initialize(
 	fileURLToPath(new URL('events', import.meta.url)),
 	fileURLToPath(new URL('commands', import.meta.url)),
 );
+
+// This is to not crash the bot if the table does not exist on start up.
+await refreshGuildBlacklist(client).catch(() => false);
 
 void client.login(environment.DISCORD_BOT_TOKEN);

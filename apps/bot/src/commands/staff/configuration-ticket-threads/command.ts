@@ -2,6 +2,7 @@ import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
+	MessageFlags,
 	PermissionFlagsBits,
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder,
@@ -96,7 +97,7 @@ export default class extends Command.Interaction {
 			default: {
 				return interaction.reply({
 					embeds: [super.userEmbedError(interaction.member).setDescription('The subcommand group could not be found.')],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				});
 			}
 		}
@@ -131,7 +132,7 @@ export default class extends Command.Interaction {
 					.userEmbed(member)
 					.setTitle('Updated the Thead Ticket Configuration')
 					.setDescription(
-						`${member.toString()} updated the amount of active tickets a user may have at once to ${activeTickets?.toString() ?? 'Unknown'}.`,
+						`${member.toString()} updated the amount of active tickets a user may have at once to ${activeTickets.toString()}.`,
 					);
 
 				return interaction.editReply({ embeds: [embed] });
@@ -192,7 +193,7 @@ export default class extends Command.Interaction {
 			default: {
 				return interaction.reply({
 					embeds: [super.userEmbedError(interaction.member).setDescription('The subcommand could not be found.')],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				});
 			}
 		}

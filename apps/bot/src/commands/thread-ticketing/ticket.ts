@@ -1,4 +1,4 @@
-import { ChannelType, Colors, PermissionFlagsBits, type Snowflake } from 'discord.js';
+import { ChannelType, Colors, MessageFlags, PermissionFlagsBits, type Snowflake } from 'discord.js';
 import { Command, Component, DeferReply, Modal } from '@ticketer/djs-framework';
 import {
 	ThreadTicketActionsPermissionBitField,
@@ -32,7 +32,7 @@ export default class extends Command.Interaction {
 					embeds: [
 						super.userEmbedError(interaction.member, translations.title()).setDescription(translations.description()),
 					],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				})
 				.catch(() => false);
 		}
@@ -64,7 +64,7 @@ export default class extends Command.Interaction {
 							locale: interaction.locale,
 						}),
 					],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				})
 				.catch(() => false);
 		}
@@ -98,13 +98,12 @@ export class TicketButtonsInteraction extends Component.Interaction {
 				const translations = translate(context.interaction.locale).tickets.threads.categories.createModal.errors
 					.invalidCustomId;
 
-				return context.interaction.reply({
+				return context.interaction.editReply({
 					embeds: [
 						super
 							.userEmbedError(context.interaction.member, translations.title())
 							.setDescription(translations.description()),
 					],
-					ephemeral: true,
 				});
 			}
 		}
@@ -147,7 +146,7 @@ export class ComponentInteraction extends Component.Interaction {
 							.userEmbedError(context.interaction.member, translations.title())
 							.setDescription(translations.description()),
 					],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				});
 			}
 		}
@@ -209,7 +208,7 @@ export class ComponentInteraction extends Component.Interaction {
 					embeds: [
 						super.userEmbedError(interaction.member, translations.title()).setDescription(translations.description()),
 					],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				})
 				.catch(() => false);
 		}
@@ -241,7 +240,7 @@ export class ComponentInteraction extends Component.Interaction {
 							locale: interaction.locale,
 						}),
 					],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				})
 				.catch(() => false);
 		}
@@ -272,7 +271,7 @@ export class ModalInteraction extends Modal.Interaction {
 					embeds: [
 						super.userEmbedError(interaction.member, translations.title()).setDescription(translations.description()),
 					],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				});
 			}
 		}

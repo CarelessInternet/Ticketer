@@ -2,6 +2,7 @@ import {
 	ActionRowBuilder,
 	ChannelSelectMenuBuilder,
 	ChannelType,
+	MessageFlags,
 	ModalBuilder,
 	RoleSelectMenuBuilder,
 	StringSelectMenuBuilder,
@@ -123,7 +124,7 @@ export default class extends Component.Interaction {
 			default: {
 				return interaction.reply({
 					embeds: [super.userEmbedError(interaction.member).setDescription('The selected value could not be found.')],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				});
 			}
 		}
@@ -453,7 +454,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 			default: {
 				return interaction.reply({
 					embeds: [super.userEmbedError(interaction.member).setDescription('The component ID could not be found.')],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				});
 			}
 		}
@@ -553,9 +554,8 @@ export class OtherComponentInteraction extends Component.Interaction {
 		const value = interaction.values.at(0);
 
 		if (!value) {
-			return interaction.reply({
+			return interaction.editReply({
 				embeds: [super.userEmbedError(interaction.member).setDescription('The selected value could not be found.')],
-				ephemeral: true,
 			});
 		}
 
@@ -565,7 +565,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		if (!row) {
-			return interaction.reply({
+			return interaction.editReply({
 				embeds: [
 					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
 				],
@@ -607,7 +607,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
 
 		if (!success) {
-			return interaction.reply({
+			return interaction.editReply({
 				components: [],
 				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
 			});

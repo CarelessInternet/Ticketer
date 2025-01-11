@@ -53,7 +53,7 @@ export async function createTicket(
 	if (interaction.replied || hasComponents) {
 		if ('deferUpdate' in interaction) await interaction.deferUpdate();
 	} else {
-		await interaction.deferReply({ ephemeral: true });
+		await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
 	}
 
 	const { createdAt, client, guild, guildId, guildLocale, locale, member: interactionMember } = interaction;

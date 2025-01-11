@@ -1,4 +1,5 @@
 import type { Command } from '..';
+import { MessageFlags } from 'discord.js';
 
 interface DeferReplyOptions {
 	name?: string;
@@ -16,10 +17,12 @@ export function DeferReply({ name, ephemeral = false }: DeferReplyOptions = {}) 
 
 		descriptor.value = async function (this: Command.Interaction, { interaction }: Command.Context) {
 			if (interaction.isRepliable() && !interaction.replied && !interaction.deferred) {
+				const hidden = interaction.isChatInputCommand()
+					? (interaction.options.getBoolean(String(name), false) ?? ephemeral)
+					: ephemeral;
+
 				await interaction.deferReply({
-					ephemeral: interaction.isChatInputCommand()
-						? (interaction.options.getBoolean(String(name), false) ?? ephemeral)
-						: ephemeral,
+					flags: hidden ? [MessageFlags.Ephemeral] : undefined,
 				});
 			}
 

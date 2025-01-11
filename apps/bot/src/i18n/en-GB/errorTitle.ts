@@ -1,1 +1,1 @@
-export default 'An Error Occured';
+export default 'An Error Occurred';

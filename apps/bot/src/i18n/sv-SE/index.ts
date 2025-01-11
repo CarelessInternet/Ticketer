@@ -85,6 +85,78 @@ const sv_SE = {
 				description: 'Radera tråden eller trådstödbiljetten.',
 			},
 		},
+		'guild-blacklist': {
+			data: {
+				name: 'server-svartlista',
+				description: 'Hantera svartlistor av servrar.',
+				subcommands: [
+					{
+						name: 'översikt',
+						description: 'Visa alla svartlistor av servrar.',
+					},
+					{
+						name: 'tillägga',
+						description: 'Lägg till en svartlista av en server.',
+						options: [
+							{
+								name: 'id',
+								description: 'ID för servern som ska svartlistas.',
+							},
+							{
+								name: 'anlendning',
+								description: 'Anledningen för svartlistningen av servern.',
+							},
+						],
+					},
+					{
+						name: 'radera',
+						description: 'Ta bort en svartlista av server.',
+						options: [
+							{
+								name: 'id',
+								description: 'ID för servern som ska vitlistas.',
+							},
+						],
+					},
+				],
+			},
+			command: {
+				errors: {
+					invalidFields: {
+						title: ERROR_TITLE,
+					},
+				},
+				embeds: {
+					overview: {
+						title: 'Server {id}',
+						fields: [
+							{
+								name: 'Anledning',
+							},
+							{
+								name: 'Datum',
+							},
+						],
+					},
+					create: {
+						title: 'Svartlistade en Server',
+						description: 'Servern med ID:t {id} har svartlistats.',
+						fields: [
+							{
+								name: 'Anledning',
+							},
+							{
+								name: 'Datum',
+							},
+						],
+					},
+					delete: {
+						title: 'Raderade en Server Svartlista',
+						description: '{member} vitlistated servern med ID:t {id}',
+					},
+				},
+			},
+		},
 		help: {
 			data: {
 				name: 'hjälp',
@@ -150,6 +222,10 @@ const sv_SE = {
 				embeds: [
 					{
 						title: 'Pingar...',
+					},
+					{
+						title: ERROR_TITLE,
+						description: 'Ett fel uppstod vid försök att ta emot det besvarade meddelandet.',
 					},
 					{
 						title: 'Resultat',
@@ -299,8 +375,21 @@ const sv_SE = {
 	},
 	events: {
 		interactionCreate: {
+			blacklisted: {
+				title: ERROR_TITLE,
+				description: 'Denna server har blivit svartlistad från att använda boten!',
+				fields: [
+					{
+						name: 'Anledningen',
+					},
+					{
+						name: 'Datum',
+					},
+				],
+			},
 			ownerOnly: {
-				error: 'Du måste vara botens ägare för att köra kommandot!',
+				title: ERROR_TITLE,
+				description: 'Du måste vara botens ägare för att köra kommandot!',
 			},
 		},
 		guildMemberAdd: {

@@ -1,5 +1,6 @@
 import {
 	ActionRowBuilder,
+	MessageFlags,
 	ModalBuilder,
 	TextInputBuilder,
 	TextInputStyle,
@@ -38,7 +39,7 @@ export function HasGlobalConfiguration(_: object, __: string, descriptor: Proper
 					? interaction.editReply({
 							embeds: [embed],
 						})
-					: interaction.reply({ embeds: [embed], ephemeral: true });
+					: interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
 			}
 		}
 

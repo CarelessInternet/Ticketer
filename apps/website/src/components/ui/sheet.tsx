@@ -16,7 +16,7 @@ const SheetClose = SheetPrimitive.Close;
 const SheetPortal = SheetPrimitive.Portal;
 
 const SheetOverlay = React.forwardRef<
-	React.ElementRef<typeof SheetPrimitive.Overlay>,
+	React.ComponentRef<typeof SheetPrimitive.Overlay>,
 	React.ComponentPropsWithoutRef<typeof SheetPrimitive.Overlay>
 >(({ className, ...properties }, reference) => (
 	<SheetPrimitive.Overlay
@@ -53,7 +53,7 @@ interface SheetContentProperties
 	extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
 		VariantProps<typeof sheetVariants> {}
 
-const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Content>, SheetContentProperties>(
+const SheetContent = React.forwardRef<React.ComponentRef<typeof SheetPrimitive.Content>, SheetContentProperties>(
 	({ side = 'right', className, children, ...properties }, reference) => (
 		<SheetPortal>
 			<SheetOverlay />
@@ -80,7 +80,7 @@ const SheetFooter = ({ className, ...properties }: React.HTMLAttributes<HTMLDivE
 SheetFooter.displayName = 'SheetFooter';
 
 const SheetTitle = React.forwardRef<
-	React.ElementRef<typeof SheetPrimitive.Title>,
+	React.ComponentRef<typeof SheetPrimitive.Title>,
 	React.ComponentPropsWithoutRef<typeof SheetPrimitive.Title>
 >(({ className, ...properties }, reference) => (
 	<SheetPrimitive.Title
@@ -92,7 +92,7 @@ const SheetTitle = React.forwardRef<
 SheetTitle.displayName = SheetPrimitive.Title.displayName;
 
 const SheetDescription = React.forwardRef<
-	React.ElementRef<typeof SheetPrimitive.Description>,
+	React.ComponentRef<typeof SheetPrimitive.Description>,
 	React.ComponentPropsWithoutRef<typeof SheetPrimitive.Description>
 >(({ className, ...properties }, reference) => (
 	<SheetPrimitive.Description

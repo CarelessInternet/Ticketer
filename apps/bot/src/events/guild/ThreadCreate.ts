@@ -18,7 +18,7 @@ export default class extends Event.Handler {
 			return;
 
 		if (parent.type === ChannelType.GuildForum) {
-			const member = await thread.guild.members.fetch(thread.ownerId ?? '').catch(() => false);
+			const member = await thread.guild.members.fetch(thread.ownerId).catch(() => false);
 
 			if (typeof member === 'boolean') return;
 

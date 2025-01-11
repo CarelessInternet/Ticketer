@@ -10,14 +10,14 @@
 		"test": "tsx --test ./tests/**/*.test.ts"
 	},
 	"dependencies": {
-		"fast-glob": "^3.3.2"
+		"fast-glob": "^3.3.3"
 	},
 	"peerDependencies": {
 		"discord.js": "^14"
 	},
 	"devDependencies": {
 		"@ticketer/eslint-config": "workspace:*",
-		"@types/node": "^22.9.0",
+		"@types/node": "^22.10.5",
 		"tsx": "^4.19.2"
 	}
 }

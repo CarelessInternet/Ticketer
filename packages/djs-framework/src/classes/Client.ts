@@ -25,6 +25,8 @@ export class Client extends DiscordClient {
 	public readonly modals = new Collection<string, Modal.Interaction>();
 	public readonly subcommands = new Collection<string, Subcommand.Interaction>();
 
+	public guildBlacklists = new Collection<Snowflake, GuildBlacklist>();
+
 	/**
 	 * Initializes events and commands.
 	 */
@@ -146,6 +148,12 @@ export class Client extends DiscordClient {
 			});
 		}
 	}
+}
+
+interface GuildBlacklist {
+	guildId?: Snowflake;
+	reason: string;
+	timestamp: Date;
 }
 
 export interface ClientDeployOptions {

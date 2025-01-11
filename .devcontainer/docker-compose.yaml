@@ -9,7 +9,7 @@ services:
       test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
       interval: 10s
       retries: 3
-      start_period: 10s
+      start_period: 30s
     networks:
       - ticketer-development-database-network
     volumes:

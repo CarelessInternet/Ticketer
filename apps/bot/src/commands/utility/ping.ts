@@ -1,4 +1,4 @@
-import { Status, inlineCode } from 'discord.js';
+import { MessageFlags, Status, inlineCode } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
 import { Command } from '@ticketer/djs-framework';
 
@@ -14,29 +14,39 @@ export default class extends Command.Interaction {
 		const translations = translate(interaction.locale).commands.ping.command;
 		const embed = super.userEmbed(interaction.member).setTitle(translations.embeds[0].title());
 
-		const message = await interaction.reply({
+		const callback = await interaction.reply({
 			embeds: [embed],
-			ephemeral: true,
-			fetchReply: true,
+			flags: [MessageFlags.Ephemeral],
+			withResponse: true,
 		});
 
-		embed.setTitle(translations.embeds[1].title());
+		if (!callback.resource?.message) {
+			return void interaction.editReply({
+				embeds: [
+					super
+						.userEmbedError(interaction.member, translations.embeds[1].title())
+						.setDescription(translations.embeds[1].description()),
+				],
+			});
+		}
+
+		embed.setTitle(translations.embeds[2].title());
 		embed.setFields(
 			{
-				name: translations.embeds[1].fields[0].name(),
-				value: translations.embeds[1].fields[0].value({ ms: interaction.client.ws.ping }),
+				name: translations.embeds[2].fields[0].name(),
+				value: translations.embeds[2].fields[0].value({ ms: interaction.client.ws.ping }),
 				inline: true,
 			},
 			{
-				name: translations.embeds[1].fields[1].name(),
-				value: translations.embeds[1].fields[1].value({
-					ms: message.createdTimestamp - interaction.createdTimestamp,
+				name: translations.embeds[2].fields[1].name(),
+				value: translations.embeds[2].fields[1].value({
+					ms: callback.resource.message.createdTimestamp - callback.interaction.createdTimestamp,
 				}),
 				inline: true,
 			},
 			{
-				name: translations.embeds[1].fields[2].name(),
-				value: translations.embeds[1].fields[2].value({
+				name: translations.embeds[2].fields[2].name(),
+				value: translations.embeds[2].fields[2].value({
 					status: inlineCode(Status[interaction.client.ws.status]),
 				}),
 				inline: true,

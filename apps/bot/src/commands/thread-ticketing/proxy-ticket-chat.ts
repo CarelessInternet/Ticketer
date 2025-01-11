@@ -1,5 +1,5 @@
+import { MessageFlags, PermissionFlagsBits } from 'discord.js';
 import { Command } from '@ticketer/djs-framework';
-import { PermissionFlagsBits } from 'discord.js';
 import { ThreadTicketing } from '@/utils';
 import { translate } from '@/i18n';
 
@@ -31,7 +31,7 @@ export default class extends Command.Interaction {
 					embeds: [
 						super.userEmbedError(interaction.member, translations.title()).setDescription(translations.description()),
 					],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				})
 				.catch(() => false);
 		}
@@ -64,7 +64,7 @@ export default class extends Command.Interaction {
 							locale: interaction.locale,
 						}),
 					],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				})
 				.catch(() => false);
 		}

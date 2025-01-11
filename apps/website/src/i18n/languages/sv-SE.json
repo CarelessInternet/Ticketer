@@ -346,7 +346,7 @@
 					},
 					"termination": {
 						"title": "Uppsägning",
-						"description": "Ticketer förbehåller sig rätten att radera data utan varning, särskilt om en server bedöms bryta mot exempelvis lagar eller användarvillkor. Dessa åtgärder är oåterkalleliga."
+						"description": "Ticketer förbehåller sig rätten att radera data och/eller blockera Discord servrar utan varning, särskilt om en server bedöms bryta mot exempelvis lagar eller användarvillkor. Den första åtgärden är oåterkalleliga."
 					}
 				}
 			}

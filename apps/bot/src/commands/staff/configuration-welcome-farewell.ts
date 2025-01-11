@@ -2,6 +2,7 @@ import {
 	ActionRowBuilder,
 	ChannelSelectMenuBuilder,
 	ChannelType,
+	MessageFlags,
 	ModalBuilder,
 	PermissionFlagsBits,
 	RoleSelectMenuBuilder,
@@ -217,7 +218,7 @@ export class ComponentInteraction extends Component.Interaction {
 			default: {
 				return interaction.reply({
 					embeds: [super.userEmbedError(interaction.member).setDescription('The select menu ID could not be found.')],
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				});
 			}
 		}

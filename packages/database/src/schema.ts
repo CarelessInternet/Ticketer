@@ -5,8 +5,36 @@ import {
 	snowflake,
 	snowflakeRequiredParser,
 } from './utils';
-import { boolean, foreignKey, index, int, mysqlEnum, mysqlTable, tinyint, varchar } from 'drizzle-orm/mysql-core';
+import {
+	boolean,
+	datetime,
+	foreignKey,
+	index,
+	int,
+	mysqlEnum,
+	mysqlTable,
+	tinyint,
+	varchar,
+} from 'drizzle-orm/mysql-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { sql } from 'drizzle-orm';
+
+export const guildBlacklists = mysqlTable(
+	'guildBlacklists',
+	{
+		guildId: snowflake('guildId').primaryKey(),
+		reason: varchar('reason', { length: 500 }).notNull(),
+		timestamp: datetime('timestamp', { mode: 'date' })
+			.notNull()
+			.default(sql`CURRENT_TIMESTAMP`),
+	},
+	(table) => [index('timestamp_index').on(table.timestamp)],
+);
+
+export const guildBlacklistsInsertSchema = createInsertSchema(guildBlacklists, {
+	guildId: snowflakeRequiredParser,
+	reason: (schema) => schema.min(1),
+});
 
 export const welcomeAndFarewell = mysqlTable('welcomeAndFarewell', {
 	guildId: snowflake('guildId').primaryKey(),
@@ -29,7 +57,7 @@ export const ticketThreadsConfigurations = mysqlTable('ticketThreadsConfiguratio
 });
 
 export const ticketThreadsConfigurationsInsertSchema = createInsertSchema(ticketThreadsConfigurations, {
-	activeTickets: (schema) => schema.activeTickets.int().gte(1).lte(255),
+	activeTickets: (schema) => schema.gte(1).lte(255),
 });
 
 export const ticketThreadsCategories = mysqlTable(
@@ -51,14 +79,14 @@ export const ticketThreadsCategories = mysqlTable(
 		threadNotifications: boolean('threadNotifications').notNull().default(false),
 		titleAndDescriptionRequired: boolean('titleAndDescriptionRequired').notNull().default(true),
 	},
-	(table) => ({
-		guildIdIndex: index('guildId_index').on(table.guildId),
-		references: foreignKey({
+	(table) => [
+		index('guildId_index').on(table.guildId),
+		foreignKey({
 			columns: [table.guildId],
 			foreignColumns: [ticketThreadsConfigurations.guildId],
 			name: 'ticket_threads_categories_fk',
 		}),
-	}),
+	],
 );
 
 export const ticketThreadsCategoriesSelectSchema = createSelectSchema(ticketThreadsCategories);
@@ -73,17 +101,17 @@ export const ticketsThreads = mysqlTable(
 		guildId: snowflake('guildId').notNull(),
 		state: mysqlEnum('state', ['active', 'archived', 'locked', 'lockedAndArchived']).notNull().default('active'),
 	},
-	(table) => ({
-		authorIdIndex: index('authorId_index').on(table.authorId),
-		categoryIdIndex: index('categoryId_index').on(table.categoryId),
-		guildIdIndex: index('guildId_index').on(table.guildId),
-		stateIndex: index('state_index').on(table.state),
-		references: foreignKey({
+	(table) => [
+		index('authorId_index').on(table.authorId),
+		index('categoryId_index').on(table.categoryId),
+		index('guildId_index').on(table.guildId),
+		index('state_index').on(table.state),
+		foreignKey({
 			columns: [table.guildId, table.categoryId],
 			foreignColumns: [ticketThreadsCategories.guildId, ticketThreadsCategories.id],
 			name: 'tickets_threads_fk',
 		}),
-	}),
+	],
 );
 
 export const userForumsConfigurations = mysqlTable(
@@ -93,9 +121,7 @@ export const userForumsConfigurations = mysqlTable(
 		guildId: snowflake('guildId').notNull(),
 		...baseTicketConfigurationNotNull,
 	},
-	(table) => ({
-		guildIdIndex: index('guildId_index').on(table.guildId),
-	}),
+	(table) => [index('guildId_index').on(table.guildId)],
 );
 
 export const userForumsConfigurationsSelectSchema = createSelectSchema(userForumsConfigurations, {
@@ -110,9 +136,7 @@ export const automaticThreadsConfigurations = mysqlTable(
 		guildId: snowflake('guildId').notNull(),
 		...baseTicketConfigurationNotNull,
 	},
-	(table) => ({
-		guildIdIndex: index('guildId_index').on(table.guildId),
-	}),
+	(table) => [index('guildId_index').on(table.guildId)],
 );
 
 export const automaticThreadsConfigurationsSelectSchema = createSelectSchema(automaticThreadsConfigurations, {

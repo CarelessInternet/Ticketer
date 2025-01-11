@@ -216,6 +216,154 @@ type RootTranslation = {
 				description: string
 			}
 		}
+		'guild-blacklist': {
+			data: {
+				/**
+				 * g​u​i​l​d​-​b​l​a​c​k​l​i​s​t
+				 */
+				name: string
+				/**
+				 * H​a​n​d​l​e​ ​b​l​a​c​k​l​i​s​t​s​ ​o​f​ ​s​e​r​v​e​r​s​.
+				 */
+				description: string
+				subcommands: {
+					'0': {
+						/**
+						 * o​v​e​r​v​i​e​w
+						 */
+						name: string
+						/**
+						 * V​i​e​w​ ​a​l​l​ ​b​l​a​c​k​l​i​s​t​s​ ​o​f​ ​s​e​r​v​e​r​s​.
+						 */
+						description: string
+					}
+					'1': {
+						/**
+						 * c​r​e​a​t​e
+						 */
+						name: string
+						/**
+						 * A​d​d​ ​a​ ​s​e​r​v​e​r​ ​b​l​a​c​k​l​i​s​t​.
+						 */
+						description: string
+						options: {
+							'0': {
+								/**
+								 * i​d
+								 */
+								name: string
+								/**
+								 * T​h​e​ ​I​D​ ​o​f​ ​t​h​e​ ​s​e​r​v​e​r​ ​t​o​ ​b​l​a​c​k​l​i​s​t​.
+								 */
+								description: string
+							}
+							'1': {
+								/**
+								 * r​e​a​s​o​n
+								 */
+								name: string
+								/**
+								 * T​h​e​ ​r​e​a​s​o​n​ ​f​o​r​ ​t​h​e​ ​b​l​a​c​k​l​i​s​t​ ​o​f​ ​t​h​e​ ​s​e​r​v​e​r​.
+								 */
+								description: string
+							}
+						}
+					}
+					'2': {
+						/**
+						 * d​e​l​e​t​e
+						 */
+						name: string
+						/**
+						 * R​e​m​o​v​e​ ​a​ ​b​l​a​c​k​l​i​s​t​ ​o​f​ ​a​ ​s​e​r​v​e​r​.
+						 */
+						description: string
+						options: {
+							'0': {
+								/**
+								 * i​d
+								 */
+								name: string
+								/**
+								 * T​h​e​ ​I​D​ ​o​f​ ​t​h​e​ ​s​e​r​v​e​r​ ​t​o​ ​w​h​i​t​e​l​i​s​t​.
+								 */
+								description: string
+							}
+						}
+					}
+				}
+			}
+			command: {
+				errors: {
+					invalidFields: {
+						/**
+						 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
+						 */
+						title: string
+					}
+				}
+				embeds: {
+					overview: {
+						/**
+						 * S​e​r​v​e​r​ ​{​i​d​}
+						 * @param {string} id
+						 */
+						title: RequiredParams<'id'>
+						fields: {
+							'0': {
+								/**
+								 * R​e​a​s​o​n
+								 */
+								name: string
+							}
+							'1': {
+								/**
+								 * D​a​t​e
+								 */
+								name: string
+							}
+						}
+					}
+					create: {
+						/**
+						 * B​l​a​c​k​l​i​s​t​e​d​ ​a​ ​S​e​r​v​e​r
+						 */
+						title: string
+						/**
+						 * T​h​e​ ​s​e​r​v​e​r​ ​w​i​t​h​ ​t​h​e​ ​I​D​ ​{​i​d​}​ ​h​a​s​ ​b​e​e​n​ ​b​l​a​c​k​l​i​s​t​e​d​.
+						 * @param {string} id
+						 */
+						description: RequiredParams<'id'>
+						fields: {
+							'0': {
+								/**
+								 * R​e​a​s​o​n
+								 */
+								name: string
+							}
+							'1': {
+								/**
+								 * D​a​t​e
+								 */
+								name: string
+							}
+						}
+					}
+					'delete': {
+						/**
+						 * D​e​l​e​t​e​d​ ​a​ ​S​e​r​v​e​r​ ​B​l​a​c​k​l​i​s​t
+						 */
+						title: string
+						/**
+						 * {​m​e​m​b​e​r​}​ ​w​h​i​t​e​l​i​s​t​e​d​ ​t​h​e​ ​s​e​r​v​e​r​ ​w​i​t​h​ ​t​h​e​ ​I​D​ ​{​i​d​}​.
+						 * @param {string} id
+						 * @param {string} member
+						 */
+						description: RequiredParams<'id' | 'member'>
+					}
+				}
+			}
+		}
 		help: {
 			data: {
 				/**
@@ -354,6 +502,16 @@ type RootTranslation = {
 					}
 					'1': {
 						/**
+						 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
+						 */
+						title: string
+						/**
+						 * A​n​ ​e​r​r​o​r​ ​o​c​c​u​r​r​e​d​ ​w​h​i​l​e​ ​t​r​y​i​n​g​ ​t​o​ ​r​e​c​e​i​v​e​ ​t​h​e​ ​r​e​p​l​i​e​d​ ​m​e​s​s​a​g​e​.
+						 */
+						description: string
+					}
+					'2': {
+						/**
 						 * R​e​s​u​l​t
 						 */
 						title: string
@@ -462,7 +620,7 @@ type RootTranslation = {
 							 */
 							success: string
 							/**
-							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 							 */
 							error: string
 						}
@@ -627,11 +785,39 @@ type RootTranslation = {
 	}
 	events: {
 		interactionCreate: {
+			blacklisted: {
+				/**
+				 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
+				 */
+				title: string
+				/**
+				 * T​h​i​s​ ​s​e​r​v​e​r​ ​h​a​s​ ​b​e​e​n​ ​b​l​a​c​k​l​i​s​t​e​d​ ​f​r​o​m​ ​u​s​i​n​g​ ​t​h​e​ ​b​o​t​!
+				 */
+				description: string
+				fields: {
+					'0': {
+						/**
+						 * R​e​a​s​o​n
+						 */
+						name: string
+					}
+					'1': {
+						/**
+						 * D​a​t​e
+						 */
+						name: string
+					}
+				}
+			}
 			ownerOnly: {
+				/**
+				 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
+				 */
+				title: string
 				/**
 				 * Y​o​u​ ​n​e​e​d​ ​t​o​ ​b​e​ ​t​h​e​ ​o​w​n​e​r​ ​o​f​ ​t​h​e​ ​b​o​t​ ​t​o​ ​r​u​n​ ​t​h​i​s​ ​c​o​m​m​a​n​d​!
 				 */
-				error: string
+				description: string
 			}
 		}
 		guildMemberAdd: {
@@ -681,7 +867,7 @@ type RootTranslation = {
 		errors: {
 			invalidTicket: {
 				/**
-				 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+				 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 				 */
 				title: string
 				/**
@@ -694,7 +880,7 @@ type RootTranslation = {
 			actions: {
 				_errorIfNotThreadChannel: {
 					/**
-					 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+					 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 					 */
 					title: string
 					/**
@@ -704,7 +890,7 @@ type RootTranslation = {
 				}
 				_errorIfNotThreadAuthorOrManager: {
 					/**
-					 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+					 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 					 */
 					title: string
 					/**
@@ -743,7 +929,7 @@ type RootTranslation = {
 						errors: {
 							notEditable: {
 								/**
-								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 								 */
 								title: string
 								/**
@@ -777,7 +963,7 @@ type RootTranslation = {
 						errors: {
 							notManageable: {
 								/**
-								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 								 */
 								title: string
 								/**
@@ -809,7 +995,7 @@ type RootTranslation = {
 						errors: {
 							notEditable: {
 								/**
-								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 								 */
 								title: string
 								/**
@@ -841,7 +1027,7 @@ type RootTranslation = {
 						errors: {
 							notManageableAndEditable: {
 								/**
-								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 								 */
 								title: string
 								/**
@@ -873,7 +1059,7 @@ type RootTranslation = {
 						errors: {
 							notManageable: {
 								/**
-								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 								 */
 								title: string
 								/**
@@ -922,7 +1108,7 @@ type RootTranslation = {
 					errors: {
 						invalidCustomId: {
 							/**
-							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 							 */
 							title: string
 							/**
@@ -932,7 +1118,7 @@ type RootTranslation = {
 						}
 						invalidId: {
 							/**
-							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 							 */
 							title: string
 							/**
@@ -970,7 +1156,7 @@ type RootTranslation = {
 					errors: {
 						invalidUser: {
 							/**
-							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 							 */
 							title: string
 							/**
@@ -980,7 +1166,7 @@ type RootTranslation = {
 						}
 						noCategories: {
 							/**
-							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 							 */
 							title: string
 							/**
@@ -990,7 +1176,7 @@ type RootTranslation = {
 						}
 						invalidId: {
 							/**
-							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 							 */
 							title: string
 							/**
@@ -1000,7 +1186,7 @@ type RootTranslation = {
 						}
 						noConfiguration: {
 							/**
-							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 							 */
 							title: string
 							/**
@@ -1010,7 +1196,7 @@ type RootTranslation = {
 						}
 						noManagers: {
 							/**
-							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 							 */
 							title: string
 							/**
@@ -1020,7 +1206,7 @@ type RootTranslation = {
 						}
 						invalidChannel: {
 							/**
-							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 							 */
 							title: string
 							/**
@@ -1030,7 +1216,7 @@ type RootTranslation = {
 						}
 						noPermissions: {
 							/**
-							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 							 */
 							title: string
 							/**
@@ -1041,7 +1227,7 @@ type RootTranslation = {
 						}
 						tooManyTickets: {
 							/**
-							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 							 */
 							title: string
 							user: {
@@ -1062,7 +1248,7 @@ type RootTranslation = {
 						}
 						invalidFields: {
 							/**
-							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 							 */
 							title: string
 							fields: {
@@ -1123,7 +1309,7 @@ type RootTranslation = {
 				actions: {
 					_errorIfNotTicketChannel: {
 						/**
-						 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+						 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 						 */
 						title: string
 						/**
@@ -1133,7 +1319,7 @@ type RootTranslation = {
 					}
 					_errorIfNotTicketAuthorOrManager: {
 						/**
-						 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+						 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 						 */
 						title: string
 						/**
@@ -1143,7 +1329,7 @@ type RootTranslation = {
 					}
 					_errorIfNoAuthorPermissions: {
 						/**
-						 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+						 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 						 */
 						title: string
 						/**
@@ -1182,7 +1368,7 @@ type RootTranslation = {
 							errors: {
 								notEditable: {
 									/**
-									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 									 */
 									title: string
 									/**
@@ -1192,7 +1378,7 @@ type RootTranslation = {
 								}
 								tooLong: {
 									/**
-									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 									 */
 									title: string
 									/**
@@ -1237,7 +1423,7 @@ type RootTranslation = {
 							errors: {
 								notManageable: {
 									/**
-									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 									 */
 									title: string
 									/**
@@ -1279,7 +1465,7 @@ type RootTranslation = {
 							errors: {
 								notEditable: {
 									/**
-									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 									 */
 									title: string
 									/**
@@ -1321,7 +1507,7 @@ type RootTranslation = {
 							errors: {
 								notManageableAndEditable: {
 									/**
-									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 									 */
 									title: string
 									/**
@@ -1363,7 +1549,7 @@ type RootTranslation = {
 							errors: {
 								notManageable: {
 									/**
-									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 									 */
 									title: string
 									/**
@@ -1424,7 +1610,7 @@ type RootTranslation = {
 			actions: {
 				_errorIfNotThreadChannel: {
 					/**
-					 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+					 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 					 */
 					title: string
 					/**
@@ -1434,7 +1620,7 @@ type RootTranslation = {
 				}
 				_errorIfNotThreadAuthorOrManager: {
 					/**
-					 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+					 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 					 */
 					title: string
 					/**
@@ -1473,7 +1659,7 @@ type RootTranslation = {
 						errors: {
 							notEditable: {
 								/**
-								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 								 */
 								title: string
 								/**
@@ -1507,7 +1693,7 @@ type RootTranslation = {
 						errors: {
 							notManageable: {
 								/**
-								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 								 */
 								title: string
 								/**
@@ -1539,7 +1725,7 @@ type RootTranslation = {
 						errors: {
 							notEditable: {
 								/**
-								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 								 */
 								title: string
 								/**
@@ -1571,7 +1757,7 @@ type RootTranslation = {
 						errors: {
 							notManageableAndEditable: {
 								/**
-								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 								 */
 								title: string
 								/**
@@ -1603,7 +1789,7 @@ type RootTranslation = {
 						errors: {
 							notManageable: {
 								/**
-								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​e​d
+								 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
 								 */
 								title: string
 								/**
@@ -1831,6 +2017,150 @@ export type TranslationFunctions = {
 				description: () => LocalizedString
 			}
 		}
+		'guild-blacklist': {
+			data: {
+				/**
+				 * guild-blacklist
+				 */
+				name: () => LocalizedString
+				/**
+				 * Handle blacklists of servers.
+				 */
+				description: () => LocalizedString
+				subcommands: {
+					'0': {
+						/**
+						 * overview
+						 */
+						name: () => LocalizedString
+						/**
+						 * View all blacklists of servers.
+						 */
+						description: () => LocalizedString
+					}
+					'1': {
+						/**
+						 * create
+						 */
+						name: () => LocalizedString
+						/**
+						 * Add a server blacklist.
+						 */
+						description: () => LocalizedString
+						options: {
+							'0': {
+								/**
+								 * id
+								 */
+								name: () => LocalizedString
+								/**
+								 * The ID of the server to blacklist.
+								 */
+								description: () => LocalizedString
+							}
+							'1': {
+								/**
+								 * reason
+								 */
+								name: () => LocalizedString
+								/**
+								 * The reason for the blacklist of the server.
+								 */
+								description: () => LocalizedString
+							}
+						}
+					}
+					'2': {
+						/**
+						 * delete
+						 */
+						name: () => LocalizedString
+						/**
+						 * Remove a blacklist of a server.
+						 */
+						description: () => LocalizedString
+						options: {
+							'0': {
+								/**
+								 * id
+								 */
+								name: () => LocalizedString
+								/**
+								 * The ID of the server to whitelist.
+								 */
+								description: () => LocalizedString
+							}
+						}
+					}
+				}
+			}
+			command: {
+				errors: {
+					invalidFields: {
+						/**
+						 * An Error Occurred
+						 */
+						title: () => LocalizedString
+					}
+				}
+				embeds: {
+					overview: {
+						/**
+						 * Server {id}
+						 */
+						title: (arg: { id: string }) => LocalizedString
+						fields: {
+							'0': {
+								/**
+								 * Reason
+								 */
+								name: () => LocalizedString
+							}
+							'1': {
+								/**
+								 * Date
+								 */
+								name: () => LocalizedString
+							}
+						}
+					}
+					create: {
+						/**
+						 * Blacklisted a Server
+						 */
+						title: () => LocalizedString
+						/**
+						 * The server with the ID {id} has been blacklisted.
+						 */
+						description: (arg: { id: string }) => LocalizedString
+						fields: {
+							'0': {
+								/**
+								 * Reason
+								 */
+								name: () => LocalizedString
+							}
+							'1': {
+								/**
+								 * Date
+								 */
+								name: () => LocalizedString
+							}
+						}
+					}
+					'delete': {
+						/**
+						 * Deleted a Server Blacklist
+						 */
+						title: () => LocalizedString
+						/**
+						 * {member} whitelisted the server with the ID {id}.
+						 */
+						description: (arg: { id: string, member: string }) => LocalizedString
+					}
+				}
+			}
+		}
 		help: {
 			data: {
 				/**
@@ -1968,6 +2298,16 @@ export type TranslationFunctions = {
 					}
 					'1': {
 						/**
+						 * An Error Occurred
+						 */
+						title: () => LocalizedString
+						/**
+						 * An error occurred while trying to receive the replied message.
+						 */
+						description: () => LocalizedString
+					}
+					'2': {
+						/**
 						 * Result
 						 */
 						title: () => LocalizedString
@@ -2073,7 +2413,7 @@ export type TranslationFunctions = {
 							 */
 							success: () => LocalizedString
 							/**
-							 * An Error Occured
+							 * An Error Occurred
 							 */
 							error: () => LocalizedString
 						}
@@ -2234,11 +2574,39 @@ export type TranslationFunctions = {
 	}
 	events: {
 		interactionCreate: {
+			blacklisted: {
+				/**
+				 * An Error Occurred
+				 */
+				title: () => LocalizedString
+				/**
+				 * This server has been blacklisted from using the bot!
+				 */
+				description: () => LocalizedString
+				fields: {
+					'0': {
+						/**
+						 * Reason
+						 */
+						name: () => LocalizedString
+					}
+					'1': {
+						/**
+						 * Date
+						 */
+						name: () => LocalizedString
+					}
+				}
+			}
 			ownerOnly: {
+				/**
+				 * An Error Occurred
+				 */
+				title: () => LocalizedString
 				/**
 				 * You need to be the owner of the bot to run this command!
 				 */
-				error: () => LocalizedString
+				description: () => LocalizedString
 			}
 		}
 		guildMemberAdd: {
@@ -2284,7 +2652,7 @@ export type TranslationFunctions = {
 		errors: {
 			invalidTicket: {
 				/**
-				 * An Error Occured
+				 * An Error Occurred
 				 */
 				title: () => LocalizedString
 				/**
@@ -2297,7 +2665,7 @@ export type TranslationFunctions = {
 			actions: {
 				_errorIfNotThreadChannel: {
 					/**
-					 * An Error Occured
+					 * An Error Occurred
 					 */
 					title: () => LocalizedString
 					/**
@@ -2307,7 +2675,7 @@ export type TranslationFunctions = {
 				}
 				_errorIfNotThreadAuthorOrManager: {
 					/**
-					 * An Error Occured
+					 * An Error Occurred
 					 */
 					title: () => LocalizedString
 					/**
@@ -2346,7 +2714,7 @@ export type TranslationFunctions = {
 						errors: {
 							notEditable: {
 								/**
-								 * An Error Occured
+								 * An Error Occurred
 								 */
 								title: () => LocalizedString
 								/**
@@ -2378,7 +2746,7 @@ export type TranslationFunctions = {
 						errors: {
 							notManageable: {
 								/**
-								 * An Error Occured
+								 * An Error Occurred
 								 */
 								title: () => LocalizedString
 								/**
@@ -2410,7 +2778,7 @@ export type TranslationFunctions = {
 						errors: {
 							notEditable: {
 								/**
-								 * An Error Occured
+								 * An Error Occurred
 								 */
 								title: () => LocalizedString
 								/**
@@ -2442,7 +2810,7 @@ export type TranslationFunctions = {
 						errors: {
 							notManageableAndEditable: {
 								/**
-								 * An Error Occured
+								 * An Error Occurred
 								 */
 								title: () => LocalizedString
 								/**
@@ -2474,7 +2842,7 @@ export type TranslationFunctions = {
 						errors: {
 							notManageable: {
 								/**
-								 * An Error Occured
+								 * An Error Occurred
 								 */
 								title: () => LocalizedString
 								/**
@@ -2521,7 +2889,7 @@ export type TranslationFunctions = {
 					errors: {
 						invalidCustomId: {
 							/**
-							 * An Error Occured
+							 * An Error Occurred
 							 */
 							title: () => LocalizedString
 							/**
@@ -2531,7 +2899,7 @@ export type TranslationFunctions = {
 						}
 						invalidId: {
 							/**
-							 * An Error Occured
+							 * An Error Occurred
 							 */
 							title: () => LocalizedString
 							/**
@@ -2569,7 +2937,7 @@ export type TranslationFunctions = {
 					errors: {
 						invalidUser: {
 							/**
-							 * An Error Occured
+							 * An Error Occurred
 							 */
 							title: () => LocalizedString
 							/**
@@ -2579,7 +2947,7 @@ export type TranslationFunctions = {
 						}
 						noCategories: {
 							/**
-							 * An Error Occured
+							 * An Error Occurred
 							 */
 							title: () => LocalizedString
 							/**
@@ -2589,7 +2957,7 @@ export type TranslationFunctions = {
 						}
 						invalidId: {
 							/**
-							 * An Error Occured
+							 * An Error Occurred
 							 */
 							title: () => LocalizedString
 							/**
@@ -2599,7 +2967,7 @@ export type TranslationFunctions = {
 						}
 						noConfiguration: {
 							/**
-							 * An Error Occured
+							 * An Error Occurred
 							 */
 							title: () => LocalizedString
 							/**
@@ -2609,7 +2977,7 @@ export type TranslationFunctions = {
 						}
 						noManagers: {
 							/**
-							 * An Error Occured
+							 * An Error Occurred
 							 */
 							title: () => LocalizedString
 							/**
@@ -2619,7 +2987,7 @@ export type TranslationFunctions = {
 						}
 						invalidChannel: {
 							/**
-							 * An Error Occured
+							 * An Error Occurred
 							 */
 							title: () => LocalizedString
 							/**
@@ -2629,7 +2997,7 @@ export type TranslationFunctions = {
 						}
 						noPermissions: {
 							/**
-							 * An Error Occured
+							 * An Error Occurred
 							 */
 							title: () => LocalizedString
 							/**
@@ -2639,7 +3007,7 @@ export type TranslationFunctions = {
 						}
 						tooManyTickets: {
 							/**
-							 * An Error Occured
+							 * An Error Occurred
 							 */
 							title: () => LocalizedString
 							user: {
@@ -2657,7 +3025,7 @@ export type TranslationFunctions = {
 						}
 						invalidFields: {
 							/**
-							 * An Error Occured
+							 * An Error Occurred
 							 */
 							title: () => LocalizedString
 							fields: {
@@ -2710,7 +3078,7 @@ export type TranslationFunctions = {
 				actions: {
 					_errorIfNotTicketChannel: {
 						/**
-						 * An Error Occured
+						 * An Error Occurred
 						 */
 						title: () => LocalizedString
 						/**
@@ -2720,7 +3088,7 @@ export type TranslationFunctions = {
 					}
 					_errorIfNotTicketAuthorOrManager: {
 						/**
-						 * An Error Occured
+						 * An Error Occurred
 						 */
 						title: () => LocalizedString
 						/**
@@ -2730,7 +3098,7 @@ export type TranslationFunctions = {
 					}
 					_errorIfNoAuthorPermissions: {
 						/**
-						 * An Error Occured
+						 * An Error Occurred
 						 */
 						title: () => LocalizedString
 						/**
@@ -2769,7 +3137,7 @@ export type TranslationFunctions = {
 							errors: {
 								notEditable: {
 									/**
-									 * An Error Occured
+									 * An Error Occurred
 									 */
 									title: () => LocalizedString
 									/**
@@ -2779,7 +3147,7 @@ export type TranslationFunctions = {
 								}
 								tooLong: {
 									/**
-									 * An Error Occured
+									 * An Error Occurred
 									 */
 									title: () => LocalizedString
 									/**
@@ -2819,7 +3187,7 @@ export type TranslationFunctions = {
 							errors: {
 								notManageable: {
 									/**
-									 * An Error Occured
+									 * An Error Occurred
 									 */
 									title: () => LocalizedString
 									/**
@@ -2859,7 +3227,7 @@ export type TranslationFunctions = {
 							errors: {
 								notEditable: {
 									/**
-									 * An Error Occured
+									 * An Error Occurred
 									 */
 									title: () => LocalizedString
 									/**
@@ -2899,7 +3267,7 @@ export type TranslationFunctions = {
 							errors: {
 								notManageableAndEditable: {
 									/**
-									 * An Error Occured
+									 * An Error Occurred
 									 */
 									title: () => LocalizedString
 									/**
@@ -2939,7 +3307,7 @@ export type TranslationFunctions = {
 							errors: {
 								notManageable: {
 									/**
-									 * An Error Occured
+									 * An Error Occurred
 									 */
 									title: () => LocalizedString
 									/**
@@ -2997,7 +3365,7 @@ export type TranslationFunctions = {
 			actions: {
 				_errorIfNotThreadChannel: {
 					/**
-					 * An Error Occured
+					 * An Error Occurred
 					 */
 					title: () => LocalizedString
 					/**
@@ -3007,7 +3375,7 @@ export type TranslationFunctions = {
 				}
 				_errorIfNotThreadAuthorOrManager: {
 					/**
-					 * An Error Occured
+					 * An Error Occurred
 					 */
 					title: () => LocalizedString
 					/**
@@ -3046,7 +3414,7 @@ export type TranslationFunctions = {
 						errors: {
 							notEditable: {
 								/**
-								 * An Error Occured
+								 * An Error Occurred
 								 */
 								title: () => LocalizedString
 								/**
@@ -3078,7 +3446,7 @@ export type TranslationFunctions = {
 						errors: {
 							notManageable: {
 								/**
-								 * An Error Occured
+								 * An Error Occurred
 								 */
 								title: () => LocalizedString
 								/**
@@ -3110,7 +3478,7 @@ export type TranslationFunctions = {
 						errors: {
 							notEditable: {
 								/**
-								 * An Error Occured
+								 * An Error Occurred
 								 */
 								title: () => LocalizedString
 								/**
@@ -3142,7 +3510,7 @@ export type TranslationFunctions = {
 						errors: {
 							notManageableAndEditable: {
 								/**
-								 * An Error Occured
+								 * An Error Occurred
 								 */
 								title: () => LocalizedString
 								/**
@@ -3174,7 +3542,7 @@ export type TranslationFunctions = {
 						errors: {
 							notManageable: {
 								/**
-								 * An Error Occured
+								 * An Error Occurred
 								 */
 								title: () => LocalizedString
 								/**

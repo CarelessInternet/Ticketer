@@ -85,6 +85,78 @@ const en_GB = {
 				description: 'Delete the thread or support ticket.',
 			},
 		},
+		'guild-blacklist': {
+			data: {
+				name: 'guild-blacklist',
+				description: 'Handle blacklists of servers.',
+				subcommands: [
+					{
+						name: 'overview',
+						description: 'View all blacklists of servers.',
+					},
+					{
+						name: 'create',
+						description: 'Add a server blacklist.',
+						options: [
+							{
+								name: 'id',
+								description: 'The ID of the server to blacklist.',
+							},
+							{
+								name: 'reason',
+								description: 'The reason for the blacklist of the server.',
+							},
+						],
+					},
+					{
+						name: 'delete',
+						description: 'Remove a blacklist of a server.',
+						options: [
+							{
+								name: 'id',
+								description: 'The ID of the server to whitelist.',
+							},
+						],
+					},
+				],
+			},
+			command: {
+				errors: {
+					invalidFields: {
+						title: ERROR_TITLE,
+					},
+				},
+				embeds: {
+					overview: {
+						title: 'Server {id:string}',
+						fields: [
+							{
+								name: 'Reason',
+							},
+							{
+								name: 'Date',
+							},
+						],
+					},
+					create: {
+						title: 'Blacklisted a Server',
+						description: 'The server with the ID {id:string} has been blacklisted.',
+						fields: [
+							{
+								name: 'Reason',
+							},
+							{
+								name: 'Date',
+							},
+						],
+					},
+					delete: {
+						title: 'Deleted a Server Blacklist',
+						description: '{member:string} whitelisted the server with the ID {id:string}.',
+					},
+				},
+			},
+		},
 		help: {
 			data: {
 				name: 'help',
@@ -150,6 +222,10 @@ const en_GB = {
 				embeds: [
 					{
 						title: 'Pinging...',
+					},
+					{
+						title: ERROR_TITLE,
+						description: 'An error occurred while trying to receive the replied message.',
 					},
 					{
 						title: 'Result',
@@ -299,8 +375,21 @@ const en_GB = {
 	},
 	events: {
 		interactionCreate: {
+			blacklisted: {
+				title: ERROR_TITLE,
+				description: 'This server has been blacklisted from using the bot!',
+				fields: [
+					{
+						name: 'Reason',
+					},
+					{
+						name: 'Date',
+					},
+				],
+			},
 			ownerOnly: {
-				error: 'You need to be the owner of the bot to run this command!',
+				title: ERROR_TITLE,
+				description: 'You need to be the owner of the bot to run this command!',
 			},
 		},
 		guildMemberAdd: {

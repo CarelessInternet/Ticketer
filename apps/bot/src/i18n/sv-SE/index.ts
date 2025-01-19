@@ -182,6 +182,7 @@ const sv_SE = {
 								name: '🔗 Länkar',
 								links: {
 									commandDocumentation: 'Kommandodokumentation',
+									donate: 'Donera',
 									invite: 'Inbjudningslänk',
 									supportServer: 'Stödserver',
 									website: 'Webbsida',

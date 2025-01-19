@@ -1,4 +1,4 @@
-import { ApplicationCommandType, hyperlink, inlineCode } from 'discord.js';
+import { ApplicationCommandType, MessageFlags, hyperlink, inlineCode } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
 import { Command } from '@ticketer/djs-framework';
 import { environment } from '@ticketer/env/bot';
@@ -38,6 +38,10 @@ export default class extends Command.Interaction {
 			translations.fields[1].links.commandDocumentation(),
 			new URL('/en-GB/docs/commands', environment.WEBSITE_URL).toString(),
 		);
+		const donate = hyperlink(
+			translations.fields[1].links.donate(),
+			new URL('/links/funding/donate', environment.WEBSITE_URL).toString(),
+		);
 		const website = hyperlink(translations.fields[1].links.website(), environment.WEBSITE_URL);
 		const supportServer = environment.DISCORD_SUPPORT_SERVER
 			? hyperlink(translations.fields[1].links.supportServer(), environment.DISCORD_SUPPORT_SERVER)
@@ -47,7 +51,9 @@ export default class extends Command.Interaction {
 			new URL('/links/discord/invite', environment.WEBSITE_URL).toString(),
 		);
 
-		const linksAsString = [commandDocumentation, website, supportServer, inviteLink].filter(Boolean).join(' | ');
+		const linksAsString = [commandDocumentation, donate, website, supportServer, inviteLink]
+			.filter(Boolean)
+			.join(' | ');
 
 		const embed = super
 			.userEmbed(interaction.member)
@@ -64,6 +70,6 @@ export default class extends Command.Interaction {
 				},
 			);
 
-		void interaction.reply({ embeds: [embed], ephemeral });
+		void interaction.reply({ embeds: [embed], flags: ephemeral ? [MessageFlags.Ephemeral] : undefined });
 	}
 }

@@ -1,4 +1,15 @@
-import { Code, Cookie, Globe, Menu, MessageCircleQuestion, PlusCircle, Scale, Server, Terminal } from 'lucide-react';
+import {
+	Code,
+	Cookie,
+	Globe,
+	HandCoins,
+	Menu,
+	MessageCircleQuestion,
+	PlusCircle,
+	Scale,
+	Server,
+	Terminal,
+} from 'lucide-react';
 import type { HTMLAttributes, JSX, PropsWithChildren } from 'react';
 import {
 	NavigationMenu,
@@ -159,6 +170,11 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 				external: true,
 				href: 'https://github.com/CarelessInternet/Ticketer',
 				icon: <GitHub />,
+			},
+			{
+				content: t('items.donate'),
+				href: '/links/funding/donate',
+				icon: <HandCoins />,
 			},
 		] satisfies TooltipLinkItems[];
 

@@ -421,6 +421,10 @@ type RootTranslation = {
 									 */
 									commandDocumentation: string
 									/**
+									 * D​o​n​a​t​e
+									 */
+									donate: string
+									/**
 									 * I​n​v​i​t​e​ ​L​i​n​k
 									 */
 									invite: string
@@ -2216,6 +2220,10 @@ export type TranslationFunctions = {
 									 * Command Documentation
 									 */
 									commandDocumentation: () => LocalizedString
+									/**
+									 * Donate
+									 */
+									donate: () => LocalizedString
 									/**
 									 * Invite Link
 									 */

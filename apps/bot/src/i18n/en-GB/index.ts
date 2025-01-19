@@ -182,6 +182,7 @@ const en_GB = {
 								name: '🔗 Links',
 								links: {
 									commandDocumentation: 'Command Documentation',
+									donate: 'Donate',
 									invite: 'Invite Link',
 									supportServer: 'Support Server',
 									website: 'Website',

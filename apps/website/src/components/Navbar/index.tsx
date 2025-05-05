@@ -8,6 +8,7 @@ import {
 	PlusCircle,
 	Scale,
 	Server,
+	Sheet,
 	Terminal,
 } from 'lucide-react';
 import type { HTMLAttributes, JSX, PropsWithChildren } from 'react';
@@ -18,7 +19,7 @@ import {
 	NavigationMenuList,
 	NavigationMenuTrigger,
 } from '../ui/navigation-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
+import { SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { Button } from '@/components/ui/button';
 import ExternalLink from '../ExternalLink';
@@ -39,11 +40,11 @@ function ListItem({
 }: PropsWithChildren<{ href: string; icon: JSX.Element; title: string }>) {
 	return (
 		<li>
-			<Link href={href} className="h-full w-full justify-start p-2">
+			<Link href={href} className="size-full justify-start p-2" asChild>
 				<div className="flex flex-row">
 					<div className="flex items-center pr-3">{icon}</div>
 					<div className="block space-y-1">
-						<h1 className="text-base font-medium leading-none">{title}</h1>
+						<h1 className="text-lg font-medium leading-none">{title}</h1>
 						<p className="text-sm leading-snug">{children}</p>
 					</div>
 				</div>

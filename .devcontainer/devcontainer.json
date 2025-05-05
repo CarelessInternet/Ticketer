@@ -33,7 +33,7 @@
 	// When building the dev container for the first time, it works but file permissions do not work.
 	// Only root has permissions. https://github.com/microsoft/vscode-remote-release/issues/4646
 	// This command does not actually work...
-	"postStartCommand": "chown -R node:node /workspaces",
+	// "updateContentCommand": "chown -R node:node /workspaces",
 
 	// Configure tool-specific properties.
 	"customizations": {
@@ -54,5 +54,5 @@
 	},
 
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
-	"remoteUser": "node"
+	"remoteUser": "root"
 }

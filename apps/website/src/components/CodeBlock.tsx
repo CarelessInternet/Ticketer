@@ -4,7 +4,7 @@ import type { HTMLAttributes, PropsWithChildren } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { Copy } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useToast } from './ui/use-toast';
+import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 
 interface CodeBlockProperties extends HTMLAttributes<HTMLElement> {
@@ -22,13 +22,12 @@ export default function CodeBlock({
 	slashCommand,
 	...properties
 }: PropsWithChildren<CodeBlockProperties>) {
-	const { toast } = useToast();
 	const t = useTranslations('components.codeblock');
 
 	const saveToClipboard = (text: string) =>
 		navigator.clipboard
 			.writeText(text)
-			.then(() => toast({ title: t('copied') }))
+			.then(() => toast(t('copied')))
 			.catch((error: unknown) => {
 				console.error(error);
 			});

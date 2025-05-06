@@ -46,6 +46,6 @@ export default tseslint.config(
 		},
 	},
 	{
-		ignores: ['**/.next/'],
+		ignores: ['**/.next/', 'src/i18n/languages/en-GB.d.json.ts'],
 	},
 );

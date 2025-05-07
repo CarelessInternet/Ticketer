@@ -3,6 +3,7 @@ import type { BaseInteraction, Command, Component, Modal } from '@ticketer/djs-f
 import {
 	ChannelType,
 	Colors,
+	ComponentType,
 	MessageFlags,
 	MessageType,
 	PermissionFlagsBits,
@@ -38,16 +39,18 @@ export async function createTicket(
 	// then defer the update instead of deferring the reply.
 	const hasComponents =
 		'message' in interaction &&
-		interaction.message?.components.find((row) =>
-			row.components.find((component) => {
-				if (!component.customId) return false;
+		interaction.message?.components.find(
+			(row) =>
+				row.type === ComponentType.ActionRow &&
+				row.components.find((component) => {
+					if (!component.customId) return false;
 
-				const { customId } = this.extractCustomId(component.customId);
-				return (
-					customId === this.customId('ticket_threads_categories_create_list') ||
-					customId === this.dynamicCustomId('ticket_threads_categories_create_list_proxy')
-				);
-			}),
+					const { customId } = this.extractCustomId(component.customId);
+					return (
+						customId === this.customId('ticket_threads_categories_create_list') ||
+						customId === this.dynamicCustomId('ticket_threads_categories_create_list_proxy')
+					);
+				}),
 		);
 
 	if (interaction.replied || hasComponents) {

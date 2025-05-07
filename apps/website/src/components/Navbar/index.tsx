@@ -39,7 +39,7 @@ function ListItem({
 }: PropsWithChildren<{ href: string; icon: JSX.Element; title: string }>) {
 	return (
 		<li>
-			<Link href={href} className="size-full justify-start p-2" asChild>
+			<Link href={href} className="size-full items-start p-2">
 				<div className="flex flex-row">
 					<div className="flex items-center pr-3">{icon}</div>
 					<div className="block space-y-1">
@@ -167,8 +167,7 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 			},
 			{
 				content: t('items.github'),
-				external: true,
-				href: 'https://github.com/CarelessInternet/Ticketer',
+				href: '/links/github',
 				icon: <GitHub />,
 			},
 			{

@@ -7,18 +7,15 @@ import { Link as LocalisedLink } from '@/i18n/routing';
 import { usePathname } from '@/i18n/routing';
 
 export default function Link({
-	asChild = false,
 	children,
 	className,
 	href,
-}: PropsWithChildren<{ asChild?: boolean } & WithRequired<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>>) {
+}: PropsWithChildren<WithRequired<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>>) {
 	const isActive = usePathname() === href;
 
 	return (
-		<LocalisedLink href={href} legacyBehavior passHref>
-			<NavigationMenuLink className={cn(navigationMenuTriggerStyle(), className)} active={isActive} asChild={asChild}>
-				{children}
-			</NavigationMenuLink>
-		</LocalisedLink>
+		<NavigationMenuLink className={cn(navigationMenuTriggerStyle(), className)} active={isActive} asChild>
+			<LocalisedLink href={href}>{children}</LocalisedLink>
+		</NavigationMenuLink>
 	);
 }

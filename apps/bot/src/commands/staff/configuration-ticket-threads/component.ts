@@ -115,11 +115,14 @@ export default class extends Component.Interaction {
 			case 'silent_pings': {
 				return this.silentPings({ interaction });
 			}
-			case 'ticket_title_description': {
-				return this.ticketTitleDescription({ interaction });
-			}
 			case 'skip_modals': {
 				return this.skipModals({ interaction });
+			}
+			case 'thread_title': {
+				return this.threadTitleValues({ interaction });
+			}
+			case 'ticket_title_description': {
+				return this.ticketTitleDescription({ interaction });
 			}
 			default: {
 				return interaction.reply({
@@ -322,51 +325,6 @@ export default class extends Component.Interaction {
 	}
 
 	@DeferReply()
-	private async ticketTitleDescription({ interaction }: Component.Context<'string'>) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
-		const {
-			data: categoryId,
-			error,
-			success,
-		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
-
-		if (!success) {
-			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
-			});
-		}
-
-		await database
-			.update(ticketThreadsCategories)
-			.set({
-				titleAndDescriptionRequired: not(ticketThreadsCategories.titleAndDescriptionRequired),
-			})
-			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
-
-		const [row] = await database
-			.select({ titleAndDescriptionRequired: ticketThreadsCategories.titleAndDescriptionRequired })
-			.from(ticketThreadsCategories)
-			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
-
-		if (!row) {
-			return interaction.editReply({
-				embeds: [
-					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
-				],
-			});
-		}
-
-		const embed = super
-			.userEmbed(interaction.member)
-			.setTitle('Updated the Thread Ticket Category')
-			.setDescription(
-				`${interaction.member.toString()} has toggled the ticket title and description option to ${row.titleAndDescriptionRequired ? 'required' : 'optional'}.`,
-			);
-
-		return interaction.editReply({ embeds: [embed] });
-	}
-
-	@DeferReply()
 	private async skipModals({ interaction }: Component.Context<'string'>) {
 		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
 		const {
@@ -406,6 +364,96 @@ export default class extends Component.Interaction {
 			.setTitle('Updated the Thread Ticket Category')
 			.setDescription(
 				`${interaction.member.toString()} has toggled the skip modal option to ${row.skipModal ? 'enabled' : 'disabled'}.`,
+			);
+
+		return interaction.editReply({ embeds: [embed] });
+	}
+
+	private async threadTitleValues({ interaction }: Component.Context<'string'>) {
+		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
+
+		if (!success) {
+			return interaction.reply({
+				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+			});
+		}
+
+		const [row] = await database
+			.select({ threadTitle: ticketThreadsCategories.threadTitle })
+			.from(ticketThreadsCategories)
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
+
+		if (!row) {
+			return interaction.reply({
+				embeds: [
+					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
+				],
+			});
+		}
+
+		const titleInput = (row.threadTitle ? new TextInputBuilder().setValue(row.threadTitle) : new TextInputBuilder())
+			.setCustomId(super.customId('title'))
+			.setLabel('Thread Title')
+			.setRequired(false)
+			.setMinLength(1)
+			.setMaxLength(100)
+			.setStyle(TextInputStyle.Short)
+			.setPlaceholder('Write "{title}", "{member}", and "{date}" to mention them.');
+
+		const actionRow = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
+		const modal = new ModalBuilder()
+			.setCustomId(super.customId('ticket_threads_category_thread_title', categoryId))
+			.setTitle('Created Thread Title')
+			.setComponents(actionRow);
+
+		return interaction.showModal(modal).catch(() => false);
+	}
+
+	@DeferReply()
+	private async ticketTitleDescription({ interaction }: Component.Context<'string'>) {
+		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
+
+		if (!success) {
+			return interaction.editReply({
+				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+			});
+		}
+
+		await database
+			.update(ticketThreadsCategories)
+			.set({
+				titleAndDescriptionRequired: not(ticketThreadsCategories.titleAndDescriptionRequired),
+			})
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
+
+		const [row] = await database
+			.select({ titleAndDescriptionRequired: ticketThreadsCategories.titleAndDescriptionRequired })
+			.from(ticketThreadsCategories)
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
+
+		if (!row) {
+			return interaction.editReply({
+				embeds: [
+					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
+				],
+			});
+		}
+
+		const embed = super
+			.userEmbed(interaction.member)
+			.setTitle('Updated the Thread Ticket Category')
+			.setDescription(
+				`${interaction.member.toString()} has toggled the ticket title and description option to ${row.titleAndDescriptionRequired ? 'required' : 'optional'}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed] });

@@ -9,6 +9,7 @@ import {
 } from '@ticketer/database';
 import { extractEmoji, zodErrorToString } from '@/utils';
 import { HasGlobalConfiguration } from './helpers';
+import { inlineCode } from 'discord.js';
 
 const MAXIMUM_CATEGORY_AMOUNT = 10;
 
@@ -17,6 +18,7 @@ export default class extends Modal.Interaction {
 		super.customId('ticket_threads_category_fields'),
 		super.dynamicCustomId('ticket_threads_category_fields_dynamic'),
 		super.dynamicCustomId('ticket_threads_category_message'),
+		super.dynamicCustomId('ticket_threads_category_thread_title'),
 	];
 
 	@DeferReply()
@@ -31,6 +33,9 @@ export default class extends Modal.Interaction {
 			}
 			case super.dynamicCustomId('ticket_threads_category_message'): {
 				return this.categoryMessageTitleDescription({ interaction });
+			}
+			case super.dynamicCustomId('ticket_threads_category_thread_title'): {
+				return this.categoryThreadTitle({ interaction });
 			}
 			default: {
 				return interaction.editReply({
@@ -194,6 +199,52 @@ export default class extends Modal.Interaction {
 				inline: true,
 			});
 		}
+
+		return interaction.editReply({ embeds: [embed] });
+	}
+
+	private async categoryThreadTitle({ interaction }: Modal.Context) {
+		const { customId, fields, member } = interaction;
+		const { dynamicValue } = super.extractCustomId(customId, true);
+		const {
+			data: categoryId,
+			error: idError,
+			success: idSuccess,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
+
+		if (!idSuccess) {
+			return interaction.editReply({
+				embeds: [super.userEmbedError(member).setDescription(zodErrorToString(idError))],
+			});
+		}
+
+		const {
+			data: values,
+			error,
+			success,
+		} = ticketThreadsCategoriesInsertSchema
+			.pick({ threadTitle: true })
+			.safeParse({ threadTitle: fields.getTextInputValue('title') });
+
+		if (!success) {
+			return interaction.editReply({
+				embeds: [super.userEmbedError(member).setDescription(zodErrorToString(error))],
+			});
+		}
+
+		const { threadTitle } = values;
+
+		await database
+			.update(ticketThreadsCategories)
+			.set({ threadTitle })
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
+
+		const embed = super
+			.userEmbed(member)
+			.setTitle('Updated the Thread Ticket Category')
+			.setDescription(
+				`${member.toString()} updated the ticket thread title to the following if it has text: ${threadTitle ? inlineCode(threadTitle) : 'Empty'}.`,
+			);
 
 		return interaction.editReply({ embeds: [embed] });
 	}

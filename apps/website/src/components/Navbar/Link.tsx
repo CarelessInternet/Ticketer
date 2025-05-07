@@ -14,10 +14,8 @@ export default function Link({
 	const isActive = usePathname() === href;
 
 	return (
-		<LocalisedLink href={href} legacyBehavior passHref>
-			<NavigationMenuLink className={cn(navigationMenuTriggerStyle(), className)} active={isActive}>
-				{children}
-			</NavigationMenuLink>
-		</LocalisedLink>
+		<NavigationMenuLink className={cn(navigationMenuTriggerStyle(), className)} active={isActive} asChild>
+			<LocalisedLink href={href}>{children}</LocalisedLink>
+		</NavigationMenuLink>
 	);
 }

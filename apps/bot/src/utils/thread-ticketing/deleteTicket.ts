@@ -32,8 +32,8 @@ export async function deleteTicket(
 	if (!channel.manageable) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(member, translations.lock.execute.errors.notManageable.title()).setDescription(
-					translations.lock.execute.errors.notManageable.description(),
+				this.userEmbedError(member, translations.delete.execute.errors.notManageable.title()).setDescription(
+					translations.delete.execute.errors.notManageable.description(),
 				),
 			],
 		});

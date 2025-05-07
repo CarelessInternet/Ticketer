@@ -7,7 +7,7 @@ const locales = ['en-GB', 'en-US', 'sv-SE'] as const;
 export type Locale = (typeof locales)[number];
 
 export interface PageProperties {
-	params: Promise<{ locale: string }>;
+	params: Promise<{ locale: Locale }>;
 }
 export type LayoutProperties = PropsWithChildren<PageProperties>;
 

@@ -39,11 +39,11 @@ function ListItem({
 }: PropsWithChildren<{ href: string; icon: JSX.Element; title: string }>) {
 	return (
 		<li>
-			<Link href={href} className="h-full w-full justify-start p-2">
+			<Link href={href} className="size-full items-start p-2">
 				<div className="flex flex-row">
 					<div className="flex items-center pr-3">{icon}</div>
 					<div className="block space-y-1">
-						<h1 className="text-base font-medium leading-none">{title}</h1>
+						<h1 className="text-lg font-medium leading-none">{title}</h1>
 						<p className="text-sm leading-snug">{children}</p>
 					</div>
 				</div>
@@ -115,25 +115,25 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 			{
 				description: t('navigation.documentation.routes.commands.description'),
 				href: '/docs/commands',
-				icon: <Terminal />,
+				icon: <Terminal className="size-6" />,
 				title: t('navigation.documentation.routes.commands.title'),
 			},
 			{
 				description: t('navigation.documentation.routes.self-hosting.description'),
 				href: '/docs/self-hosting',
-				icon: <Server />,
+				icon: <Server className="size-6" />,
 				title: t('navigation.documentation.routes.self-hosting.title'),
 			},
 			{
 				description: t('navigation.documentation.routes.development.description'),
 				href: '/docs/development',
-				icon: <Code />,
+				icon: <Code className="size-6" />,
 				title: t('navigation.documentation.routes.development.title'),
 			},
 			{
 				description: t('navigation.documentation.routes.contributing-to-localisation.description'),
 				href: '/docs/contributing-to-localisation',
-				icon: <Globe />,
+				icon: <Globe className="size-6" />,
 				title: t('navigation.documentation.routes.contributing-to-localisation.title'),
 			},
 		],
@@ -141,13 +141,13 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 			{
 				description: t('navigation.legal.routes.privacy-policy.description'),
 				href: '/legal/privacy-policy',
-				icon: <Cookie />,
+				icon: <Cookie className="size-6" />,
 				title: t('navigation.legal.routes.privacy-policy.title'),
 			},
 			{
 				description: t('navigation.legal.routes.terms-of-service.description'),
 				href: '/legal/terms-of-service',
-				icon: <Scale />,
+				icon: <Scale className="size-6" />,
 				title: t('navigation.legal.routes.terms-of-service.title'),
 			},
 		],
@@ -167,8 +167,7 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 			},
 			{
 				content: t('items.github'),
-				external: true,
-				href: 'https://github.com/CarelessInternet/Ticketer',
+				href: '/links/github',
 				icon: <GitHub />,
 			},
 			{

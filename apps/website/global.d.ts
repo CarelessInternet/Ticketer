@@ -1,8 +1,11 @@
+import { Locale, routing } from '@/i18n/routing';
+import { formats } from '@/i18n/request';
 import enGB from './src/i18n/languages/en-GB.json';
 
-type Messages = typeof enGB;
-
-declare global {
-	// Use type safe message keys with `next-intl`
-	interface IntlMessages extends Messages {}
+declare module 'next-intl' {
+	interface AppConfig {
+		Locale: Locale;
+		Messages: typeof enGB;
+		Formats: typeof formats;
+	}
 }

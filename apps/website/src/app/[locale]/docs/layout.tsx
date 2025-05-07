@@ -1,5 +1,5 @@
 import type { LayoutProperties } from '@/i18n/routing';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '@/components/ui/sonner';
 import { setRequestLocale } from 'next-intl/server';
 
 export default async function Layout({ children, params }: LayoutProperties) {

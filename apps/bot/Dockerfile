@@ -8,7 +8,7 @@
 # The solution? Do not use dependenciesMeta.injected (until further notice).
 
 ARG NODE_MAJOR_VERSION=22
-ARG PNPM_MAJOR_VERSION=9
+ARG PNPM_MAJOR_VERSION=10
 ARG TURBO_MAJOR_VERSION=2
 
 FROM node:${NODE_MAJOR_VERSION}-alpine AS base

@@ -1,5 +1,5 @@
 import { Colors, type EmbedBuilder, type GuildMember, type Locale, inlineCode } from 'discord.js';
-import { ThreadTicketing } from '..';
+import { ThreadTicketing, formatDateShort } from '..';
 import type { ticketThreadsCategories } from '@ticketer/database';
 import { translate } from '@/i18n';
 
@@ -101,3 +101,18 @@ export const ticketThreadsOpeningMessageEmbed = ({
 		.setDescription(
 			ticketThreadsOpeningMessageDescription({ categoryTitle, description, locale, memberMention: member.toString() }),
 		);
+
+const replaceThreadTitle = (text: string, title: string) => text.replaceAll('{title}', title);
+const replaceDate = (text: string, date?: Date) => text.replaceAll('{date}', formatDateShort(date));
+
+interface ThreadTitleOptions {
+	createdAt: Date;
+	member: GuildMember;
+	threadTitle: Columns['threadTitle'];
+	userTitle: string;
+}
+
+export const threadTitle = ({ createdAt, member, threadTitle, userTitle }: ThreadTitleOptions) =>
+	threadTitle
+		? replaceMember(replaceDate(replaceThreadTitle(threadTitle, userTitle), createdAt), member.displayName)
+		: userTitle || `[${formatDateShort(createdAt)}] ${member.displayName}`;

@@ -1067,7 +1067,7 @@ type RootTranslation = {
 								 */
 								title: string
 								/**
-								 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​n​e​c​e​s​s​a​r​y​ ​p​e​r​m​i​s​s​i​o​n​(​s​)​ ​t​o​ ​l​o​c​k​ ​t​h​e​ ​t​h​r​e​a​d​.
+								 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​n​e​c​e​s​s​a​r​y​ ​p​e​r​m​i​s​s​i​o​n​(​s​)​ ​t​o​ ​d​e​l​e​t​e​ ​t​h​e​ ​t​h​r​e​a​d​.
 								 */
 								description: string
 							}
@@ -1557,7 +1557,7 @@ type RootTranslation = {
 									 */
 									title: string
 									/**
-									 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​n​e​c​e​s​s​a​r​y​ ​p​e​r​m​i​s​s​i​o​n​(​s​)​ ​t​o​ ​l​o​c​k​ ​t​h​e​ ​t​h​r​e​a​d​ ​t​i​c​k​e​t​.
+									 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​n​e​c​e​s​s​a​r​y​ ​p​e​r​m​i​s​s​i​o​n​(​s​)​ ​t​o​ ​d​e​l​e​t​e​ ​t​h​e​ ​t​h​r​e​a​d​ ​t​i​c​k​e​t​.
 									 */
 									description: string
 								}
@@ -1797,7 +1797,7 @@ type RootTranslation = {
 								 */
 								title: string
 								/**
-								 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​n​e​c​e​s​s​a​r​y​ ​p​e​r​m​i​s​s​i​o​n​(​s​)​ ​t​o​ ​l​o​c​k​ ​t​h​e​ ​t​h​r​e​a​d​.
+								 * I​ ​d​o​ ​n​o​t​ ​h​a​v​e​ ​t​h​e​ ​n​e​c​e​s​s​a​r​y​ ​p​e​r​m​i​s​s​i​o​n​(​s​)​ ​t​o​ ​d​e​l​e​t​e​ ​t​h​e​ ​t​h​r​e​a​d​.
 								 */
 								description: string
 							}
@@ -2854,7 +2854,7 @@ export type TranslationFunctions = {
 								 */
 								title: () => LocalizedString
 								/**
-								 * I do not have the necessary permission(s) to lock the thread.
+								 * I do not have the necessary permission(s) to delete the thread.
 								 */
 								description: () => LocalizedString
 							}
@@ -3319,7 +3319,7 @@ export type TranslationFunctions = {
 									 */
 									title: () => LocalizedString
 									/**
-									 * I do not have the necessary permission(s) to lock the thread ticket.
+									 * I do not have the necessary permission(s) to delete the thread ticket.
 									 */
 									description: () => LocalizedString
 								}
@@ -3554,7 +3554,7 @@ export type TranslationFunctions = {
 								 */
 								title: () => LocalizedString
 								/**
-								 * I do not have the necessary permission(s) to lock the thread.
+								 * I do not have the necessary permission(s) to delete the thread.
 								 */
 								description: () => LocalizedString
 							}

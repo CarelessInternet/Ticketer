@@ -97,7 +97,7 @@ export default {
 				errors: {
 					notManageable: {
 						title: ERROR_TITLE,
-						description: 'I do not have the necessary permission(s) to lock the thread.',
+						description: 'I do not have the necessary permission(s) to delete the thread.',
 					},
 				},
 				success: {

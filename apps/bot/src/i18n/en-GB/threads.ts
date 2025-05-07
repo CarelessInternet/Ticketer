@@ -227,7 +227,7 @@ export default {
 					errors: {
 						notManageable: {
 							title: ERROR_TITLE,
-							description: 'I do not have the necessary permission(s) to lock the thread ticket.',
+							description: 'I do not have the necessary permission(s) to delete the thread ticket.',
 						},
 					},
 					success: {

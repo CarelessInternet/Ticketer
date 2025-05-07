@@ -1,0 +1,1 @@
+ALTER TABLE `ticketThreadsCategories` ADD `threadTitle` varchar(100);

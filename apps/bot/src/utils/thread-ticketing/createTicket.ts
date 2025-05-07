@@ -21,7 +21,7 @@ import {
 	ticketThreadsConfigurations,
 	ticketsThreads,
 } from '@ticketer/database';
-import { fetchChannel, formatDateShort, ticketButtons, ticketThreadsOpeningMessageEmbed, zodErrorToString } from '..';
+import { fetchChannel, threadTitle, ticketButtons, ticketThreadsOpeningMessageEmbed, zodErrorToString } from '..';
 import { translate } from '@/i18n';
 import { z } from 'zod';
 
@@ -223,11 +223,18 @@ export async function createTicket(
 		});
 	}
 
-	const { description, title } = data;
+	const { description, title: userTitle } = data;
+	const title = threadTitle({
+		createdAt,
+		member,
+		threadTitle: configuration.ticketThreadsCategories.threadTitle,
+		userTitle,
+	});
+
 	const thread = await channel.threads.create({
 		autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
 		invitable: false,
-		name: title || `[${formatDateShort(createdAt)}] ${member.displayName}`,
+		name: title.slice(0, 100),
 		type: isPrivate ? ChannelType.PrivateThread : ChannelType.PublicThread,
 	});
 

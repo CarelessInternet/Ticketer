@@ -291,6 +291,11 @@ export default class extends Command.Interaction {
 					.setDescription('Toggle whether the new thread system message stays on.')
 					.setValue('notification'),
 				new StringSelectMenuOptionBuilder()
+					.setEmoji('📑')
+					.setLabel('Thread Title')
+					.setDescription("Edit the created thread's title.")
+					.setValue('thread_title'),
+				new StringSelectMenuOptionBuilder()
 					.setEmoji('📝')
 					.setLabel('Title & Description')
 					.setDescription('Toggle whether ticket authors must write a title and description.')

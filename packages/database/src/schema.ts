@@ -77,6 +77,7 @@ export const ticketThreadsCategories = mysqlTable(
 		silentPings: boolean('silentPings').notNull().default(true),
 		skipModal: boolean('skipModal').notNull().default(false),
 		threadNotifications: boolean('threadNotifications').notNull().default(false),
+		threadTitle: varchar('threadTitle', { length: 100 }),
 		titleAndDescriptionRequired: boolean('titleAndDescriptionRequired').notNull().default(true),
 	},
 	(table) => [

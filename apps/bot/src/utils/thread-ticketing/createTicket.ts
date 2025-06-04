@@ -251,8 +251,8 @@ export async function createTicket(
 	});
 	const ticketEmbed = (proxiedUser ? this.embed : this.userEmbed(member)).setColor(Colors.Green);
 
-	if (title) {
-		ticketEmbed.setTitle(title);
+	if (userTitle) {
+		ticketEmbed.setTitle(userTitle);
 	}
 
 	if (description) {

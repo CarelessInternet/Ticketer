@@ -4,6 +4,7 @@ packages:
 ignoredBuiltDependencies:
   - unrs-resolver
 onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
   - '@vercel/speed-insights'
   - esbuild
   - sharp

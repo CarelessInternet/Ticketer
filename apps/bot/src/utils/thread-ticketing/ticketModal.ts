@@ -22,6 +22,7 @@ export function ticketModal(
 	{ categoryId, locale, proxiedUserId, titleAndDescriptionRequired }: TicketModalOptions,
 ) {
 	const translations = translate(locale).tickets.threads.categories.createModal;
+
 	const titleInput = new TextInputBuilder()
 		.setCustomId(this.customId('title'))
 		.setLabel(translations.title.label())

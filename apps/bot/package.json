@@ -20,11 +20,11 @@
 		"discord.js": "^14.19.3",
 		"tsx": "^4.19.4",
 		"typesafe-i18n": "^5.26.2",
-		"zod": "^3.25.51"
+		"zod": "^3.25.63"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.3.1",
 		"@ticketer/eslint-config": "workspace:*",
-		"@types/node": "^22.15.29"
+		"@types/node": "^24.0.1"
 	}
 }

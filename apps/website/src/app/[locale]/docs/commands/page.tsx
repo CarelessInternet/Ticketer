@@ -113,10 +113,15 @@ export default async function Page({ params }: PageProperties) {
 			</Divider>
 			<Divider>
 				<ScrollLink target="miscellaneous">{t('content.miscellaneous.title')}</ScrollLink>
-				<Paragraph>{t('content.miscellaneous.description')}</Paragraph>
-				<CodeBlock clipboardText={'/' + t('content.miscellaneous.command')} slashCommand>
-					<span>{t('content.miscellaneous.command')}</span>
-				</CodeBlock>
+				<SectionDivider header={t('content.miscellaneous.sections.moderation.title')}>
+					<Paragraph>{t('content.miscellaneous.sections.moderation.paragraphs.1')}</Paragraph>
+					<CodeBlock clipboardText={'/' + t('content.miscellaneous.sections.moderation.commands.1')} slashCommand>
+						<span>{t('content.miscellaneous.sections.moderation.commands.1')}</span>
+					</CodeBlock>
+				</SectionDivider>
+				<SectionDivider header={t('content.miscellaneous.sections.member-permissions.title')}>
+					<Paragraph>{t('content.miscellaneous.sections.member-permissions.paragraphs.1')}</Paragraph>
+				</SectionDivider>
 			</Divider>
 		</>
 	);

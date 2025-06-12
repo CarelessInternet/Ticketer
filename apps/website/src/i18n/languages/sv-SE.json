@@ -148,8 +148,23 @@
 					},
 					"miscellaneous": {
 						"title": "Övrigt",
-						"description": "Ett populärt kommando för servermoderatorer är det vanliga rensningskommandot:",
-						"command": "rensa"
+						"sections": {
+							"moderation": {
+								"title": "Moderering",
+								"paragraphs": {
+									"1": "Ett populärt kommando för servermoderatorer är det vanliga rensningskommandot:"
+								},
+								"commands": {
+									"1": "rensa"
+								}
+							},
+							"member-permissions": {
+								"title": "Medlemsbehörigheter",
+								"paragraphs": {
+									"1": "Du kan kontrollera vilka kommandon som roller och medlemmar har tillgång till, samt i vilka kanaler kommandona kan användas. Du kan hantera sådana behörigheter under fliken Integrationer i din servers inställningar på Discord."
+								}
+							}
+						}
 					}
 				}
 			},

@@ -148,8 +148,23 @@
 					},
 					"miscellaneous": {
 						"title": "Miscellaneous",
-						"description": "A popular command for server moderators is the common purge command:",
-						"command": "purge"
+						"sections": {
+							"moderation": {
+								"title": "Moderation",
+								"paragraphs": {
+									"1": "A popular command for server moderators is the common purge command:"
+								},
+								"commands": {
+									"1": "purge"
+								}
+							},
+							"member-permissions": {
+								"title": "Member Permissions",
+								"paragraphs": {
+									"1": "You can control what commands the roles & members have access to, as well as the channels that the commands can be used in. You can manage such permissions under the Integrations tab of your Discord server settings."
+								}
+							}
+						}
 					}
 				}
 			},

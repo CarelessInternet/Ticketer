@@ -4,7 +4,7 @@
 # If you need more help, visit the Dockerfile reference guide at
 # https://docs.docker.com/engine/reference/builder/
 
-ARG NODE_MAJOR_VERSION=22
+ARG NODE_MAJOR_VERSION=24
 # Necessary to run "pnpm install" when the Dev Container has started.
 ARG PNPM_MAJOR_VERSION=10
 
@@ -14,16 +14,12 @@ RUN --mount=type=cache,target=/root/.npm \
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
-RUN apk add --no-cache bash
-RUN apk add --no-cache bash-completion
-RUN apk add --no-cache git
-
 # https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials#_sharing-gpg-keys
-RUN apk add gnupg
+RUN apk add --no-cache bash bash-completion git gnupg
 
 RUN git config --global --add safe.directory /workspaces/Ticketer
 
 # https://askubuntu.com/a/453580
-# Outputs a colourful username, hostname, and directory.
+# Makes the terminal use a colourful username, hostname, and directory.
 RUN echo "PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /root/.bashrc
 USER root

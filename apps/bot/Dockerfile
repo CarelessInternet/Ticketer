@@ -7,7 +7,7 @@
 # This problem has caused pain: https://github.com/pnpm/pnpm/issues/6088
 # The solution? Do not use dependenciesMeta.injected (until further notice).
 
-ARG NODE_MAJOR_VERSION=22
+ARG NODE_MAJOR_VERSION=24
 ARG PNPM_MAJOR_VERSION=10
 ARG TURBO_MAJOR_VERSION=2
 

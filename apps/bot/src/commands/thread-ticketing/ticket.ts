@@ -11,7 +11,7 @@ import {
 } from '@ticketer/database';
 import { ThreadTicketing, fetchChannel, zodErrorToString } from '@/utils';
 import { getTranslations, translate } from '@/i18n';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const dataTranslations = translate().commands.ticket.data;
 

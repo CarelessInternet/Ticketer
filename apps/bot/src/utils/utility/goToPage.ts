@@ -1,6 +1,6 @@
 import type { BaseInteraction } from '@ticketer/djs-framework';
 import type { MessageComponentInteraction } from 'discord.js';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { zodErrorToString } from './zodErrorToString';
 
 interface GoToPageError {

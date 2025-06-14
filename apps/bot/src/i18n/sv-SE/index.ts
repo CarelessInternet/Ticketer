@@ -169,26 +169,22 @@ const sv_SE = {
 				],
 			},
 			command: {
-				embeds: [
+				components: [
 					{
-						title: 'Kommandolista',
-						description: 'Här är listan över de tillgängliga kommandona: {commands}.',
-						fields: [
+						button: {
+							label: 'Kommandodokumentation',
+						},
+						text: [
 							{
-								name: '❓ Hur kommer man igång?',
-								value: 'Letar du efter hur man konfigurerar boten? Klicka på "Kommandodokumentation" länken nedan.',
-							},
-							{
-								name: '🔗 Länkar',
-								links: {
-									commandDocumentation: 'Kommandodokumentation',
-									donate: 'Donera',
-									invite: 'Inbjudningslänk',
-									supportServer: 'Stödserver',
-									website: 'Webbsida',
-								},
+								content: '❗ Kommandolista',
 							},
 						],
+					},
+					{
+						text: '🔗 Länkar',
+					},
+					{
+						links: { donate: 'Donera', invite: 'Inbjudningslänk', supportServer: 'Stödserver', website: 'Webbsida' },
 					},
 				],
 			},
@@ -211,7 +207,12 @@ const sv_SE = {
 				description: 'Tillämpa någon databas migrationer som behövs.',
 			},
 			command: {
-				success: 'Databasen har migrerats framgångsrikt!',
+				embeds: [
+					{
+						title: 'Migrerade!',
+						description: 'Databasen har migrerats framgångsrikt!',
+					},
+				],
 			},
 		},
 		ping: {

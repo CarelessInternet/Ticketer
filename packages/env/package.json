@@ -12,7 +12,7 @@
 	},
 	"dependencies": {
 		"@t3-oss/env-core": "^0.13.8",
-		"zod": "^3.25.63"
+		"zod": "^3.25.64"
 	},
 	"devDependencies": {
 		"@ticketer/eslint-config": "workspace:*",

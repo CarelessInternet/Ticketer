@@ -1,6 +1,20 @@
-import { ApplicationCommandType, MessageFlags, hyperlink, inlineCode } from 'discord.js';
+import {
+	ActionRowBuilder,
+	ApplicationCommandOptionType,
+	ApplicationCommandType,
+	ButtonBuilder,
+	ButtonStyle,
+	MessageFlags,
+	SectionBuilder,
+	SeparatorBuilder,
+	SeparatorSpacingSize,
+	TextDisplayBuilder,
+	chatInputApplicationCommandMention,
+	heading,
+	inlineCode,
+} from 'discord.js';
+import { Command, DeferReply } from '@ticketer/djs-framework';
 import { getTranslations, translate } from '@/i18n';
-import { Command } from '@ticketer/djs-framework';
 import { environment } from '@ticketer/env/bot';
 
 const dataTranslations = translate().commands.help.data;
@@ -19,57 +33,90 @@ export default class extends Command.Interaction {
 				.setRequired(false),
 		);
 
-	public execute({ interaction }: Command.Context<'chat'>) {
-		const ephemeral = interaction.options.getBoolean(dataTranslations.options[0].name()) ?? true;
+	@DeferReply({ name: dataTranslations.options[0].name(), ephemeral: true })
+	public async execute({ interaction }: Command.Context<'chat'>) {
+		const fetchedCommands = await interaction.client.application.commands.fetch({
+			withLocalizations: true,
+		});
+
 		const commandsArray: string[] = [];
 
 		for (const command of this.client.commands.values()) {
 			if (command.ownerOnly) continue;
 			if (command.guildOnly && interaction.guildId !== environment.DISCORD_GUILD_ID) continue;
 
-			const name = command.data.name_localizations?.[interaction.locale] ?? command.data.name;
-			commandsArray.push(inlineCode(command.commandType === ApplicationCommandType.ChatInput ? `/${name}` : name));
-		}
+			const { name: rawName } = command.data;
+			const fetchedCommand = fetchedCommands.find((command) => command.name === rawName);
 
-		const commands = commandsArray.join(', ');
-		const translations = translate(interaction.locale).commands.help.command.embeds[0];
+			if (!fetchedCommand) continue;
 
-		const commandDocumentation = hyperlink(
-			translations.fields[1].links.commandDocumentation(),
-			new URL('/en-GB/docs/commands', environment.WEBSITE_URL).toString(),
-		);
-		const donate = hyperlink(
-			translations.fields[1].links.donate(),
-			new URL('/links/funding/donate', environment.WEBSITE_URL).toString(),
-		);
-		const website = hyperlink(translations.fields[1].links.website(), environment.WEBSITE_URL);
-		const supportServer = environment.DISCORD_SUPPORT_SERVER
-			? hyperlink(translations.fields[1].links.supportServer(), environment.DISCORD_SUPPORT_SERVER)
-			: undefined;
-		const inviteLink = hyperlink(
-			translations.fields[1].links.invite(),
-			new URL('/links/discord/invite', environment.WEBSITE_URL).toString(),
-		);
-
-		const linksAsString = [commandDocumentation, donate, website, supportServer, inviteLink]
-			.filter(Boolean)
-			.join(' | ');
-
-		const embed = super
-			.userEmbed(interaction.member)
-			.setTitle(translations.title())
-			.setDescription(translations.description({ commands }))
-			.setFields(
-				{
-					name: translations.fields[0].name(),
-					value: translations.fields[0].value(),
-				},
-				{
-					name: translations.fields[1].name(),
-					value: linksAsString,
-				},
+			const { id, name, nameLocalizations } = fetchedCommand;
+			const hasSubcommands = fetchedCommand.options.some((cmd) =>
+				[ApplicationCommandOptionType.Subcommand, ApplicationCommandOptionType.SubcommandGroup].includes(cmd.type),
 			);
 
-		void interaction.reply({ embeds: [embed], flags: ephemeral ? [MessageFlags.Ephemeral] : undefined });
+			commandsArray.push(
+				fetchedCommand.type === ApplicationCommandType.ChatInput
+					? hasSubcommands
+						? inlineCode(`/${nameLocalizations?.[interaction.locale] ?? name}`)
+						: chatInputApplicationCommandMention(name, id)
+					: inlineCode(nameLocalizations?.[interaction.locale] ?? name),
+			);
+		}
+
+		const translations = translate(interaction.locale).commands.help.command.components;
+
+		const commands = commandsArray.join(', ');
+		const buttons: { label: string; url: string }[] = [
+			{
+				label: translations[2].links.donate(),
+				url: new URL('/links/funding/donate', environment.WEBSITE_URL).toString(),
+			},
+			{
+				label: translations[2].links.website(),
+				url: environment.WEBSITE_URL,
+			},
+			...(environment.DISCORD_SUPPORT_SERVER
+				? [
+						{
+							label: translations[2].links.supportServer(),
+							url: environment.DISCORD_SUPPORT_SERVER,
+						},
+					]
+				: []),
+			{
+				label: translations[2].links.invite(),
+				url: new URL('/links/discord/invite', environment.WEBSITE_URL).toString(),
+			},
+		];
+
+		const container = super.container((cont) =>
+			cont
+				.addSectionComponents(
+					new SectionBuilder()
+						.setButtonAccessory(
+							new ButtonBuilder()
+								.setStyle(ButtonStyle.Link)
+								.setLabel(translations[0].button.label())
+								.setURL(new URL('/en-GB/docs/commands', environment.WEBSITE_URL).toString()),
+						)
+						.addTextDisplayComponents(
+							new TextDisplayBuilder().setContent(heading(translations[0].text[0].content())),
+							new TextDisplayBuilder().setContent(commands),
+						),
+				)
+				.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true))
+				.addTextDisplayComponents(new TextDisplayBuilder().setContent(heading(translations[1].text())))
+				.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(false))
+				.addActionRowComponents(
+					new ActionRowBuilder<ButtonBuilder>().addComponents(
+						buttons.map((button) =>
+							new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel(button.label).setURL(button.url),
+						),
+					),
+				),
+		);
+
+		void interaction.editReply({ components: [container], flags: [MessageFlags.IsComponentsV2] });
 	}
 }

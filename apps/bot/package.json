@@ -18,9 +18,9 @@
 		"@ticketer/env": "workspace:*",
 		"chalk": "^5.4.1",
 		"discord.js": "^14.19.3",
-		"tsx": "^4.19.4",
+		"tsx": "^4.20.3",
 		"typesafe-i18n": "^5.26.2",
-		"zod": "^3.25.63"
+		"zod": "^3.25.64"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.3.1",

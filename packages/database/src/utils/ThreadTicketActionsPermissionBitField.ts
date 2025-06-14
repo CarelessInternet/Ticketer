@@ -5,7 +5,7 @@ import { ticketThreadsCategories } from '../schema';
 
 export class ThreadTicketActionsPermissionBitField {
 	public static Flags = {
-		// key: 1 << n (n=0 at initial)
+		// key: 1 << n (n=0 at initial).
 		RenameTitle: 1,
 		Lock: 2,
 		Close: 4,

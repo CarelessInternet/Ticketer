@@ -1,4 +1,14 @@
-import { Colors, EmbedBuilder, type GuildMember, type User } from 'discord.js';
+import {
+	Colors,
+	ContainerBuilder,
+	EmbedBuilder,
+	type GuildMember,
+	SeparatorBuilder,
+	SeparatorSpacingSize,
+	TextDisplayBuilder,
+	type User,
+	subtext,
+} from 'discord.js';
 import type { Client } from '.';
 import { env } from 'node:process';
 
@@ -33,6 +43,19 @@ export abstract class Base {
 	 */
 	protected userEmbedError(user: User | GuildMember, title = 'You Hit an Error!') {
 		return this.userEmbed(user).setColor(Colors.DarkRed).setTitle(title);
+	}
+
+	/**
+	 * @returns A container component with presetted data.
+	 */
+	protected container(function_: (cont: ContainerBuilder) => ContainerBuilder) {
+		return function_(new ContainerBuilder().setAccentColor(Colors.Blurple))
+			.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true))
+			.addTextDisplayComponents(
+				new TextDisplayBuilder().setContent(
+					subtext(`${this.client.user?.displayName}: Version ${env.npm_package_version}`),
+				),
+			);
 	}
 
 	protected dynamicCustomId(id: string) {

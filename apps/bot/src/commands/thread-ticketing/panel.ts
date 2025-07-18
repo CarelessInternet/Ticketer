@@ -10,7 +10,7 @@ import {
 } from 'discord.js';
 import { Command, DeferReply, Modal } from '@ticketer/djs-framework';
 import { extractEmoji, fetchChannel, zodErrorToString } from '@/utils';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName('panel')

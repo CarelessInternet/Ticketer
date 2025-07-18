@@ -23,7 +23,7 @@ import {
 } from '@ticketer/database';
 import { fetchChannel, threadTitle, ticketButtons, ticketThreadsOpeningMessageEmbed, zodErrorToString } from '..';
 import { translate } from '@/i18n';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 interface CreateTicketOptions {
 	categoryId?: typeof ticketThreadsCategories.$inferSelect.id;

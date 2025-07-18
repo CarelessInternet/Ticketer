@@ -1,5 +1,5 @@
 import { customType, varchar } from 'drizzle-orm/mysql-core';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 // TODO: Change mode to 'string' when available: https://github.com/drizzle-team/drizzle-orm/issues/813
 // const snowflake = (name: string) => bigint(name, { mode: 'bigint', unsigned: true });

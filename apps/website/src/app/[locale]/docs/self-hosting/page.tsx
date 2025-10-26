@@ -7,77 +7,72 @@ import type { PageProperties } from '@/i18n/routing';
 import Paragraph from '@/components/Paragraph';
 import RichText from '@/components/RichText';
 import ScrollLink from '@/components/ScrollLink';
-import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import Title from '@/components/Title';
-import dracula from 'react-syntax-highlighter/dist/esm/styles/prism/dracula';
 import { mergeMetadata } from '@/lib/mergeMetadata';
-import yaml from 'react-syntax-highlighter/dist/esm/languages/prism/yaml';
+import { Code } from 'bright';
 
-SyntaxHighlighter.registerLanguage('yaml', yaml);
-
-const composeFile = `name: 'ticketer'
+const composeFile = `
+name: 'ticketer'
 
 services:
   database:
-    container_name: ticketer-database
     image: mariadb:11
-    restart: always
+    container_name: ticketer-database
+    restart: unless-stopped
     healthcheck:
       test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
       interval: 10s
       retries: 3
       start_period: 10s
-    networks:
-      - ticketer-database-network
+    env_file:
+      - .env.database.production.local
     volumes:
-      - ticketer-database-data:/var/lib/mysql
-    environment:
-      MARIADB_DATABASE: \${DB_DATABASE}
-      MARIADB_USER: \${DB_USER}
-      MARIADB_PASSWORD: \${DB_PASSWORD}
-      MYSQL_TCP_PORT: \${DB_PORT}
-      MARIADB_RANDOM_ROOT_PASSWORD: true
-    ports:
-      - \${DB_PORT}:\${DB_PORT}
+      - ticketer_database_data:/var/lib/mysql
+    networks:
+      - ticketer_database_network
 
   bot:
-    container_name: ticketer-bot
-    # You can change "latest" to any available version such as "3.4.0".
     image: ghcr.io/carelessinternet/ticketer-bot:latest
-    # Change the platform to the one on your linux environment (amd64, arm64).
-    platform: linux/arm64
+    container_name: ticketer-bot
     restart: unless-stopped
+    # Change the platform to the one on your linux environment (amd64, arm64) if necessary.
+    # platform: linux/arm64
     depends_on:
       database:
         condition: service_healthy
-    networks:
-      - ticketer-database-network
     env_file:
       - .env.bot.production.local
       - .env.database.production.local
-    environment:
-      NODE_ENV: production
-
-networks:
-  ticketer-database-network:
-    driver: bridge
+    networks:
+      - ticketer_database_network
 
 volumes:
-  ticketer-database-data:
-`;
+  ticketer_database_data:
 
-const botEnvironmentTemplate = `DISCORD_APPLICATION_ID=""
+networks:
+  ticketer_database_network:
+`.trim();
+
+const botEnvironmentTemplate = `
+NODE_ENV="production"
+DISCORD_APPLICATION_ID=""
 DISCORD_BOT_TOKEN=""
 DISCORD_GUILD_ID=""
 DISCORD_OWNER_ID=""
-`;
+`.trim();
 
-const databaseEnvironmentTemplate = `DB_HOST="ticketer-database"
+const databaseEnvironmentTemplate = `
+DB_HOST="ticketer-database"
 DB_DATABASE="Ticketer"
 DB_PORT=3306
 DB_USER=""
 DB_PASSWORD=""
-`;
+MARIADB_DATABASE=\${DB_DATABASE}
+MYSQL_TCP_PORT=\${DB_PORT}
+MARIADB_USER=\${DB_USER}
+MARIADB_PASSWORD=\${DB_PASSWORD}
+MARIADB_RANDOM_ROOT_PASSWORD=true
+`.trim();
 
 function EnvironmentHighlight({
 	name,
@@ -148,9 +143,9 @@ export default async function Page({ params }: PageProperties) {
 					</span>
 				</CodeBlock>
 				<Paragraph>{t('content.creating-the-compose-file.paragraphs.2')}</Paragraph>
-				<SyntaxHighlighter language="yaml" style={dracula} showLineNumbers>
+				<Code title="compose.yaml" lang="yaml" theme="github-dark">
 					{composeFile}
-				</SyntaxHighlighter>
+				</Code>
 			</Divider>
 			<Divider>
 				<ScrollLink target="environment-variables">{t('content.environment-variables.title')}</ScrollLink>
@@ -172,14 +167,9 @@ export default async function Page({ params }: PageProperties) {
 						<span>.env.bot.production.local</span>
 					</span>
 				</CodeBlock>
-				<CodeBlock clipboardText={botEnvironmentTemplate} fileName=".env.bot.production.local">
-					<span className="flex flex-col">
-						<EnvironmentHighlight name="DISCORD_APPLICATION_ID" />
-						<EnvironmentHighlight name="DISCORD_BOT_TOKEN" />
-						<EnvironmentHighlight name="DISCORD_GUILD_ID" />
-						<EnvironmentHighlight name="DISCORD_OWNER_ID" />
-					</span>
-				</CodeBlock>
+				<Code title=".env.bot.production.local" lang="dotenv" theme="github-dark">
+					{botEnvironmentTemplate}
+				</Code>
 				<Paragraph>
 					<RichText>{(tags) => t.rich('content.environment-variables.paragraphs.2', tags)}</RichText>
 				</Paragraph>
@@ -189,23 +179,17 @@ export default async function Page({ params }: PageProperties) {
 						<span>.env.database.production.local</span>
 					</span>
 				</CodeBlock>
-				<CodeBlock clipboardText={databaseEnvironmentTemplate} fileName=".env.database.production.local">
-					<span className="flex flex-col">
-						<EnvironmentHighlight name="DB_HOST" value="ticketer-database" />
-						<EnvironmentHighlight name="DB_DATABASE" value="Ticketer" />
-						<EnvironmentHighlight name="DB_PORT" value="3306" quotations={false} />
-						<EnvironmentHighlight name="DB_USER" />
-						<EnvironmentHighlight name="DB_PASSWORD" />
-					</span>
-				</CodeBlock>
+				<Code title=".env.database.production.local" lang="dotenv" theme="github-dark">
+					{databaseEnvironmentTemplate}
+				</Code>
 			</Divider>
 			<Divider>
 				<ScrollLink target="running-the-bot">{t('content.running-the-bot.title')}</ScrollLink>
 				<Paragraph>{t('content.running-the-bot.paragraphs.1')}</Paragraph>
-				<CodeBlock clipboardText="docker compose --env-file ./.env.database.production.local --file compose.yaml up -d">
+				<CodeBlock clipboardText="docker compose up -d">
 					<span>
 						<span className="text-green-500">docker </span>
-						<span>compose --env-file ./.env.database.production.local --file compose.yaml up -d</span>
+						<span>compose up -d</span>
 					</span>
 				</CodeBlock>
 				<Paragraph>{t('content.running-the-bot.paragraphs.2')}</Paragraph>
@@ -222,16 +206,17 @@ export default async function Page({ params }: PageProperties) {
 					<span>{t('content.running-the-bot.command')}</span>
 				</CodeBlock>
 				<Paragraph>{t('content.running-the-bot.paragraphs.4')}</Paragraph>
-				<CodeBlock clipboardText="docker container stop ticketer-bot">
+				<CodeBlock clipboardText="docker compose down">
 					<span>
 						<span className="text-green-500">docker </span>
-						<span>container stop ticketer-bot</span>
+						<span>compose down</span>
 					</span>
 				</CodeBlock>
-				<CodeBlock clipboardText="docker container stop ticketer-database">
+				<Paragraph>{t('content.running-the-bot.paragraphs.5')}</Paragraph>
+				<CodeBlock clipboardText="docker compose pull">
 					<span>
 						<span className="text-green-500">docker </span>
-						<span>container stop ticketer-database</span>
+						<span>compose pull</span>
 					</span>
 				</CodeBlock>
 			</Divider>

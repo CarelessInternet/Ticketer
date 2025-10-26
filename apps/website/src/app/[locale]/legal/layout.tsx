@@ -7,7 +7,7 @@ export default async function Layout({ children, params }: LayoutProperties) {
 	setRequestLocale(locale);
 
 	return (
-		<main className="mx-4 pb-16 sm:mx-16 md:mx-32 lg:mx-40 xl:mx-48">
+		<main className="mx-4 pb-16 sm:mx-16 md:mx-24 lg:mx-36 xl:mx-48 2xl:mx-80">
 			<div className="flex flex-col space-y-12 pt-4">{children}</div>
 		</main>
 	);

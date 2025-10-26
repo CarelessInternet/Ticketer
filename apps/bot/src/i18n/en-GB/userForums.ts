@@ -20,7 +20,7 @@ export default {
 					inputs: [
 						{
 							label: 'Thread Title',
-							placeholder: 'Write the new title that should be used for the thread.',
+							description: 'Write the new title that should be used for the thread.',
 						},
 					],
 				},

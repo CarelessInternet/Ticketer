@@ -27,11 +27,11 @@ export default {
 			},
 			title: {
 				label: 'Titel',
-				placeholder: 'Skriv en titel som ska användas i stödbiljetten.',
+				description: 'Skriv en titel som ska användas i stödbiljetten.',
 			},
 			description: {
 				label: 'Beskrivning',
-				placeholder: 'Skriv en beskrivning som ska användas i stödbiljetten.',
+				description: 'Skriv en beskrivning som ska användas i stödbiljetten.',
 			},
 			modalTitle: 'Stödbiljett Titel & Beskrivning',
 		},
@@ -126,7 +126,7 @@ export default {
 						inputs: [
 							{
 								label: 'Trådtitel',
-								placeholder: 'Skriv den nya titeln som ska användas för tråden.',
+								description: 'Skriv den nya titeln som ska användas för tråden.',
 							},
 						],
 					},

@@ -1,5 +1,6 @@
+import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
 import {
-	ActionRowBuilder,
+	LabelBuilder,
 	MessageFlags,
 	ModalBuilder,
 	TextInputBuilder,
@@ -8,7 +9,6 @@ import {
 	inlineCode,
 	roleMention,
 } from 'discord.js';
-import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
 import {
 	ThreadTicketing,
 	messageWithPagination,
@@ -172,42 +172,45 @@ export function categoryFieldsModal(
 	context: Command.Context | Component.Context,
 	options?: { id?: string | number; emoji?: string | null; title?: string; description?: string },
 ) {
-	const emojiInput = (options?.emoji ? new TextInputBuilder().setValue(options.emoji) : new TextInputBuilder())
-		.setCustomId(this.customId('emoji'))
+	const emojiInput = new LabelBuilder()
 		.setLabel('Emoji')
-		.setRequired(false)
-		.setMinLength(1)
-		// 8 because of unicode.
-		.setMaxLength(8)
-		.setStyle(TextInputStyle.Short)
-		.setPlaceholder('Write an emoji to be used for the category.');
-	const titleInput = (options?.title ? new TextInputBuilder().setValue(options.title) : new TextInputBuilder())
-		.setCustomId(this.customId('title'))
+		.setDescription('Write an emoji to be used for the category.')
+		.setTextInputComponent(
+			(options?.emoji ? new TextInputBuilder().setValue(options.emoji) : new TextInputBuilder())
+				.setCustomId(this.customId('emoji'))
+				.setRequired(false)
+				.setMinLength(1)
+				// 8 because of unicode.
+				.setMaxLength(8)
+				.setStyle(TextInputStyle.Short),
+		);
+	const titleInput = new LabelBuilder()
 		.setLabel('Title')
-		.setRequired(true)
-		.setMinLength(1)
-		.setMaxLength(100)
-		.setStyle(TextInputStyle.Short)
-		.setPlaceholder('Write the title to be used for the category.');
-	const descriptionInput = (
-		options?.description ? new TextInputBuilder().setValue(options.description) : new TextInputBuilder()
-	)
-		.setCustomId(this.customId('description'))
+		.setDescription('Write the title to be used for the category.')
+		.setTextInputComponent(
+			(options?.title ? new TextInputBuilder().setValue(options.title) : new TextInputBuilder())
+				.setCustomId(this.customId('title'))
+				.setRequired(true)
+				.setMinLength(1)
+				.setMaxLength(100)
+				.setStyle(TextInputStyle.Short),
+		);
+	const descriptionInput = new LabelBuilder()
 		.setLabel('Description')
-		.setRequired(true)
-		.setMinLength(1)
-		.setMaxLength(100)
-		.setStyle(TextInputStyle.Paragraph)
-		.setPlaceholder('Write the description to be used for the category.');
-
-	const row1 = new ActionRowBuilder<TextInputBuilder>().setComponents(emojiInput);
-	const row2 = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
-	const row3 = new ActionRowBuilder<TextInputBuilder>().setComponents(descriptionInput);
+		.setDescription('Write the description to be used for the category.')
+		.setTextInputComponent(
+			(options?.description ? new TextInputBuilder().setValue(options.description) : new TextInputBuilder())
+				.setCustomId(this.customId('description'))
+				.setRequired(true)
+				.setMinLength(1)
+				.setMaxLength(100)
+				.setStyle(TextInputStyle.Paragraph),
+		);
 
 	const modal = new ModalBuilder()
 		.setCustomId(this.customId(`ticket_threads_category_fields${options?.id ? '_dynamic' : ''}`, options?.id))
 		.setTitle('Category Emoji, Title, & Description')
-		.setComponents(row1, row2, row3);
+		.setLabelComponents(emojiInput, titleInput, descriptionInput);
 
 	return context.interaction.showModal(modal).catch(() => false);
 }

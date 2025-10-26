@@ -1,5 +1,5 @@
-import { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
+import { LabelBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { translate } from '@/i18n';
 
 export function renameTitleModal(
@@ -10,22 +10,24 @@ export function renameTitleModal(
 	const translations = translate(interaction.locale).tickets[isAutomaticThreads ? 'automaticThreads' : 'userForums']
 		.actions.renameTitle.component.modal;
 
-	const input = new TextInputBuilder()
-		.setCustomId(this.customId('title'))
+	const input = new LabelBuilder()
 		.setLabel(translations.inputs[0].label())
-		.setRequired(true)
-		.setMinLength(1)
-		.setMaxLength(100)
-		.setStyle(TextInputStyle.Short)
-		.setPlaceholder(translations.inputs[0].placeholder());
+		.setDescription(translations.inputs[0].description())
+		.setTextInputComponent(
+			new TextInputBuilder()
+				.setCustomId(this.customId('title'))
+				.setRequired(true)
+				.setMinLength(1)
+				.setMaxLength(100)
+				.setStyle(TextInputStyle.Short),
+		);
 
-	const row = new ActionRowBuilder<TextInputBuilder>().setComponents(input);
 	const modal = new ModalBuilder()
 		.setCustomId(
 			this.customId(`ticket_${isAutomaticThreads ? 'automatic_threads' : 'user_forums'}_thread_rename_title_modal`),
 		)
 		.setTitle(translations.title())
-		.setComponents(row);
+		.setLabelComponents(input);
 
 	return interaction.showModal(modal).catch(() => false);
 }

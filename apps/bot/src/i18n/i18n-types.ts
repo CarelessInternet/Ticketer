@@ -923,7 +923,7 @@ type RootTranslation = {
 									/**
 									 * W​r​i​t​e​ ​t​h​e​ ​n​e​w​ ​t​i​t​l​e​ ​t​h​a​t​ ​s​h​o​u​l​d​ ​b​e​ ​u​s​e​d​ ​f​o​r​ ​t​h​e​ ​t​h​r​e​a​d​.
 									 */
-									placeholder: string
+									description: string
 								}
 							}
 						}
@@ -1138,7 +1138,7 @@ type RootTranslation = {
 						/**
 						 * W​r​i​t​e​ ​a​ ​t​i​t​l​e​ ​t​o​ ​b​e​ ​u​s​e​d​ ​i​n​ ​t​h​e​ ​t​i​c​k​e​t​.
 						 */
-						placeholder: string
+						description: string
 					}
 					description: {
 						/**
@@ -1148,7 +1148,7 @@ type RootTranslation = {
 						/**
 						 * W​r​i​t​e​ ​a​ ​d​e​s​c​r​i​p​t​i​o​n​ ​t​o​ ​b​e​ ​u​s​e​d​ ​i​n​ ​t​h​e​ ​t​i​c​k​e​t​.
 						 */
-						placeholder: string
+						description: string
 					}
 					/**
 					 * T​i​c​k​e​t​ ​T​i​t​l​e​ ​&​ ​D​e​s​c​r​i​p​t​i​o​n
@@ -1362,7 +1362,7 @@ type RootTranslation = {
 										/**
 										 * W​r​i​t​e​ ​t​h​e​ ​n​e​w​ ​t​i​t​l​e​ ​t​h​a​t​ ​s​h​o​u​l​d​ ​b​e​ ​u​s​e​d​ ​f​o​r​ ​t​h​e​ ​t​h​r​e​a​d​.
 										 */
-										placeholder: string
+										description: string
 									}
 								}
 							}
@@ -1653,7 +1653,7 @@ type RootTranslation = {
 									/**
 									 * W​r​i​t​e​ ​t​h​e​ ​n​e​w​ ​t​i​t​l​e​ ​t​h​a​t​ ​s​h​o​u​l​d​ ​b​e​ ​u​s​e​d​ ​f​o​r​ ​t​h​e​ ​t​h​r​e​a​d​.
 									 */
-									placeholder: string
+									description: string
 								}
 							}
 						}
@@ -2712,7 +2712,7 @@ export type TranslationFunctions = {
 									/**
 									 * Write the new title that should be used for the thread.
 									 */
-									placeholder: () => LocalizedString
+									description: () => LocalizedString
 								}
 							}
 						}
@@ -2923,7 +2923,7 @@ export type TranslationFunctions = {
 						/**
 						 * Write a title to be used in the ticket.
 						 */
-						placeholder: () => LocalizedString
+						description: () => LocalizedString
 					}
 					description: {
 						/**
@@ -2933,7 +2933,7 @@ export type TranslationFunctions = {
 						/**
 						 * Write a description to be used in the ticket.
 						 */
-						placeholder: () => LocalizedString
+						description: () => LocalizedString
 					}
 					/**
 					 * Ticket Title & Description
@@ -3135,7 +3135,7 @@ export type TranslationFunctions = {
 										/**
 										 * Write the new title that should be used for the thread.
 										 */
-										placeholder: () => LocalizedString
+										description: () => LocalizedString
 									}
 								}
 							}
@@ -3412,7 +3412,7 @@ export type TranslationFunctions = {
 									/**
 									 * Write the new title that should be used for the thread.
 									 */
-									placeholder: () => LocalizedString
+									description: () => LocalizedString
 								}
 							}
 						}

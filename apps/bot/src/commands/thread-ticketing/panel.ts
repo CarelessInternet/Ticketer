@@ -3,6 +3,7 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 	Colors,
+	LabelBuilder,
 	ModalBuilder,
 	PermissionFlagsBits,
 	TextInputBuilder,
@@ -23,47 +24,55 @@ export default class extends Command.Interaction {
 	public execute({ interaction }: Command.Context<'chat'>) {
 		const channel = interaction.options.getChannel('channel', true);
 
-		const titleInput = new TextInputBuilder()
-			.setCustomId(super.customId('title'))
+		const titleInput = new LabelBuilder()
 			.setLabel('Title')
-			.setRequired(true)
-			.setMinLength(1)
-			.setMaxLength(200)
-			.setStyle(TextInputStyle.Short)
-			.setPlaceholder('Write a title to be used in the ticket panel.');
-		const descriptonInput = new TextInputBuilder()
-			.setCustomId(super.customId('description'))
+			.setDescription('Write a title to be used in the ticket panel.')
+			.setTextInputComponent(
+				new TextInputBuilder()
+					.setCustomId(super.customId('title'))
+					.setRequired(true)
+					.setMinLength(1)
+					.setMaxLength(200)
+					.setStyle(TextInputStyle.Short),
+			);
+		const descriptonInput = new LabelBuilder()
 			.setLabel('Description')
-			.setRequired(true)
-			.setMinLength(1)
-			.setMaxLength(2000)
-			.setStyle(TextInputStyle.Paragraph)
-			.setPlaceholder('Write a description to be used in the ticket panel.');
-		const buttonEmojiInput = new TextInputBuilder()
-			.setCustomId(super.customId('button_emoji'))
-			.setLabel('Button Emoji')
-			.setRequired(false)
-			.setMinLength(1)
-			.setMaxLength(8)
-			.setStyle(TextInputStyle.Short)
-			.setPlaceholder('Write an emoji for the button used to create a ticket.');
-		const buttonLabelInput = new TextInputBuilder()
-			.setCustomId(super.customId('button_label'))
+			.setDescription('Write a description to be used in the ticket panel.')
+			.setTextInputComponent(
+				new TextInputBuilder()
+					.setCustomId(super.customId('description'))
+					.setRequired(true)
+					.setMinLength(1)
+					.setMaxLength(2000)
+					.setStyle(TextInputStyle.Paragraph),
+			);
+		const buttonEmojiInput = new LabelBuilder()
+			.setLabel('Buttom Emoji')
+			.setDescription('Write an emoji for the button used to create a ticket.')
+			.setTextInputComponent(
+				new TextInputBuilder()
+					.setCustomId(super.customId('button_emoji'))
+					.setRequired(false)
+					.setMinLength(1)
+					.setMaxLength(8)
+					.setStyle(TextInputStyle.Short),
+			);
+		const buttonLabelInput = new LabelBuilder()
 			.setLabel('Button Label')
-			.setRequired(true)
-			.setMinLength(1)
-			.setMaxLength(80)
-			.setStyle(TextInputStyle.Short)
-			.setPlaceholder('Write a label for the button used to create a ticket.');
-
-		const rows = [titleInput, descriptonInput, buttonEmojiInput, buttonLabelInput].map((input) =>
-			new ActionRowBuilder<TextInputBuilder>().setComponents(input),
-		);
+			.setDescription('Write a label for the button used to create a ticket.')
+			.setTextInputComponent(
+				new TextInputBuilder()
+					.setCustomId(super.customId('button_label'))
+					.setRequired(true)
+					.setMinLength(1)
+					.setMaxLength(80)
+					.setStyle(TextInputStyle.Short),
+			);
 
 		const modal = new ModalBuilder()
 			.setCustomId(super.customId('ticket_threads_categories_create_panel', channel.id))
 			.setTitle('Ticket Panel Details')
-			.setComponents(rows);
+			.setLabelComponents(titleInput, descriptonInput, buttonEmojiInput, buttonLabelInput);
 
 		return interaction.showModal(modal);
 	}

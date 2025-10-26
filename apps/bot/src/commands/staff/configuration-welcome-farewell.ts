@@ -2,6 +2,7 @@ import {
 	ActionRowBuilder,
 	ChannelSelectMenuBuilder,
 	ChannelType,
+	LabelBuilder,
 	MessageFlags,
 	ModalBuilder,
 	PermissionFlagsBits,
@@ -128,7 +129,7 @@ export default class extends Command.Interaction {
 					.setFields(
 						{
 							name: 'Welcome Channel',
-							value: result.welcomeChannelId ? channelMention(result.welcomeChannelId.toString()) : 'None',
+							value: result.welcomeChannelId ? channelMention(result.welcomeChannelId) : 'None',
 							inline: true,
 						},
 						{
@@ -150,7 +151,7 @@ export default class extends Command.Interaction {
 						},
 						{
 							name: 'Farewell Channel',
-							value: result.farewellChannelId ? channelMention(result.farewellChannelId.toString()) : 'None',
+							value: result.farewellChannelId ? channelMention(result.farewellChannelId) : 'None',
 							inline: true,
 						},
 						{
@@ -243,38 +244,42 @@ export class ComponentInteraction extends Component.Interaction {
 				return interaction.reply({ components: [channelRow] });
 			}
 			case 'title': {
-				const titleInput = new TextInputBuilder()
-					.setCustomId(super.customId('message_title'))
+				const titleInput = new LabelBuilder()
 					.setLabel('Message Title')
-					.setRequired(false)
-					.setMinLength(1)
-					.setMaxLength(100)
-					.setStyle(TextInputStyle.Short)
-					.setPlaceholder('Write "{member}" to mention the user in the title.');
+					.setDescription('Write "{member}" to mention the user in the title.')
+					.setTextInputComponent(
+						new TextInputBuilder()
+							.setCustomId(super.customId('message_title'))
+							.setRequired(false)
+							.setMinLength(1)
+							.setMaxLength(100)
+							.setStyle(TextInputStyle.Short),
+					);
 
-				const titleRow = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
 				const titleModal = new ModalBuilder()
 					.setCustomId(super.customId(`${type}_message_title`))
 					.setTitle(`${capitalise(type)} Message Title`)
-					.setComponents(titleRow);
+					.setLabelComponents(titleInput);
 
 				return interaction.showModal(titleModal);
 			}
 			case 'description': {
-				const descriptionInput = new TextInputBuilder()
-					.setCustomId(super.customId('message_description'))
+				const descriptionInput = new LabelBuilder()
 					.setLabel('Message Description')
-					.setRequired(false)
-					.setMinLength(1)
-					.setMaxLength(500)
-					.setStyle(TextInputStyle.Paragraph)
-					.setPlaceholder('Write "{member}" to mention the user in the description.');
+					.setDescription('Write "{member}" to mention the user in the description.')
+					.setTextInputComponent(
+						new TextInputBuilder()
+							.setCustomId(super.customId('message_description'))
+							.setRequired(false)
+							.setMinLength(1)
+							.setMaxLength(500)
+							.setStyle(TextInputStyle.Paragraph),
+					);
 
-				const descriptionRow = new ActionRowBuilder<TextInputBuilder>().setComponents(descriptionInput);
 				const descriptionModal = new ModalBuilder()
 					.setCustomId(super.customId(`${type}_message_description`))
 					.setTitle(`${capitalise(type)} Message Description`)
-					.setComponents(descriptionRow);
+					.setLabelComponents(descriptionInput);
 
 				return interaction.showModal(descriptionModal);
 			}

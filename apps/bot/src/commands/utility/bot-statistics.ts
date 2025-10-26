@@ -113,7 +113,7 @@ export default class extends Command.Interaction {
 			value += `* ${translations.embeds[0].shardsStats[1]()}: ${shard.ping.toLocaleString()} ms\n`;
 			value += `* ${translations.embeds[0].shardsStats[2]()}: ${shard.ramInMegabytes.toString()} MB\n`;
 			value += `* ${translations.embeds[0].shardsStats[3]()}: ${shard.servers.toLocaleString()}\n`;
-			value += `* ${translations.embeds[0].shardsStats[4]()}: ${Status[shard.status].toString()}\n`;
+			value += `* ${translations.embeds[0].shardsStats[4]()}: ${Status[shard.status]}\n`;
 			value += `* ${translations.embeds[0].shardsStats[5]()}: ${shard.uptime ? formatDateLong(new Date(Date.now() - shard.uptime)) : translations.embeds[0].fallbackFieldValue()}\n`;
 			value += `* ${translations.embeds[0].shardsStats[6]()}: ${shard.memberCount.toLocaleString()}\n\n`;
 

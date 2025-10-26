@@ -1,6 +1,7 @@
 import {
 	ActionRowBuilder,
 	ChannelType,
+	LabelBuilder,
 	MessageFlags,
 	ModalBuilder,
 	PermissionFlagsBits,
@@ -115,32 +116,34 @@ function openingMessageModal(
 	{ interaction }: Command.Context<'chat'> | Component.Context<'string'>,
 	options: { id: string; title?: string; description?: string },
 ) {
-	const titleInput = (options.title ? new TextInputBuilder().setValue(options.title) : new TextInputBuilder())
-		.setCustomId(this.customId('title'))
+	const titleInput = new LabelBuilder()
 		.setLabel('Message Title')
-		.setRequired(true)
-		.setMinLength(1)
-		.setMaxLength(100)
-		.setStyle(TextInputStyle.Short)
-		.setPlaceholder('Write "{member}" to mention the user.');
-	const descriptionInput = (
-		options.description ? new TextInputBuilder().setValue(options.description) : new TextInputBuilder()
-	)
-		.setCustomId(this.customId('description'))
-		.setLabel('Message Description')
-		.setRequired(true)
-		.setMinLength(1)
-		.setMaxLength(500)
-		.setStyle(TextInputStyle.Paragraph)
-		.setPlaceholder('Write "{member}" to mention the user.');
+		.setDescription('Write "{member}" to mention the user.')
+		.setTextInputComponent(
+			(options.title ? new TextInputBuilder().setValue(options.title) : new TextInputBuilder())
+				.setCustomId(this.customId('title'))
+				.setRequired(true)
+				.setMinLength(1)
+				.setMaxLength(100)
+				.setStyle(TextInputStyle.Short),
+		);
 
-	const row1 = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
-	const row2 = new ActionRowBuilder<TextInputBuilder>().setComponents(descriptionInput);
+	const descriptionInput = new LabelBuilder()
+		.setLabel('Message Description')
+		.setDescription('Write "{member}" to mention the user.')
+		.setTextInputComponent(
+			(options.description ? new TextInputBuilder().setValue(options.description) : new TextInputBuilder())
+				.setCustomId(this.customId('description'))
+				.setRequired(true)
+				.setMinLength(1)
+				.setMaxLength(500)
+				.setStyle(TextInputStyle.Paragraph),
+		);
 
 	const modal = new ModalBuilder()
 		.setCustomId(this.customId('ticket_automatic_threads_configuration_opening_message', options.id))
 		.setTitle('Opening Message Title & Description')
-		.setComponents(row1, row2);
+		.setLabelComponents(titleInput, descriptionInput);
 
 	return interaction.showModal(modal).catch(() => false);
 }

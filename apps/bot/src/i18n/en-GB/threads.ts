@@ -25,11 +25,11 @@ export default {
 			},
 			title: {
 				label: 'Title',
-				placeholder: 'Write a title to be used in the ticket.',
+				description: 'Write a title to be used in the ticket.',
 			},
 			description: {
 				label: 'Description',
-				placeholder: 'Write a description to be used in the ticket.',
+				description: 'Write a description to be used in the ticket.',
 			},
 			modalTitle: 'Ticket Title & Description',
 		},
@@ -125,7 +125,7 @@ export default {
 						inputs: [
 							{
 								label: 'Thread Title',
-								placeholder: 'Write the new title that should be used for the thread.',
+								description: 'Write the new title that should be used for the thread.',
 							},
 						],
 					},

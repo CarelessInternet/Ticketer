@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { Code } from 'bright';
 import CodeBlock from '@/components/CodeBlock';
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
@@ -9,7 +10,6 @@ import RichText from '@/components/RichText';
 import ScrollLink from '@/components/ScrollLink';
 import Title from '@/components/Title';
 import { mergeMetadata } from '@/lib/mergeMetadata';
-import { Code } from 'bright';
 
 const composeFile = `
 name: 'ticketer'
@@ -73,26 +73,6 @@ MARIADB_USER=\${DB_USER}
 MARIADB_PASSWORD=\${DB_PASSWORD}
 MARIADB_RANDOM_ROOT_PASSWORD=true
 `.trim();
-
-function EnvironmentHighlight({
-	name,
-	value,
-	quotations = true,
-}: {
-	name: string;
-	value?: string;
-	quotations?: boolean;
-}) {
-	return (
-		<span className="flex flex-row">
-			<span className="text-amber-400">{name}</span>
-			<span className="text-rose-400">=</span>
-			<span className="text-emerald-400">
-				{quotations ? <>&quot;{!!value && value}&quot;</> : <>{!!value && value}</>}
-			</span>
-		</span>
-	);
-}
 
 export async function generateMetadata({ params }: PageProperties): Promise<Metadata> {
 	const { locale } = await params;

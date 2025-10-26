@@ -43,7 +43,7 @@ function ListItem({
 				<div className="flex flex-row">
 					<div className="flex items-center pr-3">{icon}</div>
 					<div className="block space-y-1">
-						<h1 className="text-lg font-medium leading-none">{title}</h1>
+						<h1 className="text-lg leading-none font-medium">{title}</h1>
 						<p className="text-sm leading-snug">{children}</p>
 					</div>
 				</div>

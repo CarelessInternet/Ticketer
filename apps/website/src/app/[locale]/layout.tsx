@@ -1,6 +1,5 @@
 import '../globals.css';
-import { type LayoutProperties, type PageProperties, routing } from '@/i18n/routing';
-import { NextIntlClientProvider, hasLocale } from 'next-intl';
+import { type Locale, NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Analytics } from '@vercel/analytics/react';
 import { DM_Sans } from 'next/font/google';
@@ -12,12 +11,13 @@ import { ThemeProvider } from 'next-themes';
 import { cn } from '@/lib/utils';
 import { mergeMetadata } from '@/lib/mergeMetadata';
 import { notFound } from 'next/navigation';
+import { routing } from '@/i18n/routing';
 
 const font = DM_Sans({ subsets: ['latin'], variable: '--font-sans' });
 
-export async function generateMetadata({ params }: PageProperties): Promise<Metadata> {
+export async function generateMetadata({ params }: LayoutProps<'/[locale]'>): Promise<Metadata> {
 	const { locale } = await params;
-	const t = await getTranslations({ locale, namespace: 'pages.index.metadata' });
+	const t = await getTranslations({ locale: locale as Locale, namespace: 'pages.index.metadata' });
 
 	return mergeMetadata({ description: t('description'), locale, title: t('title') });
 }
@@ -27,7 +27,7 @@ export function generateStaticParams() {
 	return routing.locales.map((locale) => ({ locale }));
 }
 
-export default async function RootLayout({ children, params }: LayoutProperties) {
+export default async function RootLayout({ children, params }: LayoutProps<'/[locale]'>) {
 	const { locale } = await params;
 
 	if (!hasLocale(routing.locales, locale)) {

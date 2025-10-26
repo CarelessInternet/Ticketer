@@ -1,10 +1,10 @@
-import type { LayoutProperties } from '@/i18n/routing';
+import type { Locale } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 
-export default async function Layout({ children, params }: LayoutProperties) {
+export default async function Layout({ children, params }: LayoutProps<'/[locale]/legal'>) {
 	const { locale } = await params;
 
-	setRequestLocale(locale);
+	setRequestLocale(locale as Locale);
 
 	return (
 		<main className="mx-4 pb-16 sm:mx-16 md:mx-24 lg:mx-36 xl:mx-48 2xl:mx-80">

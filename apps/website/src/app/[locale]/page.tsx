@@ -1,13 +1,13 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Button } from '@/components/ui/button';
 import InternalLink from '@/components/InternalLink';
-import type { PageProperties } from '@/i18n/routing';
+import type { Locale } from 'next-intl';
 import { Plus } from 'lucide-react';
 
-export default async function Home({ params }: PageProperties) {
+export default async function Home({ params }: PageProps<'/[locale]'>) {
 	const { locale } = await params;
 
-	setRequestLocale(locale);
+	setRequestLocale(locale as Locale);
 
 	const t = await getTranslations('pages.index');
 

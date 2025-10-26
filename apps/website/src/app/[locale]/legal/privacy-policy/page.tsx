@@ -1,8 +1,8 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
+import type { Locale } from 'next-intl';
 import type { Metadata } from 'next';
-import type { PageProperties } from '@/i18n/routing';
 import Paragraph from '@/components/Paragraph';
 import type { PropsWithChildren } from 'react';
 import RichText from '@/components/RichText';
@@ -16,17 +16,20 @@ function List({ children }: PropsWithChildren) {
 	return <ul className="list-disc pb-4 pl-10 font-medium">{children}</ul>;
 }
 
-export async function generateMetadata({ params }: PageProperties): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<'/[locale]/legal/privacy-policy'>): Promise<Metadata> {
 	const { locale } = await params;
-	const t = await getTranslations({ locale, namespace: 'layout.navbar.navigation.legal.routes.privacy-policy' });
+	const t = await getTranslations({
+		locale: locale as Locale,
+		namespace: 'layout.navbar.navigation.legal.routes.privacy-policy',
+	});
 
 	return mergeMetadata({ description: t('description'), locale, title: t('title') });
 }
 
-export default async function Page({ params }: PageProperties) {
+export default async function Page({ params }: PageProps<'/[locale]/legal/privacy-policy'>) {
 	const { locale } = await params;
 
-	setRequestLocale(locale);
+	setRequestLocale(locale as Locale);
 
 	const t = await getTranslations('pages.legal.privacy-policy');
 

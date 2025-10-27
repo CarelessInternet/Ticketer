@@ -7,7 +7,7 @@
 		"debug": "pnpm run dev",
 		"build": "NODE_ENV=production next build",
 		"start": "NODE_ENV=production next start",
-		"lint": "eslint ."
+		"lint": "next typegen && eslint ."
 	},
 	"dependencies": {
 		"@icons-pack/react-simple-icons": "^13.8.0",

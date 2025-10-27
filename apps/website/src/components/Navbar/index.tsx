@@ -27,6 +27,7 @@ import Image from 'next/image';
 import InternalLink from '../InternalLink';
 import Link from './Link';
 import LocaleSwitcher from './LocaleSwitcher';
+import type { Route } from 'next';
 import ThemeSwitcher from './ThemeSwitcher';
 import { cn } from '@/lib/utils';
 import { getTranslations } from 'next-intl/server';
@@ -73,7 +74,7 @@ function TooltipItem({ content, children }: PropsWithChildren<TooltipItems>) {
 
 interface TooltipLinkItems extends TooltipItems {
 	external?: boolean;
-	href: string;
+	href: Route;
 	icon: JSX.Element;
 }
 
@@ -95,16 +96,16 @@ function TooltipLinkItem({ content, external, href, icon }: PropsWithChildren<To
 	);
 }
 
-interface Route {
+interface NavRoute {
 	description: string;
 	href: string;
 	icon: JSX.Element;
 	title: string;
 }
 
-interface RouteMenu {
-	documentation: Route[];
-	legal: Route[];
+interface NavRouteMenu {
+	documentation: NavRoute[];
+	legal: NavRoute[];
 }
 
 export default async function Navbar({ className, ...properties }: HTMLAttributes<HTMLElement>) {
@@ -151,7 +152,7 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 				title: t('navigation.legal.routes.terms-of-service.title'),
 			},
 		],
-	} satisfies RouteMenu;
+	} satisfies NavRouteMenu;
 
 	function TooltipLinkItems({ inDrawer = false }: { inDrawer?: boolean }) {
 		const items = [

@@ -2,6 +2,7 @@ import type { AnchorHTMLAttributes, PropsWithChildren } from 'react';
 import { Link } from '@/i18n/routing';
 // eslint-disable-next-line no-restricted-imports
 import NextLink from 'next/link';
+import type { Route } from 'next';
 import { cn } from '@/lib/utils';
 
 export default function InternalLink({
@@ -12,7 +13,7 @@ export default function InternalLink({
 	noDefaultStyles = false,
 	...properties
 }: PropsWithChildren<
-	{ href: string; noLocalisation?: boolean; noDefaultStyles?: boolean } & AnchorHTMLAttributes<HTMLAnchorElement>
+	{ href: Route; noLocalisation?: boolean; noDefaultStyles?: boolean } & AnchorHTMLAttributes<HTMLAnchorElement>
 >) {
 	const Component = noLocalisation ? NextLink : Link;
 

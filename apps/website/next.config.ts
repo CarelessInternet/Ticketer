@@ -4,7 +4,7 @@ export default createNextIntlPlugin({
 	experimental: { createMessagesDeclaration: './src/i18n/languages/en-GB.json' },
 })({
 	reactCompiler: true,
-	typedRoutes: false,
+	typedRoutes: true,
 	experimental: {
 		turbopackFileSystemCacheForDev: true,
 	},

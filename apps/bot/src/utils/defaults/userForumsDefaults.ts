@@ -1,4 +1,13 @@
-import { Colors, type EmbedBuilder, type GuildMember } from 'discord.js';
+import {
+	type ButtonBuilder,
+	Colors,
+	ContainerBuilder,
+	type GuildMember,
+	HeadingLevel,
+	SectionBuilder,
+	TextDisplayBuilder,
+	heading,
+} from 'discord.js';
 import type { userForumsConfigurations } from '@ticketer/database';
 
 type Columns = typeof userForumsConfigurations.$inferSelect;
@@ -15,20 +24,41 @@ interface DescriptionOptions {
 
 const replaceMember = (text: string, member: string) => text.replaceAll('{member}', member);
 
-export const userForumsOpeningMessageTitle = ({ displayName, title }: TitleOptions) =>
-	replaceMember(title, displayName);
-export const userForumsOpeningMessageDescription = ({ description, memberMention }: DescriptionOptions) =>
+const userForumsOpeningMessageTitle = ({ displayName, title }: TitleOptions) => replaceMember(title, displayName);
+const userForumsOpeningMessageDescription = ({ description, memberMention }: DescriptionOptions) =>
 	replaceMember(description, memberMention);
 
-interface EmbedOptions {
+interface ContainerOptions {
+	container?: ContainerBuilder;
 	description: DescriptionOptions['description'];
-	embed: EmbedBuilder;
 	member: GuildMember;
+	renameTitleButton?: ButtonBuilder;
 	title: TitleOptions['title'];
 }
 
-export const userForumEmbed = ({ description, embed, member, title }: EmbedOptions) =>
-	embed
-		.setColor(Colors.Greyple)
-		.setTitle(userForumsOpeningMessageTitle({ title, displayName: member.displayName }))
-		.setDescription(userForumsOpeningMessageDescription({ description, memberMention: member.toString() }));
+export const userForumsContainer = ({
+	container = new ContainerBuilder(),
+	description,
+	member,
+	renameTitleButton,
+	title,
+}: ContainerOptions) => {
+	const base = container.setAccentColor(Colors.Greyple);
+	const containerTitle = new TextDisplayBuilder().setContent(
+		heading(userForumsOpeningMessageTitle({ title, displayName: member.displayName }), HeadingLevel.One),
+	);
+
+	if (renameTitleButton) {
+		base.addSectionComponents(
+			new SectionBuilder().setButtonAccessory(renameTitleButton).addTextDisplayComponents(containerTitle),
+		);
+	} else {
+		base.addTextDisplayComponents(containerTitle);
+	}
+
+	return base.addTextDisplayComponents(
+		new TextDisplayBuilder().setContent(
+			userForumsOpeningMessageDescription({ description, memberMention: member.toString() }),
+		),
+	);
+};

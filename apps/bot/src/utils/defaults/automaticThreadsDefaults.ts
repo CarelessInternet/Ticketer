@@ -1,4 +1,13 @@
-import { Colors, type EmbedBuilder, type GuildMember } from 'discord.js';
+import {
+	type ButtonBuilder,
+	Colors,
+	ContainerBuilder,
+	type GuildMember,
+	HeadingLevel,
+	SectionBuilder,
+	TextDisplayBuilder,
+	heading,
+} from 'discord.js';
 import type { automaticThreadsConfigurations } from '@ticketer/database';
 
 type Columns = typeof automaticThreadsConfigurations.$inferSelect;
@@ -15,20 +24,41 @@ interface DescriptionOptions {
 
 const replaceMember = (text: string, member: string) => text.replaceAll('{member}', member);
 
-export const automaticThreadsOpeningMessageTitle = ({ displayName, title }: TitleOptions) =>
-	replaceMember(title, displayName);
-export const automaticThreadsOpeningMessageDescription = ({ description, memberMention }: DescriptionOptions) =>
+const automaticThreadsOpeningMessageTitle = ({ displayName, title }: TitleOptions) => replaceMember(title, displayName);
+const automaticThreadsOpeningMessageDescription = ({ description, memberMention }: DescriptionOptions) =>
 	replaceMember(description, memberMention);
 
-interface EmbedOptions {
+interface ContainerOptions {
+	container?: ContainerBuilder;
 	description: DescriptionOptions['description'];
-	embed: EmbedBuilder;
-	title: TitleOptions['title'];
 	member: GuildMember;
+	renameTitleButton?: ButtonBuilder;
+	title: TitleOptions['title'];
 }
 
-export const automaticThreadsEmbed = ({ description, embed, member, title }: EmbedOptions) =>
-	embed
-		.setColor(Colors.Greyple)
-		.setTitle(automaticThreadsOpeningMessageTitle({ title, displayName: member.displayName }))
-		.setDescription(automaticThreadsOpeningMessageDescription({ description, memberMention: member.toString() }));
+export const automaticThreadsContainer = ({
+	container = new ContainerBuilder(),
+	description,
+	member,
+	renameTitleButton,
+	title,
+}: ContainerOptions) => {
+	const base = container.setAccentColor(Colors.Greyple);
+	const containerTitle = new TextDisplayBuilder().setContent(
+		heading(automaticThreadsOpeningMessageTitle({ title, displayName: member.displayName }), HeadingLevel.One),
+	);
+
+	if (renameTitleButton) {
+		base.addSectionComponents(
+			new SectionBuilder().setButtonAccessory(renameTitleButton).addTextDisplayComponents(containerTitle),
+		);
+	} else {
+		base.addTextDisplayComponents(containerTitle);
+	}
+
+	return base.addTextDisplayComponents(
+		new TextDisplayBuilder().setContent(
+			automaticThreadsOpeningMessageDescription({ description, memberMention: member.toString() }),
+		),
+	);
+};

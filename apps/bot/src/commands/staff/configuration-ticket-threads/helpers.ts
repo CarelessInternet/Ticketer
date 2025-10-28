@@ -1,21 +1,21 @@
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
 import {
+	HeadingLevel,
 	LabelBuilder,
 	MessageFlags,
 	ModalBuilder,
+	SeparatorBuilder,
+	SeparatorSpacingSize,
+	TextDisplayBuilder,
 	TextInputBuilder,
 	TextInputStyle,
+	bold,
 	channelMention,
+	heading,
 	inlineCode,
 	roleMention,
 } from 'discord.js';
-import {
-	ThreadTicketing,
-	messageWithPagination,
-	ticketThreadsOpeningMessageDescription,
-	ticketThreadsOpeningMessageTitle,
-	withPagination,
-} from '@/utils';
+import { ThreadTicketing, messageWithPagination, ticketThreadsOpeningMessageContainer, withPagination } from '@/utils';
 import { asc, database, eq, ticketThreadsCategories, ticketThreadsConfigurations } from '@ticketer/database';
 
 const CATEGORY_PAGE_SIZE = 2;
@@ -50,92 +50,77 @@ export function HasGlobalConfiguration(_: object, __: string, descriptor: Proper
 	return descriptor;
 }
 
-function categoryViewEmbed(
+function categoryViewContainers(
 	this: BaseInteraction.Interaction,
 	context: Command.Context | Component.Context,
 	categories: (typeof ticketThreadsCategories.$inferSelect)[],
 ) {
 	return categories.map((category) =>
-		this.embed
-			.setTitle(ThreadTicketing.titleAndEmoji(category.categoryTitle, category.categoryEmoji))
-			.setDescription(category.categoryDescription)
-			.setFields(
-				{
-					name: 'Category Channel',
-					value: category.channelId ? channelMention(category.channelId) : 'None',
-					inline: true,
-				},
-				{
-					name: 'Logs Channel',
-					value: category.logsChannelId ? channelMention(category.logsChannelId) : 'None',
-					inline: true,
-				},
-				{
-					name: 'Ticket Managers',
-					value: category.managers.length > 0 ? category.managers.map((id) => roleMention(id)).join(', ') : 'None',
-					inline: true,
-				},
-				{
-					name: '\u200B',
-					value: '\u200B',
-				},
-				{
-					name: 'Opening Message Title',
-					value: ticketThreadsOpeningMessageTitle({
-						categoryEmoji: category.categoryEmoji,
-						categoryTitle: category.categoryTitle,
-						displayName: context.interaction.member.displayName,
-						locale: context.interaction.locale,
-						title: category.openingMessageTitle,
-					}),
-					inline: true,
-				},
-				{
-					name: 'Opening Message Description',
-					value: ticketThreadsOpeningMessageDescription({
-						categoryTitle: category.categoryTitle,
-						description: category.openingMessageDescription,
-						locale: context.interaction.locale,
-						memberMention: context.interaction.member.toString(),
-					}),
-					inline: true,
-				},
-				{
-					name: 'Allowed Author Actions',
-					value: ThreadTicketing.actionsBitfieldToNames(category.allowedAuthorActions)
-						.map((name) => inlineCode(name))
-						.join(', '),
-				},
-				{
-					name: '\u200B',
-					value: '\u200B',
-				},
-				{
-					name: 'Private Threads',
-					value: category.privateThreads ? 'Enabled' : 'Disabled',
-					inline: true,
-				},
-				{
-					name: 'Silent Pings',
-					value: category.silentPings ? 'Enabled' : 'Disabled',
-					inline: true,
-				},
-				{
-					name: 'Skip Modal',
-					value: category.skipModal ? 'Enabled' : 'Disabled',
-					inline: true,
-				},
-				{
-					name: 'Thread Notifications',
-					value: category.threadNotifications ? 'Enabled' : 'Disabled',
-					inline: true,
-				},
-				{
-					name: 'Ticket Title & Description',
-					value: category.titleAndDescriptionRequired ? 'Required' : 'Optional',
-					inline: true,
-				},
-			),
+		this.container((cont) =>
+			ticketThreadsOpeningMessageContainer({
+				categoryEmoji: category.categoryEmoji,
+				categoryTitle: category.categoryTitle,
+				description: category.openingMessageDescription,
+				container: cont
+					.addTextDisplayComponents(
+						new TextDisplayBuilder().setContent(
+							heading(
+								`${bold('Channel')}: ${category.channelId ? channelMention(category.channelId) : 'None'}`,
+								HeadingLevel.One,
+							),
+						),
+					)
+					.addTextDisplayComponents(
+						new TextDisplayBuilder().setContent(
+							`${bold('Ticket')} Managers: ${category.managers.length > 0 ? category.managers.map((id) => roleMention(id)).join(', ') : 'None'}`,
+						),
+					)
+					.addTextDisplayComponents(
+						new TextDisplayBuilder().setContent(
+							`${bold('Logs Channel')}: ${category.logsChannelId ? channelMention(category.logsChannelId) : 'None'}`,
+						),
+					)
+					.addTextDisplayComponents(
+						new TextDisplayBuilder().setContent(
+							`${bold('Allowed Author Actions')}: ${ThreadTicketing.actionsBitfieldToNames(
+								category.allowedAuthorActions,
+							)
+								.map((name) => inlineCode(name))
+								.join(', ')}`,
+						),
+					)
+					.addTextDisplayComponents(
+						new TextDisplayBuilder().setContent(
+							`${bold('Private Threads')}: ${category.privateThreads ? 'Enabled' : 'Disabled'}`,
+						),
+					)
+					.addTextDisplayComponents(
+						new TextDisplayBuilder().setContent(
+							`${bold('Silent Pings')}: ${category.silentPings ? 'Enabled' : 'Disabled'}`,
+						),
+					)
+					.addTextDisplayComponents(
+						new TextDisplayBuilder().setContent(
+							`${bold('Skip Modal')}: ${category.skipModal ? 'Enabled' : 'Disabled'}`,
+						),
+					)
+					.addTextDisplayComponents(
+						new TextDisplayBuilder().setContent(
+							`${bold('Thread Notifications')}: ${category.threadNotifications ? 'Enabled' : 'Disabled'}`,
+						),
+					)
+					.addTextDisplayComponents(
+						new TextDisplayBuilder().setContent(
+							`${bold('Ticket Title & Description')}: ${category.titleAndDescriptionRequired ? 'Required' : 'Optional'}`,
+						),
+					)
+					.addTextDisplayComponents(new TextDisplayBuilder().setContent(heading('Message Preview:', HeadingLevel.Two)))
+					.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true)),
+				locale: context.interaction.guildLocale,
+				member: context.interaction.member,
+				title: category.openingMessageTitle,
+			}),
+		),
 	);
 }
 
@@ -155,8 +140,8 @@ export async function getCategories(
 			.$dynamic(),
 	});
 
-	const embeds = categoryViewEmbed.call(this, context, categories);
-	const components = messageWithPagination({
+	const containers = categoryViewContainers.call(this, context, categories);
+	const pagination = messageWithPagination({
 		previous: { customId: this.customId('ticket_threads_category_view_previous', page), disabled: page === 0 },
 		next: {
 			customId: this.customId('ticket_threads_category_view_next', page),
@@ -164,7 +149,11 @@ export async function getCategories(
 		},
 	});
 
-	return context.interaction.editReply({ components, embeds });
+	return context.interaction.editReply({
+		allowedMentions: {},
+		components: [...containers, ...pagination],
+		flags: [MessageFlags.IsComponentsV2],
+	});
 }
 
 export function categoryFieldsModal(

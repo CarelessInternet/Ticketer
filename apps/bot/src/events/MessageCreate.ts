@@ -1,5 +1,13 @@
-import { ChannelType, MessageType, PermissionFlagsBits, ThreadAutoArchiveDuration } from 'discord.js';
-import { LogExceptions, automaticThreadsEmbed, formatDateShort, ticketButtons } from '@/utils';
+import {
+	ActionRowBuilder,
+	type ButtonBuilder,
+	ChannelType,
+	MessageFlags,
+	MessageType,
+	PermissionFlagsBits,
+	ThreadAutoArchiveDuration,
+} from 'discord.js';
+import { LogExceptions, automaticThreadsContainer, formatDateShort, ticketButtons } from '@/utils';
 import { automaticThreadsConfigurations, database, eq } from '@ticketer/database';
 import { Event } from '@ticketer/djs-framework';
 import { translate } from '@/i18n';
@@ -42,14 +50,8 @@ export default class extends Event.Handler {
 			name: `[${formatDateShort(message.createdAt)}] ${message.member.displayName}`,
 		});
 
-		const embed = automaticThreadsEmbed({
-			embed: super.embed,
-			...row,
-			member: message.member,
-		});
-
 		const translations = translate(message.guild.preferredLocale).tickets.automaticThreads.actions;
-		const buttonsRow = ticketButtons({
+		const { renameTitle, ...restButtons } = ticketButtons({
 			close: {
 				customId: super.customId('ticket_automatic_threads_thread_close'),
 				label: translations.close.builder.label(),
@@ -72,6 +74,11 @@ export default class extends Event.Handler {
 			},
 		});
 
-		return thread.send({ components: buttonsRow, embeds: [embed] });
+		const container = super.container(
+			automaticThreadsContainer({ ...row, member: message.member, renameTitleButton: renameTitle }),
+		);
+		const buttonRow = new ActionRowBuilder<ButtonBuilder>().setComponents(Object.values(restButtons));
+
+		return thread.send({ components: [container, buttonRow], flags: [MessageFlags.IsComponentsV2] });
 	}
 }

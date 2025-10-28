@@ -14,6 +14,7 @@ const client = new Client({
 		// Periodically sweep the caches we do not need.
 		autoModerationRules: { filter, interval },
 		bans: { filter, interval },
+		entitlements: { filter, interval },
 		invites: { filter, interval },
 		presences: { filter, interval },
 		reactions: { filter, interval },

@@ -1,6 +1,6 @@
-import type { BaseInteraction, Command, Component, Modal } from '@ticketer/djs-framework';
-
 import {
+	ActionRowBuilder,
+	type ButtonBuilder,
 	ChannelType,
 	Colors,
 	ComponentType,
@@ -8,10 +8,12 @@ import {
 	MessageType,
 	PermissionFlagsBits,
 	type Snowflake,
+	TextDisplayBuilder,
 	ThreadAutoArchiveDuration,
 	inlineCode,
 	roleMention,
 } from 'discord.js';
+import type { BaseInteraction, Command, Component, Modal } from '@ticketer/djs-framework';
 import {
 	and,
 	database,
@@ -21,7 +23,7 @@ import {
 	ticketThreadsConfigurations,
 	ticketsThreads,
 } from '@ticketer/database';
-import { fetchChannel, threadTitle, ticketButtons, ticketThreadsOpeningMessageEmbed, zodErrorToString } from '..';
+import { fetchChannel, threadTitle, ticketButtons, ticketThreadsOpeningMessageContainer, zodErrorToString } from '..';
 import { translate } from '@/i18n';
 import { z } from 'zod';
 
@@ -148,6 +150,7 @@ export async function createTicket(
 				PermissionFlagsBits.ManageMessages,
 				PermissionFlagsBits.ViewChannel,
 				PermissionFlagsBits.SendMessagesInThreads,
+				PermissionFlagsBits.EmbedLinks,
 				isPrivate ? PermissionFlagsBits.CreatePrivateThreads : PermissionFlagsBits.CreatePublicThreads,
 			])
 	) {
@@ -157,6 +160,7 @@ export async function createTicket(
 				'Manage Messages',
 				'View Channel',
 				'Send Messages in Threads',
+				'Embed Links',
 				`Create ${isPrivate ? 'Private' : 'Public'} Threads`,
 			].join(', '),
 		);
@@ -240,15 +244,6 @@ export async function createTicket(
 
 	await database.insert(ticketsThreads).values({ authorId: member.id, categoryId, guildId, threadId: thread.id });
 
-	const messageEmbed = ticketThreadsOpeningMessageEmbed({
-		categoryEmoji: configuration.ticketThreadsCategories.categoryEmoji,
-		categoryTitle: configuration.ticketThreadsCategories.categoryTitle,
-		description: configuration.ticketThreadsCategories.openingMessageDescription,
-		embed: this.embed,
-		locale: guildLocale,
-		member,
-		title: configuration.ticketThreadsCategories.openingMessageTitle,
-	});
 	const ticketEmbed = (proxiedUser ? this.embed : this.userEmbed(member)).setColor(Colors.Green);
 
 	if (userTitle) {
@@ -259,7 +254,7 @@ export async function createTicket(
 		ticketEmbed.setDescription(description);
 	}
 
-	const buttonsRow = ticketButtons({
+	const buttons = ticketButtons({
 		close: {
 			customId: this.customId('ticket_threads_category_create_close'),
 			label: guildTranslations.actions.close.builder.label(),
@@ -282,15 +277,32 @@ export async function createTicket(
 		},
 	});
 
+	const row1 = new ActionRowBuilder<ButtonBuilder>().setComponents(buttons.renameTitle, buttons.lock, buttons.close);
+	const row2 = new ActionRowBuilder<ButtonBuilder>().setComponents(buttons.lockAndClose, buttons.delete);
+
 	const initialMessage = await thread.send({
 		allowedMentions: { roles: configuration.ticketThreadsCategories.managers },
-		components: buttonsRow,
+		components: [row1, row2],
 		content: configuration.ticketThreadsCategories.managers.map((roleId) => roleMention(roleId)).join(', '),
-		embeds: [messageEmbed, ...(title || description ? [ticketEmbed] : [])],
+		...((title || description) && { embeds: [ticketEmbed] }),
 		...(configuration.ticketThreadsCategories.silentPings && { flags: [MessageFlags.SuppressNotifications] }),
 	});
 
-	await initialMessage.pin();
+	const messageContainer = this.container(
+		ticketThreadsOpeningMessageContainer({
+			categoryEmoji: configuration.ticketThreadsCategories.categoryEmoji,
+			categoryTitle: configuration.ticketThreadsCategories.categoryTitle,
+			description: configuration.ticketThreadsCategories.openingMessageDescription,
+			locale: guildLocale,
+			member,
+			title: configuration.ticketThreadsCategories.openingMessageTitle,
+		}),
+	);
+	await thread.send({
+		allowedMentions: { users: [member.id] },
+		components: [new TextDisplayBuilder().setContent(member.toString()), messageContainer],
+		flags: [MessageFlags.IsComponentsV2],
+	});
 
 	if (
 		!configuration.ticketThreadsCategories.threadNotifications &&
@@ -305,6 +317,7 @@ export async function createTicket(
 		}
 	}
 
+	await initialMessage.pin();
 	await thread.members.add(member);
 
 	const ticketCreatedEmbed = this.userEmbed(interactionMember)

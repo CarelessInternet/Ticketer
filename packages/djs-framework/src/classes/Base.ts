@@ -48,8 +48,11 @@ export abstract class Base {
 	/**
 	 * @returns A container component with presetted data.
 	 */
-	protected container(function_: (cont: ContainerBuilder) => ContainerBuilder) {
-		return function_(new ContainerBuilder().setAccentColor(Colors.Blurple))
+	protected container(builder: ContainerBuilder | ((cont: ContainerBuilder) => ContainerBuilder)) {
+		const cont = typeof builder === 'function' ? builder(new ContainerBuilder()) : builder;
+
+		return cont
+			.setAccentColor(cont.data.accent_color ?? Colors.Blurple)
 			.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true))
 			.addTextDisplayComponents(
 				new TextDisplayBuilder().setContent(
@@ -84,7 +87,7 @@ export abstract class Base {
 		};
 	}
 
-	protected customId<T>(id: string, dynamicValue?: T) {
+	protected customId<T extends string, U>(id: T, dynamicValue?: U) {
 		return dynamicValue !== undefined && dynamicValue !== null ? `{${dynamicValue}}_${id}` : id;
 	}
 

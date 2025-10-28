@@ -1,16 +1,22 @@
 import {
 	ActionRowBuilder,
 	ChannelType,
+	HeadingLevel,
 	LabelBuilder,
 	MessageFlags,
 	ModalBuilder,
 	PermissionFlagsBits,
 	RoleSelectMenuBuilder,
+	SeparatorBuilder,
+	SeparatorSpacingSize,
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder,
+	TextDisplayBuilder,
 	TextInputBuilder,
 	TextInputStyle,
+	bold,
 	channelMention,
+	heading,
 	roleMention,
 } from 'discord.js';
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
@@ -24,9 +30,7 @@ import {
 	eq,
 } from '@ticketer/database';
 import {
-	automaticThreadsEmbed,
-	automaticThreadsOpeningMessageDescription,
-	automaticThreadsOpeningMessageTitle,
+	automaticThreadsContainer,
 	fetchChannel,
 	goToPage,
 	messageWithPagination,
@@ -72,35 +76,28 @@ async function getConfigurations(
 			.$dynamic(),
 	});
 
-	const embeds = configurations.map((config) =>
-		this.embed
-			.setTitle('Automatic Threads Configuration')
-			.setDescription(`The configuration for automatic threads in the channel ${channelMention(config.channelId)}:`)
-			.setFields(
-				{
-					name: 'Opening Message Title',
-					value: automaticThreadsOpeningMessageTitle({
-						displayName: interaction.member.displayName,
-						title: config.openingMessageTitle,
-					}),
-					inline: true,
-				},
-				{
-					name: 'Opening Message Description',
-					value: automaticThreadsOpeningMessageDescription({
-						description: config.openingMessageDescription,
-						memberMention: interaction.member.toString(),
-					}),
-					inline: true,
-				},
-				{
-					name: 'Managers',
-					value: config.managers.length > 0 ? config.managers.map((id) => roleMention(id)).join(', ') : 'None',
-				},
-			),
+	const containers = configurations.map((config) =>
+		this.container((cont) =>
+			automaticThreadsContainer({
+				container: cont
+					.addTextDisplayComponents(
+						new TextDisplayBuilder().setContent(`${bold('Channel')}: ${channelMention(config.channelId)}`),
+					)
+					.addTextDisplayComponents(
+						new TextDisplayBuilder().setContent(
+							`${bold('Managers')}: ${config.managers.length > 0 ? config.managers.map((id) => roleMention(id)).join(', ') : 'None'}`,
+						),
+					)
+					.addTextDisplayComponents(new TextDisplayBuilder().setContent(heading('Message Preview:', HeadingLevel.Two)))
+					.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true)),
+				description: config.openingMessageDescription,
+				member: interaction.member,
+				title: config.openingMessageTitle,
+			}),
+		),
 	);
 
-	const components = messageWithPagination({
+	const pagination = messageWithPagination({
 		previous: { customId: this.customId('ticket_automatic_threads_view_previous', page), disabled: page === 0 },
 		next: {
 			customId: this.customId('ticket_automatic_threads_view_next', page),
@@ -108,7 +105,7 @@ async function getConfigurations(
 		},
 	});
 
-	return interaction.editReply({ components, embeds });
+	return interaction.editReply({ components: [...containers, ...pagination], flags: [MessageFlags.IsComponentsV2] });
 }
 
 function openingMessageModal(
@@ -512,20 +509,29 @@ export class ModalInteraction extends Modal.Interaction {
 			});
 
 		return interaction.editReply({
-			embeds: [
-				super
-					.userEmbed(interaction.member)
-					.setTitle('Created/Updated an Automatic Threads Configuration')
-					.setDescription(
-						`${interaction.member.toString()} created or updated an automatic threads configuration in ${channel.toString()}. An example opening message can be seen in the embed below.`,
-					),
-				automaticThreadsEmbed({
-					description: data.openingMessageDescription,
-					embed: super.embed,
-					member: interaction.member,
-					title: data.openingMessageTitle,
-				}),
+			components: [
+				super.container((cont) =>
+					cont
+						.addTextDisplayComponents(
+							new TextDisplayBuilder().setContent(
+								heading('Created/Updated an Automatic Threads Configuration', HeadingLevel.One),
+							),
+						)
+						.addTextDisplayComponents(
+							new TextDisplayBuilder().setContent(
+								`${interaction.member.toString()} created or updated an automatic threads configuration in ${channel.toString()}. An example opening message can be seen in the container below.`,
+							),
+						),
+				),
+				super.container(
+					automaticThreadsContainer({
+						description: data.openingMessageDescription,
+						member: interaction.member,
+						title: data.openingMessageTitle,
+					}),
+				),
 			],
+			flags: [MessageFlags.IsComponentsV2],
 		});
 	}
 }

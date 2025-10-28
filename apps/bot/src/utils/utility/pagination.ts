@@ -24,11 +24,7 @@ interface EmbedWithPaginationOptions {
 	previous: ButtonInfo;
 }
 
-export function messageWithPagination({
-	locale,
-	next,
-	previous,
-}: EmbedWithPaginationOptions): InteractionReplyOptions['components'] {
+export function messageWithPagination({ locale, next, previous }: EmbedWithPaginationOptions) {
 	const translations = translate(locale).miscellaneous.paginationButtons;
 
 	const previousPageButton = new ButtonBuilder()
@@ -46,5 +42,5 @@ export function messageWithPagination({
 
 	const row = new ActionRowBuilder<ButtonBuilder>().setComponents(previousPageButton, nextPageButton);
 
-	return [row];
+	return [row] satisfies InteractionReplyOptions['components'];
 }

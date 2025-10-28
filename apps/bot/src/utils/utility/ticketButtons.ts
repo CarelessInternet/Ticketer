@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 
 interface ButtonOptions {
 	customId: string;
@@ -13,13 +13,7 @@ interface TicketButtons {
 	delete: ButtonOptions;
 }
 
-export function ticketButtons({
-	close,
-	lock,
-	lockAndClose,
-	renameTitle,
-	...rest
-}: TicketButtons): InteractionReplyOptions['components'] {
+export function ticketButtons({ close, delete: Delete, lock, lockAndClose, renameTitle }: TicketButtons) {
 	const renameTitleButton = new ButtonBuilder()
 		.setCustomId(renameTitle.customId)
 		.setEmoji('📝')
@@ -41,13 +35,17 @@ export function ticketButtons({
 		.setLabel(lockAndClose.label)
 		.setStyle(ButtonStyle.Primary);
 	const deleteButton = new ButtonBuilder()
-		.setCustomId(rest.delete.customId)
+		.setCustomId(Delete.customId)
 		.setEmoji('🗑')
-		.setLabel(rest.delete.label)
+		.setLabel(Delete.label)
 		.setStyle(ButtonStyle.Danger);
 
-	const buttonRow1 = new ActionRowBuilder<ButtonBuilder>().setComponents(renameTitleButton, lockButton, closeButton);
-	const buttonRow2 = new ActionRowBuilder<ButtonBuilder>().setComponents(lockAndCloseButton, deleteButton);
-
-	return [buttonRow1, buttonRow2];
+	// This specific order is relevant when spreading.
+	return {
+		renameTitle: renameTitleButton,
+		lock: lockButton,
+		close: closeButton,
+		lockAndClose: lockAndCloseButton,
+		delete: deleteButton,
+	} as Record<keyof TicketButtons, ButtonBuilder>;
 }

@@ -17,7 +17,7 @@
 		"@ticketer/djs-framework": "workspace:*",
 		"@ticketer/env": "workspace:*",
 		"chalk": "^5.6.2",
-		"discord.js": "^14.24.0",
+		"discord.js": "^14.24.1",
 		"tsx": "^4.20.6",
 		"typesafe-i18n": "^5.26.2",
 		"zod": "^4.1.12"
@@ -25,6 +25,6 @@
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.3.1",
 		"@ticketer/eslint-config": "workspace:*",
-		"@types/node": "^24.9.1"
+		"@types/node": "^24.9.2"
 	}
 }

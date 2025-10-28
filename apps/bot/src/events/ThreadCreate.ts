@@ -1,5 +1,5 @@
-import { ChannelType, PermissionFlagsBits } from 'discord.js';
-import { LogExceptions, fetchChannel, ticketButtons, userForumEmbed } from '@/utils';
+import { ActionRowBuilder, type ButtonBuilder, ChannelType, MessageFlags, PermissionFlagsBits } from 'discord.js';
+import { LogExceptions, fetchChannel, ticketButtons, userForumsContainer } from '@/utils';
 import { database, eq, userForumsConfigurations } from '@ticketer/database';
 import { Event } from '@ticketer/djs-framework';
 import { translate } from '@/i18n';
@@ -14,6 +14,8 @@ export default class extends Event.Handler {
 		const parent = thread.parent ?? (await fetchChannel(thread.guild, thread.parentId));
 		const me = await thread.guild.members.fetchMe();
 
+		// Why are these linting rules triggered?
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
 		if (!parent?.permissionsFor(me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessagesInThreads]))
 			return;
 
@@ -32,14 +34,8 @@ export default class extends Event.Handler {
 
 			if (!row) return;
 
-			const embed = userForumEmbed({
-				embed: super.embed,
-				...row,
-				member,
-			});
-
 			const translations = translate(thread.guild.preferredLocale).tickets.userForums.actions;
-			const buttonsRow = ticketButtons({
+			const { renameTitle, ...restButtons } = ticketButtons({
 				close: {
 					customId: super.customId('ticket_user_forums_thread_close'),
 					label: translations.close.builder.label(),
@@ -62,7 +58,10 @@ export default class extends Event.Handler {
 				},
 			});
 
-			return thread.send({ components: buttonsRow, embeds: [embed] });
+			const container = super.container(userForumsContainer({ ...row, member, renameTitleButton: renameTitle }));
+			const buttonRow = new ActionRowBuilder<ButtonBuilder>().setComponents(Object.values(restButtons));
+
+			return thread.send({ components: [container, buttonRow], flags: [MessageFlags.IsComponentsV2] });
 		}
 	}
 }

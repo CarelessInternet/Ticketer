@@ -1,16 +1,22 @@
 import {
 	ActionRowBuilder,
 	ChannelType,
+	HeadingLevel,
 	LabelBuilder,
 	MessageFlags,
 	ModalBuilder,
 	PermissionFlagsBits,
 	RoleSelectMenuBuilder,
+	SeparatorBuilder,
+	SeparatorSpacingSize,
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder,
+	TextDisplayBuilder,
 	TextInputBuilder,
 	TextInputStyle,
+	bold,
 	channelMention,
+	heading,
 	roleMention,
 } from 'discord.js';
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
@@ -27,9 +33,7 @@ import {
 	fetchChannel,
 	goToPage,
 	messageWithPagination,
-	userForumEmbed,
-	userForumsOpeningMessageDescription,
-	userForumsOpeningMessageTitle,
+	userForumsContainer,
 	withPagination,
 	zodErrorToString,
 } from '@/utils';
@@ -72,35 +76,28 @@ async function getConfigurations(
 			.$dynamic(),
 	});
 
-	const embeds = configurations.map((config) =>
-		this.embed
-			.setTitle('User Forum Configuration')
-			.setDescription(`The configuration for user forum threads in the channel ${channelMention(config.channelId)}:`)
-			.setFields(
-				{
-					name: 'Opening Message Title',
-					value: userForumsOpeningMessageTitle({
-						displayName: interaction.member.displayName,
-						title: config.openingMessageTitle,
-					}),
-					inline: true,
-				},
-				{
-					name: 'Opening Message Description',
-					value: userForumsOpeningMessageDescription({
-						description: config.openingMessageDescription,
-						memberMention: interaction.member.toString(),
-					}),
-					inline: true,
-				},
-				{
-					name: 'Managers',
-					value: config.managers.length > 0 ? config.managers.map((id) => roleMention(id)).join(', ') : 'None',
-				},
-			),
+	const containers = configurations.map((config) =>
+		this.container((cont) =>
+			userForumsContainer({
+				container: cont
+					.addTextDisplayComponents(
+						new TextDisplayBuilder().setContent(`${bold('Channel')}: ${channelMention(config.channelId)}`),
+					)
+					.addTextDisplayComponents(
+						new TextDisplayBuilder().setContent(
+							`${bold('Managers')}: ${config.managers.length > 0 ? config.managers.map((id) => roleMention(id)).join(', ') : 'None'}`,
+						),
+					)
+					.addTextDisplayComponents(new TextDisplayBuilder().setContent(heading('Message Preview:', HeadingLevel.Two)))
+					.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true)),
+				description: config.openingMessageDescription,
+				member: interaction.member,
+				title: config.openingMessageTitle,
+			}),
+		),
 	);
 
-	const components = messageWithPagination({
+	const pagination = messageWithPagination({
 		previous: { customId: this.customId('ticket_user_forums_view_previous', page), disabled: page === 0 },
 		next: {
 			customId: this.customId('ticket_user_forums_view_next', page),
@@ -108,7 +105,7 @@ async function getConfigurations(
 		},
 	});
 
-	return interaction.editReply({ components, embeds });
+	return interaction.editReply({ components: [...containers, ...pagination], flags: [MessageFlags.IsComponentsV2] });
 }
 
 function openingMessageModal(
@@ -518,20 +515,29 @@ export class ModalInteraction extends Modal.Interaction {
 			});
 
 		return interaction.editReply({
-			embeds: [
-				super
-					.userEmbed(interaction.member)
-					.setTitle('Created/Updated a User Forum Configuration')
-					.setDescription(
-						`${interaction.member.toString()} created or updated a user forum configuration in ${channel.toString()}. An example opening message can be seen in the embed below.`,
-					),
-				userForumEmbed({
-					description: data.openingMessageDescription,
-					embed: super.embed,
-					member: interaction.member,
-					title: data.openingMessageTitle,
-				}),
+			components: [
+				super.container((cont) =>
+					cont
+						.addTextDisplayComponents(
+							new TextDisplayBuilder().setContent(
+								heading('Created/Updated a User Forum Configuration', HeadingLevel.One),
+							),
+						)
+						.addTextDisplayComponents(
+							new TextDisplayBuilder().setContent(
+								`${interaction.member.toString()} created or updated a user forum configuration in ${channel.toString()}. An example opening message can be seen in the container below.`,
+							),
+						),
+				),
+				super.container(
+					userForumsContainer({
+						description: data.openingMessageDescription,
+						member: interaction.member,
+						title: data.openingMessageTitle,
+					}),
+				),
 			],
+			flags: [MessageFlags.IsComponentsV2],
 		});
 	}
 }

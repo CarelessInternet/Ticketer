@@ -55,7 +55,7 @@ const replaceMessageDescription = ({ categoryTitle, memberMention, messageDescri
 const translations = (locale: BaseOptions['locale']) => translate(locale).tickets.threads.categories.configuration;
 
 // Use the user-defined texts if possible, otherwise use the inbuilt localised texts.
-export const ticketThreadsOpeningMessageTitle = ({
+const ticketThreadsOpeningMessageTitle = ({
 	categoryEmoji,
 	categoryTitle,
 	displayName,
@@ -66,7 +66,7 @@ export const ticketThreadsOpeningMessageTitle = ({
 		? replaceMessageTitle({ categoryTitle, displayName, messageTitle: title })
 		: ThreadTicketing.titleAndEmoji(categoryTitle, categoryEmoji) + ': ' + translations(locale).openingMessage.title();
 
-export const ticketThreadsOpeningMessageDescription = ({
+const ticketThreadsOpeningMessageDescription = ({
 	categoryTitle,
 	description,
 	locale,

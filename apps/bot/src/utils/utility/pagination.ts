@@ -18,13 +18,13 @@ interface ButtonInfo {
 	label?: string;
 }
 
-interface EmbedWithPaginationOptions {
+interface MessageWithPaginationOptions {
 	locale?: Locale;
 	next: ButtonInfo;
 	previous: ButtonInfo;
 }
 
-export function messageWithPagination({ locale, next, previous }: EmbedWithPaginationOptions) {
+export function messageWithPagination({ locale, next, previous }: MessageWithPaginationOptions) {
 	const translations = translate(locale).miscellaneous.paginationButtons;
 
 	const previousPageButton = new ButtonBuilder()

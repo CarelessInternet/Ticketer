@@ -1,13 +1,17 @@
 import {
-	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
 	Colors,
+	HeadingLevel,
 	LabelBuilder,
+	MessageFlags,
 	ModalBuilder,
 	PermissionFlagsBits,
+	SectionBuilder,
+	TextDisplayBuilder,
 	TextInputBuilder,
 	TextInputStyle,
+	heading,
 } from 'discord.js';
 import { Command, DeferReply, Modal } from '@ticketer/djs-framework';
 import { extractEmoji, fetchChannel, zodErrorToString } from '@/utils';
@@ -131,15 +135,24 @@ export class ModalInteraction extends Modal.Interaction {
 			});
 		}
 
-		const embed = super.embed.setColor(Colors.Aqua).setTitle(data.title).setDescription(data.description);
-		const button = new ButtonBuilder()
-			.setCustomId(super.customId('ticket_threads_categories_create_list_panel'))
-			.setEmoji(buttonEmoji)
-			.setLabel(data.buttonLabel)
-			.setStyle(ButtonStyle.Primary);
+		const container = super.container((cont) =>
+			cont
+				.setAccentColor(Colors.Aqua)
+				.addTextDisplayComponents(new TextDisplayBuilder().setContent(heading(data.title, HeadingLevel.One)))
+				.addSectionComponents(
+					new SectionBuilder()
+						.addTextDisplayComponents(new TextDisplayBuilder().setContent(data.description))
+						.setButtonAccessory(
+							new ButtonBuilder()
+								.setCustomId(super.customId('ticket_threads_categories_create_list_panel'))
+								.setEmoji(buttonEmoji)
+								.setLabel(data.buttonLabel)
+								.setStyle(ButtonStyle.Primary),
+						),
+				),
+		);
 
-		const row = new ActionRowBuilder<ButtonBuilder>().setComponents(button);
-		const message = await channel.send({ components: [row], embeds: [embed] });
+		const message = await channel.send({ components: [container], flags: [MessageFlags.IsComponentsV2] });
 
 		void interaction.editReply({
 			embeds: [

@@ -8,9 +8,9 @@ import {
 	type InteractionConstructableTypes,
 	type Modal,
 	type Subcommand,
-	glob,
 } from '..';
 import { Collection, Client as DiscordClient, Routes, type Snowflake } from 'discord.js';
+import { glob } from 'node:fs/promises';
 
 /**
  * The extended version of the discord.js Client.
@@ -78,10 +78,9 @@ export class Client extends DiscordClient {
 	 * @returns All events that are defined in the command files.
 	 */
 	private async fetchEvents(path: string) {
-		const files = await glob(path);
 		const events: Event.Handler[] = [];
 
-		for await (const file of files) {
+		for await (const file of glob(`${path}/**/*.ts`)) {
 			const { default: ImportedEvent }: { default?: Event.Constructable } = await import(file);
 			const eventAsClass = ImportedEvent ? new ImportedEvent(this) : undefined;
 
@@ -97,13 +96,11 @@ export class Client extends DiscordClient {
 	 * @returns All interactions that are defined in the command files.
 	 */
 	private async fetchInteractions(path: string) {
-		const files = await glob(path);
 		const commands: BaseInteraction.Interaction[] = [];
-
 		// https://stackoverflow.com/a/30760236
 		const isClass = (object: unknown) => typeof object === 'function' && /^\s*class\s+/.test(object.toString());
 
-		for await (const file of files) {
+		for await (const file of glob(`${path}/**/*.ts`)) {
 			const interactions: Interactions = await import(file);
 			const values = Object.values(interactions) as ValueOf<Interactions>[];
 

@@ -2,21 +2,28 @@ import {
 	ActionRowBuilder,
 	ChannelSelectMenuBuilder,
 	ChannelType,
+	HeadingLevel,
+	LabelBuilder,
 	MessageFlags,
 	ModalBuilder,
 	PermissionFlagsBits,
 	RoleSelectMenuBuilder,
+	SeparatorBuilder,
+	SeparatorSpacingSize,
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder,
+	TextDisplayBuilder,
 	TextInputBuilder,
 	TextInputStyle,
+	bold,
 	channelMention,
+	heading,
 	inlineCode,
 	roleMention,
 } from 'discord.js';
 import { Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
 import { database, eq, not, welcomeAndFarewell, welcomeAndFarewellInsertSchema } from '@ticketer/database';
-import { farewellEmbed, welcomeEmbed, zodErrorToString } from '@/utils';
+import { farewellContainer, welcomeContainer, zodErrorToString } from '@/utils';
 
 type InsertWithoutGuildId = Omit<typeof welcomeAndFarewell.$inferInsert, 'guildId'>;
 
@@ -120,67 +127,68 @@ export default class extends Command.Interaction {
 					});
 				}
 
-				const generalEmbed = super.embed
-					.setTitle('General Welcome/Farewell Settings')
-					.setDescription(
-						'This embed shows the configuration for welcome and farewell messages. The next two embeds show examples of the configured welcome and farewell messages.',
-					)
-					.setFields(
-						{
-							name: 'Welcome Channel',
-							value: result.welcomeChannelId ? channelMention(result.welcomeChannelId.toString()) : 'None',
-							inline: true,
+				const welcome = super.container((cont) =>
+					welcomeContainer({
+						container: cont
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(
+									heading(`Welcome Messages: ${result.welcomeEnabled ? 'Enabled' : 'Disabled'}`, HeadingLevel.One),
+								),
+							)
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(
+									`${bold('Welcome Channel')}: ${result.welcomeChannelId ? channelMention(result.welcomeChannelId) : 'None'}`,
+								),
+							)
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(
+									`${bold('New Member Roles')}: ${
+										result.welcomeNewMemberRoles.length > 0
+											? result.welcomeNewMemberRoles.map((role) => roleMention(role)).join(', ')
+											: 'None'
+									}`,
+								),
+							)
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(heading('Message Preview:', HeadingLevel.Two)),
+							)
+							.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true)),
+						data: {
+							welcomeMessageTitle: result.welcomeMessageTitle,
+							welcomeMessageDescription: result.welcomeMessageDescription,
 						},
-						{
-							name: 'Welcome Messages',
-							value: result.welcomeEnabled ? 'Enabled' : 'Disabled',
-							inline: true,
-						},
-						{
-							name: 'New Member Roles',
-							value:
-								result.welcomeNewMemberRoles.length > 0
-									? result.welcomeNewMemberRoles.map((role) => roleMention(role)).join(', ')
-									: 'None',
-							inline: true,
-						},
-						{
-							name: '\u200B',
-							value: '\u200B',
-						},
-						{
-							name: 'Farewell Channel',
-							value: result.farewellChannelId ? channelMention(result.farewellChannelId.toString()) : 'None',
-							inline: true,
-						},
-						{
-							name: 'Farewell Messages',
-							value: result.farewellEnabled ? 'Enabled' : 'Disabled',
-							inline: true,
-						},
-					);
+						locale: guildLocale,
+						member,
+					}),
+				);
 
-				const welcomeEmbedExample = welcomeEmbed({
-					data: {
-						welcomeMessageTitle: result.welcomeMessageTitle,
-						welcomeMessageDescription: result.welcomeMessageDescription,
-					},
-					embed: super.embed,
-					locale: guildLocale,
-					member,
-				});
+				const farewell = super.container((cont) =>
+					farewellContainer({
+						container: cont
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(
+									heading(`Farewell Messages: ${result.farewellEnabled ? 'Enabled' : 'Disabled'}`, HeadingLevel.One),
+								),
+							)
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(
+									`${bold('Farewell Channel')}: ${result.farewellChannelId ? channelMention(result.farewellChannelId) : 'None'}`,
+								),
+							)
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(heading('Message Preview:', HeadingLevel.Two)),
+							)
+							.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true)),
+						data: {
+							farewellMessageTitle: result.farewellMessageTitle,
+							farewellMessageDescription: result.farewellMessageDescription,
+						},
+						locale: guildLocale,
+						member,
+					}),
+				);
 
-				const farewellEmbedExample = farewellEmbed({
-					data: {
-						farewellMessageTitle: result.farewellMessageTitle,
-						farewellMessageDescription: result.farewellMessageDescription,
-					},
-					embed: super.embed,
-					locale: guildLocale,
-					member,
-				});
-
-				return interaction.editReply({ embeds: [generalEmbed, welcomeEmbedExample, farewellEmbedExample] });
+				return interaction.editReply({ components: [welcome, farewell], flags: [MessageFlags.IsComponentsV2] });
 			}
 			default: {
 				return interaction.editReply({
@@ -243,38 +251,42 @@ export class ComponentInteraction extends Component.Interaction {
 				return interaction.reply({ components: [channelRow] });
 			}
 			case 'title': {
-				const titleInput = new TextInputBuilder()
-					.setCustomId(super.customId('message_title'))
+				const titleInput = new LabelBuilder()
 					.setLabel('Message Title')
-					.setRequired(false)
-					.setMinLength(1)
-					.setMaxLength(100)
-					.setStyle(TextInputStyle.Short)
-					.setPlaceholder('Write "{member}" to mention the user in the title.');
+					.setDescription('Write "{member}" to mention the user in the title.')
+					.setTextInputComponent(
+						new TextInputBuilder()
+							.setCustomId(super.customId('message_title'))
+							.setRequired(false)
+							.setMinLength(1)
+							.setMaxLength(100)
+							.setStyle(TextInputStyle.Short),
+					);
 
-				const titleRow = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
 				const titleModal = new ModalBuilder()
 					.setCustomId(super.customId(`${type}_message_title`))
 					.setTitle(`${capitalise(type)} Message Title`)
-					.setComponents(titleRow);
+					.setLabelComponents(titleInput);
 
 				return interaction.showModal(titleModal);
 			}
 			case 'description': {
-				const descriptionInput = new TextInputBuilder()
-					.setCustomId(super.customId('message_description'))
+				const descriptionInput = new LabelBuilder()
 					.setLabel('Message Description')
-					.setRequired(false)
-					.setMinLength(1)
-					.setMaxLength(500)
-					.setStyle(TextInputStyle.Paragraph)
-					.setPlaceholder('Write "{member}" to mention the user in the description.');
+					.setDescription('Write "{member}" to mention the user in the description.')
+					.setTextInputComponent(
+						new TextInputBuilder()
+							.setCustomId(super.customId('message_description'))
+							.setRequired(false)
+							.setMinLength(1)
+							.setMaxLength(500)
+							.setStyle(TextInputStyle.Paragraph),
+					);
 
-				const descriptionRow = new ActionRowBuilder<TextInputBuilder>().setComponents(descriptionInput);
 				const descriptionModal = new ModalBuilder()
 					.setCustomId(super.customId(`${type}_message_description`))
 					.setTitle(`${capitalise(type)} Message Description`)
-					.setComponents(descriptionRow);
+					.setLabelComponents(descriptionInput);
 
 				return interaction.showModal(descriptionModal);
 			}

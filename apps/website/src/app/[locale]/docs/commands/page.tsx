@@ -2,8 +2,8 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import CodeBlock from '@/components/CodeBlock';
 import Divider from '@/components/Divider';
 import Image from '@/components/Image';
+import type { Locale } from 'next-intl';
 import type { Metadata } from 'next';
-import type { PageProperties } from '@/i18n/routing';
 import Paragraph from '@/components/Paragraph';
 import RichText from '@/components/RichText';
 import ScrollLink from '@/components/ScrollLink';
@@ -11,17 +11,20 @@ import SectionDivider from '@/components/SectionDivider';
 import Title from '@/components/Title';
 import { mergeMetadata } from '@/lib/mergeMetadata';
 
-export async function generateMetadata({ params }: PageProperties): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<'/[locale]/docs/commands'>): Promise<Metadata> {
 	const { locale } = await params;
-	const t = await getTranslations({ locale, namespace: 'layout.navbar.navigation.documentation.routes.commands' });
+	const t = await getTranslations({
+		locale: locale as Locale,
+		namespace: 'layout.navbar.navigation.documentation.routes.commands',
+	});
 
 	return mergeMetadata({ description: t('description'), locale, title: t('title') });
 }
 
-export default async function Page({ params }: PageProperties) {
+export default async function Page({ params }: PageProps<'/[locale]/docs/commands'>) {
 	const { locale } = await params;
 
-	setRequestLocale(locale);
+	setRequestLocale(locale as Locale);
 
 	const t = await getTranslations('pages.docs.commands');
 

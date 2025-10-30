@@ -1,4 +1,13 @@
-import { Colors, type EmbedBuilder, type GuildMember, type Locale, inlineCode } from 'discord.js';
+import {
+	Colors,
+	ContainerBuilder,
+	type GuildMember,
+	HeadingLevel,
+	type Locale,
+	TextDisplayBuilder,
+	heading,
+	inlineCode,
+} from 'discord.js';
 import { ThreadTicketing, formatDateShort } from '..';
 import type { ticketThreadsCategories } from '@ticketer/database';
 import { translate } from '@/i18n';
@@ -46,7 +55,7 @@ const replaceMessageDescription = ({ categoryTitle, memberMention, messageDescri
 const translations = (locale: BaseOptions['locale']) => translate(locale).tickets.threads.categories.configuration;
 
 // Use the user-defined texts if possible, otherwise use the inbuilt localised texts.
-export const ticketThreadsOpeningMessageTitle = ({
+const ticketThreadsOpeningMessageTitle = ({
 	categoryEmoji,
 	categoryTitle,
 	displayName,
@@ -57,7 +66,7 @@ export const ticketThreadsOpeningMessageTitle = ({
 		? replaceMessageTitle({ categoryTitle, displayName, messageTitle: title })
 		: ThreadTicketing.titleAndEmoji(categoryTitle, categoryEmoji) + ': ' + translations(locale).openingMessage.title();
 
-export const ticketThreadsOpeningMessageDescription = ({
+const ticketThreadsOpeningMessageDescription = ({
 	categoryTitle,
 	description,
 	locale,
@@ -70,36 +79,48 @@ export const ticketThreadsOpeningMessageDescription = ({
 				member: memberMention,
 			});
 
-interface MessageEmbedOptions extends BaseOptions, BaseMessageOptions {
+interface MessageContainerOptions extends BaseOptions, BaseMessageOptions {
 	categoryEmoji: Columns['categoryEmoji'];
+	container?: ContainerBuilder;
 	description: MessageDescriptionOptions['description'];
-	embed: EmbedBuilder;
 	member: GuildMember;
 	title: MessageTitleOptions['title'];
 }
 
-export const ticketThreadsOpeningMessageEmbed = ({
+export const ticketThreadsOpeningMessageContainer = ({
 	categoryEmoji,
 	categoryTitle,
+	container = new ContainerBuilder(),
 	description,
-	embed,
 	locale,
 	member,
 	title,
-}: MessageEmbedOptions) =>
-	embed
-		.setColor(Colors.Fuchsia)
-		.setTitle(
-			ticketThreadsOpeningMessageTitle({
-				categoryEmoji,
-				categoryTitle,
-				displayName: member.displayName,
-				locale,
-				title,
-			}),
+}: MessageContainerOptions) =>
+	container
+		.setAccentColor(Colors.Fuchsia)
+		.addTextDisplayComponents(
+			new TextDisplayBuilder().setContent(
+				heading(
+					ticketThreadsOpeningMessageTitle({
+						categoryEmoji,
+						categoryTitle,
+						displayName: member.displayName,
+						locale,
+						title,
+					}),
+					HeadingLevel.One,
+				),
+			),
 		)
-		.setDescription(
-			ticketThreadsOpeningMessageDescription({ categoryTitle, description, locale, memberMention: member.toString() }),
+		.addTextDisplayComponents(
+			new TextDisplayBuilder().setContent(
+				ticketThreadsOpeningMessageDescription({
+					categoryTitle,
+					description,
+					locale,
+					memberMention: member.toString(),
+				}),
+			),
 		);
 
 const replaceThreadTitle = (text: string, title: string) => text.replaceAll('{title}', title);

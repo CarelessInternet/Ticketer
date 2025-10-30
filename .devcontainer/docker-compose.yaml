@@ -4,24 +4,22 @@ services:
   database:
     container_name: ticketer-development-database
     image: mariadb:11
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
       interval: 10s
       retries: 3
       start_period: 30s
-    networks:
-      - ticketer-development-database-network
     volumes:
-      - ticketer-development-database-data:/var/lib/mysql
+      - ticketer_development_database_data:/var/lib/mysql
     environment:
       MARIADB_DATABASE: "Ticketer"
       MARIADB_USER: "dev_container"
       MARIADB_PASSWORD: "12345678"
       MYSQL_TCP_PORT: 3307
       MARIADB_RANDOM_ROOT_PASSWORD: true
-    ports:
-      - 3307:3307
+    networks:
+      - ticketer_development_database_network
 
   # Update this to the name of the service you want to work with in your docker-compose.yml file
   bot:
@@ -38,8 +36,6 @@ services:
     depends_on:
       database:
         condition: service_healthy
-    networks:
-      - ticketer-development-database-network
     volumes:
       # Update this to wherever you want VS Code to mount the folder of your project
       - ..:/workspaces:cached
@@ -47,11 +43,13 @@ services:
     command: /bin/sh -c "while sleep 1000; do :; done"
     environment:
       NODE_ENV: "development"
+      NEXT_TELEMETRY_DISABLED: 1
+    networks:
+      - ticketer_development_database_network
+
+volumes:
+  ticketer_development_database_data:
 
 # Important to make connections from the bot to the database work!
 networks:
-  ticketer-development-database-network:
-    driver: bridge
-
-volumes:
-  ticketer-development-database-data:
+  ticketer_development_database_network:

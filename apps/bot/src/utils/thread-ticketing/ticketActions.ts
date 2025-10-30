@@ -33,6 +33,7 @@ const actionsAndFlagsMap = new Map([
 
 export function actionsBitfieldToNames(bitfield: number | null) {
 	bitfield ??= ThreadTicketActionsPermissionBitField.Default;
+
 	const permissions = new ThreadTicketActionsPermissionBitField(bitfield);
 	const names: Actions[KeyOfActions][] = [];
 

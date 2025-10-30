@@ -169,26 +169,22 @@ const en_GB = {
 				],
 			},
 			command: {
-				embeds: [
+				components: [
 					{
-						title: 'Command List',
-						description: 'Here is the list of the available commands: {commands:string}.',
-						fields: [
+						button: {
+							label: 'Command Documentation',
+						},
+						text: [
 							{
-								name: '❓ How to Get Started?',
-								value: 'Looking for how to configure the bot? Click the "Command Documentation" link below.',
-							},
-							{
-								name: '🔗 Links',
-								links: {
-									commandDocumentation: 'Command Documentation',
-									donate: 'Donate',
-									invite: 'Invite Link',
-									supportServer: 'Support Server',
-									website: 'Website',
-								},
+								content: '❗ Command List',
 							},
 						],
+					},
+					{
+						text: '🔗 Links',
+					},
+					{
+						links: { donate: 'Donate', invite: 'Invite Link', supportServer: 'Support Server', website: 'Website' },
 					},
 				],
 			},
@@ -211,7 +207,12 @@ const en_GB = {
 				description: 'Deploy any database migrations that may be required.',
 			},
 			command: {
-				success: 'Successfully migrated the database!',
+				embeds: [
+					{
+						title: 'Migrated!',
+						description: 'Successfully migrated the database!',
+					},
+				],
 			},
 		},
 		ping: {

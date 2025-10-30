@@ -1,13 +1,13 @@
 import config from '@ticketer/eslint-config';
+import { defineConfig } from 'eslint/config';
 import tseslint from '@ticketer/eslint-config/tseslint.mjs';
 
-export default tseslint.config(
+export default defineConfig(
 	{
 		extends: [...config, ...tseslint.configs.strictTypeChecked, ...tseslint.configs.stylisticTypeChecked],
 		languageOptions: {
 			parserOptions: {
 				projectService: true,
-				tsconfigRootDir: import.meta.dirname,
 			},
 		},
 		rules: {

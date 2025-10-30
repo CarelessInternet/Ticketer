@@ -1,8 +1,8 @@
-import { Command, DeferReply, RequiredChannelPermissions } from '@ticketer/djs-framework';
+import { Command, DeferReply } from '@ticketer/djs-framework';
+import { RequiredChannelPermissions, zodErrorToString } from '@/utils';
 import { getTranslations, translate } from '@/i18n';
 import { PermissionFlagsBits } from 'discord.js';
 import { z } from 'zod';
-import { zodErrorToString } from '@/utils';
 
 const dataTranslations = translate().commands.purge.data;
 

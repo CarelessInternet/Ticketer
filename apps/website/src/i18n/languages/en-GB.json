@@ -184,8 +184,8 @@
 					"environment-variables": {
 						"title": "Environment Variables",
 						"paragraphs": {
-							"1": "You will need the credentials to the Discord bot/application. If you have not already, create a new <linkDiscordApplication>Discord application</linkDiscordApplication> (enable the \"Server Members\" intent!) and edit the following variables with the appropriate credentials in a new file named \"<i>.env.bot.production.local</i>\". The variable <i>DISCORD_GUILD_ID</i> is the server (ID) where private commands are used. Put the details inside the quotation marks for the variables that have them!",
-							"2": "The database also requires a few credentials to run. Create a file named \"<i>.env.database.production.local</i>\" and then create some login credentials with the following template below. You can change every variable to have whatever value you want except for <i>DB_HOST</i>."
+							"1": "You will need the credentials to the Discord bot/application. If you have not already, create a new <linkDiscordApplication>Discord application</linkDiscordApplication> (enable the \"Server Members\" intent!) and edit the following variables with the appropriate credentials in a new file named <i>.env.bot.production.local</i>. The variable <i>DISCORD_GUILD_ID</i> is the server (ID) where private commands are used. Put the details inside the quotation marks for the variables that have them!",
+							"2": "The database also requires a few credentials to run. Create a file named <i>.env.database.production.local</i> and then create some login credentials with the following template below. You can change every variable to have whatever value you want except for <i>DB_HOST</i>."
 						}
 					},
 					"running-the-bot": {
@@ -194,13 +194,14 @@
 							"1": "Now it is time to run the bot! Run the following command to start the database and bot (this may take some time):",
 							"2": "To deploy the application commands of the bot, run the following line:",
 							"3": "Once the commands have been deployed, run the <i>/migrate</i> command in Discord to deploy any database changes that may be needed:",
-							"4": "If you want to stop the database and bot, run the commands below:"
+							"4": "If you want to stop the database and bot, run the command below:",
+							"5": "To pull the latest image/version of the bot:"
 						},
 						"command": "migrate"
 					},
 					"accessing-the-database": {
 						"title": "Accessing The Database",
-						"description": "If you want to access the database, you can do so by running the two commands below and replacing \"<i>USERNAME</i>\" with the username you chose in the environment variable:"
+						"description": "If you want to access the database, you can do so by running the two commands below and replacing <i>USERNAME</i> with the username you chose in the environment variable:"
 					}
 				}
 			},
@@ -217,7 +218,7 @@
 						"paragraphs": {
 							"1": "Open Visual Studio Code, and inside the code editor, open the command palette and run the following command.",
 							"2": "It should prompt for a repository URL. Paste Ticketer's GitHub URL and afterwards choose the main branch:",
-							"3": "Once the Dev Container has started, you can get to coding. It's as simple as that! Do not forget to create the necessary bot development environment file to run the bot!"
+							"3": "Once the Dev Container has started, you can get to coding. It's as simple as that! Do not forget to create the necessary bot and database development environment files to run the bot!"
 						}
 					}
 				}

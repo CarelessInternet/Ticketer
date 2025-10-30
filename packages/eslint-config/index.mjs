@@ -1,29 +1,25 @@
-import { FlatCompat } from '@eslint/eslintrc';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { fixupPluginRules } from '@eslint/compat';
+import { configs } from 'typescript-eslint';
+import { defineConfig } from 'eslint/config';
 import drizzle from 'eslint-plugin-drizzle';
 import eslint from '@eslint/js';
-import tseslint from './tseslint.mjs';
-import unicorn from 'eslint-plugin-unicorn';
+import { fixupPluginRules } from '@eslint/compat';
 import prettier from 'eslint-plugin-prettier/recommended';
+import turbo from 'eslint-config-turbo/flat';
+import unicorn from 'eslint-plugin-unicorn';
 
-// mimic CommonJS variables -- not needed if using CommonJS
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-	baseDirectory: __dirname,
-});
-
-export default tseslint.config(
+export default defineConfig(
 	eslint.configs.recommended,
-	...compat.extends('turbo'),
-	unicorn.configs['flat/recommended'],
+	...turbo,
+	unicorn.configs['recommended'],
 	prettier,
-	...tseslint.configs.strict,
-	...tseslint.configs.stylistic,
+	...configs.strict,
+	...configs.stylistic,
 	{
+		languageOptions: {
+			parserOptions: {
+				tsconfigRootDir: import.meta.dirname,
+			},
+		},
 		plugins: {
 			drizzle: fixupPluginRules(drizzle),
 		},

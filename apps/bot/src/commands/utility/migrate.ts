@@ -17,6 +17,12 @@ export default class extends Command.Interaction {
 	@DeferReply({ ephemeral: true })
 	public async execute({ interaction }: Command.Context) {
 		await migrate();
-		void interaction.editReply({ content: translate(interaction.locale).commands.migrate.command.success() });
+
+		const translations = translate(interaction.locale).commands.migrate.command.embeds[0];
+		void interaction.editReply({
+			embeds: [
+				super.userEmbed(interaction.member).setTitle(translations.title()).setDescription(translations.description()),
+			],
+		});
 	}
 }

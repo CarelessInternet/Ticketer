@@ -1,21 +1,12 @@
 import config from '@ticketer/eslint-config';
 import tseslint from '@ticketer/eslint-config/tseslint.mjs';
 import next from '@next/eslint-plugin-next';
-import { fixupConfigRules } from '@eslint/compat';
-import { FlatCompat } from '@eslint/eslintrc';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { defineConfig } from 'eslint/config';
 
-// mimic CommonJS variables -- not needed if using CommonJS
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-	baseDirectory: __dirname,
-});
-
-export default tseslint.config(
-	...fixupConfigRules(compat.config(next.configs['core-web-vitals'])),
+export default defineConfig(
+	{
+		plugins: { next },
+	},
 	{
 		extends: [...config, ...tseslint.configs.strictTypeChecked, ...tseslint.configs.stylisticTypeChecked],
 		languageOptions: {
@@ -25,7 +16,6 @@ export default tseslint.config(
 			},
 			parserOptions: {
 				projectService: true,
-				tsconfigRootDir: import.meta.dirname,
 			},
 		},
 		files: ['src/**/*.{ts,tsx}'],

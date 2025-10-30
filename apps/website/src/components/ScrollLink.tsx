@@ -15,11 +15,12 @@ export default function ScrollLink({
 
 	return (
 		<InternalLink
+			// @ts-expect-error: Not sure how to combat this type error.
 			href={`${pathname}#${target}`}
 			target="_self"
 			id={target}
 			tabIndex={0}
-			className={cn('!text-inherit', className)}
+			className={cn('text-inherit!', className)}
 			{...properties}
 		>
 			<h2 className="text-foreground dark:text-foreground text-2xl font-bold hover:underline sm:text-3xl">

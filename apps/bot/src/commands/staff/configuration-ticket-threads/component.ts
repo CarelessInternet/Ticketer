@@ -2,6 +2,7 @@ import {
 	ActionRowBuilder,
 	ChannelSelectMenuBuilder,
 	ChannelType,
+	LabelBuilder,
 	MessageFlags,
 	ModalBuilder,
 	RoleSelectMenuBuilder,
@@ -197,32 +198,33 @@ export default class extends Component.Interaction {
 			});
 		}
 
-		const titleInput = (row.title ? new TextInputBuilder().setValue(row.title) : new TextInputBuilder())
-			.setCustomId(super.customId('title'))
+		const titleInput = new LabelBuilder()
 			.setLabel('Message Title')
-			.setRequired(false)
-			.setMinLength(1)
-			.setMaxLength(100)
-			.setStyle(TextInputStyle.Short)
-			.setPlaceholder('Write "{category}" and "{member}" to mention them.');
-		const descriptionInput = (
-			row.description ? new TextInputBuilder().setValue(row.description) : new TextInputBuilder()
-		)
-			.setCustomId(super.customId('description'))
+			.setDescription('Write "{category}" and "{member}" to mention them.')
+			.setTextInputComponent(
+				(row.title ? new TextInputBuilder().setValue(row.title) : new TextInputBuilder())
+					.setCustomId(super.customId('title'))
+					.setRequired(false)
+					.setMinLength(1)
+					.setMaxLength(100)
+					.setStyle(TextInputStyle.Short),
+			);
+		const descriptionInput = new LabelBuilder()
 			.setLabel('Message Description')
-			.setRequired(false)
-			.setMinLength(1)
-			.setMaxLength(500)
-			.setStyle(TextInputStyle.Paragraph)
-			.setPlaceholder('Write "{category}" and "{member}" to mention them.');
-
-		const row1 = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
-		const row2 = new ActionRowBuilder<TextInputBuilder>().setComponents(descriptionInput);
+			.setDescription('Write "{category}" and "{member}" to mention them.')
+			.setTextInputComponent(
+				(row.description ? new TextInputBuilder().setValue(row.description) : new TextInputBuilder())
+					.setCustomId(super.customId('description'))
+					.setRequired(false)
+					.setMinLength(1)
+					.setMaxLength(500)
+					.setStyle(TextInputStyle.Paragraph),
+			);
 
 		const modal = new ModalBuilder()
 			.setCustomId(super.customId('ticket_threads_category_message', categoryId))
 			.setTitle('Opening Message Title, & Description')
-			.setComponents(row1, row2);
+			.setLabelComponents(titleInput, descriptionInput);
 
 		return interaction.showModal(modal).catch(() => false);
 	}
@@ -396,20 +398,22 @@ export default class extends Component.Interaction {
 			});
 		}
 
-		const titleInput = (row.threadTitle ? new TextInputBuilder().setValue(row.threadTitle) : new TextInputBuilder())
-			.setCustomId(super.customId('title'))
+		const titleInput = new LabelBuilder()
 			.setLabel('Thread Title')
-			.setRequired(false)
-			.setMinLength(1)
-			.setMaxLength(100)
-			.setStyle(TextInputStyle.Short)
-			.setPlaceholder('Write "{title}", "{member}", and "{date}" to mention them.');
+			.setDescription('Write "{title}", "{member}", and "{date}" to mention them.')
+			.setTextInputComponent(
+				(row.threadTitle ? new TextInputBuilder().setValue(row.threadTitle) : new TextInputBuilder())
+					.setCustomId(super.customId('title'))
+					.setRequired(false)
+					.setMinLength(1)
+					.setMaxLength(100)
+					.setStyle(TextInputStyle.Short),
+			);
 
-		const actionRow = new ActionRowBuilder<TextInputBuilder>().setComponents(titleInput);
 		const modal = new ModalBuilder()
 			.setCustomId(super.customId('ticket_threads_category_thread_title', categoryId))
 			.setTitle('Created Thread Title')
-			.setComponents(actionRow);
+			.setLabelComponents(titleInput);
 
 		return interaction.showModal(modal).catch(() => false);
 	}

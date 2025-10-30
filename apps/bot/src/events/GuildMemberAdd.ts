@@ -1,7 +1,7 @@
-import { LogExceptions, fetchChannel, welcomeEmbed } from '@/utils';
+import { LogExceptions, fetchChannel, welcomeContainer } from '@/utils';
+import { MessageFlags, PermissionFlagsBits } from 'discord.js';
 import { database, eq, welcomeAndFarewell } from '@ticketer/database';
 import { Event } from '@ticketer/djs-framework';
-import { PermissionFlagsBits } from 'discord.js';
 
 export default class extends Event.Handler {
 	public readonly name = Event.Name.GuildMemberAdd;
@@ -24,6 +24,7 @@ export default class extends Event.Handler {
 		if (data.welcomeNewMemberRoles.length > 0) {
 			const highestRoleWithManageRoles = me.roles.cache
 				.filter((role) => role.permissions.has([PermissionFlagsBits.ManageRoles]))
+				// eslint-disable-next-line unicorn/no-array-sort
 				.sort((a, b) => b.position - a.position)
 				.at(0);
 
@@ -40,16 +41,18 @@ export default class extends Event.Handler {
 			}
 		}
 
-		const embed = welcomeEmbed({
-			data: {
-				welcomeMessageTitle: data.welcomeMessageTitle,
-				welcomeMessageDescription: data.welcomeMessageDescription,
-			},
-			embed: super.embed,
-			locale: preferredLocale,
-			member,
-		});
+		const container = super.container((cont) =>
+			welcomeContainer({
+				container: cont,
+				data: {
+					welcomeMessageTitle: data.welcomeMessageTitle,
+					welcomeMessageDescription: data.welcomeMessageDescription,
+				},
+				locale: preferredLocale,
+				member,
+			}),
+		);
 
-		void channel.send({ embeds: [embed] });
+		void channel.send({ components: [container], flags: [MessageFlags.IsComponentsV2] });
 	}
 }

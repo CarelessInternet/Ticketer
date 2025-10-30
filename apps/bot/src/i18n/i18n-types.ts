@@ -388,56 +388,47 @@ type RootTranslation = {
 				}
 			}
 			command: {
-				embeds: {
+				components: {
 					'0': {
-						/**
-						 * C​o​m​m​a​n​d​ ​L​i​s​t
-						 */
-						title: string
-						/**
-						 * H​e​r​e​ ​i​s​ ​t​h​e​ ​l​i​s​t​ ​o​f​ ​t​h​e​ ​a​v​a​i​l​a​b​l​e​ ​c​o​m​m​a​n​d​s​:​ ​{​c​o​m​m​a​n​d​s​}​.
-						 * @param {string} commands
-						 */
-						description: RequiredParams<'commands'>
-						fields: {
+						button: {
+							/**
+							 * C​o​m​m​a​n​d​ ​D​o​c​u​m​e​n​t​a​t​i​o​n
+							 */
+							label: string
+						}
+						text: {
 							'0': {
 								/**
-								 * ❓​ ​H​o​w​ ​t​o​ ​G​e​t​ ​S​t​a​r​t​e​d​?
+								 * ❗​ ​C​o​m​m​a​n​d​ ​L​i​s​t
 								 */
-								name: string
-								/**
-								 * L​o​o​k​i​n​g​ ​f​o​r​ ​h​o​w​ ​t​o​ ​c​o​n​f​i​g​u​r​e​ ​t​h​e​ ​b​o​t​?​ ​C​l​i​c​k​ ​t​h​e​ ​"​C​o​m​m​a​n​d​ ​D​o​c​u​m​e​n​t​a​t​i​o​n​"​ ​l​i​n​k​ ​b​e​l​o​w​.
-								 */
-								value: string
+								content: string
 							}
-							'1': {
-								/**
-								 * �​�​ ​L​i​n​k​s
-								 */
-								name: string
-								links: {
-									/**
-									 * C​o​m​m​a​n​d​ ​D​o​c​u​m​e​n​t​a​t​i​o​n
-									 */
-									commandDocumentation: string
-									/**
-									 * D​o​n​a​t​e
-									 */
-									donate: string
-									/**
-									 * I​n​v​i​t​e​ ​L​i​n​k
-									 */
-									invite: string
-									/**
-									 * S​u​p​p​o​r​t​ ​S​e​r​v​e​r
-									 */
-									supportServer: string
-									/**
-									 * W​e​b​s​i​t​e
-									 */
-									website: string
-								}
-							}
+						}
+					}
+					'1': {
+						/**
+						 * �​�​ ​L​i​n​k​s
+						 */
+						text: string
+					}
+					'2': {
+						links: {
+							/**
+							 * D​o​n​a​t​e
+							 */
+							donate: string
+							/**
+							 * I​n​v​i​t​e​ ​L​i​n​k
+							 */
+							invite: string
+							/**
+							 * S​u​p​p​o​r​t​ ​S​e​r​v​e​r
+							 */
+							supportServer: string
+							/**
+							 * W​e​b​s​i​t​e
+							 */
+							website: string
 						}
 					}
 				}
@@ -479,10 +470,18 @@ type RootTranslation = {
 				description: string
 			}
 			command: {
-				/**
-				 * S​u​c​c​e​s​s​f​u​l​l​y​ ​m​i​g​r​a​t​e​d​ ​t​h​e​ ​d​a​t​a​b​a​s​e​!
-				 */
-				success: string
+				embeds: {
+					'0': {
+						/**
+						 * M​i​g​r​a​t​e​d​!
+						 */
+						title: string
+						/**
+						 * S​u​c​c​e​s​s​f​u​l​l​y​ ​m​i​g​r​a​t​e​d​ ​t​h​e​ ​d​a​t​a​b​a​s​e​!
+						 */
+						description: string
+					}
+				}
 			}
 		}
 		ping: {
@@ -924,7 +923,7 @@ type RootTranslation = {
 									/**
 									 * W​r​i​t​e​ ​t​h​e​ ​n​e​w​ ​t​i​t​l​e​ ​t​h​a​t​ ​s​h​o​u​l​d​ ​b​e​ ​u​s​e​d​ ​f​o​r​ ​t​h​e​ ​t​h​r​e​a​d​.
 									 */
-									placeholder: string
+									description: string
 								}
 							}
 						}
@@ -1139,7 +1138,7 @@ type RootTranslation = {
 						/**
 						 * W​r​i​t​e​ ​a​ ​t​i​t​l​e​ ​t​o​ ​b​e​ ​u​s​e​d​ ​i​n​ ​t​h​e​ ​t​i​c​k​e​t​.
 						 */
-						placeholder: string
+						description: string
 					}
 					description: {
 						/**
@@ -1149,7 +1148,7 @@ type RootTranslation = {
 						/**
 						 * W​r​i​t​e​ ​a​ ​d​e​s​c​r​i​p​t​i​o​n​ ​t​o​ ​b​e​ ​u​s​e​d​ ​i​n​ ​t​h​e​ ​t​i​c​k​e​t​.
 						 */
-						placeholder: string
+						description: string
 					}
 					/**
 					 * T​i​c​k​e​t​ ​T​i​t​l​e​ ​&​ ​D​e​s​c​r​i​p​t​i​o​n
@@ -1363,7 +1362,7 @@ type RootTranslation = {
 										/**
 										 * W​r​i​t​e​ ​t​h​e​ ​n​e​w​ ​t​i​t​l​e​ ​t​h​a​t​ ​s​h​o​u​l​d​ ​b​e​ ​u​s​e​d​ ​f​o​r​ ​t​h​e​ ​t​h​r​e​a​d​.
 										 */
-										placeholder: string
+										description: string
 									}
 								}
 							}
@@ -1654,7 +1653,7 @@ type RootTranslation = {
 									/**
 									 * W​r​i​t​e​ ​t​h​e​ ​n​e​w​ ​t​i​t​l​e​ ​t​h​a​t​ ​s​h​o​u​l​d​ ​b​e​ ​u​s​e​d​ ​f​o​r​ ​t​h​e​ ​t​h​r​e​a​d​.
 									 */
-									placeholder: string
+									description: string
 								}
 							}
 						}
@@ -2189,55 +2188,47 @@ export type TranslationFunctions = {
 				}
 			}
 			command: {
-				embeds: {
+				components: {
 					'0': {
-						/**
-						 * Command List
-						 */
-						title: () => LocalizedString
-						/**
-						 * Here is the list of the available commands: {commands}.
-						 */
-						description: (arg: { commands: string }) => LocalizedString
-						fields: {
+						button: {
+							/**
+							 * Command Documentation
+							 */
+							label: () => LocalizedString
+						}
+						text: {
 							'0': {
 								/**
-								 * ❓ How to Get Started?
+								 * ❗ Command List
 								 */
-								name: () => LocalizedString
-								/**
-								 * Looking for how to configure the bot? Click the "Command Documentation" link below.
-								 */
-								value: () => LocalizedString
+								content: () => LocalizedString
 							}
-							'1': {
-								/**
-								 * 🔗 Links
-								 */
-								name: () => LocalizedString
-								links: {
-									/**
-									 * Command Documentation
-									 */
-									commandDocumentation: () => LocalizedString
-									/**
-									 * Donate
-									 */
-									donate: () => LocalizedString
-									/**
-									 * Invite Link
-									 */
-									invite: () => LocalizedString
-									/**
-									 * Support Server
-									 */
-									supportServer: () => LocalizedString
-									/**
-									 * Website
-									 */
-									website: () => LocalizedString
-								}
-							}
+						}
+					}
+					'1': {
+						/**
+						 * 🔗 Links
+						 */
+						text: () => LocalizedString
+					}
+					'2': {
+						links: {
+							/**
+							 * Donate
+							 */
+							donate: () => LocalizedString
+							/**
+							 * Invite Link
+							 */
+							invite: () => LocalizedString
+							/**
+							 * Support Server
+							 */
+							supportServer: () => LocalizedString
+							/**
+							 * Website
+							 */
+							website: () => LocalizedString
 						}
 					}
 				}
@@ -2279,10 +2270,18 @@ export type TranslationFunctions = {
 				description: () => LocalizedString
 			}
 			command: {
-				/**
-				 * Successfully migrated the database!
-				 */
-				success: () => LocalizedString
+				embeds: {
+					'0': {
+						/**
+						 * Migrated!
+						 */
+						title: () => LocalizedString
+						/**
+						 * Successfully migrated the database!
+						 */
+						description: () => LocalizedString
+					}
+				}
 			}
 		}
 		ping: {
@@ -2713,7 +2712,7 @@ export type TranslationFunctions = {
 									/**
 									 * Write the new title that should be used for the thread.
 									 */
-									placeholder: () => LocalizedString
+									description: () => LocalizedString
 								}
 							}
 						}
@@ -2924,7 +2923,7 @@ export type TranslationFunctions = {
 						/**
 						 * Write a title to be used in the ticket.
 						 */
-						placeholder: () => LocalizedString
+						description: () => LocalizedString
 					}
 					description: {
 						/**
@@ -2934,7 +2933,7 @@ export type TranslationFunctions = {
 						/**
 						 * Write a description to be used in the ticket.
 						 */
-						placeholder: () => LocalizedString
+						description: () => LocalizedString
 					}
 					/**
 					 * Ticket Title & Description
@@ -3136,7 +3135,7 @@ export type TranslationFunctions = {
 										/**
 										 * Write the new title that should be used for the thread.
 										 */
-										placeholder: () => LocalizedString
+										description: () => LocalizedString
 									}
 								}
 							}
@@ -3413,7 +3412,7 @@ export type TranslationFunctions = {
 									/**
 									 * Write the new title that should be used for the thread.
 									 */
-									placeholder: () => LocalizedString
+									description: () => LocalizedString
 								}
 							}
 						}

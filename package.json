@@ -14,10 +14,10 @@
 		"prettier": "prettier --write \"apps/**/*.{ts,tsx,js,jsx}\" \"packages/**/*.{ts,tsx,js,jsx}\""
 	},
 	"devDependencies": {
-		"eslint": "^9.28.0",
-		"prettier": "^3.5.3",
-		"prettier-plugin-tailwindcss": "^0.6.12",
-		"turbo": "^2.5.4"
+		"eslint": "^9.38.0",
+		"prettier": "^3.6.2",
+		"prettier-plugin-tailwindcss": "^0.7.1",
+		"turbo": "^2.5.8"
 	},
-	"packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac"
+	"packageManager": "pnpm@10.20.0+sha512.cf9998222162dd85864d0a8102e7892e7ba4ceadebbf5a31f9c2fce48dfce317a9c53b9f6464d1ef9042cba2e02ae02a9f7c143a2b438cd93c91840f0192b9dd"
 }

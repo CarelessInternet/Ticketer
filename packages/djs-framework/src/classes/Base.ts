@@ -1,4 +1,14 @@
-import { Colors, EmbedBuilder, type GuildMember, type User } from 'discord.js';
+import {
+	Colors,
+	ContainerBuilder,
+	EmbedBuilder,
+	type GuildMember,
+	SeparatorBuilder,
+	SeparatorSpacingSize,
+	TextDisplayBuilder,
+	type User,
+	subtext,
+} from 'discord.js';
 import type { Client } from '.';
 import { env } from 'node:process';
 
@@ -35,6 +45,22 @@ export abstract class Base {
 		return this.userEmbed(user).setColor(Colors.DarkRed).setTitle(title);
 	}
 
+	/**
+	 * @returns A container component with presetted data.
+	 */
+	protected container(builder: ContainerBuilder | ((cont: ContainerBuilder) => ContainerBuilder)) {
+		const cont = typeof builder === 'function' ? builder(new ContainerBuilder()) : builder;
+
+		return cont
+			.setAccentColor(cont.data.accent_color ?? Colors.Blurple)
+			.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true))
+			.addTextDisplayComponents(
+				new TextDisplayBuilder().setContent(
+					subtext(`${this.client.user?.displayName}: Version ${env.npm_package_version}`),
+				),
+			);
+	}
+
 	protected dynamicCustomId(id: string) {
 		return `{dynamic}_${id}`;
 	}
@@ -61,7 +87,7 @@ export abstract class Base {
 		};
 	}
 
-	protected customId<T>(id: string, dynamicValue?: T) {
+	protected customId<T extends string, U>(id: T, dynamicValue?: U) {
 		return dynamicValue !== undefined && dynamicValue !== null ? `{${dynamicValue}}_${id}` : id;
 	}
 

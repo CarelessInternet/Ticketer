@@ -1,5 +1,5 @@
-import { type GuildMember, PermissionFlagsBits } from 'discord.js';
-import { LogExceptions, farewellEmbed, fetchChannel } from '@/utils';
+import { type GuildMember, MessageFlags, PermissionFlagsBits } from 'discord.js';
+import { LogExceptions, farewellContainer, fetchChannel } from '@/utils';
 import { database, eq, welcomeAndFarewell } from '@ticketer/database';
 import { Event } from '@ticketer/djs-framework';
 
@@ -21,16 +21,18 @@ export default class extends Event.Handler {
 
 		if (!channel.permissionsFor(me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) return;
 
-		const embed = farewellEmbed({
-			data: {
-				farewellMessageTitle: data.farewellMessageTitle,
-				farewellMessageDescription: data.farewellMessageDescription,
-			},
-			embed: super.embed,
-			locale: preferredLocale,
-			member: member as GuildMember,
-		});
+		const container = super.container((cont) =>
+			farewellContainer({
+				container: cont,
+				data: {
+					farewellMessageTitle: data.farewellMessageTitle,
+					farewellMessageDescription: data.farewellMessageDescription,
+				},
+				locale: preferredLocale,
+				member: member as GuildMember,
+			}),
+		);
 
-		void channel.send({ embeds: [embed] });
+		void channel.send({ components: [container], flags: [MessageFlags.IsComponentsV2] });
 	}
 }

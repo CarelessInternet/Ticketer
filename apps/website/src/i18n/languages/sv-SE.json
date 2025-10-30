@@ -39,7 +39,7 @@
 			},
 			"items": {
 				"sidebar": "Länkar & Tema",
-				"invite": "Bjud in till Discord-servern",
+				"invite": "Länk till Discord-servern",
 				"support": "Discord Stödserver",
 				"github": "GitHub-förvaret",
 				"donate": "Donera",
@@ -194,13 +194,14 @@
 							"1": "Nu är det dags att köra boten! Kör följande kommando för att starta databasen och boten (detta kan ta lite tid):",
 							"2": "För att distribuera botens kommandon, kör följande rad:",
 							"3": "När kommandona har distribuerats, kör <i>migrera</i>-kommandot i Discord för att göra eventuella databasuppdateringar som kan behövas:",
-							"4": "Om du vill stoppa databasen och boten, kör kommandona nedan:"
+							"4": "Om du vill stoppa databasen och boten, kör kommandot nedan:",
+							"5": "För att pulla den senaste image/versionen av boten:"
 						},
 						"command": "migrera"
 					},
 					"accessing-the-database": {
 						"title": "Åtkomst till Databasen",
-						"description": "Om du vill komma åt databasen kan du göra det genom att köra de två kommandona nedan och ersätta \"<i>USERNAME</i>\" med användarnamnet du valde i miljövariabeln:"
+						"description": "Om du vill komma åt databasen kan du göra det genom att köra de två kommandona nedan och ersätta <i>USERNAME</i> med användarnamnet du valde i miljövariabeln:"
 					}
 				}
 			},
@@ -217,7 +218,7 @@
 						"paragraphs": {
 							"1": "Öppna Visual Studio Code och öppna kommandopaletten inuti kodeditorn och kör följande kommando:",
 							"2": "Du blir ombedd att ange en länk till ett repository. Klistra in Ticketers GitHub-länk och välj därefter huvudgrenen (main branch):",
-							"3": "När Dev Containern har startat kan du börja koda. Så enkelt är det! Glöm inte att skapa den nödvändiga utvecklingsmiljöfilen för boten för att kunna köra boten!"
+							"3": "När Dev Containern har startat kan du börja koda. Så enkelt är det! Glöm inte att skapa de nödvändiga utvecklingsmiljöfilerna för boten och databasen för att kunna köra boten!"
 						}
 					}
 				}

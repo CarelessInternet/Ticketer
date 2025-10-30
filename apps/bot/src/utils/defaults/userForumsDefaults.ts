@@ -50,7 +50,7 @@ export const userForumsContainer = ({
 
 	if (renameTitleButton) {
 		base.addSectionComponents(
-			new SectionBuilder().setButtonAccessory(renameTitleButton).addTextDisplayComponents(containerTitle),
+			new SectionBuilder().addTextDisplayComponents(containerTitle).setButtonAccessory(renameTitleButton),
 		);
 	} else {
 		base.addTextDisplayComponents(containerTitle);

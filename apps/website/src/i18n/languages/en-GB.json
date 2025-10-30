@@ -218,7 +218,7 @@
 						"paragraphs": {
 							"1": "Open Visual Studio Code, and inside the code editor, open the command palette and run the following command.",
 							"2": "It should prompt for a repository URL. Paste Ticketer's GitHub URL and afterwards choose the main branch:",
-							"3": "Once the Dev Container has started, you can get to coding. It's as simple as that! Do not forget to create the necessary bot development environment file to run the bot!"
+							"3": "Once the Dev Container has started, you can get to coding. It's as simple as that! Do not forget to create the necessary bot and database development environment files to run the bot!"
 						}
 					}
 				}

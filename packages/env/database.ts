@@ -6,11 +6,11 @@ import { z } from 'zod';
 export const environment = createEnv({
 	...common,
 	server: {
-		DB_HOST: z.string().default('ticketer-development-database'),
-		DB_PORT: z.coerce.number().default(3307),
-		DB_DATABASE: z.string().default('Ticketer'),
-		DB_USER: z.string().default('dev_container'),
-		DB_PASSWORD: z.string().default('12345678'),
+		DB_HOST: z.string(),
+		DB_PORT: z.coerce.number(),
+		DB_DATABASE: z.string(),
+		DB_USER: z.string(),
+		DB_PASSWORD: z.string(),
 	},
 	runtimeEnv: env,
 	emptyStringAsUndefined: true,

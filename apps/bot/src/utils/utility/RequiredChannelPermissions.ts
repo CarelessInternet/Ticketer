@@ -1,4 +1,4 @@
-import { type BaseInteraction, type PermissionFlagsValues, getPermissionByValue } from '..';
+import { type BaseInteraction, type PermissionFlagsValues, getPermissionByValue } from '@ticketer/djs-framework';
 import { MessageFlags, inlineCode } from 'discord.js';
 
 export function RequiredChannelPermissions(...permissions: PermissionFlagsValues[]) {
@@ -27,6 +27,7 @@ export function RequiredChannelPermissions(...permissions: PermissionFlagsValues
 					: interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
 			}
 
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-return, prefer-rest-params
 			return Reflect.apply(original, this, arguments);
 		};
 

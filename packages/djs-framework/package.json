@@ -9,9 +9,6 @@
 		"lint": "eslint .",
 		"test": "tsx --test ./tests/**/*.test.ts"
 	},
-	"dependencies": {
-		"fast-glob": "^3.3.3"
-	},
 	"peerDependencies": {
 		"discord.js": "^14"
 	},

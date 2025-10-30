@@ -1,4 +1,14 @@
-import { Colors, type EmbedBuilder, type GuildMember, type Locale } from 'discord.js';
+import {
+	Colors,
+	ContainerBuilder,
+	type GuildMember,
+	HeadingLevel,
+	type Locale,
+	SectionBuilder,
+	TextDisplayBuilder,
+	ThumbnailBuilder,
+	heading,
+} from 'discord.js';
 import { translate } from '@/i18n';
 import type { welcomeAndFarewell } from '@ticketer/database';
 
@@ -40,41 +50,75 @@ const farewellMessageDescription = ({ description, locale, memberMention }: Desc
 		? replaceMember(description, memberMention)
 		: translations(locale).farewell.message({ member: memberMention });
 
-interface BaseWelcomeAndFarewellEmbedOptions extends BaseOptions {
-	embed: EmbedBuilder;
+interface BaseWelcomeAndFarewellContainerOptions extends BaseOptions {
+	container?: ContainerBuilder;
 	member: GuildMember;
 }
 
-interface WelcomeEmbedOptions extends BaseWelcomeAndFarewellEmbedOptions {
+interface WelcomeContainerOptions extends BaseWelcomeAndFarewellContainerOptions {
 	data: Pick<Columns, 'welcomeMessageTitle' | 'welcomeMessageDescription'>;
 }
 
-interface FarewellEmbedOptions extends BaseWelcomeAndFarewellEmbedOptions {
+interface FarewellContainerOptions extends BaseWelcomeAndFarewellContainerOptions {
 	data: Pick<Columns, 'farewellMessageTitle' | 'farewellMessageDescription'>;
 }
 
-export const welcomeEmbed = ({ data, embed, locale, member }: WelcomeEmbedOptions) =>
-	embed
-		.setColor(Colors.DarkBlue)
-		.setTitle(welcomeMessageTitle({ displayName: member.displayName, locale, title: data.welcomeMessageTitle }))
-		.setDescription(
-			welcomeMessageDescription({
-				description: data.welcomeMessageDescription,
-				locale,
-				memberMention: member.toString(),
-			}),
+export const welcomeContainer = ({
+	container = new ContainerBuilder(),
+	data,
+	locale,
+	member,
+}: Omit<WelcomeContainerOptions, 'embed'>) =>
+	container
+		.setAccentColor(Colors.DarkBlue)
+		.addTextDisplayComponents(
+			new TextDisplayBuilder().setContent(
+				heading(
+					welcomeMessageTitle({ displayName: member.displayName, locale, title: data.welcomeMessageTitle }),
+					HeadingLevel.One,
+				),
+			),
 		)
-		.setThumbnail(member.displayAvatarURL());
+		.addSectionComponents(
+			new SectionBuilder()
+				.addTextDisplayComponents(
+					new TextDisplayBuilder().setContent(
+						welcomeMessageDescription({
+							description: data.welcomeMessageDescription,
+							locale,
+							memberMention: member.toString(),
+						}),
+					),
+				)
+				.setThumbnailAccessory(new ThumbnailBuilder().setURL(member.displayAvatarURL())),
+		);
 
-export const farewellEmbed = ({ data, embed, locale, member }: FarewellEmbedOptions) =>
-	embed
-		.setColor(Colors.Purple)
-		.setTitle(farewellMessageTitle({ displayName: member.displayName, locale, title: data.farewellMessageTitle }))
-		.setDescription(
-			farewellMessageDescription({
-				description: data.farewellMessageDescription,
-				locale,
-				memberMention: member.toString(),
-			}),
+export const farewellContainer = ({
+	container = new ContainerBuilder(),
+	data,
+	locale,
+	member,
+}: Omit<FarewellContainerOptions, 'embed'>) =>
+	container
+		.setAccentColor(Colors.Purple)
+		.addTextDisplayComponents(
+			new TextDisplayBuilder().setContent(
+				heading(
+					farewellMessageTitle({ displayName: member.displayName, locale, title: data.farewellMessageTitle }),
+					HeadingLevel.One,
+				),
+			),
 		)
-		.setThumbnail(member.displayAvatarURL());
+		.addSectionComponents(
+			new SectionBuilder()
+				.addTextDisplayComponents(
+					new TextDisplayBuilder().setContent(
+						farewellMessageDescription({
+							description: data.farewellMessageDescription,
+							locale,
+							memberMention: member.toString(),
+						}),
+					),
+				)
+				.setThumbnailAccessory(new ThumbnailBuilder().setURL(member.displayAvatarURL())),
+		);

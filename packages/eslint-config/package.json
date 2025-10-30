@@ -4,7 +4,7 @@
 	"main": "./index.mjs",
 	"type": "module",
 	"devDependencies": {
-		"@eslint/compat": "^1.4.0",
+		"@eslint/compat": "^1.4.1",
 		"@eslint/eslintrc": "^3.3.1",
 		"@eslint/js": "^9.38.0",
 		"eslint-config-next": "^16.0.1",

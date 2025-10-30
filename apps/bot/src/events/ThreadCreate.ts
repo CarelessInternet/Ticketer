@@ -14,8 +14,6 @@ export default class extends Event.Handler {
 		const parent = thread.parent ?? (await fetchChannel(thread.guild, thread.parentId));
 		const me = await thread.guild.members.fetchMe();
 
-		// Why are these linting rules triggered?
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
 		if (!parent?.permissionsFor(me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessagesInThreads]))
 			return;
 

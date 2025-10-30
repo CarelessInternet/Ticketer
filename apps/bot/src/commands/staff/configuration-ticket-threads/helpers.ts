@@ -64,10 +64,7 @@ function categoryViewContainers(
 				container: cont
 					.addTextDisplayComponents(
 						new TextDisplayBuilder().setContent(
-							heading(
-								`${bold('Channel')}: ${category.channelId ? channelMention(category.channelId) : 'None'}`,
-								HeadingLevel.One,
-							),
+							heading(`Channel: ${category.channelId ? channelMention(category.channelId) : 'None'}`, HeadingLevel.One),
 						),
 					)
 					.addTextDisplayComponents(

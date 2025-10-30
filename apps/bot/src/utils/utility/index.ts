@@ -8,6 +8,7 @@ export * from './LogExceptions';
 export * from './managerIntersection';
 export * from './pagination';
 export * from './refreshGuildBlacklist';
+export * from './RequiredChannelPermissions';
 export * from './ticketButtons';
 export * from './ticketType';
 export * from './zodErrorToString';

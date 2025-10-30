@@ -94,15 +94,15 @@ export default class extends Command.Interaction {
 			cont
 				.addSectionComponents(
 					new SectionBuilder()
+						.addTextDisplayComponents(
+							new TextDisplayBuilder().setContent(heading(translations[0].text[0].content())),
+							new TextDisplayBuilder().setContent(commands),
+						)
 						.setButtonAccessory(
 							new ButtonBuilder()
 								.setStyle(ButtonStyle.Link)
 								.setLabel(translations[0].button.label())
 								.setURL(new URL('/en-GB/docs/commands', environment.WEBSITE_URL).toString()),
-						)
-						.addTextDisplayComponents(
-							new TextDisplayBuilder().setContent(heading(translations[0].text[0].content())),
-							new TextDisplayBuilder().setContent(commands),
 						),
 				)
 				.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true))

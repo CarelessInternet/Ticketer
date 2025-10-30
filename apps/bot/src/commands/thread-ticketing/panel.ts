@@ -14,8 +14,8 @@ import {
 	heading,
 } from 'discord.js';
 import { Command, DeferReply, Modal } from '@ticketer/djs-framework';
-import { extractEmoji, fetchChannel, zodErrorToString } from '@/utils';
-import { z } from 'zod';
+import { extractEmoji, fetchChannel } from '@/utils';
+import { prettifyError, z } from 'zod';
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName('panel')
@@ -109,7 +109,7 @@ export class ModalInteraction extends Modal.Interaction {
 				embeds: [
 					super
 						.userEmbedError(member, 'One or multiple of the modal fields are invalid.')
-						.setDescription(zodErrorToString(error)),
+						.setDescription(prettifyError(error)),
 				],
 			});
 		}

@@ -9,9 +9,9 @@ import {
 	ticketThreadsCategoriesSelectSchema,
 	ticketsThreads,
 } from '@ticketer/database';
-import { ThreadTicketing, fetchChannel, zodErrorToString } from '@/utils';
+import { ThreadTicketing, fetchChannel } from '@/utils';
 import { getTranslations, translate } from '@/i18n';
-import { z } from 'zod';
+import { prettifyError, z } from 'zod';
 
 const dataTranslations = translate().commands.ticket.data;
 
@@ -162,9 +162,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 		if (!success) {
 			return interaction.reply({
-				embeds: [
-					super.userEmbedError(interaction.member, translations.title()).setDescription(zodErrorToString(error)),
-				],
+				embeds: [super.userEmbedError(interaction.member, translations.title()).setDescription(prettifyError(error))],
 			});
 		}
 

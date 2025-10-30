@@ -29,14 +29,8 @@ import {
 	desc,
 	eq,
 } from '@ticketer/database';
-import {
-	automaticThreadsContainer,
-	fetchChannel,
-	goToPage,
-	messageWithPagination,
-	withPagination,
-	zodErrorToString,
-} from '@/utils';
+import { automaticThreadsContainer, fetchChannel, goToPage, messageWithPagination, withPagination } from '@/utils';
+import { prettifyError } from 'zod';
 
 function IsTextChannel(_: object, __: string, descriptor: PropertyDescriptor) {
 	const original = descriptor.value as () => void;
@@ -334,7 +328,7 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 		if (!success) {
 			return context.interaction
 				.reply({
-					embeds: [super.userEmbedError(context.interaction.member).setDescription(zodErrorToString(error))],
+					embeds: [super.userEmbedError(context.interaction.member).setDescription(prettifyError(error))],
 					flags: [MessageFlags.Ephemeral],
 				})
 				.catch(() => false);
@@ -489,7 +483,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 

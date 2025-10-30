@@ -10,7 +10,6 @@ import {
 } from 'discord.js';
 import { Command, DeferReply } from '@ticketer/djs-framework';
 import { HasGlobalConfiguration, categoryFieldsModal, getCategories } from './helpers';
-import { ThreadTicketing, zodErrorToString } from '@/utils';
 import {
 	and,
 	count,
@@ -22,6 +21,8 @@ import {
 	ticketThreadsConfigurationsInsertSchema,
 	ticketsThreads,
 } from '@ticketer/database';
+import { ThreadTicketing } from '@/utils';
+import { prettifyError } from 'zod';
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName('configuration-ticket-threads')
@@ -117,7 +118,7 @@ export default class extends Command.Interaction {
 
 				if (!success) {
 					return interaction.editReply({
-						embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+						embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 					});
 				}
 
@@ -214,7 +215,7 @@ export default class extends Command.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 
@@ -318,7 +319,7 @@ export default class extends Command.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 

@@ -23,7 +23,8 @@ import {
 } from 'discord.js';
 import { Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
 import { database, eq, not, welcomeAndFarewell, welcomeAndFarewellInsertSchema } from '@ticketer/database';
-import { farewellContainer, welcomeContainer, zodErrorToString } from '@/utils';
+import { farewellContainer, welcomeContainer } from '@/utils';
+import { prettifyError } from 'zod';
 
 type InsertWithoutGuildId = Omit<typeof welcomeAndFarewell.$inferInsert, 'guildId'>;
 
@@ -444,7 +445,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 				if (!success) {
 					return interaction.editReply({
-						embeds: [super.userEmbedError(member).setDescription(zodErrorToString(error))],
+						embeds: [super.userEmbedError(member).setDescription(prettifyError(error))],
 					});
 				}
 
@@ -479,7 +480,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 				if (!success) {
 					return interaction.editReply({
-						embeds: [super.userEmbedError(member).setDescription(zodErrorToString(error))],
+						embeds: [super.userEmbedError(member).setDescription(prettifyError(error))],
 					});
 				}
 

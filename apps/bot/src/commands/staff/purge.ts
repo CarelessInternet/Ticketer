@@ -1,8 +1,8 @@
 import { Command, DeferReply } from '@ticketer/djs-framework';
-import { RequiredChannelPermissions, zodErrorToString } from '@/utils';
 import { getTranslations, translate } from '@/i18n';
+import { prettifyError, z } from 'zod';
 import { PermissionFlagsBits } from 'discord.js';
-import { z } from 'zod';
+import { RequiredChannelPermissions } from '@/utils';
 
 const dataTranslations = translate().commands.purge.data;
 
@@ -42,9 +42,7 @@ export default class extends Command.Interaction {
 			if (!success) {
 				return interaction.editReply({
 					embeds: [
-						super
-							.userEmbedError(interaction.member, translations.title.error())
-							.setDescription(zodErrorToString(error)),
+						super.userEmbedError(interaction.member, translations.title.error()).setDescription(prettifyError(error)),
 					],
 				});
 			}

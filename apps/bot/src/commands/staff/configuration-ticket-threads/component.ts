@@ -25,7 +25,8 @@ import {
 	ticketThreadsCategoriesSelectSchema,
 	ticketsThreads,
 } from '@ticketer/database';
-import { ThreadTicketing, goToPage, zodErrorToString } from '@/utils';
+import { ThreadTicketing, goToPage } from '@/utils';
+import { prettifyError } from 'zod';
 
 export default class extends Component.Interaction {
 	public readonly customIds = [super.dynamicCustomId('ticket_threads_category_configuration')];
@@ -144,7 +145,7 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.reply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 
@@ -178,7 +179,7 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.reply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 
@@ -241,7 +242,7 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 
@@ -292,7 +293,7 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 
@@ -337,7 +338,7 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 
@@ -381,7 +382,7 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.reply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 
@@ -429,7 +430,7 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 
@@ -525,7 +526,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 
@@ -559,7 +560,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 
@@ -599,7 +600,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 
@@ -661,7 +662,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 

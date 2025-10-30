@@ -1,15 +1,9 @@
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
 import { PermissionFlagsBits, inlineCode } from 'discord.js';
 import { database, desc, eq, guildBlacklists, guildBlacklistsInsertSchema } from '@ticketer/database';
-import {
-	formatDateShort,
-	goToPage,
-	messageWithPagination,
-	refreshGuildBlacklist,
-	withPagination,
-	zodErrorToString,
-} from '@/utils';
+import { formatDateShort, goToPage, messageWithPagination, refreshGuildBlacklist, withPagination } from '@/utils';
 import { getTranslations, translate } from '@/i18n';
+import { prettifyError } from 'zod';
 
 async function getBlacklists(
 	this: BaseInteraction.Interaction,
@@ -143,7 +137,7 @@ export default class extends Command.Interaction {
 				embeds: [
 					super
 						.userEmbedError(interaction.member, translations.errors.invalidFields.title())
-						.setDescription(zodErrorToString(error)),
+						.setDescription(prettifyError(error)),
 				],
 			});
 		}

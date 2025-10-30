@@ -7,9 +7,10 @@ import {
 	ticketThreadsCategoriesInsertSchema,
 	ticketThreadsCategoriesSelectSchema,
 } from '@ticketer/database';
-import { extractEmoji, zodErrorToString } from '@/utils';
 import { HasGlobalConfiguration } from './helpers';
+import { extractEmoji } from '@/utils';
 import { inlineCode } from 'discord.js';
+import { prettifyError } from 'zod';
 
 const MAXIMUM_CATEGORY_AMOUNT = 10;
 
@@ -63,7 +64,7 @@ export default class extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(member).setDescription(prettifyError(error))],
 			});
 		}
 
@@ -78,7 +79,7 @@ export default class extends Modal.Interaction {
 
 			if (!idSuccess) {
 				return interaction.editReply({
-					embeds: [super.userEmbedError(member).setDescription(zodErrorToString(idError))],
+					embeds: [super.userEmbedError(member).setDescription(prettifyError(idError))],
 				});
 			}
 
@@ -149,7 +150,7 @@ export default class extends Modal.Interaction {
 
 		if (!idSuccess) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(member).setDescription(zodErrorToString(idError))],
+				embeds: [super.userEmbedError(member).setDescription(prettifyError(idError))],
 			});
 		}
 
@@ -166,7 +167,7 @@ export default class extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(member).setDescription(prettifyError(error))],
 			});
 		}
 
@@ -214,7 +215,7 @@ export default class extends Modal.Interaction {
 
 		if (!idSuccess) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(member).setDescription(zodErrorToString(idError))],
+				embeds: [super.userEmbedError(member).setDescription(prettifyError(idError))],
 			});
 		}
 
@@ -228,7 +229,7 @@ export default class extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(member).setDescription(prettifyError(error))],
 			});
 		}
 

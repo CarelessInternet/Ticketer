@@ -29,14 +29,8 @@ import {
 	userForumsConfigurationsInsertSchema,
 	userForumsConfigurationsSelectSchema,
 } from '@ticketer/database';
-import {
-	fetchChannel,
-	goToPage,
-	messageWithPagination,
-	userForumsContainer,
-	withPagination,
-	zodErrorToString,
-} from '@/utils';
+import { fetchChannel, goToPage, messageWithPagination, userForumsContainer, withPagination } from '@/utils';
+import { prettifyError } from 'zod';
 
 function IsForumChannel(_: object, __: string, descriptor: PropertyDescriptor) {
 	const original = descriptor.value as () => void;
@@ -328,7 +322,7 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 		if (!success) {
 			return context.interaction
 				.reply({
-					embeds: [super.userEmbedError(context.interaction.member).setDescription(zodErrorToString(error))],
+					embeds: [super.userEmbedError(context.interaction.member).setDescription(prettifyError(error))],
 					flags: [MessageFlags.Ephemeral],
 				})
 				.catch(() => false);
@@ -412,7 +406,7 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 
@@ -495,7 +489,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(zodErrorToString(error))],
+				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
 			});
 		}
 

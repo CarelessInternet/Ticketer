@@ -11,4 +11,3 @@ export * from './refreshGuildBlacklist';
 export * from './RequiredChannelPermissions';
 export * from './ticketButtons';
 export * from './ticketType';
-export * from './zodErrorToString';

@@ -23,9 +23,9 @@ import {
 	ticketThreadsConfigurations,
 	ticketsThreads,
 } from '@ticketer/database';
-import { fetchChannel, threadTitle, ticketButtons, ticketThreadsOpeningMessageContainer, zodErrorToString } from '..';
+import { fetchChannel, threadTitle, ticketButtons, ticketThreadsOpeningMessageContainer } from '..';
+import { prettifyError, z } from 'zod';
 import { translate } from '@/i18n';
-import { z } from 'zod';
 
 interface CreateTicketOptions {
 	categoryId?: typeof ticketThreadsCategories.$inferSelect.id;
@@ -221,7 +221,7 @@ export async function createTicket(
 			components: [],
 			embeds: [
 				this.userEmbedError(interactionMember, translations.createTicket.errors.invalidFields.title()).setDescription(
-					zodErrorToString(error),
+					prettifyError(error),
 				),
 			],
 		});

@@ -82,6 +82,310 @@ type RootTranslation = {
 				}
 			}
 		}
+		'bot-profile': {
+			data: {
+				/**
+				 * b​o​t​-​p​r​o​f​i​l​e
+				 */
+				name: string
+				/**
+				 * M​o​d​i​f​y​ ​t​h​e​ ​b​o​t​'​s​ ​p​r​o​f​i​l​e​ ​o​n​ ​t​h​i​s​ ​s​e​r​v​e​r​.
+				 */
+				description: string
+			}
+			command: {
+				container: {
+					/**
+					 * B​e​l​o​w​ ​a​r​e​ ​t​h​e​ ​c​o​n​f​i​g​u​r​a​t​i​o​n​s​ ​y​o​u​ ​c​a​n​ ​e​d​i​t​:
+					 */
+					heading: string
+					menu: {
+						/**
+						 * C​h​o​o​s​e​ ​a​ ​f​i​e​l​d​ ​t​o​ ​c​h​a​n​g​e​.
+						 */
+						placeholder: string
+						name: {
+							/**
+							 * D​i​s​p​l​a​y​ ​N​a​m​e
+							 */
+							label: string
+							/**
+							 * E​d​i​t​ ​m​y​ ​n​a​m​e​ ​o​n​ ​t​h​e​ ​s​e​r​v​e​r​.
+							 */
+							description: string
+						}
+						bio: {
+							/**
+							 * B​i​o
+							 */
+							label: string
+							/**
+							 * E​d​i​t​ ​m​y​ ​b​i​o​ ​o​n​ ​t​h​e​ ​s​e​r​v​e​r​.
+							 */
+							description: string
+						}
+						avatar: {
+							/**
+							 * A​v​a​t​a​r
+							 */
+							label: string
+							/**
+							 * E​d​i​t​ ​m​y​ ​p​r​o​f​i​l​e​ ​p​i​c​t​u​r​e​ ​o​n​ ​t​h​e​ ​s​e​r​v​e​r​.
+							 */
+							description: string
+						}
+						banner: {
+							/**
+							 * B​a​n​n​e​r
+							 */
+							label: string
+							/**
+							 * E​d​i​t​ ​m​y​ ​b​a​n​n​e​r​ ​o​n​ ​t​h​e​ ​s​e​r​v​e​r​.
+							 */
+							description: string
+						}
+					}
+				}
+				modals: {
+					errors: {
+						select: {
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
+							 */
+							title: string
+							/**
+							 * T​h​e​ ​s​e​l​e​c​t​e​d​ ​v​a​l​u​e​ ​c​o​u​l​d​ ​n​o​t​ ​b​e​ ​f​o​u​n​d​.
+							 */
+							description: string
+						}
+						customId: {
+							/**
+							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
+							 */
+							title: string
+							/**
+							 * T​h​e​ ​m​o​d​a​l​ ​c​u​s​t​o​m​ ​I​D​ ​c​o​u​l​d​ ​n​o​t​ ​b​e​ ​f​o​u​n​d​.
+							 */
+							description: string
+						}
+					}
+					name: {
+						input: {
+							/**
+							 * E​d​i​t​ ​N​a​m​e
+							 */
+							title: string
+							labels: {
+								'0': {
+									/**
+									 * N​i​c​k​n​a​m​e
+									 */
+									label: string
+									/**
+									 * L​e​a​v​e​ ​t​h​e​ ​i​n​p​u​t​ ​b​l​a​n​k​ ​t​o​ ​r​e​s​e​t​ ​t​h​e​ ​n​a​m​e​.
+									 */
+									description: string
+									text: {
+										/**
+										 * T​i​c​k​e​t​e​r
+										 */
+										placeholder: string
+									}
+								}
+							}
+						}
+						response: {
+							errors: {
+								validation: {
+									/**
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
+									 */
+									title: string
+								}
+								permissions: {
+									/**
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
+									 */
+									title: string
+									/**
+									 * I​ ​n​e​e​d​ ​t​h​e​ ​C​h​a​n​g​e​ ​N​i​c​k​n​a​m​e​ ​p​e​r​m​i​s​s​i​o​n​ ​t​o​ ​e​d​i​t​ ​m​y​ ​n​i​c​k​n​a​m​e​.
+									 */
+									description: string
+								}
+							}
+							success: {
+								/**
+								 * C​h​a​n​g​e​d​ ​N​a​m​e
+								 */
+								heading: string
+								/**
+								 * {​m​e​m​b​e​r​}​ ​c​h​a​n​g​e​d​ ​m​y​ ​d​i​s​p​l​a​y​ ​n​a​m​e​ ​f​r​o​m​ ​{​o​l​d​N​a​m​e​}​ ​t​o​ ​{​n​e​w​N​a​m​e​}​.
+								 * @param {string} member
+								 * @param {string} newName
+								 * @param {string} oldName
+								 */
+								content: RequiredParams<'member' | 'newName' | 'oldName'>
+							}
+						}
+					}
+					bio: {
+						input: {
+							/**
+							 * E​d​i​t​ ​B​i​o
+							 */
+							title: string
+							labels: {
+								'0': {
+									/**
+									 * A​b​o​u​t​ ​M​e​*
+									 */
+									label: string
+									/**
+									 * *​ ​T​h​e​ ​b​i​o​ ​c​a​n​n​o​t​ ​b​e​ ​r​e​s​e​t​ ​t​o​ ​t​h​e​ ​d​e​f​a​u​l​t​!
+									 */
+									description: string
+								}
+							}
+						}
+						response: {
+							errors: {
+								validation: {
+									/**
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
+									 */
+									title: string
+								}
+							}
+							success: {
+								/**
+								 * C​h​a​n​g​e​d​ ​B​i​o
+								 */
+								heading: string
+								content: {
+									/**
+									 * {​m​e​m​b​e​r​}​ ​c​h​a​n​g​e​d​ ​m​y​ ​b​i​o​ ​t​o​:
+									 * @param {string} member
+									 */
+									withBio: RequiredParams<'member'>
+									/**
+									 * {​m​e​m​b​e​r​}​ ​c​h​a​n​g​e​d​ ​m​y​ ​b​i​o​ ​t​o​ ​n​o​t​h​i​n​g​.
+									 * @param {string} member
+									 */
+									withoutBio: RequiredParams<'member'>
+								}
+							}
+						}
+					}
+					avatar: {
+						input: {
+							/**
+							 * E​d​i​t​ ​A​v​a​t​a​r
+							 */
+							title: string
+							labels: {
+								'0': {
+									/**
+									 * P​r​o​f​i​l​e​ ​P​i​c​t​u​r​e
+									 */
+									label: string
+									/**
+									 * L​e​a​v​e​ ​t​h​e​ ​i​n​p​u​t​ ​b​l​a​n​k​ ​t​o​ ​r​e​s​e​t​ ​t​h​e​ ​a​v​a​t​a​r​.
+									 */
+									description: string
+								}
+							}
+						}
+						response: {
+							errors: {
+								unknown: {
+									/**
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
+									 */
+									title: string
+									/**
+									 * T​h​e​ ​a​v​a​t​a​r​ ​c​o​u​l​d​ ​n​o​t​ ​b​e​ ​u​s​e​d​ ​f​o​r​ ​a​n​ ​u​n​k​n​o​w​n​ ​r​e​a​s​o​n​.
+									 */
+									description: string
+								}
+							}
+							success: {
+								/**
+								 * C​h​a​n​g​e​d​ ​A​v​a​t​a​r
+								 */
+								heading: string
+								/**
+								 * {​m​e​m​b​e​r​}​ ​c​h​a​n​g​e​d​ ​m​y​ ​a​v​a​t​a​r​ ​f​r​o​m​ ​t​h​e​ ​l​e​f​t​ ​i​m​a​g​e​ ​t​o​ ​t​h​e​ ​r​i​g​h​t​.
+								 * @param {string} member
+								 */
+								content: RequiredParams<'member'>
+							}
+						}
+					}
+					banner: {
+						input: {
+							/**
+							 * E​d​i​t​ ​B​a​n​n​e​r
+							 */
+							title: string
+							labels: {
+								'0': {
+									/**
+									 * B​a​n​n​e​r
+									 */
+									label: string
+									/**
+									 * L​e​a​v​e​ ​t​h​e​ ​i​n​p​u​t​ ​b​l​a​n​k​ ​t​o​ ​r​e​s​e​t​ ​t​h​e​ ​b​a​n​n​e​r​.
+									 */
+									description: string
+								}
+							}
+						}
+						response: {
+							errors: {
+								unknown: {
+									/**
+									 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
+									 */
+									title: string
+									/**
+									 * T​h​e​ ​b​a​n​n​e​r​ ​c​o​u​l​d​ ​n​o​t​ ​b​e​ ​u​s​e​d​ ​f​o​r​ ​a​n​ ​u​n​k​n​o​w​n​ ​r​e​a​s​o​n​.
+									 */
+									description: string
+								}
+							}
+							success: {
+								/**
+								 * C​h​a​n​g​e​d​ ​B​a​n​n​e​r
+								 */
+								heading: string
+								content: {
+									/**
+									 * {​m​e​m​b​e​r​}​ ​c​h​a​n​g​e​d​ ​m​y​ ​b​a​n​n​e​r​ ​f​r​o​m​ ​t​h​e​ ​l​e​f​t​ ​i​m​a​g​e​ ​t​o​ ​t​h​e​ ​r​i​g​h​t​.
+									 * @param {string} member
+									 */
+									oldAndNew: RequiredParams<'member'>
+									/**
+									 * {​m​e​m​b​e​r​}​ ​c​h​a​n​g​e​d​ ​m​y​ ​b​a​n​n​e​r​ ​f​r​o​m​ ​t​h​e​ ​i​m​a​g​e​ ​b​e​l​o​w​ ​t​o​ ​t​h​e​ ​d​e​f​a​u​l​t​.
+									 * @param {string} member
+									 */
+									oldAndNoNew: RequiredParams<'member'>
+									/**
+									 * {​m​e​m​b​e​r​}​ ​c​h​a​n​g​e​d​ ​m​y​ ​b​a​n​n​e​r​ ​t​h​e​ ​d​e​f​a​u​l​t​ ​i​m​a​g​e​ ​t​o​ ​t​h​e​ ​o​n​e​ ​b​e​l​o​w​.
+									 * @param {string} member
+									 */
+									noOldAndNew: RequiredParams<'member'>
+									/**
+									 * {​m​e​m​b​e​r​}​ ​c​h​a​n​g​e​d​ ​m​y​ ​b​a​n​n​e​r​ ​f​r​o​m​ ​t​h​e​ ​d​e​f​a​u​l​t​ ​i​m​a​g​e​ ​t​o​ ​t​h​e​ ​d​e​f​a​u​l​t​.
+									 * @param {string} member
+									 */
+									noOldAndNoNew: RequiredParams<'member'>
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		'bot-statistics': {
 			data: {
 				/**
@@ -627,11 +931,17 @@ type RootTranslation = {
 							 */
 							error: string
 						}
-						/**
-						 * S​u​c​c​e​s​s​f​u​l​l​y​ ​d​e​l​e​t​e​d​ ​t​h​e​ ​l​a​s​t​ ​{​a​m​o​u​n​t​}​ ​m​e​s​s​a​g​e​{​{​s​}​}​!
-						 * @param {number} amount
-						 */
-						description: RequiredParams<'amount'>
+						description: {
+							/**
+							 * S​u​c​c​e​s​s​f​u​l​l​y​ ​d​e​l​e​t​e​d​ ​t​h​e​ ​l​a​s​t​ ​{​a​m​o​u​n​t​}​ ​m​e​s​s​a​g​e​{​{​s​}​}​!
+							 * @param {number} amount
+							 */
+							success: RequiredParams<'amount'>
+							/**
+							 * I​ ​n​e​e​d​ ​t​h​e​ ​M​a​n​a​g​e​ ​M​e​s​s​a​g​e​s​ ​p​e​r​m​i​s​s​i​o​n​ ​t​o​ ​d​e​l​e​t​e​ ​m​e​s​s​a​g​e​s​.
+							 */
+							error: string
+						}
 					}
 				}
 			}
@@ -1886,6 +2196,300 @@ export type TranslationFunctions = {
 				}
 			}
 		}
+		'bot-profile': {
+			data: {
+				/**
+				 * bot-profile
+				 */
+				name: () => LocalizedString
+				/**
+				 * Modify the bot's profile on this server.
+				 */
+				description: () => LocalizedString
+			}
+			command: {
+				container: {
+					/**
+					 * Below are the configurations you can edit:
+					 */
+					heading: () => LocalizedString
+					menu: {
+						/**
+						 * Choose a field to change.
+						 */
+						placeholder: () => LocalizedString
+						name: {
+							/**
+							 * Display Name
+							 */
+							label: () => LocalizedString
+							/**
+							 * Edit my name on the server.
+							 */
+							description: () => LocalizedString
+						}
+						bio: {
+							/**
+							 * Bio
+							 */
+							label: () => LocalizedString
+							/**
+							 * Edit my bio on the server.
+							 */
+							description: () => LocalizedString
+						}
+						avatar: {
+							/**
+							 * Avatar
+							 */
+							label: () => LocalizedString
+							/**
+							 * Edit my profile picture on the server.
+							 */
+							description: () => LocalizedString
+						}
+						banner: {
+							/**
+							 * Banner
+							 */
+							label: () => LocalizedString
+							/**
+							 * Edit my banner on the server.
+							 */
+							description: () => LocalizedString
+						}
+					}
+				}
+				modals: {
+					errors: {
+						select: {
+							/**
+							 * An Error Occurred
+							 */
+							title: () => LocalizedString
+							/**
+							 * The selected value could not be found.
+							 */
+							description: () => LocalizedString
+						}
+						customId: {
+							/**
+							 * An Error Occurred
+							 */
+							title: () => LocalizedString
+							/**
+							 * The modal custom ID could not be found.
+							 */
+							description: () => LocalizedString
+						}
+					}
+					name: {
+						input: {
+							/**
+							 * Edit Name
+							 */
+							title: () => LocalizedString
+							labels: {
+								'0': {
+									/**
+									 * Nickname
+									 */
+									label: () => LocalizedString
+									/**
+									 * Leave the input blank to reset the name.
+									 */
+									description: () => LocalizedString
+									text: {
+										/**
+										 * Ticketer
+										 */
+										placeholder: () => LocalizedString
+									}
+								}
+							}
+						}
+						response: {
+							errors: {
+								validation: {
+									/**
+									 * An Error Occurred
+									 */
+									title: () => LocalizedString
+								}
+								permissions: {
+									/**
+									 * An Error Occurred
+									 */
+									title: () => LocalizedString
+									/**
+									 * I need the Change Nickname permission to edit my nickname.
+									 */
+									description: () => LocalizedString
+								}
+							}
+							success: {
+								/**
+								 * Changed Name
+								 */
+								heading: () => LocalizedString
+								/**
+								 * {member} changed my display name from {oldName} to {newName}.
+								 */
+								content: (arg: { member: string, newName: string, oldName: string }) => LocalizedString
+							}
+						}
+					}
+					bio: {
+						input: {
+							/**
+							 * Edit Bio
+							 */
+							title: () => LocalizedString
+							labels: {
+								'0': {
+									/**
+									 * About Me*
+									 */
+									label: () => LocalizedString
+									/**
+									 * * The bio cannot be reset to the default!
+									 */
+									description: () => LocalizedString
+								}
+							}
+						}
+						response: {
+							errors: {
+								validation: {
+									/**
+									 * An Error Occurred
+									 */
+									title: () => LocalizedString
+								}
+							}
+							success: {
+								/**
+								 * Changed Bio
+								 */
+								heading: () => LocalizedString
+								content: {
+									/**
+									 * {member} changed my bio to:
+									 */
+									withBio: (arg: { member: string }) => LocalizedString
+									/**
+									 * {member} changed my bio to nothing.
+									 */
+									withoutBio: (arg: { member: string }) => LocalizedString
+								}
+							}
+						}
+					}
+					avatar: {
+						input: {
+							/**
+							 * Edit Avatar
+							 */
+							title: () => LocalizedString
+							labels: {
+								'0': {
+									/**
+									 * Profile Picture
+									 */
+									label: () => LocalizedString
+									/**
+									 * Leave the input blank to reset the avatar.
+									 */
+									description: () => LocalizedString
+								}
+							}
+						}
+						response: {
+							errors: {
+								unknown: {
+									/**
+									 * An Error Occurred
+									 */
+									title: () => LocalizedString
+									/**
+									 * The avatar could not be used for an unknown reason.
+									 */
+									description: () => LocalizedString
+								}
+							}
+							success: {
+								/**
+								 * Changed Avatar
+								 */
+								heading: () => LocalizedString
+								/**
+								 * {member} changed my avatar from the left image to the right.
+								 */
+								content: (arg: { member: string }) => LocalizedString
+							}
+						}
+					}
+					banner: {
+						input: {
+							/**
+							 * Edit Banner
+							 */
+							title: () => LocalizedString
+							labels: {
+								'0': {
+									/**
+									 * Banner
+									 */
+									label: () => LocalizedString
+									/**
+									 * Leave the input blank to reset the banner.
+									 */
+									description: () => LocalizedString
+								}
+							}
+						}
+						response: {
+							errors: {
+								unknown: {
+									/**
+									 * An Error Occurred
+									 */
+									title: () => LocalizedString
+									/**
+									 * The banner could not be used for an unknown reason.
+									 */
+									description: () => LocalizedString
+								}
+							}
+							success: {
+								/**
+								 * Changed Banner
+								 */
+								heading: () => LocalizedString
+								content: {
+									/**
+									 * {member} changed my banner from the left image to the right.
+									 */
+									oldAndNew: (arg: { member: string }) => LocalizedString
+									/**
+									 * {member} changed my banner from the image below to the default.
+									 */
+									oldAndNoNew: (arg: { member: string }) => LocalizedString
+									/**
+									 * {member} changed my banner the default image to the one below.
+									 */
+									noOldAndNew: (arg: { member: string }) => LocalizedString
+									/**
+									 * {member} changed my banner from the default image to the default.
+									 */
+									noOldAndNoNew: (arg: { member: string }) => LocalizedString
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		'bot-statistics': {
 			data: {
 				/**
@@ -2424,10 +3028,16 @@ export type TranslationFunctions = {
 							 */
 							error: () => LocalizedString
 						}
-						/**
-						 * Successfully deleted the last {amount} message{{s}}!
-						 */
-						description: (arg: { amount: number }) => LocalizedString
+						description: {
+							/**
+							 * Successfully deleted the last {amount} message{{s}}!
+							 */
+							success: (arg: { amount: number }) => LocalizedString
+							/**
+							 * I need the Manage Messages permission to delete messages.
+							 */
+							error: () => LocalizedString
+						}
 					}
 				}
 			}

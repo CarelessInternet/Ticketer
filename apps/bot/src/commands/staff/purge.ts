@@ -2,7 +2,6 @@ import { Command, DeferReply } from '@ticketer/djs-framework';
 import { getTranslations, translate } from '@/i18n';
 import { prettifyError, z } from 'zod';
 import { PermissionFlagsBits } from 'discord.js';
-import { RequiredChannelPermissions } from '@/utils';
 
 const dataTranslations = translate().commands.purge.data;
 
@@ -24,7 +23,6 @@ export default class extends Command.Interaction {
 		);
 
 	@DeferReply({ ephemeral: true })
-	@RequiredChannelPermissions(PermissionFlagsBits.ManageMessages)
 	public async execute({ interaction }: Command.Context<'chat'>) {
 		if (interaction.channel) {
 			const translations = translate(interaction.locale).commands.purge.command.embeds[0];
@@ -47,11 +45,23 @@ export default class extends Command.Interaction {
 				});
 			}
 
+			const me = await interaction.guild.members.fetchMe();
+
+			if (!me.permissionsIn(interaction.channel).has(PermissionFlagsBits.ManageMessages)) {
+				return interaction.editReply({
+					embeds: [
+						super
+							.userEmbedError(interaction.member, translations.title.error())
+							.setDescription(translations.description.error()),
+					],
+				});
+			}
+
 			const deleted = await interaction.channel.bulkDelete(amount);
 			const embed = super
 				.userEmbed(interaction.member)
 				.setTitle(translations.title.success())
-				.setDescription(translations.description({ amount: deleted.size }));
+				.setDescription(translations.description.success({ amount: deleted.size }));
 
 			return interaction.editReply({ embeds: [embed] });
 		}

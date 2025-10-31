@@ -109,7 +109,7 @@ export default class extends Command.Interaction {
 				.addTextDisplayComponents(new TextDisplayBuilder().setContent(heading(translations[1].text())))
 				.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(false))
 				.addActionRowComponents(
-					new ActionRowBuilder<ButtonBuilder>().addComponents(
+					new ActionRowBuilder<ButtonBuilder>().setComponents(
 						buttons.map((button) =>
 							new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel(button.label).setURL(button.url),
 						),

@@ -21,9 +21,7 @@ export function DeferReply({ name, ephemeral = false }: DeferReplyOptions = {}) 
 					? (interaction.options.getBoolean(String(name), false) ?? ephemeral)
 					: ephemeral;
 
-				await interaction.deferReply({
-					flags: hidden ? [MessageFlags.Ephemeral] : undefined,
-				});
+				await interaction.deferReply({ ...(hidden && { flags: [MessageFlags.Ephemeral] }) });
 			}
 
 			return Reflect.apply(original, this, arguments);

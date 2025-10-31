@@ -37,6 +37,151 @@ const en_GB = {
 				],
 			},
 		},
+		'bot-profile': {
+			data: {
+				name: 'bot-profile',
+				description: "Modify the bot's profile on this server.",
+			},
+			command: {
+				container: {
+					heading: 'Below are the configurations you can edit:',
+					menu: {
+						placeholder: 'Choose a field to change.',
+						name: {
+							label: 'Display Name',
+							description: 'Edit my name on the server.',
+						},
+						bio: {
+							label: 'Bio',
+							description: 'Edit my bio on the server.',
+						},
+						avatar: {
+							label: 'Avatar',
+							description: 'Edit my profile picture on the server.',
+						},
+						banner: {
+							label: 'Banner',
+							description: 'Edit my banner on the server.',
+						},
+					},
+				},
+				modals: {
+					errors: {
+						select: {
+							title: ERROR_TITLE,
+							description: 'The selected value could not be found.',
+						},
+						customId: {
+							title: ERROR_TITLE,
+							description: 'The modal custom ID could not be found.',
+						},
+					},
+					name: {
+						input: {
+							title: 'Edit Name',
+							labels: [
+								{
+									label: 'Nickname',
+									description: 'Leave the input blank to reset the name.',
+									text: {
+										placeholder: 'Ticketer',
+									},
+								},
+							],
+						},
+						response: {
+							errors: {
+								validation: {
+									title: ERROR_TITLE,
+								},
+								permissions: {
+									title: ERROR_TITLE,
+									description: 'I need the Change Nickname permission to edit my nickname.',
+								},
+							},
+							success: {
+								heading: 'Changed Name',
+								content: '{member:string} changed my display name from {oldName:string} to {newName:string}.',
+							},
+						},
+					},
+					bio: {
+						input: {
+							title: 'Edit Bio',
+							labels: [
+								{
+									label: 'About Me*',
+									description: '* The bio cannot be reset to the default!',
+								},
+							],
+						},
+						response: {
+							errors: {
+								validation: { title: ERROR_TITLE },
+							},
+							success: {
+								heading: 'Changed Bio',
+								content: {
+									withBio: '{member:string} changed my bio to:',
+									withoutBio: '{member:string} changed my bio to nothing.',
+								},
+							},
+						},
+					},
+					avatar: {
+						input: {
+							title: 'Edit Avatar',
+							labels: [
+								{
+									label: 'Profile Picture',
+									description: 'Leave the input blank to reset the avatar.',
+								},
+							],
+						},
+						response: {
+							errors: {
+								unknown: {
+									title: ERROR_TITLE,
+									description: 'The avatar could not be used for an unknown reason.',
+								},
+							},
+							success: {
+								heading: 'Changed Avatar',
+								content: '{member:string} changed my avatar from the left image to the right.',
+							},
+						},
+					},
+					banner: {
+						input: {
+							title: 'Edit Banner',
+							labels: [
+								{
+									label: 'Banner',
+									description: 'Leave the input blank to reset the banner.',
+								},
+							],
+						},
+						response: {
+							errors: {
+								unknown: {
+									title: ERROR_TITLE,
+									description: 'The banner could not be used for an unknown reason.',
+								},
+							},
+							success: {
+								heading: 'Changed Banner',
+								content: {
+									oldAndNew: '{member:string} changed my banner from the left image to the right.',
+									oldAndNoNew: '{member:string} changed my banner from the image below to the default.',
+									noOldAndNew: '{member:string} changed my banner the default image to the one below.',
+									noOldAndNoNew: '{member:string} changed my banner from the default image to the default.',
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 		'bot-statistics': {
 			data: {
 				name: 'bot-statistics',
@@ -286,7 +431,10 @@ const en_GB = {
 							success: 'Purged Messages',
 							error: ERROR_TITLE,
 						},
-						description: 'Successfully deleted the last {amount:number} message{{s}}!',
+						description: {
+							success: 'Successfully deleted the last {amount:number} message{{s}}!',
+							error: 'I need the Manage Messages permission to delete messages.',
+						},
 					},
 				],
 			},

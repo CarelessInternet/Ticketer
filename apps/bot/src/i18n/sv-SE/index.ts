@@ -286,7 +286,10 @@ const sv_SE = {
 							success: 'Rensade Meddelandena',
 							error: ERROR_TITLE,
 						},
-						description: 'Raderade de{{t|}} sista {amount} meddelande{{t|n}}!',
+						description: {
+							success: 'Raderade de{{t|}} sista {amount} meddelande{{t|n}}!',
+							error: 'Jag behöver Hantera Meddelanden behörigheten för att radera meddelanden.',
+						},
 					},
 				],
 			},

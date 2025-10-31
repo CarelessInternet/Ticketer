@@ -627,11 +627,17 @@ type RootTranslation = {
 							 */
 							error: string
 						}
-						/**
-						 * S​u​c​c​e​s​s​f​u​l​l​y​ ​d​e​l​e​t​e​d​ ​t​h​e​ ​l​a​s​t​ ​{​a​m​o​u​n​t​}​ ​m​e​s​s​a​g​e​{​{​s​}​}​!
-						 * @param {number} amount
-						 */
-						description: RequiredParams<'amount'>
+						description: {
+							/**
+							 * S​u​c​c​e​s​s​f​u​l​l​y​ ​d​e​l​e​t​e​d​ ​t​h​e​ ​l​a​s​t​ ​{​a​m​o​u​n​t​}​ ​m​e​s​s​a​g​e​{​{​s​}​}​!
+							 * @param {number} amount
+							 */
+							success: RequiredParams<'amount'>
+							/**
+							 * I​ ​n​e​e​d​ ​t​h​e​ ​M​a​n​a​g​e​ ​M​e​s​s​a​g​e​s​ ​p​e​r​m​i​s​s​i​o​n​ ​t​o​ ​d​e​l​e​t​e​ ​m​e​s​s​a​g​e​s​.
+							 */
+							error: string
+						}
 					}
 				}
 			}
@@ -2424,10 +2430,16 @@ export type TranslationFunctions = {
 							 */
 							error: () => LocalizedString
 						}
-						/**
-						 * Successfully deleted the last {amount} message{{s}}!
-						 */
-						description: (arg: { amount: number }) => LocalizedString
+						description: {
+							/**
+							 * Successfully deleted the last {amount} message{{s}}!
+							 */
+							success: (arg: { amount: number }) => LocalizedString
+							/**
+							 * I need the Manage Messages permission to delete messages.
+							 */
+							error: () => LocalizedString
+						}
 					}
 				}
 			}

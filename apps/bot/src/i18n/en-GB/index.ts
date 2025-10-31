@@ -286,7 +286,10 @@ const en_GB = {
 							success: 'Purged Messages',
 							error: ERROR_TITLE,
 						},
-						description: 'Successfully deleted the last {amount:number} message{{s}}!',
+						description: {
+							success: 'Successfully deleted the last {amount:number} message{{s}}!',
+							error: 'I need the Manage Messages permission to delete messages.',
+						},
 					},
 				],
 			},

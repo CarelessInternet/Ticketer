@@ -147,7 +147,7 @@ export async function getCategories(
 	});
 
 	return context.interaction.editReply({
-		allowedMentions: {},
+		allowedMentions: { parse: [] },
 		components: [...containers, ...pagination],
 		flags: [MessageFlags.IsComponentsV2],
 	});

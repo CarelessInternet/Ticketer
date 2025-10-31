@@ -37,6 +37,151 @@ const sv_SE = {
 				],
 			},
 		},
+		'bot-profile': {
+			data: {
+				name: 'bot-profil',
+				description: 'Ändra botens profil på den här servern.',
+			},
+			command: {
+				container: {
+					heading: 'Nedan finns konfiguationer du kan redigera:',
+					menu: {
+						placeholder: 'Välj ett fält att ändra.',
+						name: {
+							label: 'Användarnamn',
+							description: 'Ändra mitt namn på servern.',
+						},
+						bio: {
+							label: 'Bio',
+							description: 'Ändra min bio på servern.',
+						},
+						avatar: {
+							label: 'Profilbild',
+							description: 'Ändra min profilbild på servern.',
+						},
+						banner: {
+							label: 'Banner',
+							description: 'Ändra min banner på servern.',
+						},
+					},
+				},
+				modals: {
+					errors: {
+						select: {
+							title: ERROR_TITLE,
+							description: 'Det valda värdet kunde inte hittas.',
+						},
+						customId: {
+							title: ERROR_TITLE,
+							description: 'Modal-ID kunde inte hittas.',
+						},
+					},
+					name: {
+						input: {
+							title: 'Ändra namn',
+							labels: [
+								{
+									label: 'Smeknamn',
+									description: 'Lämna fältet tomt för att återställa namnet.',
+									text: {
+										placeholder: 'Ticketer',
+									},
+								},
+							],
+						},
+						response: {
+							errors: {
+								validation: {
+									title: ERROR_TITLE,
+								},
+								permissions: {
+									title: ERROR_TITLE,
+									description: 'Jag behöver rättigheten Ändra Smeknamn för att kunna ändra mitt smeknamn.',
+								},
+							},
+							success: {
+								heading: 'Namn Ändrat',
+								content: '{member} ändrade mitt användarnamn från {oldName} till {newName}.',
+							},
+						},
+					},
+					bio: {
+						input: {
+							title: 'Ändra Bio',
+							labels: [
+								{
+									label: 'Om Mig*',
+									description: '* Bion kan inte återställas till standard!',
+								},
+							],
+						},
+						response: {
+							errors: {
+								validation: { title: ERROR_TITLE },
+							},
+							success: {
+								heading: 'Bio Ändrad',
+								content: {
+									withBio: '{member} ändrade min bio till:',
+									withoutBio: '{member} ändrade min bio till ingenting.',
+								},
+							},
+						},
+					},
+					avatar: {
+						input: {
+							title: 'Ändra Profilbild',
+							labels: [
+								{
+									label: 'Profilbild',
+									description: 'Lämna fältet tomt för att återställa profilbilden.',
+								},
+							],
+						},
+						response: {
+							errors: {
+								unknown: {
+									title: ERROR_TITLE,
+									description: 'Profilbilden kunde inte användas av okänd anledning.',
+								},
+							},
+							success: {
+								heading: 'Avatar Ändrad',
+								content: '{member} ändrade min profilbild från bilden till vänster till den till höger.',
+							},
+						},
+					},
+					banner: {
+						input: {
+							title: 'Ändra Banner',
+							labels: [
+								{
+									label: 'Banner',
+									description: 'Lämna fältet tomt för att återställa bannern.',
+								},
+							],
+						},
+						response: {
+							errors: {
+								unknown: {
+									title: ERROR_TITLE,
+									description: 'Bannern kunde inte användas av okänd anledning.',
+								},
+							},
+							success: {
+								heading: 'Banner Ändrad',
+								content: {
+									oldAndNew: '{member} ändrade min banner från bilden till vänster till den till höger.',
+									oldAndNoNew: '{member} ändrade min banner från bilden nedan till standard.',
+									noOldAndNew: '{member} ändrade min banner från standardbilden till den nedan.',
+									noOldAndNoNew: '{member} ändrade min banner från standardbilden till standardbilden.',
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 		'bot-statistics': {
 			data: {
 				name: 'bot-statistik',

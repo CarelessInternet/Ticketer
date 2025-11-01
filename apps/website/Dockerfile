@@ -58,5 +58,8 @@ COPY --from=installer /src/apps/website/.next/standalone ./
 COPY --from=installer /src/apps/website/.next/static ./apps/website/.next/static
 COPY --from=installer /src/apps/website/public ./apps/website/public
 
+ENV PORT=2027
+EXPOSE 2027
+
 # Run the website.
 CMD ["node", "apps/website/server.js"]

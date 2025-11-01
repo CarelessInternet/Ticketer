@@ -43,6 +43,7 @@ COPY --from=builder /src/out/full/ .
 COPY turbo.json turbo.json
 
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV TURBO_TELEMETRY_DISABLED=1
 RUN turbo run build --filter=@ticketer/website
 
 # Copy the files over and use the apps/website directory.
@@ -53,9 +54,9 @@ USER node
 # https://turborepo.com/docs/guides/tools/docker
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=installer ./apps/website/.next/standalone ./
-COPY --from=installer ./apps/website/.next/static ./apps/website/.next/static
-COPY --from=installer ./apps/website/public ./apps/website/public
+COPY --from=installer /src/apps/website/.next/standalone ./
+COPY --from=installer /src/apps/website/.next/static ./apps/website/.next/static
+COPY --from=installer /src/apps/website/public ./apps/website/public
 
 # Run the website.
 CMD ["node", "apps/website/server.js"]

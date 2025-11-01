@@ -1,6 +1,7 @@
-// eslint-disable-next-line no-restricted-imports
-import { redirect } from 'next/navigation';
+import { NextResponse } from 'next/server';
+
+export const dynamic = 'force-static';
 
 export function GET() {
-	redirect('https://discord.gg/9FHagm6343');
+	return NextResponse.redirect('https://discord.gg/9FHagm6343');
 }

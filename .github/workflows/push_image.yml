@@ -1,4 +1,4 @@
-name: Publish Bot Docker Image to ghcr.io
+name: Publish Bot and Website Docker Image to ghcr.io
 
 on:
   push:
@@ -26,7 +26,8 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set the necessary environment variables and make them lowercase.
+
+      - name: Set the necessary bot environment variables and make them lowercase.
         env:
           RAW_IMAGE_REPOSITORY: ${{ github.repository }}
         # Get the version from the tag (e.g. v1.2.3 --> 1.2.3).
@@ -47,3 +48,23 @@ jobs:
           tags: ${{ env.FULL_IMAGE_URL_BOT_LATEST }}, ${{ env.FULL_IMAGE_URL_BOT_VERSION }}
           push: true
           outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=The Discord bot for creating tickets with threads.
+
+      - name: Set the necessary website environment variables and make them lowercase.
+        env:
+          RAW_IMAGE_REPOSITORY: ${{ github.repository }}
+        run: |
+          RELEASE_VERSION=${GITHUB_REF#refs/*/v}
+          IMAGE_REPOSITORY_WEBSITE=${RAW_IMAGE_REPOSITORY@L}-website
+          IMAGE_URL_WEBSITE=${REGISTRY}/$IMAGE_REPOSITORY_WEBSITE
+          echo "FULL_IMAGE_URL_WEBSITE_LATEST=$IMAGE_URL_WEBSITE:latest" >> ${GITHUB_ENV}
+          echo "FULL_IMAGE_URL_WEBSITE_VERSION=$IMAGE_URL_WEBSITE:$RELEASE_VERSION" >> ${GITHUB_ENV}
+      - name: Build and push the website image.
+        uses: docker/build-push-action@v6
+        with:
+          file: ./apps/website/Dockerfile
+          context: .
+          no-cache: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ env.FULL_IMAGE_URL_WEBSITE_LATEST }}, ${{ env.FULL_IMAGE_URL_WEBSITE_VERSION }}
+          push: true
+          outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=The website for the Discord bot Ticketer.

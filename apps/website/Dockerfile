@@ -8,7 +8,7 @@ ARG NODE_MAJOR_VERSION=24
 ARG PNPM_MAJOR_VERSION=10
 ARG TURBO_MAJOR_VERSION=2
 
-FROM node:${NODE_MAJOR_VERSION}-alpine AS base
+FROM node:${NODE_MAJOR_VERSION}-alpine AS installer
 RUN --mount=type=cache,target=/root/.npm \
     npm install -g pnpm@${PNPM_MAJOR_VERSION}
 ENV PNPM_HOME="/pnpm"
@@ -24,9 +24,9 @@ RUN turbo prune @ticketer/website --docker
 
 # Install the dependencies.
 RUN --mount=type=bind,source=package.json,target=package.json \
---mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
---mount=type=cache,target=/root/.local/share/pnpm/store \
-pnpm install --prod --frozen-lockfile
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
+    --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm install --prod --frozen-lockfile
 
 # Build the project and its dependencies.
 RUN pnpm build

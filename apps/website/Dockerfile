@@ -54,9 +54,9 @@ USER node
 # https://turborepo.com/docs/guides/tools/docker
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=installer /src/apps/website/.next/standalone ./
-COPY --from=installer /src/apps/website/.next/static ./apps/website/.next/static
-COPY --from=installer /src/apps/website/public ./apps/website/public
+COPY --from=installer --chown=node:node /src/apps/website/.next/standalone ./
+COPY --from=installer --chown=node:node /src/apps/website/.next/static ./apps/website/.next/static
+COPY --from=installer --chown=node:node /src/apps/website/public ./apps/website/public
 
 ENV PORT=2027
 EXPOSE 2027

@@ -32,6 +32,6 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 RUN pnpm build
 
 FROM nginx:1-alpine AS runner
+RUN mkdir -p /var/cache/nginx /var/run /var/log/nginx && chown -R nginx:nginx /var/cache/nginx /var/run /var/log/nginx
 COPY --from=installer /src/apps/website/out /usr/share/nginx/html
-USER nginx
 EXPOSE 80

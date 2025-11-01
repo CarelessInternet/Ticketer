@@ -1,4 +1,4 @@
-name: Publish Bot and Website Docker Image to ghcr.io
+name: Publish Bot and Website Docker Images to ghcr.io
 
 on:
   push:

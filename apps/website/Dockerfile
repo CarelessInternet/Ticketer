@@ -43,7 +43,7 @@ COPY --from=builder /src/out/full/ .
 COPY turbo.json turbo.json
 
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN pnpm build --filter=web
+RUN turbo run build --filter=website
 
 # Copy the files over and use the apps/website directory.
 FROM base AS runner

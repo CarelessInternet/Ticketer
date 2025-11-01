@@ -8,4 +8,5 @@ export default createNextIntlPlugin({
 	experimental: {
 		turbopackFileSystemCacheForDev: true,
 	},
+	output: 'standalone',
 });

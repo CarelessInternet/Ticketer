@@ -46,6 +46,13 @@ services:
     networks:
       - ticketer_database_network
 
+  # Uncomment the service below if you want to self-host the website.
+  # The website is exposed on port 2027.
+  # website:
+    # image: ghcr.io/carelessinternet/ticketer-website:latest
+    # container_name: ticketer-website
+    # restart: unless-stopped
+
 volumes:
   ticketer_database_data:
 

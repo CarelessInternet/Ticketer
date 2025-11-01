@@ -28,6 +28,7 @@ FROM base AS installer
 RUN apk add --no-cache libc6-compat
 RUN apk update
 WORKDIR /src
+RUN pnpm add -g turbo@${TURBO_MAJOR_VERSION}
 
 # Install the dependencies.
 COPY --from=builder /src/out/json/ .

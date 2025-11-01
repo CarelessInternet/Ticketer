@@ -6,7 +6,7 @@
 		"dev": "next dev --port 2027",
 		"debug": "pnpm run dev",
 		"build": "NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 next build",
-		"start": "NODE_ENV=production next start",
+		"start": "NODE_ENV=production next start --port 2027",
 		"lint": "next typegen && eslint ."
 	},
 	"dependencies": {

@@ -12,6 +12,8 @@ export default defineConfig(
 		},
 		rules: {
 			'@typescript-eslint/return-await': 'error',
+			// TODO: remove this when https://github.com/eslint/eslint/issues/20272 is resolved.
+			'@typescript-eslint/unified-signatures': 'off',
 			'no-return-await': 'off',
 			'unicorn/no-anonymous-default-export': 'off',
 		},

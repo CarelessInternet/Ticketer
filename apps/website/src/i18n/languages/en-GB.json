@@ -91,6 +91,10 @@
 					"description": "Read about some of the important commands in Ticketer as a moderator or user of the bot!"
 				},
 				"content": {
+					"plans-and-progress": {
+						"title": "Plans and Progress",
+						"description": "If you want to see what the future is planned for Ticketer, check out <linkAffine>the roadmap here</linkAffine>!"
+					},
 					"thread-tickets": {
 						"title": "Thread Tickets",
 						"description": "The main focus of the bot is on threads which act as tickets. There are several parts to this feature which may seem daunting at first, but play out well in practice.",
@@ -179,6 +183,20 @@
 						"paragraphs": {
 							"1": "Create a directory/folder with any name (like \"Ticketer\") and then create a file in that directory named \"compose.yaml\".",
 							"2": "Copy and paste the following content in the created file:"
+						},
+						"accordion": {
+							"1": {
+								"title": "Why not push the website image to the GitHub Container registry?",
+								"description": "That's because this website is built with Next.js, which requires public environment variables to be present at build time. Since the images in a registry are already built, this prevents users from modifying these important variables (see <linkIssue>this issue</linkIssue>). The solution above is the simplest one, as all configuration can still be defined in the same compose file with minimal differences."
+							},
+							"2": {
+								"title": "How to rebuild the image (with a new configuration)?",
+								"paragraphs": {
+									"1": "Stop the website container first:",
+									"2": "Then remove the website image:",
+									"3": "Edit the website configuration in the compose file. Afterwards, run the website again:"
+								}
+							}
 						}
 					},
 					"environment-variables": {
@@ -218,7 +236,7 @@
 						"paragraphs": {
 							"1": "Open Visual Studio Code, and inside the code editor, open the command palette and run the following command.",
 							"2": "It should prompt for a repository URL. Paste Ticketer's GitHub URL and afterwards choose the main branch:",
-							"3": "Once the Dev Container has started, you can get to coding. It's as simple as that! Do not forget to create the necessary bot and database development environment files to run the bot!"
+							"3": "Once the Dev Container has started, you can get to coding. It's as simple as that! Do not forget to create the necessary bot, database, and website development environment files to run the different apps!"
 						}
 					}
 				}
@@ -266,27 +284,17 @@
 						"sections": {
 							"1": {
 								"title": "What user information is collected?",
-								"description": "The anonymous user information collected by the Ticketer website is the following:",
-								"list": {
-									"1": "Geolocation",
-									"2": "Device OS & Version",
-									"3": "Browser & Version",
-									"4": "Device Type"
-								}
+								"description": "The Ticketer website uses a self-hosted version of <linkUmami>Umami</linkUmami> within the EU for analytics. Umami collects only <linkMetrics>anonymized usage metrics (page views, device type, browser, general location, etc.)</linkMetrics> and does not set cookies or store personally-identifying information. The data is stored indefinitely."
 							},
 							"2": {
-								"title": "How is the user information collected?",
-								"description": "According to <linkVercelWebAnalytics>Vercel Web Analytics</linkVercelWebAnalytics>, the visitors are identified by a hash created from the incoming request. Cookies are not used to track users. Page views are tracked through the native Browser API."
-							},
-							"3": {
 								"title": "How is the personal information used?",
 								"description": "The data collected is used for analytical purposes and may be used to improve the user experience."
 							},
-							"4": {
+							"3": {
 								"title": "Is the personal information shared?",
-								"description": "This information is sent to <linkVercel>Vercel</linkVercel> to provide the analytical data."
+								"description": "This information is not shared to any outside the Ticketer team."
 							},
-							"5": {
+							"4": {
 								"title": "How can I contact for questions or concerns?",
 								"description": "You may join the official <linkSupport>Discord support server</linkSupport> to ask questions or raise concerns regarding Ticketer."
 							}

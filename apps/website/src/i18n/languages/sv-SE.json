@@ -91,6 +91,10 @@
 					"description": "Läs om några av de viktiga kommandona i Ticketer som moderator eller användare av boten!"
 				},
 				"content": {
+					"plans-and-progress": {
+						"title": "Planer och Framsteg",
+						"description": "Om du vill se vad som är planerat för Ticketer framöver, kolla <linkAffine>planeringen här</linkAffine>!"
+					},
 					"thread-tickets": {
 						"title": "Trådstödbiljetter",
 						"description": "Botens huvudfokus ligger på trådar som fungerar som stödbiljetter. Det finns flera delar till denna funktion som kan verka överväldigande till en början, men som fungerar bra i praktiken.",
@@ -179,6 +183,20 @@
 						"paragraphs": {
 							"1": "Skapa en mapp med valfritt namn (t.ex. \"Ticketer\") och skapa sedan en fil i den mappen med namnet \"compose.yaml\".",
 							"2": "Kopiera och klistra in följande innehåll i den skapade filen:"
+						},
+						"accordion": {
+							"1": {
+								"title": "Varför inte pusha webbplatsbilden till GitHub Container Registry?",
+								"description": "Det beror på att den här webbplatsen är byggd med Next.js, vilket kräver att offentliga miljövariabler är tillgängliga vid byggtid. Eftersom bilderna i ett register redan är byggda hindrar det användare från att ändra dessa viktiga variabler (se <linkIssue>detta ärende</linkIssue>). Lösningen ovan är den enklaste, eftersom all konfiguration fortfarande kan definieras i samma compose-fil med minimala skillnader."
+							},
+							"2": {
+								"title": "Hur bygger man om bilden (med en ny konfiguration)?",
+								"paragraphs": {
+									"1": "Stoppa webbplatscontainern först:",
+									"2": "Ta sedan bort webbplatsbilden:",
+									"3": "Redigera webbplatsens konfiguration i compose-filen. Kör sedan webbplatsen igen:"
+								}
+							}
 						}
 					},
 					"environment-variables": {
@@ -218,7 +236,7 @@
 						"paragraphs": {
 							"1": "Öppna Visual Studio Code och öppna kommandopaletten inuti kodeditorn och kör följande kommando:",
 							"2": "Du blir ombedd att ange en länk till ett repository. Klistra in Ticketers GitHub-länk och välj därefter huvudgrenen (main branch):",
-							"3": "När Dev Containern har startat kan du börja koda. Så enkelt är det! Glöm inte att skapa de nödvändiga utvecklingsmiljöfilerna för boten och databasen för att kunna köra boten!"
+							"3": "När Dev Containern har startat kan du börja koda. Så enkelt är det! Glöm inte att skapa de nödvändiga utvecklingsmiljöfilerna för boten, databasen, och webbsidan för att kunna köra de olika apparna!"
 						}
 					}
 				}
@@ -266,27 +284,17 @@
 						"sections": {
 							"1": {
 								"title": "Vilken användarinformation samlas in?",
-								"description": "Den anonyma användarinformation som samlas in av Ticketers webbplats är följande:",
-								"list": {
-									"1": "Geolocation",
-									"2": "Enhetens OS & Version",
-									"3": "Webbläsare & Version",
-									"4": "Enhetstyp"
-								}
+								"description": "Ticketer-webbsidan använder en självhostad version av <linkUmami>Umami</linkUmami> inom EU för analys. Umami samlar endast <linkMetrics>anonymiserade användningsmått (sidvisningar, enhetstyp, webbläsare, ungefärlig plats, osv.)</linkMetrics> och stället inga kakor eller lagrar personligt identifierbar information. Uppgifterna lagras på obestämd tid."
 							},
 							"2": {
-								"title": "Hur samlas användarinformationen in?",
-								"description": "Enligt <linkVercelWebAnalytics>Vercel Web Analytics</linkVercelWebAnalytics> identifieras besökare av en hash som skapas från den inkommande förfrågan. Cookies används inte för att spåra användare. Sidvisningar spåras genom webbläsarens inbyggda API."
-							},
-							"3": {
 								"title": "Hur används personuppgifterna?",
 								"description": "Den insamlade informationen används för analytiska syften och kan användas för att förbättra användarupplevelsen."
 							},
-							"4": {
+							"3": {
 								"title": "Delas personuppgifterna?",
-								"description": "Denna information skickas till <linkVercel>Vercel</linkVercel> för att tillhandahålla analysdata."
+								"description": "Denna information delas inte med någon utanför Ticketer-teamet."
 							},
-							"5": {
+							"4": {
 								"title": "Hur kan jag kontakta er för frågor eller bekymmer?",
 								"description": "Du kan gå med i den officiella <linkSupport>Discord-supportservern</linkSupport> för att ställa frågor eller uttrycka bekymmer angående Ticketer."
 							}

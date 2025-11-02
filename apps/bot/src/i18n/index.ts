@@ -26,10 +26,12 @@ export const getTranslations = (key: Leaves<TranslationFunctions>) => {
 	return translations as Record<Locales, string>;
 };
 
+export const getLocale = (language?: Locale | Locales) =>
+	locales.includes(language as Locales) ? (language as Locales) : Locale.EnglishGB;
+
 /**
  * @param language If no language is specified or is not supported, it defaults to (British) English.
  */
-export const translate = (language?: Locale | Locales) =>
-	locales.includes(language as Locales) ? L[language as Locales] : L[Locale.EnglishGB];
+export const translate = (language?: Locale | Locales) => L[getLocale(language)];
 
 export type { Locales } from './i18n-types';

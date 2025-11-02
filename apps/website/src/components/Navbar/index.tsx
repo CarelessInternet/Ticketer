@@ -21,7 +21,6 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { Button } from '@/components/ui/button';
-import ExternalLink from '../ExternalLink';
 import { SiGithub as GitHub } from '@icons-pack/react-simple-icons';
 import Image from 'next/image';
 import InternalLink from '../InternalLink';
@@ -73,24 +72,17 @@ function TooltipItem({ content, children }: PropsWithChildren<TooltipItems>) {
 }
 
 interface TooltipLinkItems extends TooltipItems {
-	external?: boolean;
 	href: Route;
 	icon: JSX.Element;
 }
 
-function TooltipLinkItem({ content, external, href, icon }: PropsWithChildren<TooltipLinkItems>) {
+function TooltipLinkItem({ content, href, icon }: PropsWithChildren<TooltipLinkItems>) {
 	return (
 		<TooltipItem content={content}>
 			<Button variant="outline" size="icon" asChild>
-				{external ? (
-					<ExternalLink href={href} noDefaultStyles>
-						{icon}
-					</ExternalLink>
-				) : (
-					<InternalLink href={href} noLocalisation noDefaultStyles>
-						{icon}
-					</InternalLink>
-				)}
+				<InternalLink href={href} noLocalisation noDefaultStyles prefetch={false}>
+					{icon}
+				</InternalLink>
 			</Button>
 		</TooltipItem>
 	);

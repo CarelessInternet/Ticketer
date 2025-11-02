@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import CodeBlock from '@/components/CodeBlock';
 import Divider from '@/components/Divider';
+import ExternalLink from '@/components/ExternalLink';
 import Image from '@/components/Image';
 import type { Locale } from 'next-intl';
 import type { Metadata } from 'next';
@@ -33,6 +34,23 @@ export default async function Page({ params }: PageProps<'/[locale]/docs/command
 			<Divider>
 				<Title>{t('heading.title')}</Title>
 				<Paragraph>{t('heading.description')}</Paragraph>
+			</Divider>
+			<Divider>
+				<ScrollLink target="plans-and-progress">{t('content.plans-and-progress.title')}</ScrollLink>
+				<Paragraph>
+					<RichText>
+						{(tags) =>
+							t.rich('content.plans-and-progress.description', {
+								linkAffine: (chunk) => (
+									<ExternalLink href="https://affine.pyce.eu/workspace/eded79da-c8d2-4c33-ba05-1b28e5b21906/zzZig58uMWTD-uTDVmZbE">
+										{chunk}
+									</ExternalLink>
+								),
+								...tags,
+							})
+						}
+					</RichText>
+				</Paragraph>
 			</Divider>
 			<Divider>
 				<ScrollLink target="thread-tickets">{t('content.thread-tickets.title')}</ScrollLink>

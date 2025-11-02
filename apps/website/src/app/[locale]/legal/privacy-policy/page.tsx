@@ -37,69 +37,32 @@ export default async function Page({ params }: PageProps<'/[locale]/legal/privac
 		<>
 			<Divider>
 				<Title>{t('heading.title')}</Title>
-				<Paragraph>{t('heading.description', { lastUpdated: formatDate(new Date('2024-11-04')) })}</Paragraph>
+				<Paragraph>{t('heading.description', { lastUpdated: formatDate(new Date('2025-11-02')) })}</Paragraph>
 			</Divider>
 			<Divider>
 				<ScrollLink target="website">{t('sections.website.title')}</ScrollLink>
 				<SectionDivider header={t('sections.website.sections.1.title')}>
-					<Paragraph>{t('sections.website.sections.1.description')}</Paragraph>
-					<List>
-						<li>
-							<ExternalLink href="https://vercel.com/docs/analytics/privacy-policy#data-point-information">
-								{t('sections.website.sections.1.list.1')}
-							</ExternalLink>
-						</li>
-						<li>
-							<ExternalLink href="https://vercel.com/docs/analytics/privacy-policy#data-point-information">
-								{t('sections.website.sections.1.list.2')}
-							</ExternalLink>
-						</li>
-						<li>
-							<ExternalLink href="https://vercel.com/docs/analytics/privacy-policy#data-point-information">
-								{t('sections.website.sections.1.list.3')}
-							</ExternalLink>
-						</li>
-						<li>
-							<ExternalLink href="https://vercel.com/docs/analytics/privacy-policy#data-point-information">
-								{t('sections.website.sections.1.list.4')}
-							</ExternalLink>
-						</li>
-					</List>
-				</SectionDivider>
-				<SectionDivider header={t('sections.website.sections.2.title')}>
 					<Paragraph>
 						<RichText>
 							{(tags) =>
-								t.rich('sections.website.sections.2.description', {
-									linkVercelWebAnalytics: (chunk) => (
-										<ExternalLink href="https://vercel.com/docs/analytics#how-visitors-are-determined">
-											{chunk}
-										</ExternalLink>
-									),
+								t.rich('sections.website.sections.1.description', {
+									linkUmami: (chunk) => <ExternalLink href="https://umami.is">{chunk}</ExternalLink>,
+									linkMetrics: (chunk) => <ExternalLink href="https://umami.is/features">{chunk}</ExternalLink>,
 									...tags,
 								})
 							}
 						</RichText>
 					</Paragraph>
+				</SectionDivider>
+				<SectionDivider header={t('sections.website.sections.2.title')}>
+					<Paragraph>{t('sections.website.sections.2.description')}</Paragraph>
 				</SectionDivider>
 				<SectionDivider header={t('sections.website.sections.3.title')}>
 					<Paragraph>{t('sections.website.sections.3.description')}</Paragraph>
 				</SectionDivider>
 				<SectionDivider header={t('sections.website.sections.4.title')}>
 					<Paragraph>
-						<RichText>
-							{(tags) =>
-								t.rich('sections.website.sections.4.description', {
-									linkVercel: (chunk) => <ExternalLink href="https://vercel.com">{chunk}</ExternalLink>,
-									...tags,
-								})
-							}
-						</RichText>
-					</Paragraph>
-				</SectionDivider>
-				<SectionDivider header={t('sections.website.sections.5.title')}>
-					<Paragraph>
-						<RichText>{(tags) => t.rich('sections.website.sections.5.description', tags)}</RichText>
+						<RichText>{(tags) => t.rich('sections.website.sections.4.description', tags)}</RichText>
 					</Paragraph>
 				</SectionDivider>
 			</Divider>

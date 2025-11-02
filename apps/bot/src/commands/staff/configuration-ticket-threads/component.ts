@@ -484,17 +484,17 @@ export class OtherComponentInteraction extends Component.Interaction {
 		switch (customId) {
 			case super.dynamicCustomId('ticket_threads_category_configuration_channel'):
 			case super.dynamicCustomId('ticket_threads_category_configuration_logs_channel'): {
-				return interaction.isChannelSelectMenu() && this.categoryChannel({ interaction });
+				return interaction.isChannelSelectMenu() && void this.categoryChannel({ interaction });
 			}
 			case super.dynamicCustomId('ticket_threads_category_configuration_managers'): {
-				return interaction.isRoleSelectMenu() && this.categoryManagers({ interaction });
+				return interaction.isRoleSelectMenu() && void this.categoryManagers({ interaction });
 			}
 			case super.dynamicCustomId('ticket_threads_category_configuration_allowed_author_actions'): {
-				return interaction.isStringSelectMenu() && this.allowedAuthorActions({ interaction });
+				return interaction.isStringSelectMenu() && void this.allowedAuthorActions({ interaction });
 			}
 			case super.dynamicCustomId('ticket_threads_category_delete_confirm'):
 			case super.dynamicCustomId('ticket_threads_category_delete_cancel'): {
-				return interaction.isButton() && this.confirmDeleteCategory({ interaction });
+				return interaction.isButton() && void this.confirmDeleteCategory({ interaction });
 			}
 			case super.dynamicCustomId('ticket_threads_category_view_previous'):
 			case super.dynamicCustomId('ticket_threads_category_view_next'): {

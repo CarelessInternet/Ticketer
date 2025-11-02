@@ -7,6 +7,7 @@ export default createNextIntlPlugin({
 	typedRoutes: true,
 	experimental: {
 		turbopackFileSystemCacheForDev: true,
+		viewTransition: true,
 	},
 	output: 'standalone',
 });

@@ -14,7 +14,7 @@ import {
 	inlineCode,
 } from 'discord.js';
 import { Command, DeferReply } from '@ticketer/djs-framework';
-import { getTranslations, translate } from '@/i18n';
+import { getLocale, getTranslations, translate } from '@/i18n';
 import { environment } from '@ticketer/env/bot';
 
 const dataTranslations = translate().commands.help.data;
@@ -70,23 +70,23 @@ export default class extends Command.Interaction {
 		const buttons: { label: string; url: string }[] = [
 			{
 				label: translations[2].links.donate(),
-				url: new URL('/links/funding/donate', environment.WEBSITE_URL).toString(),
+				url: this.UTM('/links/funding/donate'),
 			},
 			{
 				label: translations[2].links.website(),
-				url: environment.WEBSITE_URL,
+				url: this.UTM(),
 			},
 			...(environment.DISCORD_SUPPORT_SERVER
 				? [
 						{
 							label: translations[2].links.supportServer(),
-							url: environment.DISCORD_SUPPORT_SERVER,
+							url: new URL(environment.DISCORD_SUPPORT_SERVER).toString(),
 						},
 					]
 				: []),
 			{
 				label: translations[2].links.invite(),
-				url: new URL('/links/discord/invite', environment.WEBSITE_URL).toString(),
+				url: this.UTM('/links/discord/invite'),
 			},
 		];
 
@@ -102,7 +102,7 @@ export default class extends Command.Interaction {
 							new ButtonBuilder()
 								.setStyle(ButtonStyle.Link)
 								.setLabel(translations[0].button.label())
-								.setURL(new URL('/en-GB/docs/commands', environment.WEBSITE_URL).toString()),
+								.setURL(this.UTM(`/${getLocale(interaction.locale)}/docs/commands`)),
 						),
 				)
 				.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true))
@@ -118,5 +118,14 @@ export default class extends Command.Interaction {
 		);
 
 		void interaction.editReply({ components: [container], flags: [MessageFlags.IsComponentsV2] });
+	}
+
+	private UTM(route = '') {
+		const url = new URL(route, environment.WEBSITE_URL);
+		url.searchParams.set('utm_source', 'ticketer-bot');
+		url.searchParams.set('utm_medium', 'button link');
+		url.searchParams.set('utm_content', 'command help');
+
+		return url.toString();
 	}
 }

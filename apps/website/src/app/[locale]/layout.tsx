@@ -45,7 +45,7 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[lo
 			{environment.NEXT_PUBLIC_UMAMI_ID && environment.NEXT_PUBLIC_UMAMI_URL && (
 				<Script
 					defer
-					src={`${environment.NEXT_PUBLIC_UMAMI_URL}/script.js`}
+					src={new URL('/script.js', environment.NEXT_PUBLIC_UMAMI_URL).toString()}
 					data-website-id={environment.NEXT_PUBLIC_UMAMI_ID}
 				/>
 			)}

@@ -25,8 +25,8 @@ export function mergeMetadata({
 					alt: 'Ticketer logo.',
 				},
 			],
-			url: environment.NEXT_PUBLIC_SITE_URL,
+			url: new URL(environment.NEXT_PUBLIC_SITE_URL),
 		},
-		metadataBase: environment.NEXT_PUBLIC_SITE_URL,
+		metadataBase: new URL(environment.NEXT_PUBLIC_SITE_URL),
 	};
 }

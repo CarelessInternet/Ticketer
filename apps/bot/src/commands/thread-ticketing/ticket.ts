@@ -131,7 +131,7 @@ export class ComponentInteraction extends Component.Interaction {
 				break;
 			}
 			case super.customId('ticket_threads_categories_create_list_panel'): {
-				return context.interaction.isButton() && this.panelTicket(context);
+				return context.interaction.isButton() && void this.panelTicket(context);
 			}
 			case super.customId('ticket_threads_category_create_rename_title'): {
 				return void ThreadTicketing.renameTitleModal.call(this, context);

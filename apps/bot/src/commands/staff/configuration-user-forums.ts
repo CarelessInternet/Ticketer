@@ -372,7 +372,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 		switch (customId) {
 			case super.dynamicCustomId('ticket_user_forums_configuration_managers'): {
-				return interaction.isRoleSelectMenu() && this.updateManagers({ interaction });
+				return interaction.isRoleSelectMenu() && void this.updateManagers({ interaction });
 			}
 			case super.dynamicCustomId('ticket_user_forums_view_previous'):
 			case super.dynamicCustomId('ticket_user_forums_view_next'): {

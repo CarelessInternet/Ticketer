@@ -14,7 +14,7 @@ export default function RichText({ children }: Properties) {
 		b: (chunk: ReactNode) => <b>{chunk}</b>,
 		i: (chunk: ReactNode) => <i>{chunk}</i>,
 		linkSupport: (chunk: ReactNode) => (
-			<InternalLink href="/links/discord/support" noLocalisation>
+			<InternalLink href="/links/discord/support" noLocalisation prefetch={false}>
 				{chunk}
 			</InternalLink>
 		),

@@ -18,7 +18,7 @@ export default class extends Event.Handler {
 
 			return (
 				interaction.isRepliable() &&
-				interaction.reply({
+				void interaction.reply({
 					embeds: [
 						super
 							.userEmbedError(interaction.member, translations.title())

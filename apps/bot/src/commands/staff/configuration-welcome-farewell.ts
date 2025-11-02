@@ -215,14 +215,14 @@ export class ComponentInteraction extends Component.Interaction {
 		switch (customId) {
 			case super.customId('welcome_configuration'):
 			case super.customId('farewell_configuration'): {
-				return interaction.isStringSelectMenu() && this.welcomeAndFarewellConfiguration({ interaction });
+				return interaction.isStringSelectMenu() && void this.welcomeAndFarewellConfiguration({ interaction });
 			}
 			case super.customId('welcome_configuration_channel'):
 			case super.customId('farewell_configuration_channel'): {
-				return interaction.isChannelSelectMenu() && this.welcomeAndFarewellConfigurationChannel({ interaction });
+				return interaction.isChannelSelectMenu() && void this.welcomeAndFarewellConfigurationChannel({ interaction });
 			}
 			case super.customId('welcome_configuration_roles'): {
-				return interaction.isRoleSelectMenu() && this.welcomeConfigurationRoles({ interaction });
+				return interaction.isRoleSelectMenu() && void this.welcomeConfigurationRoles({ interaction });
 			}
 			default: {
 				return interaction.reply({

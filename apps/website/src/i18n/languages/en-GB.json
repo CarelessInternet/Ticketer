@@ -183,6 +183,20 @@
 						"paragraphs": {
 							"1": "Create a directory/folder with any name (like \"Ticketer\") and then create a file in that directory named \"compose.yaml\".",
 							"2": "Copy and paste the following content in the created file:"
+						},
+						"accordion": {
+							"1": {
+								"title": "Why not push the website image to the GitHub Container registry?",
+								"description": "That's because this website is built with Next.js, which requires public environment variables to be present at build time. Since the images in a registry are already built, this prevents users from modifying these important variables (see <linkIssue>this issue</linkIssue>). The solution above is the simplest one, as all configuration can still be defined in the same compose file with minimal differences."
+							},
+							"2": {
+								"title": "How to rebuild the image (with a new configuration)?",
+								"paragraphs": {
+									"1": "Stop the website container first:",
+									"2": "Then remove the website image:",
+									"3": "Edit the website configuration in the compose file. Afterwards, run the website again:"
+								}
+							}
 						}
 					},
 					"environment-variables": {

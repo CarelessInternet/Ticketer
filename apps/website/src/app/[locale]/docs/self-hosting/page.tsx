@@ -1,3 +1,4 @@
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Code } from 'bright';
 import CodeBlock from '@/components/CodeBlock';
@@ -46,12 +47,26 @@ services:
     networks:
       - ticketer_database_network
 
-  # Uncomment the service below if you want to self-host the website.
+  # Comment the service below if you do not want to self-host the website.
   # The website is exposed on port 2027.
-  # website:
-    # image: ghcr.io/carelessinternet/ticketer-website:latest
-    # container_name: ticketer-website
-    # restart: unless-stopped
+  website:
+    build:
+      # You may change the version below to >= 3.5.0, or remove the last part after ".git".
+      context: https://github.com/CarelessInternet/Ticketer.git#v3.5.0
+      dockerfile: ./apps/website/Dockerfile
+      args:
+        NEXT_PUBLIC_SITE_URL: "http://localhost:2027" # Change to the public-facing URL if needed.
+        # NEXT_PUBLIC_UMAMI_ID: ""
+        # NEXT_PUBLIC_UMAMI_URL: ""
+    image: ticketer-website
+    pull_policy: never
+    container_name: ticketer-website
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2027/health", "||", "exit", "1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   ticketer_database_data:
@@ -136,9 +151,59 @@ export default async function Page({ params }: PageProps<'/[locale]/docs/self-ho
 				<Code title="compose.yaml" lang="yaml" theme="github-dark">
 					{composeFile}
 				</Code>
-				{/* todo: write why dockerfile has build to dockerfile URL
-				see https://github.com/vercel/next.js/discussions/17641
-				 */}
+				<div className="flex justify-center">
+					<Accordion type="multiple" className="w-11/12">
+						<AccordionItem value="registry">
+							<AccordionTrigger>
+								<Paragraph>{t('content.creating-the-compose-file.accordion.1.title')}</Paragraph>
+							</AccordionTrigger>
+							<AccordionContent>
+								<Paragraph>
+									<RichText>
+										{(tags) =>
+											t.rich('content.creating-the-compose-file.accordion.1.description', {
+												linkIssue: (chunk) => (
+													<ExternalLink href="https://github.com/vercel/next.js/discussions/17641">
+														{chunk}
+													</ExternalLink>
+												),
+												...tags,
+											})
+										}
+									</RichText>
+								</Paragraph>
+							</AccordionContent>
+						</AccordionItem>
+						<AccordionItem value="rebuild">
+							<AccordionTrigger>
+								<Paragraph>{t('content.creating-the-compose-file.accordion.2.title')}</Paragraph>
+							</AccordionTrigger>
+							<AccordionContent>
+								<Paragraph>{t('content.creating-the-compose-file.accordion.2.paragraphs.1')}</Paragraph>
+								<CodeBlock clipboardText="docker compose down ticketer-website">
+									<span>
+										<span className="text-green-500">docker </span>
+										<span>compose down ticketer-website</span>
+									</span>
+								</CodeBlock>
+								<Paragraph>{t('content.creating-the-compose-file.accordion.2.paragraphs.2')}</Paragraph>
+								<CodeBlock clipboardText="docker image rm ticketer-website">
+									<span>
+										<span className="text-green-500">docker </span>
+										<span>image rm ticketer-website</span>
+									</span>
+								</CodeBlock>
+								<Paragraph>{t('content.creating-the-compose-file.accordion.2.paragraphs.3')}</Paragraph>
+								<CodeBlock clipboardText="docker compose up -d">
+									<span>
+										<span className="text-green-500">docker </span>
+										<span>compose up -d</span>
+									</span>
+								</CodeBlock>
+							</AccordionContent>
+						</AccordionItem>
+					</Accordion>
+				</div>
 			</Divider>
 			<Divider>
 				<ScrollLink target="environment-variables">{t('content.environment-variables.title')}</ScrollLink>

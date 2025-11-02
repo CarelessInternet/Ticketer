@@ -183,6 +183,20 @@
 						"paragraphs": {
 							"1": "Skapa en mapp med valfritt namn (t.ex. \"Ticketer\") och skapa sedan en fil i den mappen med namnet \"compose.yaml\".",
 							"2": "Kopiera och klistra in följande innehåll i den skapade filen:"
+						},
+						"accordion": {
+							"1": {
+								"title": "Varför inte pusha webbplatsbilden till GitHub Container Registry?",
+								"description": "Det beror på att den här webbplatsen är byggd med Next.js, vilket kräver att offentliga miljövariabler är tillgängliga vid byggtid. Eftersom bilderna i ett register redan är byggda hindrar det användare från att ändra dessa viktiga variabler (se <linkIssue>detta ärende</linkIssue>). Lösningen ovan är den enklaste, eftersom all konfiguration fortfarande kan definieras i samma compose-fil med minimala skillnader."
+							},
+							"2": {
+								"title": "Hur bygger man om bilden (med en ny konfiguration)?",
+								"paragraphs": {
+									"1": "Stoppa webbplatscontainern först:",
+									"2": "Ta sedan bort webbplatsbilden:",
+									"3": "Redigera webbplatsens konfiguration i compose-filen. Kör sedan webbplatsen igen:"
+								}
+							}
 						}
 					},
 					"environment-variables": {

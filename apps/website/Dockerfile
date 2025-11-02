@@ -70,6 +70,7 @@ COPY --from=installer --chown=node:node /src/apps/website/.next/standalone ./
 COPY --from=installer --chown=node:node /src/apps/website/.next/static ./apps/website/.next/static
 COPY --from=installer --chown=node:node /src/apps/website/public ./apps/website/public
 
+ENV HOSTNAME=0.0.0.0
 ENV PORT=2027
 EXPOSE ${PORT}
 

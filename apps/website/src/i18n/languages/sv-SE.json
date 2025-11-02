@@ -91,6 +91,10 @@
 					"description": "Läs om några av de viktiga kommandona i Ticketer som moderator eller användare av boten!"
 				},
 				"content": {
+					"plans-and-progress": {
+						"title": "Planer och Framsteg",
+						"description": "Om du vill se vad som är planerat för Ticketer framöver, kolla <link>planeringen här</link>!"
+					},
 					"thread-tickets": {
 						"title": "Trådstödbiljetter",
 						"description": "Botens huvudfokus ligger på trådar som fungerar som stödbiljetter. Det finns flera delar till denna funktion som kan verka överväldigande till en början, men som fungerar bra i praktiken.",
@@ -218,7 +222,7 @@
 						"paragraphs": {
 							"1": "Öppna Visual Studio Code och öppna kommandopaletten inuti kodeditorn och kör följande kommando:",
 							"2": "Du blir ombedd att ange en länk till ett repository. Klistra in Ticketers GitHub-länk och välj därefter huvudgrenen (main branch):",
-							"3": "När Dev Containern har startat kan du börja koda. Så enkelt är det! Glöm inte att skapa de nödvändiga utvecklingsmiljöfilerna för boten och databasen för att kunna köra boten!"
+							"3": "När Dev Containern har startat kan du börja koda. Så enkelt är det! Glöm inte att skapa de nödvändiga utvecklingsmiljöfilerna för boten, databasen, och webbsidan för att kunna köra de olika apparna!"
 						}
 					}
 				}

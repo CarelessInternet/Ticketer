@@ -59,7 +59,7 @@ COPY --from=installer --chown=node:node /src/apps/website/.next/static ./apps/we
 COPY --from=installer --chown=node:node /src/apps/website/public ./apps/website/public
 
 ENV PORT=2027
-EXPOSE 2027
+EXPOSE ${PORT}
 
 # Run the website.
 CMD ["node", "apps/website/server.js"]

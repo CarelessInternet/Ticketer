@@ -1,6 +1,6 @@
 {
 	"$schema": "https://turbo.build/schema.json",
-	"globalEnv": ["VERCEL_URL", "PORT", "NODE_ENV"],
+	"globalEnv": ["NEXT_PUBLIC_*"],
 	"globalDependencies": ["**/.env.*.local"],
 	"ui": "tui",
 	"tasks": {

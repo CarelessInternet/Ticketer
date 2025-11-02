@@ -91,6 +91,10 @@
 					"description": "Read about some of the important commands in Ticketer as a moderator or user of the bot!"
 				},
 				"content": {
+					"plans-and-progress": {
+						"title": "Plans and Progress",
+						"description": "If you want to see what the future is planned for Ticketer, check out <link>the roadmap here</link>!"
+					},
 					"thread-tickets": {
 						"title": "Thread Tickets",
 						"description": "The main focus of the bot is on threads which act as tickets. There are several parts to this feature which may seem daunting at first, but play out well in practice.",
@@ -218,7 +222,7 @@
 						"paragraphs": {
 							"1": "Open Visual Studio Code, and inside the code editor, open the command palette and run the following command.",
 							"2": "It should prompt for a repository URL. Paste Ticketer's GitHub URL and afterwards choose the main branch:",
-							"3": "Once the Dev Container has started, you can get to coding. It's as simple as that! Do not forget to create the necessary bot and database development environment files to run the bot!"
+							"3": "Once the Dev Container has started, you can get to coding. It's as simple as that! Do not forget to create the necessary bot, database, and website development environment files to run the different apps!"
 						}
 					}
 				}

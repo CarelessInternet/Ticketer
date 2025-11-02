@@ -1,8 +1,5 @@
 import type { Metadata } from 'next/types';
-
-const baseURL = new URL(
-	process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : `http://localhost:${process.env.PORT ?? String(2027)}`,
-);
+import { environment } from '@ticketer/env/website';
 
 export function mergeMetadata({
 	description,
@@ -14,7 +11,7 @@ export function mergeMetadata({
 	title: string;
 }): Metadata {
 	return {
-		title: `Ticketer - ${title}`,
+		title: `${title} - Ticketer`,
 		description: description,
 		openGraph: {
 			siteName: 'Ticketer',
@@ -22,14 +19,14 @@ export function mergeMetadata({
 			type: 'website',
 			images: [
 				{
-					url: new URL('/favicon.ico', baseURL),
+					url: new URL('/favicon.ico', environment.NEXT_PUBLIC_SITE_URL),
 					width: 512,
 					height: 512,
-					alt: 'Ticketer logo',
+					alt: 'Ticketer logo.',
 				},
 			],
-			url: baseURL,
+			url: environment.NEXT_PUBLIC_SITE_URL,
 		},
-		metadataBase: baseURL,
+		metadataBase: environment.NEXT_PUBLIC_SITE_URL,
 	};
 }

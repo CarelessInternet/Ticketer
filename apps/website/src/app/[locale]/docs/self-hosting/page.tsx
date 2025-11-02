@@ -63,7 +63,7 @@ services:
     container_name: ticketer-website
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:2027/health", "||", "exit", "1"]
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:2027/health || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 5

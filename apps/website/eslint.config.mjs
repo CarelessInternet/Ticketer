@@ -20,8 +20,6 @@ export default defineConfig(
 		},
 		files: ['src/**/*.{ts,tsx}', './eslint.config.mjs'],
 		rules: {
-			// TODO: remove this when https://github.com/eslint/eslint/issues/20272 is resolved.
-			'@typescript-eslint/unified-signatures': 'off',
 			// Consistently import navigation APIs from `@/i18n/routing`.
 			'no-restricted-imports': [
 				'error',

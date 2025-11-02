@@ -7,6 +7,9 @@ on:
 permissions:
   contents: read
 
+env:
+  NEXT_PUBLIC_SITE_URL: 'http://localhost:2027'
+
 jobs:
   build:
     runs-on: ubuntu-latest

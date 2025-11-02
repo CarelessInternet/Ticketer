@@ -27,6 +27,8 @@ export default defineConfig(
 		rules: {
 			'@typescript-eslint/consistent-type-imports': 'error',
 			'@typescript-eslint/no-unsafe-enum-comparison': 'off',
+			// TODO: remove this when https://github.com/eslint/eslint/issues/20272 is resolved.
+			'@typescript-eslint/unified-signatures': 'off',
 			'drizzle/enforce-delete-with-where': [
 				'error',
 				{

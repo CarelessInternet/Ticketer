@@ -60,6 +60,7 @@ RUN turbo run build --filter=@ticketer/website
 
 # Copy the files over and use the apps/website directory.
 FROM base AS runner
+RUN apk add --no-cache curl
 WORKDIR /src
 USER node
 

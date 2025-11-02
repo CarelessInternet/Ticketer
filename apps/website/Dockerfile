@@ -42,6 +42,18 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 COPY --from=builder /src/out/full/ .
 COPY turbo.json turbo.json
 
+# Declare necessary environment variables for the build step.
+ARG NEXT_PUBLIC_SITE_URL
+
+RUN \
+	if [ -z "$NEXT_PUBLIC_SITE_URL" ]; then \
+		echo "ERROR: NEXT_PUBLIC_SITE_URL build-arg is required" >&2; \
+		exit 1; \
+	fi
+
+ARG NEXT_PUBLIC_UMAMI_ID=""
+ARG NEXT_PUBLIC_UMAMI_URL=""
+
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV TURBO_TELEMETRY_DISABLED=1
 RUN turbo run build --filter=@ticketer/website

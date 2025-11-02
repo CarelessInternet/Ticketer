@@ -14,7 +14,8 @@ export const config = {
 		 * - images (otherwise Next.js cannot optimise the images)
 		 * - favicon.ico, sitemap.xml, robots.txt (metadata files)
 		 * - link routes (which redirect and therefore do not need localisations)
+		 * - health (useful for e.g. Docker healthchecks)
 		 */
-		'/((?!api|_vercel|_next/static|_next/image|images|favicon.ico|sitemap.xml|robots.txt|links).*)',
+		'/((?!api|_vercel|_next/static|_next/image|images|favicon.ico|sitemap.xml|robots.txt|links|health).*)',
 	],
 };

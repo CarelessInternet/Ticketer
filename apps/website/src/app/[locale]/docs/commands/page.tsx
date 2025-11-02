@@ -41,7 +41,7 @@ export default async function Page({ params }: PageProps<'/[locale]/docs/command
 					<RichText>
 						{(tags) =>
 							t.rich('content.plans-and-progress.description', {
-								link: (chunk) => (
+								linkAffine: (chunk) => (
 									<ExternalLink href="https://affine.pyce.eu/workspace/eded79da-c8d2-4c33-ba05-1b28e5b21906/zzZig58uMWTD-uTDVmZbE">
 										{chunk}
 									</ExternalLink>

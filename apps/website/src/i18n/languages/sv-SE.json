@@ -93,7 +93,7 @@
 				"content": {
 					"plans-and-progress": {
 						"title": "Planer och Framsteg",
-						"description": "Om du vill se vad som är planerat för Ticketer framöver, kolla <link>planeringen här</link>!"
+						"description": "Om du vill se vad som är planerat för Ticketer framöver, kolla <linkAffine>planeringen här</linkAffine>!"
 					},
 					"thread-tickets": {
 						"title": "Trådstödbiljetter",
@@ -270,27 +270,17 @@
 						"sections": {
 							"1": {
 								"title": "Vilken användarinformation samlas in?",
-								"description": "Den anonyma användarinformation som samlas in av Ticketers webbplats är följande:",
-								"list": {
-									"1": "Geolocation",
-									"2": "Enhetens OS & Version",
-									"3": "Webbläsare & Version",
-									"4": "Enhetstyp"
-								}
+								"description": "Ticketer-webbsidan använder en självhostad version av <linkUmami>Umami</linkUmami> inom EU för analys. Umami samlar endast <linkMetrics>anonymiserade användningsmått (sidvisningar, enhetstyp, webbläsare, ungefärlig plats, osv.)</linkMetrics> och stället inga kakor eller lagrar personligt identifierbar information. Uppgifterna lagras på obestämd tid."
 							},
 							"2": {
-								"title": "Hur samlas användarinformationen in?",
-								"description": "Enligt <linkVercelWebAnalytics>Vercel Web Analytics</linkVercelWebAnalytics> identifieras besökare av en hash som skapas från den inkommande förfrågan. Cookies används inte för att spåra användare. Sidvisningar spåras genom webbläsarens inbyggda API."
-							},
-							"3": {
 								"title": "Hur används personuppgifterna?",
 								"description": "Den insamlade informationen används för analytiska syften och kan användas för att förbättra användarupplevelsen."
 							},
-							"4": {
+							"3": {
 								"title": "Delas personuppgifterna?",
-								"description": "Denna information skickas till <linkVercel>Vercel</linkVercel> för att tillhandahålla analysdata."
+								"description": "Denna information delas inte med någon utanför Ticketer-teamet."
 							},
-							"5": {
+							"4": {
 								"title": "Hur kan jag kontakta er för frågor eller bekymmer?",
 								"description": "Du kan gå med i den officiella <linkSupport>Discord-supportservern</linkSupport> för att ställa frågor eller uttrycka bekymmer angående Ticketer."
 							}

@@ -136,6 +136,9 @@ export default async function Page({ params }: PageProps<'/[locale]/docs/self-ho
 				<Code title="compose.yaml" lang="yaml" theme="github-dark">
 					{composeFile}
 				</Code>
+				{/* todo: write why dockerfile has build to dockerfile URL
+				see https://github.com/vercel/next.js/discussions/17641
+				 */}
 			</Divider>
 			<Divider>
 				<ScrollLink target="environment-variables">{t('content.environment-variables.title')}</ScrollLink>

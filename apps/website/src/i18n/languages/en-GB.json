@@ -93,7 +93,7 @@
 				"content": {
 					"plans-and-progress": {
 						"title": "Plans and Progress",
-						"description": "If you want to see what the future is planned for Ticketer, check out <link>the roadmap here</link>!"
+						"description": "If you want to see what the future is planned for Ticketer, check out <linkAffine>the roadmap here</linkAffine>!"
 					},
 					"thread-tickets": {
 						"title": "Thread Tickets",
@@ -270,27 +270,17 @@
 						"sections": {
 							"1": {
 								"title": "What user information is collected?",
-								"description": "The anonymous user information collected by the Ticketer website is the following:",
-								"list": {
-									"1": "Geolocation",
-									"2": "Device OS & Version",
-									"3": "Browser & Version",
-									"4": "Device Type"
-								}
+								"description": "The Ticketer website uses a self-hosted version of <linkUmami>Umami</linkUmami> within the EU for analytics. Umami collects only <linkMetrics>anonymized usage metrics (page views, device type, browser, general location, etc.)</linkMetrics> and does not set cookies or store personally-identifying information. The data is stored indefinitely."
 							},
 							"2": {
-								"title": "How is the user information collected?",
-								"description": "According to <linkVercelWebAnalytics>Vercel Web Analytics</linkVercelWebAnalytics>, the visitors are identified by a hash created from the incoming request. Cookies are not used to track users. Page views are tracked through the native Browser API."
-							},
-							"3": {
 								"title": "How is the personal information used?",
 								"description": "The data collected is used for analytical purposes and may be used to improve the user experience."
 							},
-							"4": {
+							"3": {
 								"title": "Is the personal information shared?",
-								"description": "This information is sent to <linkVercel>Vercel</linkVercel> to provide the analytical data."
+								"description": "This information is not shared to any outside the Ticketer team."
 							},
-							"5": {
+							"4": {
 								"title": "How can I contact for questions or concerns?",
 								"description": "You may join the official <linkSupport>Discord support server</linkSupport> to ask questions or raise concerns regarding Ticketer."
 							}

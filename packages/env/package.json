@@ -13,10 +13,10 @@
 	"dependencies": {
 		"@t3-oss/env-core": "^0.13.8",
 		"@t3-oss/env-nextjs": "^0.13.8",
-		"zod": "^4.1.12"
+		"zod": "^4.1.13"
 	},
 	"devDependencies": {
 		"@ticketer/eslint-config": "workspace:*",
-		"@types/node": "^24.9.2"
+		"@types/node": "^24.10.1"
 	}
 }

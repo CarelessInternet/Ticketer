@@ -27,7 +27,7 @@ export default class extends Event.Handler {
 								{ name: translations.fields[0].name(), value: blacklist.reason, inline: true },
 								{
 									name: translations.fields[1].name(),
-									value: time(blacklist.timestamp, TimestampStyles.ShortDateTime),
+									value: time(blacklist.timestamp, TimestampStyles.LongDateShortTime),
 									inline: true,
 								},
 							]),

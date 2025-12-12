@@ -25,6 +25,6 @@
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.3.3",
 		"@ticketer/eslint-config": "workspace:*",
-		"@types/node": "^24.10.1"
+		"@types/node": "^25.0.1"
 	}
 }

@@ -15,6 +15,7 @@ export default function ScrollLink({
 
 	return (
 		<InternalLink
+			// @ts-expect-error: Not sure how to combat this type error.
 			href={`${pathname}#${target}`}
 			target="_self"
 			id={target}

@@ -148,6 +148,7 @@ export async function createTicket(
 			.has([
 				PermissionFlagsBits.MentionEveryone,
 				PermissionFlagsBits.ManageMessages,
+				PermissionFlagsBits.PinMessages,
 				PermissionFlagsBits.ViewChannel,
 				PermissionFlagsBits.SendMessagesInThreads,
 				PermissionFlagsBits.EmbedLinks,
@@ -158,6 +159,7 @@ export async function createTicket(
 			[
 				'Mention All Roles',
 				'Manage Messages',
+				'Pin Messages',
 				'View Channel',
 				'Send Messages in Threads',
 				'Embed Links',

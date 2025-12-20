@@ -8,6 +8,8 @@ import {
 	SeparatorSpacingSize,
 	subtext,
 	TextDisplayBuilder,
+	TimestampStyles,
+	time,
 	type User,
 } from 'discord.js';
 import type { Client } from '.';
@@ -56,7 +58,9 @@ export abstract class Base {
 			.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true))
 			.addTextDisplayComponents(
 				new TextDisplayBuilder().setContent(
-					subtext(`${this.client.user?.displayName}: Version ${env.npm_package_version}`),
+					subtext(
+						`${this.client.user?.displayName}: Version ${env.npm_package_version} • ${time(new Date(), TimestampStyles.ShortDateMediumTime)}`,
+					),
 				),
 			);
 	}
@@ -81,7 +85,7 @@ export abstract class Base {
 		const dynamicValue = match?.at(1);
 
 		return {
-			// Add by 3 because of the characters surrounding "dynamic" (i.e "{}_").
+			// Add 3 due to the characters surrounding "dynamic" (i.e "{}_").
 			customId: dynamicValue ? this.dynamicCustomId(value.slice(dynamicValue.length + 3)) : value,
 			...((dynamicValue || dynamicValueRequired) && { dynamicValue }),
 		};

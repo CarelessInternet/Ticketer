@@ -326,13 +326,7 @@ export default class extends Command.Interaction {
 		const [row] = await database
 			.select({ amount: count(), title: ticketThreadsCategories.categoryTitle })
 			.from(ticketsThreads)
-			.where(
-				and(
-					eq(ticketsThreads.categoryId, categoryId),
-					eq(ticketsThreads.guildId, interaction.guildId),
-					eq(ticketsThreads.state, 'active'),
-				),
-			)
+			.where(and(eq(ticketsThreads.categoryId, categoryId), eq(ticketsThreads.guildId, interaction.guildId)))
 			.innerJoin(ticketThreadsCategories, eq(ticketsThreads.categoryId, ticketThreadsCategories.id));
 		const amount = row?.amount ?? 0;
 
@@ -353,8 +347,11 @@ export default class extends Command.Interaction {
 				.userEmbed(interaction.member)
 				.setTitle('Are you sure you want to proceed?')
 				.setDescription(
-					`The category you want to delete still has active tickets. Are you sure you want to delete the ${row?.title ? inlineCode(row.title) : 'No Title Found'} category?
-					In addition, you would have to manually delete each thread which has that category.`,
+					`
+						The category you want to delete potentially has active tickets.
+						Are you sure you want to delete the ${row?.title ? inlineCode(row.title) : 'No Title Found'} category?
+						In addition, you would have to manually delete each thread which has that category.
+					`,
 				);
 
 			return interaction.editReply({

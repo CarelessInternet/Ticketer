@@ -433,7 +433,8 @@ const sv_SE = {
 						},
 						description: {
 							success: 'Raderade de{{t|}} sista {amount} meddelande{{t|n}}!',
-							error: 'Jag behöver Hantera Meddelanden behörigheten för att radera meddelanden.',
+							error:
+								'Jag behöver Se kanal, Läs meddelandehistoriken, och Hantera meddelanden behörigheten för att radera meddelanden.',
 						},
 					},
 				],

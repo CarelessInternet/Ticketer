@@ -6,7 +6,7 @@
 	"types": "./src/index.ts",
 	"type": "module",
 	"scripts": {
-		"check": "biome check",
+		"check": "biome check --write",
 		"drizzle:studio:development": "drizzle-kit studio --port 3001",
 		"migrations:check": "drizzle-kit check",
 		"migrations:drop": "drizzle-kit drop",

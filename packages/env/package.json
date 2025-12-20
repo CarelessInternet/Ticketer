@@ -8,7 +8,7 @@
 	],
 	"type": "module",
 	"scripts": {
-		"check": "biome check"
+		"check": "biome check --write"
 	},
 	"dependencies": {
 		"@t3-oss/env-core": "^0.13.10",

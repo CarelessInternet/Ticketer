@@ -7,7 +7,7 @@
 		"dev": "tsx watch --env-file=.env.bot.development.local --env-file=.env.database.development.local .",
 		"debug": "tsx watch --inspect-wait --env-file=.env.bot.development.local --env-file=.env.database.development.local .",
 		"start": "tsx .",
-		"check": "biome check",
+		"check": "biome check --write",
 		"commands:deploy:development": "tsx --env-file=.env.bot.development.local --env-file=.env.database.development.local ./src/deploy.ts",
 		"commands:deploy:production": "tsx ./src/deploy.ts",
 		"i18n": "typesafe-i18n"

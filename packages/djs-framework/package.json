@@ -6,7 +6,7 @@
 	"types": "./src/index.ts",
 	"type": "module",
 	"scripts": {
-		"check": "biome check",
+		"check": "biome check --write",
 		"test": "tsx --test ./tests/**/*.test.ts"
 	},
 	"peerDependencies": {

@@ -64,7 +64,7 @@ const ticketThreadsOpeningMessageTitle = ({
 }: MessageTitleOptions) =>
 	title
 		? replaceMessageTitle({ categoryTitle, displayName, messageTitle: title })
-		: ThreadTicketing.titleAndEmoji(categoryTitle, categoryEmoji) + ': ' + translations(locale).openingMessage.title();
+		: `${ThreadTicketing.titleAndEmoji(categoryTitle, categoryEmoji)}: ${translations(locale).openingMessage.title()}`;
 
 const ticketThreadsOpeningMessageDescription = ({
 	categoryTitle,

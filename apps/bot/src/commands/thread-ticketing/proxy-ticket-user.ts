@@ -1,7 +1,7 @@
-import { MessageFlags, PermissionFlagsBits } from 'discord.js';
 import { Command } from '@ticketer/djs-framework';
-import { ThreadTicketing } from '@/utils';
+import { MessageFlags, PermissionFlagsBits } from 'discord.js';
 import { translate } from '@/i18n';
+import { ThreadTicketing } from '@/utils';
 
 const dataTranslations = translate().commands['proxy-ticket']['context-user'].data;
 
@@ -31,7 +31,7 @@ export default class extends Command.Interaction {
 		}
 
 		if (categories.length === 1) {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			// biome-ignore lint/style/noNonNullAssertion: It should exist.
 			const { id: categoryId, skipModal, titleAndDescriptionRequired } = categories.at(0)!;
 
 			if (skipModal) {

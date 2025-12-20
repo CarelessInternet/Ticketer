@@ -1,21 +1,21 @@
+import { Command, DeferReply } from '@ticketer/djs-framework';
+import { environment } from '@ticketer/env/bot';
 import {
 	ActionRowBuilder,
 	ApplicationCommandOptionType,
 	ApplicationCommandType,
 	ButtonBuilder,
 	ButtonStyle,
+	chatInputApplicationCommandMention,
+	heading,
+	inlineCode,
 	MessageFlags,
 	SectionBuilder,
 	SeparatorBuilder,
 	SeparatorSpacingSize,
 	TextDisplayBuilder,
-	chatInputApplicationCommandMention,
-	heading,
-	inlineCode,
 } from 'discord.js';
-import { Command, DeferReply } from '@ticketer/djs-framework';
 import { getLocale, getTranslations, translate } from '@/i18n';
-import { environment } from '@ticketer/env/bot';
 
 const dataTranslations = translate().commands.help.data;
 

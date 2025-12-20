@@ -1,8 +1,8 @@
-import { ActionRowBuilder, type ButtonBuilder, ChannelType, MessageFlags, PermissionFlagsBits } from 'discord.js';
-import { LogExceptions, fetchChannel, ticketButtons, userForumsContainer } from '@/utils';
 import { database, eq, userForumsConfigurations } from '@ticketer/database';
 import { Event } from '@ticketer/djs-framework';
+import { ActionRowBuilder, type ButtonBuilder, ChannelType, MessageFlags, PermissionFlagsBits } from 'discord.js';
 import { translate } from '@/i18n';
+import { fetchChannel, LogExceptions, ticketButtons, userForumsContainer } from '@/utils';
 
 export default class extends Event.Handler {
 	public readonly name = Event.Name.ThreadCreate;

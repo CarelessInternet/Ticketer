@@ -1,6 +1,6 @@
-import { AutomaticThreads, ThreadTicketing, TicketType, UserForums, invalidTicket, ticketType } from '@/utils';
-import { getTranslations, translate } from '@/i18n';
 import { Command } from '@ticketer/djs-framework';
+import { getTranslations, translate } from '@/i18n';
+import { AutomaticThreads, invalidTicket, ThreadTicketing, TicketType, ticketType, UserForums } from '@/utils';
 
 const dataTranslations = translate().commands['rename-title'].data;
 

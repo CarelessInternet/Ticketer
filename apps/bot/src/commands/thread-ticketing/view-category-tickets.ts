@@ -1,3 +1,4 @@
+import { and, asc, count, database, eq, like, ticketsThreads, ticketThreadsCategories } from '@ticketer/database';
 import {
 	Autocomplete,
 	type BaseInteraction,
@@ -6,9 +7,8 @@ import {
 	DeferReply,
 	DeferUpdate,
 } from '@ticketer/djs-framework';
-import { PermissionFlagsBits, channelMention, userMention } from 'discord.js';
-import { ThreadTicketing, goToPage, managerIntersection, messageWithPagination, withPagination } from '@/utils';
-import { and, asc, count, database, eq, like, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
+import { channelMention, PermissionFlagsBits, userMention } from 'discord.js';
+import { goToPage, managerIntersection, messageWithPagination, ThreadTicketing, withPagination } from '@/utils';
 
 interface ViewCategoryTicketsOptions {
 	categoryId?: string | null;
@@ -21,7 +21,7 @@ async function viewCategoryTickets(
 	{ categoryId, page = 0 }: ViewCategoryTicketsOptions = {},
 ) {
 	const PAGE_SIZE = 3;
-	const id = Number.parseInt(String(categoryId));
+	const id = Number.parseInt(String(categoryId), 10);
 
 	if (categoryId && Number.isNaN(id)) return;
 

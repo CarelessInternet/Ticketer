@@ -1,8 +1,8 @@
+import { and, database, desc, eq, ticketsThreads, ticketThreadsCategories } from '@ticketer/database';
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
-import { type Snowflake, channelMention } from 'discord.js';
-import { ThreadTicketing, managerIntersection, messageWithPagination, withPagination } from '@/utils';
-import { and, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
+import { channelMention, type Snowflake } from 'discord.js';
 import { translate } from '@/i18n';
+import { managerIntersection, messageWithPagination, ThreadTicketing, withPagination } from '@/utils';
 
 interface ViewUserTicketsOptions {
 	page?: number;

@@ -1,7 +1,7 @@
-import { ActivityType, PresenceUpdateStatus } from 'discord.js';
-import { LogExceptions, formatDateLong } from '@/utils';
 import { Event } from '@ticketer/djs-framework';
 import chalk from 'chalk';
+import { ActivityType, PresenceUpdateStatus } from 'discord.js';
+import { formatDateLong, LogExceptions } from '@/utils';
 
 export default class extends Event.Handler {
 	public readonly once = true;

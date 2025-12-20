@@ -3,10 +3,7 @@ packages:
   - packages/*
 
 ignoredBuiltDependencies:
+  - '@parcel/watcher'
   - '@swc/core'
   - unrs-resolver
-
-onlyBuiltDependencies:
-  - '@tailwindcss/oxide'
-  - esbuild
   - sharp

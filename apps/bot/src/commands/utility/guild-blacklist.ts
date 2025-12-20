@@ -1,9 +1,9 @@
-import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
-import { PermissionFlagsBits, inlineCode } from 'discord.js';
 import { database, desc, eq, guildBlacklists, guildBlacklistsInsertSchema } from '@ticketer/database';
-import { formatDateShort, goToPage, messageWithPagination, refreshGuildBlacklist, withPagination } from '@/utils';
-import { getTranslations, translate } from '@/i18n';
+import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
+import { inlineCode, PermissionFlagsBits } from 'discord.js';
 import { prettifyError } from 'zod';
+import { getTranslations, translate } from '@/i18n';
+import { formatDateShort, goToPage, messageWithPagination, refreshGuildBlacklist, withPagination } from '@/utils';
 
 async function getBlacklists(
 	this: BaseInteraction.Interaction,

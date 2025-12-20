@@ -1,16 +1,16 @@
+import type { Metadata } from 'next';
+import type { Locale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import type { PropsWithChildren } from 'react';
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
-import type { Locale } from 'next-intl';
-import type { Metadata } from 'next';
 import Paragraph from '@/components/Paragraph';
-import type { PropsWithChildren } from 'react';
 import RichText from '@/components/RichText';
 import ScrollLink from '@/components/ScrollLink';
 import SectionDivider from '@/components/SectionDivider';
 import Title from '@/components/Title';
-import { formatDate } from '@/lib/utils';
 import { mergeMetadata } from '@/lib/mergeMetadata';
+import { formatDate } from '@/lib/utils';
 
 function List({ children }: PropsWithChildren) {
 	return <ul className="list-disc pb-4 pl-10 font-medium">{children}</ul>;
@@ -82,9 +82,9 @@ export default async function Page({ params }: PageProps<'/[locale]/legal/privac
 								})
 							}
 						</RichText>
-						<span className="my-4 flex max-w-fit flex-row gap-2 border-l-4 border-gray-300 bg-gray-50 p-4 dark:border-gray-500 dark:bg-gray-800">
+						<span className="my-4 flex max-w-fit flex-row gap-2 border-gray-300 border-l-4 bg-gray-50 p-4 dark:border-gray-500 dark:bg-gray-800">
 							-
-							<span className="text-xl leading-relaxed font-medium text-gray-900 italic dark:text-white">
+							<span className="font-medium text-gray-900 text-xl italic leading-relaxed dark:text-white">
 								{t('sections.discord-bot.sections.1.quote')}
 							</span>
 						</span>

@@ -1,7 +1,7 @@
 import type { DeepPartial } from '@/utils';
-import ERROR_TITLE from './errorTitle';
 import type { Translation } from '../i18n-types';
 import automaticThreads from './automaticThreads';
+import ERROR_TITLE from './errorTitle';
 import threads from './threads';
 import userForums from './userForums';
 

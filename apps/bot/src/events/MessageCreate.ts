@@ -1,3 +1,5 @@
+import { automaticThreadsConfigurations, database, eq } from '@ticketer/database';
+import { Event } from '@ticketer/djs-framework';
 import {
 	ActionRowBuilder,
 	type ButtonBuilder,
@@ -7,10 +9,8 @@ import {
 	PermissionFlagsBits,
 	ThreadAutoArchiveDuration,
 } from 'discord.js';
-import { LogExceptions, automaticThreadsContainer, formatDateShort, ticketButtons } from '@/utils';
-import { automaticThreadsConfigurations, database, eq } from '@ticketer/database';
-import { Event } from '@ticketer/djs-framework';
 import { translate } from '@/i18n';
+import { automaticThreadsContainer, formatDateShort, LogExceptions, ticketButtons } from '@/utils';
 
 export default class extends Event.Handler {
 	public readonly name = Event.Name.MessageCreate;

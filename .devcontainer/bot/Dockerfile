@@ -15,7 +15,7 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
 # https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials#_sharing-gpg-keys
-RUN apk add --no-cache bash bash-completion git gnupg
+RUN apk add --no-cache bash bash-completion git gnupg gcompat
 
 RUN git config --global --add safe.directory /workspaces/Ticketer
 

@@ -1,3 +1,5 @@
+import { glob } from 'node:fs/promises';
+import { Collection, Client as DiscordClient, Routes, type Snowflake } from 'discord.js';
 import {
 	type Autocomplete,
 	type BaseInteraction,
@@ -9,8 +11,6 @@ import {
 	type Modal,
 	type Subcommand,
 } from '..';
-import { Collection, Client as DiscordClient, Routes, type Snowflake } from 'discord.js';
-import { glob } from 'node:fs/promises';
 
 /**
  * The extended version of the discord.js Client.

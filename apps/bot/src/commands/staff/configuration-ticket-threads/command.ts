@@ -1,28 +1,28 @@
 import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
-	MessageFlags,
-	PermissionFlagsBits,
-	StringSelectMenuBuilder,
-	StringSelectMenuOptionBuilder,
-	inlineCode,
-} from 'discord.js';
-import { Command, DeferReply } from '@ticketer/djs-framework';
-import { HasGlobalConfiguration, categoryFieldsModal, getCategories } from './helpers';
-import {
 	and,
 	count,
 	database,
 	eq,
+	ticketsThreads,
 	ticketThreadsCategories,
 	ticketThreadsCategoriesSelectSchema,
 	ticketThreadsConfigurations,
 	ticketThreadsConfigurationsInsertSchema,
-	ticketsThreads,
 } from '@ticketer/database';
-import { ThreadTicketing } from '@/utils';
+import { Command, DeferReply } from '@ticketer/djs-framework';
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	inlineCode,
+	MessageFlags,
+	PermissionFlagsBits,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
+} from 'discord.js';
 import { prettifyError } from 'zod';
+import { ThreadTicketing } from '@/utils';
+import { categoryFieldsModal, getCategories, HasGlobalConfiguration } from './helpers';
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName('configuration-ticket-threads')

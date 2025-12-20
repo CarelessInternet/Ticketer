@@ -1,4 +1,4 @@
-name: TypeScript ESLint
+name: TypeScript Biome
 
 on:
   push:
@@ -22,4 +22,4 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
       - run: pnpm install
-      - run: pnpm lint
+      - run: pnpm check

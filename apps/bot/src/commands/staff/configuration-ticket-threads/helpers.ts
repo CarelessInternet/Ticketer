@@ -1,22 +1,22 @@
+import { asc, database, eq, ticketThreadsCategories, ticketThreadsConfigurations } from '@ticketer/database';
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
 import {
+	bold,
+	channelMention,
 	HeadingLevel,
+	heading,
+	inlineCode,
 	LabelBuilder,
 	MessageFlags,
 	ModalBuilder,
+	roleMention,
 	SeparatorBuilder,
 	SeparatorSpacingSize,
 	TextDisplayBuilder,
 	TextInputBuilder,
 	TextInputStyle,
-	bold,
-	channelMention,
-	heading,
-	inlineCode,
-	roleMention,
 } from 'discord.js';
-import { ThreadTicketing, messageWithPagination, ticketThreadsOpeningMessageContainer, withPagination } from '@/utils';
-import { asc, database, eq, ticketThreadsCategories, ticketThreadsConfigurations } from '@ticketer/database';
+import { messageWithPagination, ThreadTicketing, ticketThreadsOpeningMessageContainer, withPagination } from '@/utils';
 
 const CATEGORY_PAGE_SIZE = 2;
 
@@ -43,7 +43,7 @@ export function HasGlobalConfiguration(_: object, __: string, descriptor: Proper
 			}
 		}
 
-		// eslint-disable-next-line prefer-rest-params
+		// biome-ignore lint/complexity/noArguments: It is convenient.
 		return Reflect.apply(original, this, arguments) as () => unknown;
 	};
 

@@ -5,7 +5,7 @@ export function LogExceptions(_: object, __: string, descriptor: PropertyDescrip
 
 	descriptor.value = async function () {
 		try {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-return, prefer-rest-params
+			// biome-ignore lint/complexity/noArguments: It is convenient.
 			return await Reflect.apply(original, this, arguments);
 		} catch (error) {
 			console.error(chalk.bgRed('[ERROR]'), error);

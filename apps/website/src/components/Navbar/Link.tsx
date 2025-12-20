@@ -1,10 +1,9 @@
 'use client';
 
 import type { AnchorHTMLAttributes, PropsWithChildren } from 'react';
+import { Link as LocalisedLink, usePathname } from '@/i18n/routing';
+import { cn, type WithRequired } from '@/lib/utils';
 import { NavigationMenuLink, navigationMenuTriggerStyle } from '../ui/navigation-menu';
-import { type WithRequired, cn } from '@/lib/utils';
-import { Link as LocalisedLink } from '@/i18n/routing';
-import { usePathname } from '@/i18n/routing';
 
 export default function Link({
 	children,

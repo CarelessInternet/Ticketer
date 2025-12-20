@@ -1,8 +1,8 @@
+import type { Route } from 'next';
+// biome-ignore lint/style/noRestrictedImports: Sometimes do not need localisation.
+import NextLink from 'next/link';
 import type { ComponentProps, PropsWithChildren } from 'react';
 import { Link } from '@/i18n/routing';
-// eslint-disable-next-line no-restricted-imports
-import NextLink from 'next/link';
-import type { Route } from 'next';
 import { cn } from '@/lib/utils';
 
 export default function InternalLink({

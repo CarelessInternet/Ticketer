@@ -1,3 +1,5 @@
+import { and, database, eq, ticketThreadsCategories } from '@ticketer/database';
+import type { BaseInteraction } from '@ticketer/djs-framework';
 import {
 	ActionRowBuilder,
 	type Locale,
@@ -5,10 +7,8 @@ import {
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder,
 } from 'discord.js';
-import { type ManagerIntersectionRoles, managerIntersection } from '..';
-import { and, database, eq, ticketThreadsCategories } from '@ticketer/database';
-import type { BaseInteraction } from '@ticketer/djs-framework';
 import { translate } from '@/i18n';
+import { type ManagerIntersectionRoles, managerIntersection } from '..';
 
 interface CategoryListOptions {
 	filterManagerIds?: ManagerIntersectionRoles;

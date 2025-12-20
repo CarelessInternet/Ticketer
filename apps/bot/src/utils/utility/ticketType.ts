@@ -1,4 +1,3 @@
-import { ChannelType, type GuildTextBasedChannel } from 'discord.js';
 import {
 	automaticThreadsConfigurations,
 	database,
@@ -8,6 +7,7 @@ import {
 	unionAll,
 	userForumsConfigurations,
 } from '@ticketer/database';
+import { ChannelType, type GuildTextBasedChannel } from 'discord.js';
 
 export enum TicketType {
 	ThreadTicketing,
@@ -40,5 +40,5 @@ export async function ticketType(channel: GuildTextBasedChannel | null) {
 			.where(eq(automaticThreadsConfigurations.channelId, id)),
 	);
 
-	return Number.parseInt(String(row?.type));
+	return Number.parseInt(String(row?.type), 10);
 }

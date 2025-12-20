@@ -1,14 +1,14 @@
+import type { userForumsConfigurations } from '@ticketer/database';
 import {
 	type ButtonBuilder,
 	Colors,
 	ContainerBuilder,
 	type GuildMember,
 	HeadingLevel,
+	heading,
 	SectionBuilder,
 	TextDisplayBuilder,
-	heading,
 } from 'discord.js';
-import type { userForumsConfigurations } from '@ticketer/database';
 
 type Columns = typeof userForumsConfigurations.$inferSelect;
 

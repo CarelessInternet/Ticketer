@@ -1,12 +1,12 @@
 'use client';
 
-import Error from 'next/error';
+import ErrorPage from 'next/error';
 
 export default function NotFound() {
 	return (
 		<html lang="en">
 			<body>
-				<Error statusCode={404} />
+				<ErrorPage statusCode={404} />
 			</body>
 		</html>
 	);

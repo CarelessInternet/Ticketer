@@ -1,4 +1,4 @@
-// Below must be first.
+// biome-ignore assist/source/organizeImports: Below must be first.
 export * as BaseInteraction from './BaseInteraction';
 export * as Autocomplete from './Autocomplete';
 export * as Command from './Command';

@@ -1,11 +1,11 @@
 'use client';
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { GB, SE, US } from 'country-flag-icons/react/3x2';
-import { type Locale, usePathname, useRouter } from '@/i18n/routing';
-import { Button } from '../ui/button';
 import { Languages } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { type Locale, usePathname, useRouter } from '@/i18n/routing';
+import { Button } from '../ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
 export default function LocaleSwitcher() {
 	const pathname = usePathname();
@@ -19,7 +19,7 @@ export default function LocaleSwitcher() {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" size="icon" className="duration-0 dark:hover:text-cyan-400 dark:focus:text-cyan-400">
+				<Button variant="outline" size="icon" className="duration-0 dark:focus:text-cyan-400 dark:hover:text-cyan-400">
 					<Languages />
 					<span className="sr-only">{t('change')}</span>
 				</Button>

@@ -1,7 +1,7 @@
-import { common } from './common';
-import { createEnv } from '@t3-oss/env-core';
 import { env } from 'node:process';
+import { createEnv } from '@t3-oss/env-core';
 import { z } from 'zod';
+import { common } from './common';
 
 export const environment = createEnv({
 	...common,

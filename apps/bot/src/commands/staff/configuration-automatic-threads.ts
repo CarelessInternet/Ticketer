@@ -1,26 +1,4 @@
 import {
-	ActionRowBuilder,
-	ChannelType,
-	HeadingLevel,
-	LabelBuilder,
-	MessageFlags,
-	ModalBuilder,
-	PermissionFlagsBits,
-	RoleSelectMenuBuilder,
-	SeparatorBuilder,
-	SeparatorSpacingSize,
-	StringSelectMenuBuilder,
-	StringSelectMenuOptionBuilder,
-	TextDisplayBuilder,
-	TextInputBuilder,
-	TextInputStyle,
-	bold,
-	channelMention,
-	heading,
-	roleMention,
-} from 'discord.js';
-import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
-import {
 	and,
 	automaticThreadsConfigurations,
 	automaticThreadsConfigurationsInsertSchema,
@@ -29,8 +7,30 @@ import {
 	desc,
 	eq,
 } from '@ticketer/database';
-import { automaticThreadsContainer, fetchChannel, goToPage, messageWithPagination, withPagination } from '@/utils';
+import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
+import {
+	ActionRowBuilder,
+	bold,
+	ChannelType,
+	channelMention,
+	HeadingLevel,
+	heading,
+	LabelBuilder,
+	MessageFlags,
+	ModalBuilder,
+	PermissionFlagsBits,
+	RoleSelectMenuBuilder,
+	roleMention,
+	SeparatorBuilder,
+	SeparatorSpacingSize,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
+	TextDisplayBuilder,
+	TextInputBuilder,
+	TextInputStyle,
+} from 'discord.js';
 import { prettifyError } from 'zod';
+import { automaticThreadsContainer, fetchChannel, goToPage, messageWithPagination, withPagination } from '@/utils';
 
 function IsTextChannel(_: object, __: string, descriptor: PropertyDescriptor) {
 	const original = descriptor.value as () => void;
@@ -46,7 +46,7 @@ function IsTextChannel(_: object, __: string, descriptor: PropertyDescriptor) {
 			return interaction.deferred ? interaction.editReply({ embeds }) : interaction.reply({ embeds });
 		}
 
-		// eslint-disable-next-line prefer-rest-params
+		// biome-ignore lint/complexity/noArguments: It is convenient.
 		return Reflect.apply(original, this, arguments) as () => unknown;
 	};
 

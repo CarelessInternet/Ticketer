@@ -1,3 +1,4 @@
+import { Component } from '@ticketer/djs-framework';
 import {
 	FileUploadBuilder,
 	LabelBuilder,
@@ -6,7 +7,6 @@ import {
 	TextInputBuilder,
 	TextInputStyle,
 } from 'discord.js';
-import { Component } from '@ticketer/djs-framework';
 import { translate } from '@/i18n';
 
 export default class extends Component.Interaction {

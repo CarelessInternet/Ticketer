@@ -1,7 +1,7 @@
 import { Command, DeferReply } from '@ticketer/djs-framework';
-import { getTranslations, translate } from '@/i18n';
-import { prettifyError, z } from 'zod';
 import { PermissionFlagsBits } from 'discord.js';
+import { prettifyError, z } from 'zod';
+import { getTranslations, translate } from '@/i18n';
 
 const dataTranslations = translate().commands.purge.data;
 
@@ -30,12 +30,7 @@ export default class extends Command.Interaction {
 				data: amount,
 				error,
 				success,
-			} = z
-				.number()
-				.int()
-				.gte(1)
-				.lte(100)
-				.safeParse(interaction.options.getInteger(dataTranslations.options[0].name(), true));
+			} = z.int().gte(1).lte(100).safeParse(interaction.options.getInteger(dataTranslations.options[0].name(), true));
 
 			if (!success) {
 				return interaction.editReply({

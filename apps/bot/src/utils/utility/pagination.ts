@@ -1,5 +1,5 @@
+import type { MySqlSelect } from '@ticketer/database';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type InteractionReplyOptions, type Locale } from 'discord.js';
-import { type MySqlSelect } from '@ticketer/database';
 import { translate } from '@/i18n';
 
 interface WithPaginationOptions<T extends MySqlSelect> {

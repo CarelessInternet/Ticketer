@@ -1,31 +1,31 @@
 import {
+	and,
+	database,
+	eq,
+	ticketsThreads,
+	ticketThreadsCategories,
+	ticketThreadsCategoriesSelectSchema,
+	ticketThreadsConfigurations,
+} from '@ticketer/database';
+import type { BaseInteraction, Command, Component, Modal } from '@ticketer/djs-framework';
+import {
 	ActionRowBuilder,
 	type ButtonBuilder,
 	ChannelType,
 	Colors,
 	ComponentType,
+	inlineCode,
 	MessageFlags,
 	MessageType,
 	PermissionFlagsBits,
+	roleMention,
 	type Snowflake,
 	TextDisplayBuilder,
 	ThreadAutoArchiveDuration,
-	inlineCode,
-	roleMention,
 } from 'discord.js';
-import type { BaseInteraction, Command, Component, Modal } from '@ticketer/djs-framework';
-import {
-	and,
-	database,
-	eq,
-	ticketThreadsCategories,
-	ticketThreadsCategoriesSelectSchema,
-	ticketThreadsConfigurations,
-	ticketsThreads,
-} from '@ticketer/database';
-import { fetchChannel, threadTitle, ticketButtons, ticketThreadsOpeningMessageContainer } from '..';
 import { prettifyError, z } from 'zod';
 import { translate } from '@/i18n';
+import { fetchChannel, threadTitle, ticketButtons, ticketThreadsOpeningMessageContainer } from '..';
 
 interface CreateTicketOptions {
 	categoryId?: typeof ticketThreadsCategories.$inferSelect.id;

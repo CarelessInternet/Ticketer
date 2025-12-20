@@ -1,9 +1,9 @@
-import * as schema from './schema';
-import config from './config';
-import { createConnection } from 'mysql2/promise';
+import { fileURLToPath } from 'node:url';
 import { drizzle } from 'drizzle-orm/mysql2';
 import { migrate as drizzleMigrate } from 'drizzle-orm/mysql2/migrator';
-import { fileURLToPath } from 'node:url';
+import { createConnection } from 'mysql2/promise';
+import config from './config';
+import * as schema from './schema';
 
 const connection = await createConnection({
 	supportBigNumbers: true,

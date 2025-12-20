@@ -11,7 +11,6 @@ export default class extends Event.Handler {
 		const unarchived = oldThread.archived && !newThread.archived;
 		const locked = !oldThread.locked && newThread.locked;
 		const unlocked = oldThread.locked && !newThread.locked;
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		const lockedAndArchived = (newThread.archived && locked) || (newThread.locked && archived);
 		const threadIsByBot = newThread.ownerId === newThread.client.user.id;
 

@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/restrict-template-expressions */
-
 import { Command, DeferReply } from '@ticketer/djs-framework';
-import { PermissionFlagsBits, Status, codeBlock } from 'discord.js';
+import { codeBlock, PermissionFlagsBits, Status } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
 import { formatDateLong } from '@/utils';
 
@@ -96,8 +94,7 @@ export default class extends Command.Interaction {
 		for (let index = 0; index < clientsStats.length; index++) {
 			embed.addFields({
 				// @ts-expect-error: The index should not go out of bounds.
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				name: `${clientsStats.at(index)!.emoji} ${translations.embeds[0].fields[index]?.()}`,
+				name: `${clientsStats.at(index)?.emoji} ${translations.embeds[0].fields[index]?.()}`,
 				value:
 					resolvedStats
 						.at(index)
@@ -107,7 +104,6 @@ export default class extends Command.Interaction {
 			});
 		}
 
-		// eslint-disable-next-line unicorn/no-array-reduce
 		const shardsStatsAsString = shardsStats.reduce((accumulator, shard, index) => {
 			let value = `# ${translations.embeds[0].shardsStats[0]()} ${index.toLocaleString()}\n\n`;
 			value += `* ${translations.embeds[0].shardsStats[1]()}: ${shard.ping.toLocaleString()} ms\n`;

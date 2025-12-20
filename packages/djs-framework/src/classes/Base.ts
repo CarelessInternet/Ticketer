@@ -1,3 +1,4 @@
+import { env } from 'node:process';
 import {
 	Colors,
 	ContainerBuilder,
@@ -5,12 +6,11 @@ import {
 	type GuildMember,
 	SeparatorBuilder,
 	SeparatorSpacingSize,
+	subtext,
 	TextDisplayBuilder,
 	type User,
-	subtext,
 } from 'discord.js';
 import type { Client } from '.';
-import { env } from 'node:process';
 
 /**
  * The base for all executable classes.
@@ -92,8 +92,7 @@ export abstract class Base {
 	}
 
 	// The return type is `any` because the function should be able to return anything or nothing.
-	// Type `unknown` is more suitable but gave errors.
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: Type `unknown` is more suitable but gave errors.
 	public abstract execute(...parameters: unknown[]): any;
 }
 

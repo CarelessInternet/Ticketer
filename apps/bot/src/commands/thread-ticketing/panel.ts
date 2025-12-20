@@ -1,8 +1,10 @@
+import { Command, DeferReply, Modal } from '@ticketer/djs-framework';
 import {
 	ButtonBuilder,
 	ButtonStyle,
 	Colors,
 	HeadingLevel,
+	heading,
 	LabelBuilder,
 	MessageFlags,
 	ModalBuilder,
@@ -11,11 +13,9 @@ import {
 	TextDisplayBuilder,
 	TextInputBuilder,
 	TextInputStyle,
-	heading,
 } from 'discord.js';
-import { Command, DeferReply, Modal } from '@ticketer/djs-framework';
-import { extractEmoji, fetchChannel } from '@/utils';
 import { prettifyError, z } from 'zod';
+import { extractEmoji, fetchChannel } from '@/utils';
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName('panel')

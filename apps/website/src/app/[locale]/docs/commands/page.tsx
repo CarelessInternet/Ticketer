@@ -1,10 +1,10 @@
+import type { Metadata } from 'next';
+import type { Locale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import CodeBlock from '@/components/CodeBlock';
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
 import Image from '@/components/Image';
-import type { Locale } from 'next-intl';
-import type { Metadata } from 'next';
 import Paragraph from '@/components/Paragraph';
 import RichText from '@/components/RichText';
 import ScrollLink from '@/components/ScrollLink';
@@ -82,7 +82,7 @@ export default async function Page({ params }: PageProps<'/[locale]/docs/command
 				<SectionDivider header={t('content.thread-tickets.sections.creating-a-ticket.title')}>
 					<Paragraph>{t('content.thread-tickets.sections.creating-a-ticket.paragraphs.1')}</Paragraph>
 					<CodeBlock
-						clipboardText={'/' + t('content.thread-tickets.sections.creating-a-ticket.commands.1')}
+						clipboardText={`/${t('content.thread-tickets.sections.creating-a-ticket.commands.1')}`}
 						slashCommand
 					>
 						<span>{t('content.thread-tickets.sections.creating-a-ticket.commands.1')}</span>
@@ -136,7 +136,7 @@ export default async function Page({ params }: PageProps<'/[locale]/docs/command
 				<ScrollLink target="miscellaneous">{t('content.miscellaneous.title')}</ScrollLink>
 				<SectionDivider header={t('content.miscellaneous.sections.moderation.title')}>
 					<Paragraph>{t('content.miscellaneous.sections.moderation.paragraphs.1')}</Paragraph>
-					<CodeBlock clipboardText={'/' + t('content.miscellaneous.sections.moderation.commands.1')} slashCommand>
+					<CodeBlock clipboardText={`/${t('content.miscellaneous.sections.moderation.commands.1')}`} slashCommand>
 						<span>{t('content.miscellaneous.sections.moderation.commands.1')}</span>
 					</CodeBlock>
 				</SectionDivider>

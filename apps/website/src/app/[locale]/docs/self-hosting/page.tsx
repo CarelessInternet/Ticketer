@@ -1,15 +1,15 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Code } from 'bright';
+import type { Metadata } from 'next';
+import type { Locale } from 'next-intl';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import CodeBlock from '@/components/CodeBlock';
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
-import type { Locale } from 'next-intl';
-import type { Metadata } from 'next';
 import Paragraph from '@/components/Paragraph';
 import RichText from '@/components/RichText';
 import ScrollLink from '@/components/ScrollLink';
 import Title from '@/components/Title';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { mergeMetadata } from '@/lib/mergeMetadata';
 
 const composeFile = `
@@ -260,7 +260,7 @@ export default async function Page({ params }: PageProps<'/[locale]/docs/self-ho
 				<Paragraph>
 					<RichText>{(tags) => t.rich('content.running-the-bot.paragraphs.3', tags)}</RichText>
 				</Paragraph>
-				<CodeBlock clipboardText={'/' + t('content.running-the-bot.command')} slashCommand>
+				<CodeBlock clipboardText={`/${t('content.running-the-bot.command')}`} slashCommand>
 					<span>{t('content.running-the-bot.command')}</span>
 				</CodeBlock>
 				<Paragraph>{t('content.running-the-bot.paragraphs.4')}</Paragraph>

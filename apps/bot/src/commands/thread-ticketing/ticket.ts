@@ -1,17 +1,17 @@
-import { ChannelType, Colors, MessageFlags, PermissionFlagsBits, type Snowflake } from 'discord.js';
-import { Command, Component, DeferReply, Modal } from '@ticketer/djs-framework';
 import {
-	ThreadTicketActionsPermissionBitField,
 	and,
 	database,
 	eq,
+	ThreadTicketActionsPermissionBitField,
+	ticketsThreads,
 	ticketThreadsCategories,
 	ticketThreadsCategoriesSelectSchema,
-	ticketsThreads,
 } from '@ticketer/database';
-import { ThreadTicketing, fetchChannel } from '@/utils';
-import { getTranslations, translate } from '@/i18n';
+import { Command, Component, DeferReply, Modal } from '@ticketer/djs-framework';
+import { ChannelType, Colors, MessageFlags, PermissionFlagsBits, type Snowflake } from 'discord.js';
 import { prettifyError, z } from 'zod';
+import { getTranslations, translate } from '@/i18n';
+import { fetchChannel, ThreadTicketing } from '@/utils';
 
 const dataTranslations = translate().commands.ticket.data;
 
@@ -38,7 +38,7 @@ export default class extends Command.Interaction {
 		}
 
 		if (categories.length === 1) {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			// biome-ignore lint/style/noNonNullAssertion: It should exist.
 			const { id, skipModal, titleAndDescriptionRequired } = categories.at(0)!;
 
 			if (skipModal) {
@@ -212,7 +212,7 @@ export class ComponentInteraction extends Component.Interaction {
 		}
 
 		if (categories.length === 1) {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			// biome-ignore lint/style/noNonNullAssertion: It should exist.
 			const { id: categoryId, skipModal, titleAndDescriptionRequired } = categories.at(0)!;
 
 			if (skipModal) {

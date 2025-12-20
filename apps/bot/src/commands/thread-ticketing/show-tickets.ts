@@ -1,8 +1,8 @@
+import { and, database, desc, eq, ticketsThreads, ticketThreadsCategories } from '@ticketer/database';
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
-import { ThreadTicketing, goToPage, messageWithPagination, withPagination } from '@/utils';
-import { and, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
-import { getTranslations, translate } from '@/i18n';
 import { channelMention } from 'discord.js';
+import { getTranslations, translate } from '@/i18n';
+import { goToPage, messageWithPagination, ThreadTicketing, withPagination } from '@/utils';
 
 interface ViewTicketsOptions {
 	page?: number;

@@ -1,3 +1,4 @@
+import { InteractionType } from 'discord.js';
 import {
 	type Autocomplete,
 	BaseInteraction,
@@ -8,7 +9,6 @@ import {
 	type Modal,
 	type Subcommand,
 } from '..';
-import { InteractionType } from 'discord.js';
 
 /**
  * @returns Whether the class instance is an event class.

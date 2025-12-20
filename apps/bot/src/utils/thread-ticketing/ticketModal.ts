@@ -1,6 +1,6 @@
-import { LabelBuilder, type Locale, ModalBuilder, type Snowflake, TextInputBuilder, TextInputStyle } from 'discord.js';
-import type { BaseInteraction } from '@ticketer/djs-framework';
 import type { ticketThreadsCategories } from '@ticketer/database';
+import type { BaseInteraction } from '@ticketer/djs-framework';
+import { LabelBuilder, type Locale, ModalBuilder, type Snowflake, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { translate } from '@/i18n';
 
 interface TicketModalOptions {

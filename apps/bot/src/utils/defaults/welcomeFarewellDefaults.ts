@@ -1,16 +1,16 @@
+import type { welcomeAndFarewell } from '@ticketer/database';
 import {
 	Colors,
 	ContainerBuilder,
 	type GuildMember,
 	HeadingLevel,
+	heading,
 	type Locale,
 	SectionBuilder,
 	TextDisplayBuilder,
 	ThumbnailBuilder,
-	heading,
 } from 'discord.js';
 import { translate } from '@/i18n';
-import type { welcomeAndFarewell } from '@ticketer/database';
 
 type Columns = typeof welcomeAndFarewell.$inferSelect;
 
@@ -20,12 +20,10 @@ interface BaseOptions {
 
 interface TitleOptions extends BaseOptions {
 	displayName: GuildMember['displayName'];
-	// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 	title: Columns['welcomeMessageTitle'] | Columns['farewellMessageTitle'];
 }
 
 interface DescriptionOptions extends BaseOptions {
-	// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 	description: Columns['welcomeMessageDescription'] | Columns['farewellMessageDescription'];
 	memberMention: ReturnType<GuildMember['toString']>;
 }

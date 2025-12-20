@@ -8,15 +8,14 @@
 	],
 	"type": "module",
 	"scripts": {
-		"lint": "eslint ."
+		"check": "biome check --write"
 	},
 	"dependencies": {
-		"@t3-oss/env-core": "^0.13.8",
-		"@t3-oss/env-nextjs": "^0.13.8",
-		"zod": "^4.1.13"
+		"@t3-oss/env-core": "^0.13.10",
+		"@t3-oss/env-nextjs": "^0.13.10",
+		"zod": "^4.2.1"
 	},
 	"devDependencies": {
-		"@ticketer/eslint-config": "workspace:*",
-		"@types/node": "^25.0.1"
+		"@types/node": "^25.0.3"
 	}
 }

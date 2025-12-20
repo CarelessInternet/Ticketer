@@ -1,0 +1,7 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
+	"extends": "//",
+	"files": {
+		"includes": ["!src/i18n/i18n-*.ts", "!src/i18n/formatters.ts"]
+	}
+}

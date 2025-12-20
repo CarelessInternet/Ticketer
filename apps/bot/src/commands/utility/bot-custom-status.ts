@@ -1,10 +1,10 @@
+import { Command, DeferReply } from '@ticketer/djs-framework';
 import {
-	type APIApplicationCommandOptionChoice,
 	ActivityType,
+	type APIApplicationCommandOptionChoice,
 	PermissionFlagsBits,
 	PresenceUpdateStatus,
 } from 'discord.js';
-import { Command, DeferReply } from '@ticketer/djs-framework';
 import { getTranslations, translate } from '@/i18n';
 
 const dataTranslations = translate().commands['bot-custom-status'].data;
@@ -81,7 +81,7 @@ export default class extends Command.Interaction {
 				if (!client.isReady() || !client.shard) return;
 
 				client.user.setPresence({
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					// biome-ignore lint/style/noNonNullAssertion: It should exist.
 					activities: [{ name: customStatus.replaceAll('[shardId]', client.shard.ids.at(0)!.toString()), type }],
 					status,
 				});

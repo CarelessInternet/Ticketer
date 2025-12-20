@@ -1,10 +1,4 @@
-import {
-	baseTicketConfiguration,
-	baseTicketConfigurationNotNull,
-	jsonWithParsing,
-	snowflake,
-	snowflakeRequiredParser,
-} from './utils';
+import { sql } from 'drizzle-orm';
 import {
 	boolean,
 	datetime,
@@ -17,16 +11,20 @@ import {
 	varchar,
 } from 'drizzle-orm/mysql-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { sql } from 'drizzle-orm';
+import {
+	baseTicketConfiguration,
+	baseTicketConfigurationNotNull,
+	jsonWithParsing,
+	snowflake,
+	snowflakeRequiredParser,
+} from './utils';
 
 export const guildBlacklists = mysqlTable(
 	'guildBlacklists',
 	{
 		guildId: snowflake('guildId').primaryKey(),
 		reason: varchar('reason', { length: 500 }).notNull(),
-		timestamp: datetime('timestamp', { mode: 'date' })
-			.notNull()
-			.default(sql`CURRENT_TIMESTAMP`),
+		timestamp: datetime('timestamp', { mode: 'date' }).notNull().default(sql`CURRENT_TIMESTAMP`),
 	},
 	(table) => [index('timestamp_index').on(table.timestamp)],
 );

@@ -1,6 +1,6 @@
+import { automaticThreadsConfigurations, database, eq, userForumsConfigurations } from '@ticketer/database';
 import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
 import { ChannelType, Colors } from 'discord.js';
-import { automaticThreadsConfigurations, database, eq, userForumsConfigurations } from '@ticketer/database';
 import { translate } from '@/i18n';
 
 export async function deleteTicket(
@@ -43,8 +43,7 @@ export async function deleteTicket(
 		.where(eq(table.channelId, channel.parent.id));
 
 	const ownerId = isAutomaticThreads
-		? // eslint-disable-next-line @typescript-eslint/no-empty-function, unicorn/no-await-expression-member
-			(await channel.fetchStarterMessage().catch(() => {}))?.author.id
+		? (await channel.fetchStarterMessage().catch(() => {}))?.author.id
 		: channel.ownerId;
 
 	if (!row || (ownerId !== member.id && !row.managers.some((id) => member.roles.resolve(id)))) {

@@ -1,5 +1,5 @@
-import ERROR_TITLE from './errorTitle';
 import type { ticketsThreads } from '@ticketer/database';
+import ERROR_TITLE from './errorTitle';
 
 export default {
 	categories: {

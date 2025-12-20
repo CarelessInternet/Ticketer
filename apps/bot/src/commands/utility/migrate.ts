@@ -1,7 +1,7 @@
-import { Command, DeferReply } from '@ticketer/djs-framework';
-import { getTranslations, translate } from '@/i18n';
-import { PermissionFlagsBits } from 'discord.js';
 import { migrate } from '@ticketer/database';
+import { Command, DeferReply } from '@ticketer/djs-framework';
+import { PermissionFlagsBits } from 'discord.js';
+import { getTranslations, translate } from '@/i18n';
 
 const dataTranslations = translate().commands.migrate.data;
 

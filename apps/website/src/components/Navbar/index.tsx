@@ -1,3 +1,4 @@
+import { SiGithub as GitHub } from '@icons-pack/react-simple-icons';
 import {
 	Code,
 	Cookie,
@@ -10,7 +11,13 @@ import {
 	Server,
 	Terminal,
 } from 'lucide-react';
+import type { Route } from 'next';
+import Image from 'next/image';
+import { getTranslations } from 'next-intl/server';
 import type { HTMLAttributes, JSX, PropsWithChildren } from 'react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import InternalLink from '../InternalLink';
 import {
 	NavigationMenu,
 	NavigationMenuContent,
@@ -20,16 +27,9 @@ import {
 } from '../ui/navigation-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
-import { Button } from '@/components/ui/button';
-import { SiGithub as GitHub } from '@icons-pack/react-simple-icons';
-import Image from 'next/image';
-import InternalLink from '../InternalLink';
 import Link from './Link';
 import LocaleSwitcher from './LocaleSwitcher';
-import type { Route } from 'next';
 import ThemeSwitcher from './ThemeSwitcher';
-import { cn } from '@/lib/utils';
-import { getTranslations } from 'next-intl/server';
 
 function ListItem({
 	children,
@@ -43,7 +43,7 @@ function ListItem({
 				<div className="flex flex-row">
 					<div className="flex items-center pr-3">{icon}</div>
 					<div className="block space-y-1">
-						<h1 className="text-lg leading-none font-medium">{title}</h1>
+						<h1 className="font-medium text-lg leading-none">{title}</h1>
 						<p className="text-sm leading-snug">{children}</p>
 					</div>
 				</div>
@@ -60,7 +60,7 @@ function TooltipItem({ content, children }: PropsWithChildren<TooltipItems>) {
 	return (
 		<TooltipProvider>
 			<Tooltip>
-				<TooltipTrigger className="dark:hover:text-cyan-400 dark:focus:text-cyan-400" asChild>
+				<TooltipTrigger className="dark:focus:text-cyan-400 dark:hover:text-cyan-400" asChild>
 					{children}
 				</TooltipTrigger>
 				<TooltipContent>
@@ -86,6 +86,19 @@ function TooltipLinkItem({ content, href, icon }: PropsWithChildren<TooltipLinkI
 			</Button>
 		</TooltipItem>
 	);
+}
+
+function TooltipLinkItems({ inDrawer = false, items }: { inDrawer?: boolean; items: TooltipLinkItems[] }) {
+	if (inDrawer) {
+		return items.map((item) => (
+			<div key={item.href} className="flex items-center space-x-2">
+				<TooltipLinkItem {...item} />
+				<p>{item.content}</p>
+			</div>
+		));
+	}
+
+	return items.map((item) => <TooltipLinkItem key={item.href} {...item} />);
 }
 
 interface NavRoute {
@@ -146,41 +159,28 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 		],
 	} satisfies NavRouteMenu;
 
-	function TooltipLinkItems({ inDrawer = false }: { inDrawer?: boolean }) {
-		const items = [
-			{
-				content: t('items.invite'),
-				href: '/links/discord/invite',
-				icon: <PlusCircle />,
-			},
-			{
-				content: t('items.support'),
-				href: '/links/discord/support',
-				icon: <MessageCircleQuestion />,
-			},
-			{
-				content: t('items.github'),
-				href: '/links/github',
-				icon: <GitHub />,
-			},
-			{
-				content: t('items.donate'),
-				href: '/links/funding/donate',
-				icon: <HandCoins />,
-			},
-		] satisfies TooltipLinkItems[];
-
-		if (inDrawer) {
-			return items.map((item, index) => (
-				<div key={index} className="flex items-center space-x-2">
-					<TooltipLinkItem {...item} />
-					<p>{item.content}</p>
-				</div>
-			));
-		}
-
-		return items.map((item, index) => <TooltipLinkItem key={index} {...item} />);
-	}
+	const items = [
+		{
+			content: t('items.invite'),
+			href: '/links/discord/invite',
+			icon: <PlusCircle />,
+		},
+		{
+			content: t('items.support'),
+			href: '/links/discord/support',
+			icon: <MessageCircleQuestion />,
+		},
+		{
+			content: t('items.github'),
+			href: '/links/github',
+			icon: <GitHub />,
+		},
+		{
+			content: t('items.donate'),
+			href: '/links/funding/donate',
+			icon: <HandCoins />,
+		},
+	] satisfies TooltipLinkItems[];
 
 	return (
 		<header className={cn(className)} {...properties}>
@@ -201,7 +201,7 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 							<NavigationMenuItem>
 								<NavigationMenuTrigger>{t('navigation.documentation.title')}</NavigationMenuTrigger>
 								<NavigationMenuContent>
-									<ul className="grid w-[300px] gap-3 px-2 py-4 md:w-[400px]">
+									<ul className="grid w-75 gap-3 px-2 py-4 md:w-100">
 										{routes.documentation.map((route) => (
 											<ListItem key={route.title} href={route.href} icon={route.icon} title={route.title}>
 												{route.description}
@@ -215,9 +215,9 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 							<NavigationMenuItem>
 								<NavigationMenuTrigger>{t('navigation.legal.title')}</NavigationMenuTrigger>
 								<NavigationMenuContent>
-									<ul className="grid w-[300px] gap-3 px-2 py-4 md:w-[400px]">
-										{routes.legal.map((route, index) => (
-											<ListItem key={index} href={route.href} icon={route.icon} title={route.title}>
+									<ul className="grid w-75 gap-3 px-2 py-4 md:w-100">
+										{routes.legal.map((route) => (
+											<ListItem key={route.title} href={route.href} icon={route.icon} title={route.title}>
 												{route.description}
 											</ListItem>
 										))}
@@ -239,7 +239,7 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 										<SheetTitle>{t('items.sidebar')}</SheetTitle>
 									</SheetHeader>
 									<div className="space-y-4">
-										<TooltipLinkItems inDrawer />
+										<TooltipLinkItems inDrawer items={items} />
 										<div className="flex items-center space-x-2">
 											<LocaleSwitcher />
 											<p>{t('items.locale.change')}</p>
@@ -253,7 +253,7 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 							</Sheet>
 						</div>
 						<div className="hidden space-x-2 lg:flex">
-							<TooltipLinkItems />
+							<TooltipLinkItems items={items} />
 							<TooltipItem content={t('items.locale.change')}>
 								<div>
 									<LocaleSwitcher />

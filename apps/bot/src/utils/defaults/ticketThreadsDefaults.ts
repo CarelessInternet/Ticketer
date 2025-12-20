@@ -1,16 +1,16 @@
+import type { ticketThreadsCategories } from '@ticketer/database';
 import {
 	Colors,
 	ContainerBuilder,
 	type GuildMember,
 	HeadingLevel,
-	type Locale,
-	TextDisplayBuilder,
 	heading,
 	inlineCode,
+	type Locale,
+	TextDisplayBuilder,
 } from 'discord.js';
-import { ThreadTicketing, formatDateShort } from '..';
-import type { ticketThreadsCategories } from '@ticketer/database';
 import { translate } from '@/i18n';
+import { formatDateShort, ThreadTicketing } from '..';
 
 type Columns = typeof ticketThreadsCategories.$inferSelect;
 

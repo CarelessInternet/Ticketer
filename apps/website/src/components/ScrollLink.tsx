@@ -1,9 +1,9 @@
 'use client';
 
 import type { AnchorHTMLAttributes, PropsWithChildren } from 'react';
-import { type WithRequired, cn } from '@/lib/utils';
-import InternalLink from './InternalLink';
 import { usePathname } from '@/i18n/routing';
+import { cn, type WithRequired } from '@/lib/utils';
+import InternalLink from './InternalLink';
 
 export default function ScrollLink({
 	children,
@@ -15,7 +15,6 @@ export default function ScrollLink({
 
 	return (
 		<InternalLink
-			// @ts-expect-error: Not sure how to combat this type error.
 			href={`${pathname}#${target}`}
 			target="_self"
 			id={target}
@@ -23,7 +22,7 @@ export default function ScrollLink({
 			className={cn('text-inherit!', className)}
 			{...properties}
 		>
-			<h2 className="text-foreground dark:text-foreground text-2xl font-bold hover:underline sm:text-3xl">
+			<h2 className="font-bold text-2xl text-foreground hover:underline sm:text-3xl dark:text-foreground">
 				{children}
 			</h2>
 		</InternalLink>

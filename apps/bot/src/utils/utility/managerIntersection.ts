@@ -1,5 +1,5 @@
-import type { GuildMemberRoleManager, Snowflake } from 'discord.js';
 import { sql, type ticketThreadsCategories } from '@ticketer/database';
+import type { GuildMemberRoleManager, Snowflake } from 'discord.js';
 
 type ManagerColumn = typeof ticketThreadsCategories.managers;
 export type ManagerIntersectionRoles = GuildMemberRoleManager | Snowflake[];

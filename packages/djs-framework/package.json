@@ -6,15 +6,14 @@
 	"types": "./src/index.ts",
 	"type": "module",
 	"scripts": {
-		"lint": "eslint .",
+		"check": "biome check",
 		"test": "tsx --test ./tests/**/*.test.ts"
 	},
 	"peerDependencies": {
 		"discord.js": "^14"
 	},
 	"devDependencies": {
-		"@ticketer/eslint-config": "workspace:*",
-		"@types/node": "^25.0.1",
+		"@types/node": "^25.0.3",
 		"tsx": "^4.21.0"
 	}
 }

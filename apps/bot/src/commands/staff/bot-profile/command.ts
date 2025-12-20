@@ -1,15 +1,15 @@
+import { Command } from '@ticketer/djs-framework';
 import {
 	ActionRowBuilder,
 	HeadingLevel,
+	heading,
 	MessageFlags,
 	PermissionFlagsBits,
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder,
 	TextDisplayBuilder,
-	heading,
 } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
-import { Command } from '@ticketer/djs-framework';
 
 const dataTranslations = translate().commands['bot-profile'].data;
 

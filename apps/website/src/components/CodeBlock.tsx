@@ -1,11 +1,11 @@
 'use client';
 
-import type { HTMLAttributes, PropsWithChildren } from 'react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { Copy } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
+import type { HTMLAttributes, PropsWithChildren } from 'react';
+import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 interface CodeBlockProperties extends HTMLAttributes<HTMLElement> {
 	clipboardText: string;

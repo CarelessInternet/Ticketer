@@ -1,5 +1,5 @@
-import type { Command } from '..';
 import { MessageFlags } from 'discord.js';
+import type { Command } from '..';
 
 interface DeferReplyOptions {
 	name?: string;
@@ -12,6 +12,7 @@ interface DeferReplyOptions {
  * @param [options.ephemeral=false] The default value of the ephemeral option if no command option can be found.
  */
 export function DeferReply({ name, ephemeral = false }: DeferReplyOptions = {}) {
+	// biome-ignore lint/complexity/useArrowFunction: Need "this".
 	return function (_: object, __: string, descriptor: PropertyDescriptor) {
 		const original = descriptor.value as () => void;
 
@@ -24,6 +25,7 @@ export function DeferReply({ name, ephemeral = false }: DeferReplyOptions = {}) 
 				await interaction.deferReply({ ...(hidden && { flags: [MessageFlags.Ephemeral] }) });
 			}
 
+			// biome-ignore lint/complexity/noArguments: It is convenient.
 			return Reflect.apply(original, this, arguments);
 		};
 

@@ -1,7 +1,7 @@
 import { and, eq } from 'drizzle-orm';
-import type { DiscordSnowflake } from '.';
 import { database } from '..';
 import { ticketThreadsCategories } from '../schema';
+import type { DiscordSnowflake } from '.';
 
 export class ThreadTicketActionsPermissionBitField {
 	public static Flags = {

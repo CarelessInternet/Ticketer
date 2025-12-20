@@ -1,6 +1,6 @@
-import { prettifyError, z } from 'zod';
 import type { BaseInteraction } from '@ticketer/djs-framework';
 import type { MessageComponentInteraction } from 'discord.js';
+import { prettifyError, z } from 'zod';
 
 interface GoToPageError {
 	additionalData?: never;

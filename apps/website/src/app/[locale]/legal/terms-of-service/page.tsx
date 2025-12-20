@@ -1,12 +1,12 @@
+import type { Metadata } from 'next';
+import type { Locale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Divider from '@/components/Divider';
-import type { Locale } from 'next-intl';
-import type { Metadata } from 'next';
 import Paragraph from '@/components/Paragraph';
 import ScrollLink from '@/components/ScrollLink';
 import Title from '@/components/Title';
-import { formatDate } from '@/lib/utils';
 import { mergeMetadata } from '@/lib/mergeMetadata';
+import { formatDate } from '@/lib/utils';
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/legal/terms-of-service'>): Promise<Metadata> {
 	const { locale } = await params;

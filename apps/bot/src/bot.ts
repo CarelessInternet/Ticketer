@@ -1,7 +1,7 @@
-import { GatewayIntentBits, Options } from 'discord.js';
+import { fileURLToPath } from 'node:url';
 import { Client } from '@ticketer/djs-framework';
 import { environment } from '@ticketer/env/bot';
-import { fileURLToPath } from 'node:url';
+import { GatewayIntentBits, Options } from 'discord.js';
 import { refreshGuildBlacklist } from '@/utils';
 
 const interval = 60;

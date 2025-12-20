@@ -1,4 +1,3 @@
-import { DeferReply, Modal } from '@ticketer/djs-framework';
 import {
 	and,
 	database,
@@ -7,10 +6,11 @@ import {
 	ticketThreadsCategoriesInsertSchema,
 	ticketThreadsCategoriesSelectSchema,
 } from '@ticketer/database';
-import { HasGlobalConfiguration } from './helpers';
-import { extractEmoji } from '@/utils';
+import { DeferReply, Modal } from '@ticketer/djs-framework';
 import { inlineCode } from 'discord.js';
 import { prettifyError } from 'zod';
+import { extractEmoji } from '@/utils';
+import { HasGlobalConfiguration } from './helpers';
 
 const MAXIMUM_CATEGORY_AMOUNT = 10;
 

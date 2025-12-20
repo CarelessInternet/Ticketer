@@ -1,5 +1,5 @@
-import { Base } from './index';
 import type { ClientEvents } from 'discord.js';
+import { Base } from './index';
 
 /**
  * The class used for each event.

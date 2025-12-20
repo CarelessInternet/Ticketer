@@ -1,6 +1,6 @@
-import { MessageFlags, Status, inlineCode } from 'discord.js';
-import { getTranslations, translate } from '@/i18n';
 import { Command } from '@ticketer/djs-framework';
+import { inlineCode, MessageFlags, Status } from 'discord.js';
+import { getTranslations, translate } from '@/i18n';
 
 const dataTranslations = translate().commands.ping;
 

@@ -1,13 +1,20 @@
+import { database, eq, not, welcomeAndFarewell, welcomeAndFarewellInsertSchema } from '@ticketer/database';
+import { Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
 import {
 	ActionRowBuilder,
+	bold,
 	ChannelSelectMenuBuilder,
 	ChannelType,
+	channelMention,
 	HeadingLevel,
+	heading,
+	inlineCode,
 	LabelBuilder,
 	MessageFlags,
 	ModalBuilder,
 	PermissionFlagsBits,
 	RoleSelectMenuBuilder,
+	roleMention,
 	SeparatorBuilder,
 	SeparatorSpacingSize,
 	StringSelectMenuBuilder,
@@ -15,16 +22,9 @@ import {
 	TextDisplayBuilder,
 	TextInputBuilder,
 	TextInputStyle,
-	bold,
-	channelMention,
-	heading,
-	inlineCode,
-	roleMention,
 } from 'discord.js';
-import { Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
-import { database, eq, not, welcomeAndFarewell, welcomeAndFarewellInsertSchema } from '@ticketer/database';
-import { farewellContainer, welcomeContainer } from '@/utils';
 import { prettifyError } from 'zod';
+import { farewellContainer, welcomeContainer } from '@/utils';
 
 type InsertWithoutGuildId = Omit<typeof welcomeAndFarewell.$inferInsert, 'guildId'>;
 
@@ -319,7 +319,7 @@ export class ComponentInteraction extends Component.Interaction {
 	private async welcomeAndFarewellConfigurationChannel({ interaction }: Component.Context<'channel'>) {
 		const { channels, customId: id, guildId, member } = interaction;
 		const { customId } = super.extractCustomId(id);
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		// biome-ignore lint/style/noNonNullAssertion: It should exist.
 		const channel = channels.at(0)!;
 
 		const type = customId.includes('welcome') ? 'welcome' : 'farewell';

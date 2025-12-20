@@ -1,8 +1,8 @@
-import { type APIApplicationCommandOptionChoice, PermissionFlagsBits, channelMention, userMention } from 'discord.js';
+import { and, database, desc, eq, ticketsThreads, ticketThreadsCategories } from '@ticketer/database';
 import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
-import { ThreadTicketing, goToPage, messageWithPagination, withPagination } from '@/utils';
-import { and, database, desc, eq, ticketThreadsCategories, ticketsThreads } from '@ticketer/database';
+import { type APIApplicationCommandOptionChoice, channelMention, PermissionFlagsBits, userMention } from 'discord.js';
 import { getTranslations } from '@/i18n';
+import { goToPage, messageWithPagination, ThreadTicketing, withPagination } from '@/utils';
 
 interface ViewGlobalTicketsOptions {
 	state?: ThreadTicketing.TicketState;

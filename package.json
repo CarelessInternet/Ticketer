@@ -9,15 +9,12 @@
 		"debug": "turbo run debug",
 		"start": "turbo run start",
 		"build": "turbo run build",
-		"lint": "turbo run lint",
-		"test": "turbo run test",
-		"prettier": "prettier --write \"apps/**/*.{ts,tsx,js,jsx}\" \"packages/**/*.{ts,tsx,js,jsx}\""
+		"check": "turbo run check",
+		"test": "turbo run test"
 	},
 	"devDependencies": {
-		"eslint": "^9.39.1",
-		"prettier": "^3.7.4",
-		"prettier-plugin-tailwindcss": "^0.7.2",
-		"turbo": "^2.6.3"
+		"@biomejs/biome": "^2.3.10",
+		"turbo": "^2.7.0"
 	},
-	"packageManager": "pnpm@10.25.0+sha512.5e82639027af37cf832061bcc6d639c219634488e0f2baebe785028a793de7b525ffcd3f7ff574f5e9860654e098fe852ba8ac5dd5cefe1767d23a020a92f501"
+	"packageManager": "pnpm@10.26.1+sha512.664074abc367d2c9324fdc18037097ce0a8f126034160f709928e9e9f95d98714347044e5c3164d65bd5da6c59c6be362b107546292a8eecb7999196e5ce58fa"
 }

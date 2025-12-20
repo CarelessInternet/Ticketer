@@ -1,0 +1,43 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
+	"extends": "//",
+	"files": {
+		"includes": ["src/i18n/languages/en-GB.d.json.ts"]
+	},
+	"linter": {
+		"domains": {
+			"next": "all",
+			"react": "all"
+		},
+		"rules": {
+			"nursery": {
+				"useSortedClasses": {
+					"level": "error",
+					"fix": "safe"
+				}
+			},
+			"style": {
+				"noRestrictedImports": {
+					"level": "error",
+					"options": {
+						"paths": {
+							"next/link": {
+								"message": "Please import from `@/i18n/routing` instead."
+							},
+							"next/navigation": {
+								"importNames": ["redirect", "permanentRedirect", "useRouter", "usePathname"],
+								"message": "Please import from `@/i18n/routing` instead."
+							}
+						}
+					}
+				},
+				"useComponentExportOnlyModules": "off"
+			}
+		}
+	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	}
+}

@@ -1,6 +1,6 @@
-import type { Locales, TranslationFunctions } from './i18n-types';
-import L from './i18n-node';
 import { Locale } from 'discord.js';
+import L from './i18n-node';
+import type { Locales, TranslationFunctions } from './i18n-types';
 import { locales } from './i18n-util';
 
 // https://stackoverflow.com/a/58436959

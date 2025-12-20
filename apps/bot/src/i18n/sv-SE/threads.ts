@@ -1,7 +1,6 @@
 import type { DeepPartial } from '@/utils';
-
-import ERROR_TITLE from './errorTitle';
 import type { Translation } from '../i18n-types';
+import ERROR_TITLE from './errorTitle';
 
 export default {
 	categories: {

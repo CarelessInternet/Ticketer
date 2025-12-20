@@ -13,6 +13,7 @@ export function DeferUpdate(_: object, __: string, descriptor: PropertyDescripto
 			await interaction.deferUpdate();
 		}
 
+		// biome-ignore lint/complexity/noArguments: It is convenient.
 		return Reflect.apply(original, this, arguments);
 	};
 

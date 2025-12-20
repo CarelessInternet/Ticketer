@@ -1,7 +1,7 @@
-import type { BaseTranslation } from '../i18n-types';
-import ERROR_TITLE from './errorTitle';
 import type { PresenceUpdateStatus } from 'discord.js';
+import type { BaseTranslation } from '../i18n-types';
 import automaticThreads from './automaticThreads';
+import ERROR_TITLE from './errorTitle';
 import threads from './threads';
 import userForums from './userForums';
 

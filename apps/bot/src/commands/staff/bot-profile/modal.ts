@@ -1,16 +1,16 @@
+import { DeferReply, Modal } from '@ticketer/djs-framework';
 import {
 	ContainerBuilder,
+	codeBlock,
 	HeadingLevel,
+	heading,
+	inlineCode,
 	MediaGalleryBuilder,
 	MediaGalleryItemBuilder,
 	MessageFlags,
 	PermissionFlagsBits,
 	TextDisplayBuilder,
-	codeBlock,
-	heading,
-	inlineCode,
 } from 'discord.js';
-import { DeferReply, Modal } from '@ticketer/djs-framework';
 import z, { prettifyError } from 'zod';
 import { translate } from '@/i18n';
 

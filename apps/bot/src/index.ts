@@ -1,7 +1,7 @@
-import { ShardingManager } from 'discord.js';
-import chalk from 'chalk';
-import { environment } from '@ticketer/env/bot';
 import { fileURLToPath } from 'node:url';
+import { environment } from '@ticketer/env/bot';
+import chalk from 'chalk';
+import { ShardingManager } from 'discord.js';
 import { formatDateLong } from '@/utils';
 
 const sharder = new ShardingManager(fileURLToPath(import.meta.resolve('./bot.ts')), {

@@ -11,7 +11,7 @@ Do not make a public clone of the bot.<br>
 
 ## Self-Hosting
 
-If you are looking to self-host the Ticketer bot, please refer to the [page on self-hosting](https://ticketer-careless.vercel.app/en-GB/docs/self-hosting).
+If you are looking to self-host the Ticketer bot, please refer to the [page on self-hosting](https://ticketer.pyce.eu/en-GB/docs/self-hosting?utm_source=ticketer-github&utm_medium=link&utm_content=self-hosting).
 
 ## Issues
 

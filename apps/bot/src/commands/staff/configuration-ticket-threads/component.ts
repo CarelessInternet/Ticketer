@@ -1,32 +1,32 @@
 import {
-	ActionRowBuilder,
-	ChannelSelectMenuBuilder,
-	ChannelType,
-	LabelBuilder,
-	MessageFlags,
-	ModalBuilder,
-	RoleSelectMenuBuilder,
-	StringSelectMenuBuilder,
-	StringSelectMenuOptionBuilder,
-	TextInputBuilder,
-	TextInputStyle,
-	inlineCode,
-	roleMention,
-} from 'discord.js';
-import { Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
-import { HasGlobalConfiguration, categoryFieldsModal, getCategories } from './helpers';
-import {
-	ThreadTicketActionsPermissionBitField,
 	and,
 	database,
 	eq,
 	not,
+	ThreadTicketActionsPermissionBitField,
+	ticketsThreads,
 	ticketThreadsCategories,
 	ticketThreadsCategoriesSelectSchema,
-	ticketsThreads,
 } from '@ticketer/database';
-import { ThreadTicketing, goToPage } from '@/utils';
+import { Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
+import {
+	ActionRowBuilder,
+	ChannelSelectMenuBuilder,
+	ChannelType,
+	inlineCode,
+	LabelBuilder,
+	MessageFlags,
+	ModalBuilder,
+	RoleSelectMenuBuilder,
+	roleMention,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
+	TextInputBuilder,
+	TextInputStyle,
+} from 'discord.js';
 import { prettifyError } from 'zod';
+import { goToPage, ThreadTicketing } from '@/utils';
+import { categoryFieldsModal, getCategories, HasGlobalConfiguration } from './helpers';
 
 export default class extends Component.Interaction {
 	public readonly customIds = [super.dynamicCustomId('ticket_threads_category_configuration')];
@@ -530,7 +530,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 			});
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		// biome-ignore lint/style/noNonNullAssertion: It should exist.
 		const channel = interaction.channels.at(0)!;
 
 		await database

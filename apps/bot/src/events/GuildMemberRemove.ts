@@ -1,7 +1,7 @@
-import { type GuildMember, MessageFlags, PermissionFlagsBits } from 'discord.js';
-import { LogExceptions, farewellContainer, fetchChannel } from '@/utils';
 import { database, eq, welcomeAndFarewell } from '@ticketer/database';
 import { Event } from '@ticketer/djs-framework';
+import { type GuildMember, MessageFlags, PermissionFlagsBits } from 'discord.js';
+import { farewellContainer, fetchChannel, LogExceptions } from '@/utils';
 
 export default class extends Event.Handler {
 	public readonly name = Event.Name.GuildMemberRemove;

@@ -1,8 +1,8 @@
-import { Client } from '@ticketer/djs-framework';
-import chalk from 'chalk';
-import { environment } from '@ticketer/env/bot';
 import { exit } from 'node:process';
 import { fileURLToPath } from 'node:url';
+import { Client } from '@ticketer/djs-framework';
+import { environment } from '@ticketer/env/bot';
+import chalk from 'chalk';
 
 const client = new Client({
 	intents: [],

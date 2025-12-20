@@ -1,14 +1,14 @@
+import type { automaticThreadsConfigurations } from '@ticketer/database';
 import {
 	type ButtonBuilder,
 	Colors,
 	ContainerBuilder,
 	type GuildMember,
 	HeadingLevel,
+	heading,
 	SectionBuilder,
 	TextDisplayBuilder,
-	heading,
 } from 'discord.js';
-import type { automaticThreadsConfigurations } from '@ticketer/database';
 
 type Columns = typeof automaticThreadsConfigurations.$inferSelect;
 

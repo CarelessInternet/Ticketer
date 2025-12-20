@@ -1,14 +1,14 @@
-import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
-import { ChannelType, Colors, PermissionFlagsBits } from 'discord.js';
 import {
-	ThreadTicketActionsPermissionBitField,
 	database,
 	eq,
-	ticketThreadsCategories,
+	ThreadTicketActionsPermissionBitField,
 	ticketsThreads,
+	ticketThreadsCategories,
 } from '@ticketer/database';
-import { fetchChannel } from '..';
+import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
+import { ChannelType, Colors, PermissionFlagsBits } from 'discord.js';
 import { translate } from '@/i18n';
+import { fetchChannel } from '..';
 
 export async function closeTicket(
 	this: BaseInteraction.Interaction,

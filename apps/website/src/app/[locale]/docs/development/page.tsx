@@ -1,9 +1,9 @@
+import type { Metadata } from 'next';
+import type { Locale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import CodeBlock from '@/components/CodeBlock';
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
-import type { Locale } from 'next-intl';
-import type { Metadata } from 'next';
 import Paragraph from '@/components/Paragraph';
 import RichText from '@/components/RichText';
 import ScrollLink from '@/components/ScrollLink';

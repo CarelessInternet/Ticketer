@@ -1,8 +1,8 @@
-import { MessageFlags, TimestampStyles, time } from 'discord.js';
 import { Event } from '@ticketer/djs-framework';
-import { LogExceptions } from '@/utils';
 import { environment } from '@ticketer/env/bot';
+import { MessageFlags, TimestampStyles, time } from 'discord.js';
 import { translate } from '@/i18n';
+import { LogExceptions } from '@/utils';
 
 export default class extends Event.Handler {
 	public readonly name = Event.Name.InteractionCreate;

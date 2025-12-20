@@ -1,5 +1,5 @@
-import type { Metadata } from 'next/types';
 import { environment } from '@ticketer/env/website';
+import type { Metadata } from 'next/types';
 
 export function mergeMetadata({
 	description,

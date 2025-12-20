@@ -26,16 +26,7 @@ export default class extends Command.Interaction {
 	public async execute({ interaction }: Command.Context<'chat'>) {
 		if (interaction.channel) {
 			const translations = translate(interaction.locale).commands.purge.command.embeds[0];
-			const {
-				data: amount,
-				error,
-				success,
-			} = z
-				.number()
-				.int()
-				.gte(1)
-				.lte(100)
-				.safeParse(interaction.options.getInteger(dataTranslations.options[0].name(), true));
+			const { data: amount, error, success } = z.number().int().gte(1).lte(100).safeParse(interaction.options.getInteger(dataTranslations.options[0].name(), true));
 
 			if (!success) {
 				return interaction.editReply({

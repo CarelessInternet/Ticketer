@@ -1,13 +1,4 @@
 import {
-	type APIApplicationCommandOptionChoice,
-	ChannelType,
-	MessageFlags,
-	PermissionFlagsBits,
-	inlineCode,
-} from 'discord.js';
-import { Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
-import { ThreadTicketing, managerIntersection } from '@/utils';
-import {
 	and,
 	count,
 	database,
@@ -15,10 +6,19 @@ import {
 	inArray,
 	ne,
 	notInArray,
-	ticketThreadsCategories,
 	ticketsThreads,
+	ticketThreadsCategories,
 } from '@ticketer/database';
+import { Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
+import {
+	type APIApplicationCommandOptionChoice,
+	ChannelType,
+	inlineCode,
+	MessageFlags,
+	PermissionFlagsBits,
+} from 'discord.js';
 import { getTranslations } from '@/i18n';
+import { managerIntersection, ThreadTicketing } from '@/utils';
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName('edit-tickets')

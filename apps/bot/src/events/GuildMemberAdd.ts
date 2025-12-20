@@ -1,7 +1,7 @@
-import { LogExceptions, fetchChannel, welcomeContainer } from '@/utils';
-import { MessageFlags, PermissionFlagsBits } from 'discord.js';
 import { database, eq, welcomeAndFarewell } from '@ticketer/database';
 import { Event } from '@ticketer/djs-framework';
+import { MessageFlags, PermissionFlagsBits } from 'discord.js';
+import { fetchChannel, LogExceptions, welcomeContainer } from '@/utils';
 
 export default class extends Event.Handler {
 	public readonly name = Event.Name.GuildMemberAdd;
@@ -24,7 +24,6 @@ export default class extends Event.Handler {
 		if (data.welcomeNewMemberRoles.length > 0) {
 			const highestRoleWithManageRoles = me.roles.cache
 				.filter((role) => role.permissions.has([PermissionFlagsBits.ManageRoles]))
-				// eslint-disable-next-line unicorn/no-array-sort
 				.sort((a, b) => b.position - a.position)
 				.at(0);
 

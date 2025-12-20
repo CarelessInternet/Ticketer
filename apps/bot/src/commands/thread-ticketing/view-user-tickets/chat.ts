@@ -1,6 +1,6 @@
 import { Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
-import { getTranslations, translate } from '@/i18n';
 import { PermissionFlagsBits } from 'discord.js';
+import { getTranslations, translate } from '@/i18n';
 import { goToPage } from '@/utils';
 import { viewUserTickets } from './viewUserTickets';
 
@@ -47,7 +47,7 @@ export class ComponentInteraction extends Component.Interaction {
 		}
 
 		void viewUserTickets.call(this, context, {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			// biome-ignore lint/style/noNonNullAssertion: It should exist.
 			userId: additionalData.at(0)!,
 			page,
 		});

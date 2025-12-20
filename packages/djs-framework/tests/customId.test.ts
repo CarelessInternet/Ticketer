@@ -1,6 +1,6 @@
-import { Base, Client } from '../src';
 import { deepStrictEqual, strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
+import { Base, Client } from '../src';
 
 describe('Custom ID Functionality', () => {
 	// @ts-expect-error: There is no need to implement the execute function here.

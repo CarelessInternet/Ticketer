@@ -1,6 +1,6 @@
 import type { Locale } from 'next-intl';
-import { Toaster } from '@/components/ui/sonner';
 import { setRequestLocale } from 'next-intl/server';
+import { Toaster } from '@/components/ui/sonner';
 
 export default async function Layout({ children, params }: LayoutProps<'/[locale]/docs'>) {
 	const { locale } = await params;

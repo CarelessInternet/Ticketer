@@ -433,7 +433,8 @@ const en_GB = {
 						},
 						description: {
 							success: 'Successfully deleted the last {amount:number} message{{s}}!',
-							error: 'I need the Manage Messages permission to delete messages.',
+							error:
+								'I need the View Channel, Read Message History, and Manage Messages permission to delete messages.',
 						},
 					},
 				],

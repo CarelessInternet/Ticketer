@@ -938,7 +938,7 @@ type RootTranslation = {
 							 */
 							success: RequiredParams<'amount'>
 							/**
-							 * I​ ​n​e​e​d​ ​t​h​e​ ​M​a​n​a​g​e​ ​M​e​s​s​a​g​e​s​ ​p​e​r​m​i​s​s​i​o​n​ ​t​o​ ​d​e​l​e​t​e​ ​m​e​s​s​a​g​e​s​.
+							 * I​ ​n​e​e​d​ ​t​h​e​ ​V​i​e​w​ ​C​h​a​n​n​e​l​,​ ​R​e​a​d​ ​M​e​s​s​a​g​e​ ​H​i​s​t​o​r​y​,​ ​a​n​d​ ​M​a​n​a​g​e​ ​M​e​s​s​a​g​e​s​ ​p​e​r​m​i​s​s​i​o​n​ ​t​o​ ​d​e​l​e​t​e​ ​m​e​s​s​a​g​e​s​.
 							 */
 							error: string
 						}
@@ -3034,7 +3034,7 @@ export type TranslationFunctions = {
 							 */
 							success: (arg: { amount: number }) => LocalizedString
 							/**
-							 * I need the Manage Messages permission to delete messages.
+							 * I need the View Channel, Read Message History, and Manage Messages permission to delete messages.
 							 */
 							error: () => LocalizedString
 						}

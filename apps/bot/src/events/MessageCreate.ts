@@ -28,6 +28,7 @@ export default class extends Event.Handler {
 				.permissionsFor(me)
 				.has([
 					PermissionFlagsBits.CreatePublicThreads,
+					PermissionFlagsBits.ReadMessageHistory,
 					PermissionFlagsBits.ViewChannel,
 					PermissionFlagsBits.SendMessagesInThreads,
 				])

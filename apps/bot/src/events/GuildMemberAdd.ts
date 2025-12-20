@@ -8,6 +8,8 @@ export default class extends Event.Handler {
 
 	@LogExceptions
 	public async execute([member]: Event.ArgumentsOf<this['name']>) {
+		if (member.id === member.client.user.id) return;
+
 		const { id: guildId, members, preferredLocale, roles } = member.guild;
 		const [data] = await database.select().from(welcomeAndFarewell).where(eq(welcomeAndFarewell.guildId, guildId));
 

@@ -30,7 +30,7 @@ export default class extends Command.Interaction {
 				data: amount,
 				error,
 				success,
-			} = z.int().gte(1).lte(100).safeParse(interaction.options.getInteger(dataTranslations.options[0].name(), true));
+			} = z.int().gte(2).lte(100).safeParse(interaction.options.getInteger(dataTranslations.options[0].name(), true));
 
 			if (!success) {
 				return interaction.editReply({
@@ -42,7 +42,15 @@ export default class extends Command.Interaction {
 
 			const me = await interaction.guild.members.fetchMe();
 
-			if (!me.permissionsIn(interaction.channel).has(PermissionFlagsBits.ManageMessages)) {
+			if (
+				!me
+					.permissionsIn(interaction.channel)
+					.has([
+						PermissionFlagsBits.ViewChannel,
+						PermissionFlagsBits.ReadMessageHistory,
+						PermissionFlagsBits.ManageMessages,
+					])
+			) {
 				return interaction.editReply({
 					embeds: [
 						super

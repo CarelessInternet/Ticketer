@@ -156,13 +156,19 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	public execute(context: Component.Context) {
-		const { success, additionalData, error, page } = goToPage.call(this, context.interaction);
+		const { success, additionalData, error, page } = goToPage(context.interaction);
 
 		if (!success) {
 			return context.interaction.editReply({
 				components: [],
 				content: '',
-				embeds: [userEmbedError({ ...context.interaction, description: error })],
+				embeds: [
+					userEmbedError({
+						client: context.interaction.client,
+						description: error,
+						member: context.interaction.member,
+					}),
+				],
 			});
 		}
 

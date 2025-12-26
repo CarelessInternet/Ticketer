@@ -13,16 +13,16 @@ export default class extends Command.Interaction {
 	public async execute(context: Command.Context): Promise<unknown> {
 		switch (await ticketType(context.interaction.channel)) {
 			case TicketType.ThreadTicketing: {
-				return ThreadTicketing.renameTitleModal.call(this, context);
+				return ThreadTicketing.renameTitleModal(context);
 			}
 			case TicketType.UserForums: {
-				return UserForums.renameTitleModal.call(this, context);
+				return UserForums.renameTitleModal(context);
 			}
 			case TicketType.AutomaticThreads: {
-				return AutomaticThreads.renameTitleModal.call(this, context, true);
+				return AutomaticThreads.renameTitleModal(context, true);
 			}
 			default: {
-				return invalidTicket.call(this, context);
+				return invalidTicket(context);
 			}
 		}
 	}

@@ -14,16 +14,16 @@ export default class extends Command.Interaction {
 	public async execute(context: Command.Context): Promise<unknown> {
 		switch (await ticketType(context.interaction.channel)) {
 			case TicketType.ThreadTicketing: {
-				return ThreadTicketing.deleteTicket.call(this, context);
+				return ThreadTicketing.deleteTicket(context);
 			}
 			case TicketType.UserForums: {
-				return UserForums.deleteTicket.call(this, context);
+				return UserForums.deleteTicket(context);
 			}
 			case TicketType.AutomaticThreads: {
-				return AutomaticThreads.deleteTicket.call(this, context, true);
+				return AutomaticThreads.deleteTicket(context, true);
 			}
 			default: {
-				return invalidTicket.call(this, context);
+				return invalidTicket(context);
 			}
 		}
 	}

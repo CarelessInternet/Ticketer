@@ -23,7 +23,12 @@ export default class extends Command.Interaction {
 			return interaction
 				.reply({
 					embeds: [
-						userEmbedError({ ...interaction, description: translations.description(), title: translations.title() }),
+						userEmbedError({
+							client: interaction.client,
+							description: translations.description(),
+							member: interaction.member,
+							title: translations.title(),
+						}),
 					],
 					flags: [MessageFlags.Ephemeral],
 				})

@@ -24,8 +24,9 @@ export default class extends Command.Interaction {
 			return void interaction.editReply({
 				embeds: [
 					userEmbedError({
-						...interaction,
+						client: interaction.client,
 						description: translations.embeds[1].description(),
+						member: interaction.member,
 						title: translations.embeds[1].title(),
 					}),
 				],

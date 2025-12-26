@@ -51,7 +51,13 @@ function IsTextChannel(_: object, __: string, descriptor: PropertyDescriptor) {
 		const { type } = interaction.options.getChannel('channel', true);
 
 		if (type !== ChannelType.GuildText) {
-			const embeds = [userEmbedError({ ...interaction, description: 'The specified channel is not a text channel.' })];
+			const embeds = [
+				userEmbedError({
+					client: interaction.client,
+					description: 'The specified channel is not a text channel.',
+					member: interaction.member,
+				}),
+			];
 
 			return interaction.deferred ? interaction.editReply({ embeds }) : interaction.reply({ embeds });
 		}
@@ -210,7 +216,13 @@ export default class extends Command.Interaction {
 			}
 			default: {
 				return context.interaction.reply({
-					embeds: [userEmbedError({ ...context.interaction, description: 'The subcommand could not be found.' })],
+					embeds: [
+						userEmbedError({
+							client: context.interaction.client,
+							description: 'The subcommand could not be found.',
+							member: context.interaction.member,
+						}),
+					],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -240,8 +252,9 @@ export default class extends Command.Interaction {
 			return interaction.editReply({
 				embeds: [
 					userEmbedError({
-						...interaction,
+						client: interaction.client,
 						description: `The automatic threads configuration for the channel ${channel} could not be found. Please create one instead of editing it.`,
+						member: interaction.member,
 					}),
 				],
 			});
@@ -311,7 +324,13 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 			}
 			default: {
 				return context.interaction.reply({
-					embeds: [userEmbedError({ ...context.interaction, description: 'The selected value could not be found.' })],
+					embeds: [
+						userEmbedError({
+							client: context.interaction.client,
+							description: 'The selected value could not be found.',
+							member: context.interaction.member,
+						}),
+					],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -329,7 +348,13 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 		if (!success) {
 			return context.interaction
 				.reply({
-					embeds: [userEmbedError({ ...context.interaction, description: prettifyError(error) })],
+					embeds: [
+						userEmbedError({
+							client: context.interaction.client,
+							description: prettifyError(error),
+							member: context.interaction.member,
+						}),
+					],
 					flags: [MessageFlags.Ephemeral],
 				})
 				.catch(() => false);
@@ -353,8 +378,9 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 				.reply({
 					embeds: [
 						userEmbedError({
-							...context.interaction,
+							client: context.interaction.client,
 							description: 'No automatic threads configuration for the channel could be found.',
+							member: context.interaction.member,
 						}),
 					],
 					flags: [MessageFlags.Ephemeral],
@@ -364,7 +390,7 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 
 		const { description, title } = row;
 
-		void openingMessageModal.call(this, context, { description, id, title });
+		void openingMessageModal(context, { description, id, title });
 	}
 }
 
@@ -392,7 +418,13 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [userEmbedError({ ...interaction, description: 'The select menu custom ID could not be found.' })],
+					embeds: [
+						userEmbedError({
+							client: interaction.client,
+							description: 'The select menu custom ID could not be found.',
+							member: interaction.member,
+						}),
+					],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -433,7 +465,13 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return context.interaction.editReply({
 				components: [],
-				embeds: [userEmbedError({ ...context.interaction, description: error })],
+				embeds: [
+					userEmbedError({
+						client: context.interaction.client,
+						description: error,
+						member: context.interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -453,7 +491,13 @@ export class ModalInteraction extends Modal.Interaction {
 			}
 			default: {
 				return context.interaction.reply({
-					embeds: [userEmbedError({ ...context.interaction, description: 'The modal custom ID could not be found.' })],
+					embeds: [
+						userEmbedError({
+							client: context.interaction.client,
+							description: 'The modal custom ID could not be found.',
+							member: context.interaction.member,
+						}),
+					],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -467,7 +511,13 @@ export class ModalInteraction extends Modal.Interaction {
 
 		if (channel?.type !== ChannelType.GuildText) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: 'The channel is not a text channel.' })],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'The channel is not a text channel.',
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -480,7 +530,9 @@ export class ModalInteraction extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 

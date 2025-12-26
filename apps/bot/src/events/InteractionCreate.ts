@@ -21,8 +21,9 @@ export default class extends Event.Handler {
 				void interaction.reply({
 					embeds: [
 						userEmbedError({
-							...interaction,
+							client: interaction.client,
 							description: translations.description(),
+							member: interaction.member,
 							title: translations.title(),
 						}).setFields([
 							{ name: translations.fields[0].name(), value: blacklist.reason, inline: true },
@@ -83,8 +84,9 @@ export default class extends Event.Handler {
 					return interaction.reply({
 						embeds: [
 							userEmbedError({
-								...interaction,
+								client: interaction.client,
 								description: translations.description(),
+								member: interaction.member,
 								title: translations.title(),
 							}),
 						],

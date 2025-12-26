@@ -118,8 +118,9 @@ export class ModalInteraction extends Modal.Interaction {
 			return interaction.editReply({
 				embeds: [
 					userEmbedError({
-						...interaction,
+						client: interaction.client,
 						description: prettifyError(error),
+						member: interaction.member,
 						title: 'One or multiple of the modal fields are invalid.',
 					}),
 				],
@@ -131,7 +132,13 @@ export class ModalInteraction extends Modal.Interaction {
 
 		if (!channel?.isTextBased()) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: 'The specified channel is not text based.' })],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'The specified channel is not text based.',
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -141,8 +148,9 @@ export class ModalInteraction extends Modal.Interaction {
 			return interaction.editReply({
 				embeds: [
 					userEmbedError({
-						...interaction,
+						client: interaction.client,
 						description: `I do not have the view channel and send messages permission in ${channel}.`,
+						member: interaction.member,
 					}),
 				],
 			});

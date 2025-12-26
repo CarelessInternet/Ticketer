@@ -6,8 +6,9 @@ export function invalidTicket({ interaction }: Command.Context) {
 	const parameters = {
 		embeds: [
 			userEmbedError({
-				...interaction,
+				client: interaction.client,
 				description: translations.description(),
+				member: interaction.member,
 				title: translations.title(),
 			}),
 		],

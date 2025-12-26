@@ -137,7 +137,13 @@ export default class extends Component.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [userEmbedError({ ...interaction, description: 'The selected value could not be found.' })],
+					embeds: [
+						userEmbedError({
+							client: interaction.client,
+							description: 'The selected value could not be found.',
+							member: interaction.member,
+						}),
+					],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -154,7 +160,9 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.reply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -169,7 +177,13 @@ export default class extends Component.Interaction {
 
 		if (!row) {
 			return interaction.reply({
-				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'No category with the given ID could be found.',
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -186,7 +200,9 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.reply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -200,7 +216,13 @@ export default class extends Component.Interaction {
 
 		if (!row) {
 			return interaction.reply({
-				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'No category with the given ID could be found.',
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -247,7 +269,9 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -270,7 +294,13 @@ export default class extends Component.Interaction {
 
 		if (!row) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'No category with the given ID could be found.',
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -295,7 +325,9 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -313,7 +345,13 @@ export default class extends Component.Interaction {
 
 		if (!row) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'No category with the given ID could be found.',
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -337,7 +375,9 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -355,7 +395,13 @@ export default class extends Component.Interaction {
 
 		if (!row) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'No category with the given ID could be found.',
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -378,7 +424,9 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.reply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -389,7 +437,13 @@ export default class extends Component.Interaction {
 
 		if (!row) {
 			return interaction.reply({
-				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'No category with the given ID could be found.',
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -424,7 +478,9 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -442,7 +498,13 @@ export default class extends Component.Interaction {
 
 		if (!row) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'No category with the given ID could be found.',
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -497,7 +559,13 @@ export class OtherComponentInteraction extends Component.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [userEmbedError({ ...interaction, description: 'The component ID could not be found.' })],
+					embeds: [
+						userEmbedError({
+							client: interaction.client,
+							description: 'The component ID could not be found.',
+							member: interaction.member,
+						}),
+					],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -517,7 +585,9 @@ export class OtherComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -550,7 +620,9 @@ export class OtherComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -587,7 +659,9 @@ export class OtherComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -595,7 +669,13 @@ export class OtherComponentInteraction extends Component.Interaction {
 
 		if (!value) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: 'The selected value could not be found.' })],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'The selected value could not be found.',
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -606,7 +686,13 @@ export class OtherComponentInteraction extends Component.Interaction {
 
 		if (!row) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'No category with the given ID could be found.',
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -646,7 +732,9 @@ export class OtherComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -688,7 +776,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [userEmbedError({ ...interaction, description: error })],
+				embeds: [userEmbedError({ client: interaction.client, description: error, member: interaction.member })],
 			});
 		}
 

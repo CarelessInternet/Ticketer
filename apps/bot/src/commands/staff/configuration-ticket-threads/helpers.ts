@@ -39,8 +39,9 @@ export function HasGlobalConfiguration(_: object, __: string, descriptor: Proper
 
 			if (!row) {
 				const embed = userEmbedError({
-					...interaction.member,
+					client: interaction.client,
 					description: 'Please create a global thread ticket configuration before creating categories.',
+					member: interaction.member,
 				});
 
 				return interaction.deferred

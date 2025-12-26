@@ -141,8 +141,9 @@ export default class extends Command.Interaction {
 			return interaction.editReply({
 				embeds: [
 					userEmbedError({
-						...interaction,
+						client: interaction.client,
 						description: prettifyError(error),
+						member: interaction.member,
 						title: translations.errors.invalidFields.title(),
 					}),
 				],
@@ -194,15 +195,16 @@ export class PaginationInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	public execute(context: Component.Context<'button'>) {
-		const { success, error, page } = goToPage.call(this, context.interaction);
+		const { success, error, page } = goToPage(context.interaction);
 
 		if (!success) {
 			return context.interaction.editReply({
 				components: [],
 				embeds: [
 					userEmbedError({
-						...context.interaction,
+						client: context.interaction.client,
 						description: error,
+						member: context.interaction.member,
 						title: translate(context.interaction.locale).commands[
 							'guild-blacklist'
 						].command.errors.invalidFields.title(),

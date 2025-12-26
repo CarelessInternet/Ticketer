@@ -107,7 +107,13 @@ export default class extends Command.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [userEmbedError({ ...interaction, description: 'The subcommand could not be found.' })],
+					embeds: [
+						userEmbedError({
+							client: interaction.client,
+							description: 'The subcommand could not be found.',
+							member: interaction.member,
+						}),
+					],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -137,9 +143,10 @@ export default class extends Command.Interaction {
 			return interaction.editReply({
 				embeds: [
 					userEmbedError({
-						...interaction.member,
+						client: interaction.client,
 						description:
 							"Either the ticket could not be found (e.g. the ticket was deleted or closed) or you are not a manager of the ticket's category.",
+						member: interaction.member,
 					}),
 				],
 			});
@@ -174,8 +181,9 @@ export default class extends Command.Interaction {
 			return interaction.editReply({
 				embeds: [
 					userEmbedError({
-						...interaction,
+						client: interaction.client,
 						description: 'There are no categories of which you can purge/prune inactive tickets in.',
+						member: interaction.member,
 					}),
 				],
 			});

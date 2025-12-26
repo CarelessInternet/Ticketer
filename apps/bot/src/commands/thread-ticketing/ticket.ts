@@ -40,7 +40,12 @@ export default class extends Command.Interaction {
 			return interaction
 				.reply({
 					embeds: [
-						userEmbedError({ ...interaction, description: translations.description(), title: translations.title() }),
+						userEmbedError({
+							client: interaction.client,
+							description: translations.description(),
+							member: interaction.member,
+							title: translations.title(),
+						}),
 					],
 					flags: [MessageFlags.Ephemeral],
 				})
@@ -111,8 +116,9 @@ export class TicketButtonsInteraction extends Component.Interaction {
 				return context.interaction.editReply({
 					embeds: [
 						userEmbedError({
-							...context.interaction,
+							client: context.interaction.client,
 							description: translations.description(),
+							member: context.interaction.member,
 							title: translations.title(),
 						}),
 					],
@@ -155,8 +161,9 @@ export class ComponentInteraction extends Component.Interaction {
 				return context.interaction.reply({
 					embeds: [
 						userEmbedError({
-							...context.interaction,
+							client: context.interaction.client,
 							description: translations.description(),
+							member: context.interaction.member,
 							title: translations.title(),
 						}),
 					],
@@ -176,7 +183,14 @@ export class ComponentInteraction extends Component.Interaction {
 
 		if (!success) {
 			return interaction.reply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error), title: translations.title() })],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: prettifyError(error),
+						member: interaction.member,
+						title: translations.title(),
+					}),
+				],
 			});
 		}
 
@@ -189,8 +203,9 @@ export class ComponentInteraction extends Component.Interaction {
 			return interaction.reply({
 				embeds: [
 					userEmbedError({
-						...interaction,
+						client: interaction.client,
 						description: translations.description(),
+						member: interaction.member,
 						title: translations.title(),
 					}),
 				],
@@ -223,8 +238,9 @@ export class ComponentInteraction extends Component.Interaction {
 				.reply({
 					embeds: [
 						userEmbedError({
-							...interaction,
+							client: interaction.client,
 							description: translations.description(),
+							member: interaction.member,
 							title: translations.title(),
 						}),
 					],
@@ -289,7 +305,12 @@ export class ModalInteraction extends Modal.Interaction {
 
 				return interaction.reply({
 					embeds: [
-						userEmbedError({ ...interaction, description: translations.description(), title: translations.title() }),
+						userEmbedError({
+							client: interaction.client,
+							description: translations.description(),
+							member: interaction.member,
+							title: translations.title(),
+						}),
 					],
 					flags: [MessageFlags.Ephemeral],
 				});

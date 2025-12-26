@@ -31,8 +31,9 @@ export default class extends Command.Interaction {
 			return interaction.editReply({
 				embeds: [
 					userEmbedError({
-						...interaction,
+						client: interaction.client,
 						description: translations.errors.noShard.description(),
+						member: interaction.member,
 						title: translations.errors.noShard.title(),
 					}),
 				],

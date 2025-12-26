@@ -48,7 +48,13 @@ export default class extends Modal.Interaction {
 			}
 			default: {
 				return interaction.editReply({
-					embeds: [userEmbedError({ ...interaction, description: 'The modal ID could not be found.' })],
+					embeds: [
+						userEmbedError({
+							client: interaction.client,
+							description: 'The modal ID could not be found.',
+							member: interaction.member,
+						}),
+					],
 				});
 			}
 		}
@@ -72,7 +78,9 @@ export default class extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -87,7 +95,13 @@ export default class extends Modal.Interaction {
 
 			if (!idSuccess) {
 				return interaction.editReply({
-					embeds: [userEmbedError({ ...interaction, description: prettifyError(idError) })],
+					embeds: [
+						userEmbedError({
+							client: interaction.client,
+							description: prettifyError(idError),
+							member: interaction.member,
+						}),
+					],
 				});
 			}
 
@@ -104,8 +118,9 @@ export default class extends Modal.Interaction {
 				return interaction.editReply({
 					embeds: [
 						userEmbedError({
-							...interaction,
+							client: interaction.client,
 							description: `There are too many categories, you may not have more than ${MAXIMUM_CATEGORY_AMOUNT.toString()}.`,
+							member: interaction.member,
 						}),
 					],
 				});
@@ -156,7 +171,13 @@ export default class extends Modal.Interaction {
 
 		if (!idSuccess) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(idError) })],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: prettifyError(idError),
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -173,7 +194,9 @@ export default class extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -220,7 +243,13 @@ export default class extends Modal.Interaction {
 
 		if (!idSuccess) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(idError) })],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: prettifyError(idError),
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -234,7 +263,9 @@ export default class extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 

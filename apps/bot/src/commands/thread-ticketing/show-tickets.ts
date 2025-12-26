@@ -140,7 +140,13 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return context.interaction.editReply({
 				components: [],
-				embeds: [userEmbedError({ ...context.interaction, description: error })],
+				embeds: [
+					userEmbedError({
+						client: context.interaction.client,
+						description: error,
+						member: context.interaction.member,
+					}),
+				],
 			});
 		}
 

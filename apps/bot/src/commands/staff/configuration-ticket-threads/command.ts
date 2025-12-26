@@ -97,7 +97,13 @@ export default class extends Command.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [userEmbedError({ ...interaction, description: 'The subcommand group could not be found.' })],
+					embeds: [
+						userEmbedError({
+							client: interaction.client,
+							description: 'The subcommand group could not be found.',
+							member: interaction.member,
+						}),
+					],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -118,7 +124,13 @@ export default class extends Command.Interaction {
 
 				if (!success) {
 					return interaction.editReply({
-						embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+						embeds: [
+							userEmbedError({
+								client: interaction.client,
+								description: prettifyError(error),
+								member: interaction.member,
+							}),
+						],
 					});
 				}
 
@@ -142,7 +154,13 @@ export default class extends Command.Interaction {
 			}
 			default: {
 				return interaction.editReply({
-					embeds: [userEmbedError({ ...interaction, description: 'The subcommand could not be found.' })],
+					embeds: [
+						userEmbedError({
+							client: interaction.client,
+							description: 'The subcommand could not be found.',
+							member: interaction.member,
+						}),
+					],
 				});
 			}
 		}
@@ -157,7 +175,13 @@ export default class extends Command.Interaction {
 
 		if (!result) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: 'No thread ticket configuration could be found.' })],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'No thread ticket configuration could be found.',
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -188,7 +212,13 @@ export default class extends Command.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [userEmbedError({ ...interaction, description: 'The subcommand could not be found.' })],
+					embeds: [
+						userEmbedError({
+							client: interaction.client,
+							description: 'The subcommand could not be found.',
+							member: interaction.member,
+						}),
+					],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -210,7 +240,9 @@ export default class extends Command.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -315,7 +347,9 @@ export default class extends Command.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 

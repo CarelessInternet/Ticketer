@@ -12,6 +12,6 @@ export default class extends Command.Interaction {
 
 	@DeferReply({ ephemeral: true })
 	public execute(context: Command.Context<'user'>) {
-		void viewUserTickets.call(this, context, { userId: context.interaction.targetUser.id });
+		void viewUserTickets(context, { userId: context.interaction.targetUser.id });
 	}
 }

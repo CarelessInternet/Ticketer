@@ -1,4 +1,4 @@
-import { Command, DeferReply } from '@ticketer/djs-framework';
+import { Command, container, DeferReply } from '@ticketer/djs-framework';
 import { environment } from '@ticketer/env/bot';
 import {
 	ActionRowBuilder,
@@ -90,34 +90,36 @@ export default class extends Command.Interaction {
 			},
 		];
 
-		const container = super.container((cont) =>
-			cont
-				.addSectionComponents(
-					new SectionBuilder()
-						.addTextDisplayComponents(
-							new TextDisplayBuilder().setContent(heading(translations[0].text[0].content())),
-							new TextDisplayBuilder().setContent(commands),
-						)
-						.setButtonAccessory(
-							new ButtonBuilder()
-								.setStyle(ButtonStyle.Link)
-								.setLabel(translations[0].button.label())
-								.setURL(this.UTM(`/${getLocale(interaction.locale)}/docs/commands`)),
-						),
-				)
-				.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true))
-				.addTextDisplayComponents(new TextDisplayBuilder().setContent(heading(translations[1].text())))
-				.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(false))
-				.addActionRowComponents(
-					new ActionRowBuilder<ButtonBuilder>().setComponents(
-						buttons.map((button) =>
-							new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel(button.label).setURL(button.url),
+		const reply = container({
+			builder: (cont) =>
+				cont
+					.addSectionComponents(
+						new SectionBuilder()
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(heading(translations[0].text[0].content())),
+								new TextDisplayBuilder().setContent(commands),
+							)
+							.setButtonAccessory(
+								new ButtonBuilder()
+									.setStyle(ButtonStyle.Link)
+									.setLabel(translations[0].button.label())
+									.setURL(this.UTM(`/${getLocale(interaction.locale)}/docs/commands`)),
+							),
+					)
+					.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true))
+					.addTextDisplayComponents(new TextDisplayBuilder().setContent(heading(translations[1].text())))
+					.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(false))
+					.addActionRowComponents(
+						new ActionRowBuilder<ButtonBuilder>().setComponents(
+							buttons.map((button) =>
+								new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel(button.label).setURL(button.url),
+							),
 						),
 					),
-				),
-		);
+			client: interaction.client,
+		});
 
-		void interaction.editReply({ components: [container], flags: [MessageFlags.IsComponentsV2] });
+		void interaction.editReply({ components: [reply], flags: [MessageFlags.IsComponentsV2] });
 	}
 
 	private UTM(route = '') {

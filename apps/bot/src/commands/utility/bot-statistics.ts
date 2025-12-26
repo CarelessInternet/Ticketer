@@ -1,4 +1,4 @@
-import { Command, DeferReply } from '@ticketer/djs-framework';
+import { Command, DeferReply, embed, userEmbedError } from '@ticketer/djs-framework';
 import { codeBlock, PermissionFlagsBits, Status } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
 import { formatDateLong } from '@/utils';
@@ -29,7 +29,13 @@ export default class extends Command.Interaction {
 
 		if (!shard) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(translations.errors.noShard.description())],
+				embeds: [
+					userEmbedError({
+						...interaction,
+						description: translations.errors.noShard.description(),
+						title: translations.errors.noShard.title(),
+					}),
+				],
 			});
 		}
 
@@ -87,12 +93,12 @@ export default class extends Command.Interaction {
 		});
 
 		const resolvedStats = await Promise.all(clientsStats.map((stat) => stat.value));
-		const embed = super.embed
+		const reply = embed(interaction)
 			.setTitle(translations.embeds[0].title())
 			.setDescription(translations.embeds[0].description());
 
 		for (let index = 0; index < clientsStats.length; index++) {
-			embed.addFields({
+			reply.addFields({
 				// @ts-expect-error: The index should not go out of bounds.
 				name: `${clientsStats.at(index)?.emoji} ${translations.embeds[0].fields[index]?.()}`,
 				value:
@@ -116,11 +122,11 @@ export default class extends Command.Interaction {
 			return accumulator + value;
 		}, '');
 
-		embed.addFields({
+		reply.addFields({
 			name: translations.embeds[0].fields[6](),
 			value: codeBlock('markdown', shardsStatsAsString),
 		});
 
-		return interaction.editReply({ embeds: [embed] });
+		return interaction.editReply({ embeds: [reply] });
 	}
 }

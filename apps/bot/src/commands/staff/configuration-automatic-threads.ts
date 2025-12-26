@@ -7,7 +7,19 @@ import {
 	desc,
 	eq,
 } from '@ticketer/database';
-import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
+import {
+	Command,
+	Component,
+	container,
+	customId,
+	DeferReply,
+	DeferUpdate,
+	dynamicCustomId,
+	extractCustomId,
+	Modal,
+	userEmbed,
+	userEmbedError,
+} from '@ticketer/djs-framework';
 import {
 	ActionRowBuilder,
 	bold,
@@ -39,9 +51,7 @@ function IsTextChannel(_: object, __: string, descriptor: PropertyDescriptor) {
 		const { type } = interaction.options.getChannel('channel', true);
 
 		if (type !== ChannelType.GuildText) {
-			const embeds = [
-				this.userEmbedError(interaction.member).setDescription('The specified channel is not a text channel.'),
-			];
+			const embeds = [userEmbedError({ ...interaction, description: 'The specified channel is not a text channel.' })];
 
 			return interaction.deferred ? interaction.editReply({ embeds }) : interaction.reply({ embeds });
 		}
@@ -53,11 +63,7 @@ function IsTextChannel(_: object, __: string, descriptor: PropertyDescriptor) {
 	return descriptor;
 }
 
-async function getConfigurations(
-	this: BaseInteraction.Interaction,
-	{ interaction }: Command.Context<'chat'> | Component.Context<'button'>,
-	page = 0,
-) {
+async function getConfigurations({ interaction }: Command.Context<'chat'> | Component.Context<'button'>, page = 0) {
 	const PAGE_SIZE = 3;
 	const configurations = await withPagination({
 		page,
@@ -71,30 +77,34 @@ async function getConfigurations(
 	});
 
 	const containers = configurations.map((config) =>
-		this.container((cont) =>
-			automaticThreadsContainer({
-				container: cont
-					.addTextDisplayComponents(
-						new TextDisplayBuilder().setContent(`${bold('Channel')}: ${channelMention(config.channelId)}`),
-					)
-					.addTextDisplayComponents(
-						new TextDisplayBuilder().setContent(
-							`${bold('Managers')}: ${config.managers.length > 0 ? config.managers.map((id) => roleMention(id)).join(', ') : 'None'}`,
-						),
-					)
-					.addTextDisplayComponents(new TextDisplayBuilder().setContent(heading('Message Preview:', HeadingLevel.Two)))
-					.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true)),
-				description: config.openingMessageDescription,
-				member: interaction.member,
-				title: config.openingMessageTitle,
-			}),
-		),
+		container({
+			builder: (cont) =>
+				automaticThreadsContainer({
+					container: cont
+						.addTextDisplayComponents(
+							new TextDisplayBuilder().setContent(`${bold('Channel')}: ${channelMention(config.channelId)}`),
+						)
+						.addTextDisplayComponents(
+							new TextDisplayBuilder().setContent(
+								`${bold('Managers')}: ${config.managers.length > 0 ? config.managers.map((id) => roleMention(id)).join(', ') : 'None'}`,
+							),
+						)
+						.addTextDisplayComponents(
+							new TextDisplayBuilder().setContent(heading('Message Preview:', HeadingLevel.Two)),
+						)
+						.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true)),
+					description: config.openingMessageDescription,
+					member: interaction.member,
+					title: config.openingMessageTitle,
+				}),
+			client: interaction.client,
+		}),
 	);
 
 	const pagination = messageWithPagination({
-		previous: { customId: this.customId('ticket_automatic_threads_view_previous', page), disabled: page === 0 },
+		previous: { customId: customId('ticket_automatic_threads_view_previous', page), disabled: page === 0 },
 		next: {
-			customId: this.customId('ticket_automatic_threads_view_next', page),
+			customId: customId('ticket_automatic_threads_view_next', page),
 			disabled: configurations.length < PAGE_SIZE,
 		},
 	});
@@ -103,7 +113,6 @@ async function getConfigurations(
 }
 
 function openingMessageModal(
-	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context<'chat'> | Component.Context<'string'>,
 	options: { id: string; title?: string; description?: string },
 ) {
@@ -112,7 +121,7 @@ function openingMessageModal(
 		.setDescription('Write "{member}" to mention the user.')
 		.setTextInputComponent(
 			(options.title ? new TextInputBuilder().setValue(options.title) : new TextInputBuilder())
-				.setCustomId(this.customId('title'))
+				.setCustomId(customId('title'))
 				.setRequired(true)
 				.setMinLength(1)
 				.setMaxLength(100)
@@ -124,7 +133,7 @@ function openingMessageModal(
 		.setDescription('Write "{member}" to mention the user.')
 		.setTextInputComponent(
 			(options.description ? new TextInputBuilder().setValue(options.description) : new TextInputBuilder())
-				.setCustomId(this.customId('description'))
+				.setCustomId(customId('description'))
 				.setRequired(true)
 				.setMinLength(1)
 				.setMaxLength(500)
@@ -132,7 +141,7 @@ function openingMessageModal(
 		);
 
 	const modal = new ModalBuilder()
-		.setCustomId(this.customId('ticket_automatic_threads_configuration_opening_message', options.id))
+		.setCustomId(customId('ticket_automatic_threads_configuration_opening_message', options.id))
 		.setTitle('Opening Message Title & Description')
 		.setLabelComponents(titleInput, descriptionInput);
 
@@ -188,12 +197,10 @@ export default class extends Command.Interaction {
 	public execute(context: Command.Context<'chat'>) {
 		switch (context.interaction.options.getSubcommand(true)) {
 			case 'overview': {
-				this.configurationOverview(context);
-				return;
+				return this.configurationOverview(context);
 			}
 			case 'create': {
-				this.createConfiguration(context);
-				return;
+				return this.createConfiguration(context);
 			}
 			case 'edit': {
 				return this.editConfiguration(context);
@@ -203,9 +210,7 @@ export default class extends Command.Interaction {
 			}
 			default: {
 				return context.interaction.reply({
-					embeds: [
-						super.userEmbedError(context.interaction.member).setDescription('The subcommand could not be found.'),
-					],
+					embeds: [userEmbedError({ ...context.interaction, description: 'The subcommand could not be found.' })],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -214,12 +219,12 @@ export default class extends Command.Interaction {
 
 	@DeferReply()
 	private configurationOverview(context: Command.Context<'chat'>) {
-		void getConfigurations.call(this, context);
+		void getConfigurations(context);
 	}
 
 	@IsTextChannel
 	private createConfiguration(context: Command.Context<'chat'>) {
-		void openingMessageModal.call(this, context, { id: context.interaction.options.getChannel('channel', true).id });
+		void openingMessageModal(context, { id: context.interaction.options.getChannel('channel', true).id });
 	}
 
 	@DeferReply()
@@ -234,17 +239,16 @@ export default class extends Command.Interaction {
 		if (!result) {
 			return interaction.editReply({
 				embeds: [
-					super
-						.userEmbedError(interaction.member)
-						.setDescription(
-							`The automatic threads configuration for the channel ${channel.toString()} could not be found. Please create one instead of editing it.`,
-						),
+					userEmbedError({
+						...interaction,
+						description: `The automatic threads configuration for the channel ${channel} could not be found. Please create one instead of editing it.`,
+					}),
 				],
 			});
 		}
 
 		const selectMenu = new StringSelectMenuBuilder()
-			.setCustomId(super.customId('ticket_automatic_threads_configuration_menu', channel.id))
+			.setCustomId(customId('ticket_automatic_threads_configuration_menu', channel.id))
 			.setMinValues(1)
 			.setMaxValues(1)
 			.setPlaceholder('Edit one of the following automatic threads options:')
@@ -276,18 +280,17 @@ export default class extends Command.Interaction {
 
 		return interaction.editReply({
 			embeds: [
-				super
-					.userEmbed(interaction.member)
+				userEmbed(interaction)
 					.setTitle('Deleted an Automatic Threads Configuration')
 					.setDescription(
-						`${interaction.member.toString()} deleted an automatic threads configuration in the channel ${channel.toString()} if one existed.`,
+						`${interaction.member} deleted an automatic threads configuration in the channel ${channel} if one existed.`,
 					),
 			],
 		});
 	}
 }
 export class ConfigurationMenuInteraction extends Component.Interaction {
-	public readonly customIds = [super.dynamicCustomId('ticket_automatic_threads_configuration_menu')];
+	public readonly customIds = [dynamicCustomId('ticket_automatic_threads_configuration_menu')];
 
 	public execute(context: Component.Context<'string'>) {
 		switch (context.interaction.values.at(0)) {
@@ -295,9 +298,9 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 				return this.openingMessage(context);
 			}
 			case 'managers': {
-				const { dynamicValue } = super.extractCustomId(context.interaction.customId, true);
+				const { dynamicValue } = extractCustomId(context.interaction.customId, true);
 				const managersMenu = new RoleSelectMenuBuilder()
-					.setCustomId(super.customId('ticket_automatic_threads_configuration_managers', dynamicValue))
+					.setCustomId(customId('ticket_automatic_threads_configuration_managers', dynamicValue))
 					.setMinValues(0)
 					.setMaxValues(10)
 					.setPlaceholder('Choose the managers of the automatic threads.');
@@ -308,9 +311,7 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 			}
 			default: {
 				return context.interaction.reply({
-					embeds: [
-						super.userEmbedError(context.interaction.member).setDescription('The selected value could not be found.'),
-					],
+					embeds: [userEmbedError({ ...context.interaction, description: 'The selected value could not be found.' })],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -318,7 +319,7 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 	}
 
 	private async openingMessage(context: Component.Context<'string'>) {
-		const { dynamicValue } = super.extractCustomId(context.interaction.customId, true);
+		const { dynamicValue } = extractCustomId(context.interaction.customId, true);
 		const {
 			data: id,
 			error,
@@ -328,7 +329,7 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 		if (!success) {
 			return context.interaction
 				.reply({
-					embeds: [super.userEmbedError(context.interaction.member).setDescription(prettifyError(error))],
+					embeds: [userEmbedError({ ...context.interaction, description: prettifyError(error) })],
 					flags: [MessageFlags.Ephemeral],
 				})
 				.catch(() => false);
@@ -351,9 +352,10 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 			return context.interaction
 				.reply({
 					embeds: [
-						super
-							.userEmbedError(context.interaction.member)
-							.setDescription('No automatic threads configuration for the channel could be found.'),
+						userEmbedError({
+							...context.interaction,
+							description: 'No automatic threads configuration for the channel could be found.',
+						}),
 					],
 					flags: [MessageFlags.Ephemeral],
 				})
@@ -368,20 +370,20 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 
 export class ComponentInteraction extends Component.Interaction {
 	public readonly customIds = [
-		super.dynamicCustomId('ticket_automatic_threads_configuration_managers'),
-		super.dynamicCustomId('ticket_automatic_threads_view_previous'),
-		super.dynamicCustomId('ticket_automatic_threads_view_next'),
+		dynamicCustomId('ticket_automatic_threads_configuration_managers'),
+		dynamicCustomId('ticket_automatic_threads_view_previous'),
+		dynamicCustomId('ticket_automatic_threads_view_next'),
 	];
 
 	public execute({ interaction }: Component.Context) {
-		const { customId } = super.extractCustomId(interaction.customId);
+		const { customId: id } = extractCustomId(interaction.customId);
 
-		switch (customId) {
-			case super.dynamicCustomId('ticket_automatic_threads_configuration_managers'): {
+		switch (id) {
+			case dynamicCustomId('ticket_automatic_threads_configuration_managers'): {
 				return interaction.isRoleSelectMenu() && void this.updateManagers({ interaction });
 			}
-			case super.dynamicCustomId('ticket_automatic_threads_view_previous'):
-			case super.dynamicCustomId('ticket_automatic_threads_view_next'): {
+			case dynamicCustomId('ticket_automatic_threads_view_previous'):
+			case dynamicCustomId('ticket_automatic_threads_view_next'): {
 				if (interaction.isButton()) {
 					void this.configurationOverview({ interaction });
 				}
@@ -390,9 +392,7 @@ export class ComponentInteraction extends Component.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [
-						super.userEmbedError(interaction.member).setDescription('The select menu custom ID could not be found.'),
-					],
+					embeds: [userEmbedError({ ...interaction, description: 'The select menu custom ID could not be found.' })],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -401,7 +401,7 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private async updateManagers({ interaction }: Component.Context<'role'>) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const managers = interaction.roles.map((role) => role.id);
 
 		await database
@@ -415,11 +415,10 @@ export class ComponentInteraction extends Component.Interaction {
 			);
 
 		const roles = managers.map((id) => roleMention(id)).join(', ');
-		const embed = super
-			.userEmbed(interaction.member)
+		const embed = userEmbed(interaction)
 			.setTitle('Updated the Automatic Threads Managers')
 			.setDescription(
-				`${interaction.member.toString()} updated the managers of the automatic threads in ${channelMention(dynamicValue)} to: ${
+				`${interaction.member} updated the managers of the automatic threads in ${channelMention(dynamicValue)} to: ${
 					managers.length > 0 ? roles : 'none'
 				}.`,
 			);
@@ -429,34 +428,32 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private configurationOverview(context: Component.Context<'button'>) {
-		const { success, error, page } = goToPage.call(this, context.interaction);
+		const { success, error, page } = goToPage(context.interaction);
 
 		if (!success) {
 			return context.interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(context.interaction.member).setDescription(error)],
+				embeds: [userEmbedError({ ...context.interaction, description: error })],
 			});
 		}
 
-		void getConfigurations.call(this, context, page);
+		void getConfigurations(context, page);
 	}
 }
 
 export class ModalInteraction extends Modal.Interaction {
-	public readonly customIds = [super.dynamicCustomId('ticket_automatic_threads_configuration_opening_message')];
+	public readonly customIds = [dynamicCustomId('ticket_automatic_threads_configuration_opening_message')];
 
 	public execute(context: Modal.Context) {
-		const { customId } = super.extractCustomId(context.interaction.customId);
+		const { customId: id } = extractCustomId(context.interaction.customId);
 
-		switch (customId) {
-			case super.dynamicCustomId('ticket_automatic_threads_configuration_opening_message'): {
+		switch (id) {
+			case dynamicCustomId('ticket_automatic_threads_configuration_opening_message'): {
 				return this.createConfigurationOrUpdateOpeningMessage(context);
 			}
 			default: {
 				return context.interaction.reply({
-					embeds: [
-						super.userEmbedError(context.interaction.member).setDescription('The modal custom ID could not be found.'),
-					],
+					embeds: [userEmbedError({ ...context.interaction, description: 'The modal custom ID could not be found.' })],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -465,12 +462,12 @@ export class ModalInteraction extends Modal.Interaction {
 
 	@DeferReply()
 	private async createConfigurationOrUpdateOpeningMessage({ interaction }: Modal.Context) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const channel = await fetchChannel(interaction.guild, dynamicValue);
 
 		if (channel?.type !== ChannelType.GuildText) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription('The channel is not a text channel.')],
+				embeds: [userEmbedError({ ...interaction, description: 'The channel is not a text channel.' })],
 			});
 		}
 
@@ -483,7 +480,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
 			});
 		}
 
@@ -504,26 +501,29 @@ export class ModalInteraction extends Modal.Interaction {
 
 		return interaction.editReply({
 			components: [
-				super.container((cont) =>
-					cont
-						.addTextDisplayComponents(
-							new TextDisplayBuilder().setContent(
-								heading('Created/Updated an Automatic Threads Configuration', HeadingLevel.One),
+				container({
+					builder: (cont) =>
+						cont
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(
+									heading('Created/Updated an Automatic Threads Configuration', HeadingLevel.One),
+								),
+							)
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(
+									`${interaction.member.toString()} created or updated an automatic threads configuration in ${channel.toString()}. An example opening message can be seen in the container below.`,
+								),
 							),
-						)
-						.addTextDisplayComponents(
-							new TextDisplayBuilder().setContent(
-								`${interaction.member.toString()} created or updated an automatic threads configuration in ${channel.toString()}. An example opening message can be seen in the container below.`,
-							),
-						),
-				),
-				super.container(
-					automaticThreadsContainer({
+					client: interaction.client,
+				}),
+				container({
+					builder: automaticThreadsContainer({
 						description: data.openingMessageDescription,
 						member: interaction.member,
 						title: data.openingMessageTitle,
 					}),
-				),
+					client: interaction.client,
+				}),
 			],
 			flags: [MessageFlags.IsComponentsV2],
 		});

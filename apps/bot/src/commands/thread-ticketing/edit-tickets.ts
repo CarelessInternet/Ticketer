@@ -9,7 +9,17 @@ import {
 	ticketsThreads,
 	ticketThreadsCategories,
 } from '@ticketer/database';
-import { Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
+import {
+	Command,
+	Component,
+	customId,
+	DeferReply,
+	DeferUpdate,
+	dynamicCustomId,
+	extractCustomId,
+	userEmbed,
+	userEmbedError,
+} from '@ticketer/djs-framework';
 import {
 	type APIApplicationCommandOptionChoice,
 	ChannelType,
@@ -97,7 +107,7 @@ export default class extends Command.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [super.userEmbedError(interaction.member).setDescription('The subcommand could not be found.')],
+					embeds: [userEmbedError({ ...interaction, description: 'The subcommand could not be found.' })],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -126,11 +136,11 @@ export default class extends Command.Interaction {
 		if (!row?.count) {
 			return interaction.editReply({
 				embeds: [
-					super
-						.userEmbedError(interaction.member)
-						.setDescription(
+					userEmbedError({
+						...interaction.member,
+						description:
 							"Either the ticket could not be found (e.g. the ticket was deleted or closed) or you are not a manager of the ticket's category.",
-						),
+					}),
 				],
 			});
 		}
@@ -144,11 +154,10 @@ export default class extends Command.Interaction {
 
 		await interaction.editReply({
 			embeds: [
-				super
-					.userEmbed(interaction.member)
+				userEmbed(interaction)
 					.setTitle('Updated Ticket State')
 					.setDescription(
-						`${interaction.member.toString()} updated the bot's ticket state of ${channel.toString()} to ${inlineCode(ThreadTicketing.ticketState(state))}.`,
+						`${interaction.member} updated the bot's ticket state of ${channel} to ${inlineCode(ThreadTicketing.ticketState(state))}.`,
 					),
 			],
 		});
@@ -164,9 +173,10 @@ export default class extends Command.Interaction {
 		if (categories.length === 0) {
 			return interaction.editReply({
 				embeds: [
-					super
-						.userEmbedError(interaction.member)
-						.setDescription('There are no categories of which you can purge/prune inactive tickets in.'),
+					userEmbedError({
+						...interaction,
+						description: 'There are no categories of which you can purge/prune inactive tickets in.',
+					}),
 				],
 			});
 		}
@@ -175,7 +185,7 @@ export default class extends Command.Interaction {
 		const stateInDiscord = interaction.options.getBoolean('state-source', false);
 		const row = ThreadTicketing.categoryListSelectMenuRow({
 			categories,
-			customId: super.customId(
+			customId: customId(
 				'ticket_threads_categories_edit_tickets_purge_prune_menu',
 				`${(+Boolean(stateInDiscord)).toString()}_${state ?? ''}`,
 			),
@@ -191,13 +201,13 @@ export default class extends Command.Interaction {
 
 export class ComponentInteraction extends Component.Interaction {
 	public readonly customIds = [
-		super.customId('ticket_threads_categories_edit_tickets_purge_prune_menu'),
-		super.dynamicCustomId('ticket_threads_categories_edit_tickets_purge_prune_menu'),
+		customId('ticket_threads_categories_edit_tickets_purge_prune_menu'),
+		dynamicCustomId('ticket_threads_categories_edit_tickets_purge_prune_menu'),
 	];
 
 	@DeferUpdate
 	public async execute({ interaction }: Component.Context<'string'>) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const [stateInDiscord, rawState] = dynamicValue.split('_');
 		const state = rawState as ThreadTicketing.TicketState | null;
 		const categoryIds = interaction.values.map(Number);
@@ -227,11 +237,10 @@ export class ComponentInteraction extends Component.Interaction {
 			await database.delete(ticketsThreads).where(whereQuery);
 			await interaction.followUp({
 				embeds: [
-					super
-						.userEmbed(interaction.member)
+					userEmbed(interaction)
 						.setTitle('Pruned Thread Tickets')
 						.setDescription(
-							`${interaction.member.toString()} pruned ${categories.at(0)?.count.toString() ?? 'Unknown'} ` +
+							`${interaction.member} pruned ${categories.at(0)?.count.toString() ?? 'Unknown'} ` +
 								`ticket(s) with the state ${inlineCode(ThreadTicketing.ticketState(state))} in the following categories:
 							${categories.map((category) => inlineCode(ThreadTicketing.titleAndEmoji(category.categoryTitle, category.categoryEmoji))).join(', ')}.`,
 						),
@@ -274,11 +283,10 @@ export class ComponentInteraction extends Component.Interaction {
 			await database.delete(ticketsThreads).where(and(...whereQueries));
 			await interaction.followUp({
 				embeds: [
-					super
-						.userEmbed(interaction.member)
+					userEmbed(interaction)
 						.setTitle('Purged Inactive Thread Tickets')
 						.setDescription(
-							`${interaction.member.toString()} purged ${categories.at(0)?.count.toString() ?? 'Unknown'} inactive ticket(s) in the following categories:
+							`${interaction.member} purged ${categories.at(0)?.count.toString() ?? 'Unknown'} inactive ticket(s) in the following categories:
 							${categories.map((category) => inlineCode(ThreadTicketing.titleAndEmoji(category.categoryTitle, category.categoryEmoji))).join(', ')}.`,
 						),
 				],

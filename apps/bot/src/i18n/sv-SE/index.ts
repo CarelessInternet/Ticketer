@@ -196,6 +196,7 @@ const sv_SE = {
 			command: {
 				errors: {
 					noShard: {
+						title: ERROR_TITLE,
 						description: 'Ingen partition for boten kunde hittas.',
 					},
 				},

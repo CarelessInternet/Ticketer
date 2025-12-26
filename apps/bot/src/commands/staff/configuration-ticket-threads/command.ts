@@ -9,7 +9,7 @@ import {
 	ticketThreadsConfigurations,
 	ticketThreadsConfigurationsInsertSchema,
 } from '@ticketer/database';
-import { Command, DeferReply } from '@ticketer/djs-framework';
+import { Command, customId, DeferReply, embed, userEmbed, userEmbedError } from '@ticketer/djs-framework';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -97,7 +97,7 @@ export default class extends Command.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [super.userEmbedError(interaction.member).setDescription('The subcommand group could not be found.')],
+					embeds: [userEmbedError({ ...interaction, description: 'The subcommand group could not be found.' })],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -118,22 +118,21 @@ export default class extends Command.Interaction {
 
 				if (!success) {
 					return interaction.editReply({
-						embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+						embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
 					});
 				}
 
-				const { guildId, member } = interaction;
+				const { guildId } = interaction;
 
 				await database
 					.insert(ticketThreadsConfigurations)
 					.values({ activeTickets, guildId })
 					.onDuplicateKeyUpdate({ set: { activeTickets } });
 
-				const embed = super
-					.userEmbed(member)
+				const embed = userEmbed(interaction)
 					.setTitle('Updated the Thead Ticket Configuration')
 					.setDescription(
-						`${member.toString()} updated the amount of active tickets a user may have at once to ${activeTickets.toString()}.`,
+						`${interaction.member} updated the amount of active tickets a user may have at once to ${activeTickets.toString()}.`,
 					);
 
 				return interaction.editReply({ embeds: [embed] });
@@ -143,7 +142,7 @@ export default class extends Command.Interaction {
 			}
 			default: {
 				return interaction.editReply({
-					embeds: [super.userEmbedError(interaction.member).setDescription('The subcommand could not be found.')],
+					embeds: [userEmbedError({ ...interaction, description: 'The subcommand could not be found.' })],
 				});
 			}
 		}
@@ -158,13 +157,11 @@ export default class extends Command.Interaction {
 
 		if (!result) {
 			return interaction.editReply({
-				embeds: [
-					super.userEmbedError(interaction.member).setDescription('No thread ticket configuration could be found.'),
-				],
+				embeds: [userEmbedError({ ...interaction, description: 'No thread ticket configuration could be found.' })],
 			});
 		}
 
-		const embed = super.embed
+		const reply = embed(interaction)
 			.setTitle('Thread Ticket Configuration')
 			.setDescription('Here is the global configuration for thread tickets:')
 			.setFields({
@@ -172,18 +169,16 @@ export default class extends Command.Interaction {
 				value: result.activeTickets.toString(),
 			});
 
-		return interaction.editReply({ embeds: [embed] });
+		return interaction.editReply({ embeds: [reply] });
 	}
 
 	private categoriesGroup({ interaction }: Command.Context<'chat'>) {
 		switch (interaction.options.getSubcommand(true)) {
 			case 'view': {
-				this.categoryViewConfiguration({ interaction });
-				return;
+				return this.categoryViewConfiguration({ interaction });
 			}
 			case 'create': {
-				void categoryFieldsModal.call(this, { interaction });
-				return;
+				return void categoryFieldsModal({ interaction });
 			}
 			case 'edit': {
 				return this.categoryConfiguration({ interaction });
@@ -193,7 +188,7 @@ export default class extends Command.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [super.userEmbedError(interaction.member).setDescription('The subcommand could not be found.')],
+					embeds: [userEmbedError({ ...interaction, description: 'The subcommand could not be found.' })],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -202,7 +197,7 @@ export default class extends Command.Interaction {
 
 	@DeferReply()
 	private categoryViewConfiguration(context: Command.Context) {
-		void getCategories.call(this, context);
+		void getCategories(context);
 	}
 
 	@DeferReply()
@@ -215,7 +210,7 @@ export default class extends Command.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
 			});
 		}
 
@@ -227,16 +222,17 @@ export default class extends Command.Interaction {
 		if (!result) {
 			return interaction.editReply({
 				embeds: [
-					super
-						.userEmbedError(interaction.member)
-						.setDescription('Please create a global thread ticket configuration before creating categories.'),
+					userEmbedError({
+						...interaction,
+						description: 'Please create a global thread ticket configuration before creating categories.',
+					}),
 				],
 			});
 		}
 
-		const embed = super.embed.setTitle(ThreadTicketing.titleAndEmoji(result.title, result.emoji));
+		const reply = embed(interaction).setTitle(ThreadTicketing.titleAndEmoji(result.title, result.emoji));
 		const categoriesMenu = new StringSelectMenuBuilder()
-			.setCustomId(super.customId('ticket_threads_category_configuration', categoryId))
+			.setCustomId(customId('ticket_threads_category_configuration', categoryId))
 			.setMinValues(1)
 			.setMaxValues(1)
 			.setPlaceholder('Edit one of the following ticket category options:')
@@ -305,7 +301,7 @@ export default class extends Command.Interaction {
 
 		const row = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(categoriesMenu);
 
-		return interaction.editReply({ components: [row], embeds: [embed] });
+		return interaction.editReply({ components: [row], embeds: [reply] });
 	}
 
 	@DeferReply()
@@ -319,7 +315,7 @@ export default class extends Command.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
 			});
 		}
 
@@ -332,19 +328,18 @@ export default class extends Command.Interaction {
 
 		if (amount > 0) {
 			const confirmButton = new ButtonBuilder()
-				.setCustomId(super.customId('ticket_threads_category_delete_confirm', categoryId))
+				.setCustomId(customId('ticket_threads_category_delete_confirm', categoryId))
 				.setEmoji('☑️')
 				.setLabel('Confirm')
 				.setStyle(ButtonStyle.Success);
 			const cancelButton = new ButtonBuilder()
-				.setCustomId(super.customId('ticket_threads_category_delete_cancel', categoryId))
+				.setCustomId(customId('ticket_threads_category_delete_cancel', categoryId))
 				.setEmoji('✖️')
 				.setLabel('Cancel')
 				.setStyle(ButtonStyle.Danger);
 
 			const actionRow = new ActionRowBuilder<ButtonBuilder>().setComponents(confirmButton, cancelButton);
-			const embed = super
-				.userEmbed(interaction.member)
+			const embed = userEmbed(interaction)
 				.setTitle('Are you sure you want to proceed?')
 				.setDescription(
 					`
@@ -369,11 +364,10 @@ export default class extends Command.Interaction {
 			.delete(ticketThreadsCategories)
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
-		const embed = super
-			.userEmbed(interaction.member)
+		const embed = userEmbed(interaction)
 			.setTitle('Deleted the Thread Ticket Category')
 			.setDescription(
-				`${interaction.member.toString()} deleted the category with the following title: ${result?.title ? inlineCode(result.title) : 'No Title Found'}.`,
+				`${interaction.member} deleted the category with the following title: ${result?.title ? inlineCode(result.title) : 'No Title Found'}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed] });

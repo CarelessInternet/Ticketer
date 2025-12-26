@@ -196,6 +196,7 @@ const en_GB = {
 			command: {
 				errors: {
 					noShard: {
+						title: ERROR_TITLE,
 						description: 'No shard for the bot could be found.',
 					},
 				},

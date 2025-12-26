@@ -1,4 +1,4 @@
-import { Command } from '@ticketer/djs-framework';
+import { Command, customId, userEmbedError } from '@ticketer/djs-framework';
 import { MessageFlags, PermissionFlagsBits } from 'discord.js';
 import { translate } from '@/i18n';
 import { ThreadTicketing } from '@/utils';
@@ -29,7 +29,7 @@ export default class extends Command.Interaction {
 			return interaction
 				.reply({
 					embeds: [
-						super.userEmbedError(interaction.member, translations.title()).setDescription(translations.description()),
+						userEmbedError({ ...interaction, description: translations.description(), title: translations.title() }),
 					],
 					flags: [MessageFlags.Ephemeral],
 				})
@@ -41,12 +41,12 @@ export default class extends Command.Interaction {
 			const { id: categoryId, skipModal, titleAndDescriptionRequired } = categories.at(0)!;
 
 			if (skipModal) {
-				return ThreadTicketing.createTicket.call(this, { interaction }, { categoryId, proxiedUserId: user.id });
+				return ThreadTicketing.createTicket({ interaction }, { categoryId, proxiedUserId: user.id });
 			}
 
 			void interaction
 				.showModal(
-					ThreadTicketing.ticketModal.call(this, {
+					ThreadTicketing.ticketModal({
 						categoryId,
 						locale: interaction.locale,
 						proxiedUserId: user.id,
@@ -60,7 +60,7 @@ export default class extends Command.Interaction {
 					components: [
 						ThreadTicketing.categoryListSelectMenuRow({
 							categories,
-							customId: super.customId('ticket_threads_categories_create_list_proxy', user.id),
+							customId: customId('ticket_threads_categories_create_list_proxy', user.id),
 							locale: interaction.locale,
 						}),
 					],

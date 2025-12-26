@@ -1,5 +1,5 @@
 import type { ticketThreadsCategories } from '@ticketer/database';
-import type { BaseInteraction } from '@ticketer/djs-framework';
+import { customId } from '@ticketer/djs-framework';
 import { LabelBuilder, type Locale, ModalBuilder, type Snowflake, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { translate } from '@/i18n';
 
@@ -10,10 +10,7 @@ interface TicketModalOptions {
 	titleAndDescriptionRequired: typeof ticketThreadsCategories.$inferSelect.titleAndDescriptionRequired;
 }
 
-export function ticketModal(
-	this: BaseInteraction.Interaction,
-	{ categoryId, locale, proxiedUserId, titleAndDescriptionRequired }: TicketModalOptions,
-) {
+export function ticketModal({ categoryId, locale, proxiedUserId, titleAndDescriptionRequired }: TicketModalOptions) {
 	const translations = translate(locale).tickets.threads.categories.createModal;
 
 	const titleInput = new LabelBuilder()
@@ -21,7 +18,7 @@ export function ticketModal(
 		.setDescription(translations.title.description())
 		.setTextInputComponent(
 			new TextInputBuilder()
-				.setCustomId(this.customId('title'))
+				.setCustomId(customId('title'))
 				.setRequired(titleAndDescriptionRequired)
 				.setMinLength(1)
 				.setMaxLength(100)
@@ -32,7 +29,7 @@ export function ticketModal(
 		.setDescription(translations.description.description())
 		.setTextInputComponent(
 			new TextInputBuilder()
-				.setCustomId(this.customId('description'))
+				.setCustomId(customId('description'))
 				.setRequired(titleAndDescriptionRequired)
 				.setMinLength(1)
 				.setMaxLength(2000)
@@ -41,7 +38,7 @@ export function ticketModal(
 
 	return new ModalBuilder()
 		.setCustomId(
-			this.customId(
+			customId(
 				'ticket_threads_categories_create_ticket',
 				proxiedUserId ? `${categoryId.toString()}_${proxiedUserId}` : categoryId,
 			),

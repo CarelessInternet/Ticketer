@@ -1,5 +1,5 @@
 import { database, eq, welcomeAndFarewell } from '@ticketer/database';
-import { Event } from '@ticketer/djs-framework';
+import { container, Event } from '@ticketer/djs-framework';
 import { MessageFlags, PermissionFlagsBits } from 'discord.js';
 import { fetchChannel, LogExceptions, welcomeContainer } from '@/utils';
 
@@ -10,7 +10,7 @@ export default class extends Event.Handler {
 	public async execute([member]: Event.ArgumentsOf<this['name']>) {
 		if (member.id === member.client.user.id) return;
 
-		const { id: guildId, members, preferredLocale, roles } = member.guild;
+		const { client, id: guildId, members, preferredLocale, roles } = member.guild;
 		const [data] = await database.select().from(welcomeAndFarewell).where(eq(welcomeAndFarewell.guildId, guildId));
 
 		if (!data?.welcomeChannelId || !data.welcomeEnabled) return;
@@ -42,18 +42,20 @@ export default class extends Event.Handler {
 			}
 		}
 
-		const container = super.container((cont) =>
-			welcomeContainer({
-				container: cont,
-				data: {
-					welcomeMessageTitle: data.welcomeMessageTitle,
-					welcomeMessageDescription: data.welcomeMessageDescription,
-				},
-				locale: preferredLocale,
-				member,
-			}),
-		);
+		const cont = container({
+			builder: (cont) =>
+				welcomeContainer({
+					container: cont,
+					data: {
+						welcomeMessageTitle: data.welcomeMessageTitle,
+						welcomeMessageDescription: data.welcomeMessageDescription,
+					},
+					locale: preferredLocale,
+					member,
+				}),
+			client,
+		});
 
-		void channel.send({ components: [container], flags: [MessageFlags.IsComponentsV2] });
+		void channel.send({ components: [cont], flags: [MessageFlags.IsComponentsV2] });
 	}
 }

@@ -7,7 +7,18 @@ import {
 	ticketThreadsCategoriesSelectSchema,
 	ticketThreadsConfigurations,
 } from '@ticketer/database';
-import type { BaseInteraction, Command, Component, Modal } from '@ticketer/djs-framework';
+import {
+	type Command,
+	type Component,
+	container,
+	customId,
+	dynamicCustomId,
+	embed,
+	extractCustomId,
+	type Modal,
+	userEmbed,
+	userEmbedError,
+} from '@ticketer/djs-framework';
 import {
 	ActionRowBuilder,
 	type ButtonBuilder,
@@ -33,7 +44,6 @@ interface CreateTicketOptions {
 }
 
 export async function createTicket(
-	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context | Component.Context | Modal.Context,
 	{ categoryId: incomingCategoryId, proxiedUserId }: CreateTicketOptions = {},
 ) {
@@ -47,10 +57,10 @@ export async function createTicket(
 				row.components.find((component) => {
 					if (!component.customId) return false;
 
-					const { customId } = this.extractCustomId(component.customId);
+					const { customId: id } = extractCustomId(component.customId);
 					return (
-						customId === this.customId('ticket_threads_categories_create_list') ||
-						customId === this.dynamicCustomId('ticket_threads_categories_create_list_proxy')
+						id === customId('ticket_threads_categories_create_list') ||
+						id === dynamicCustomId('ticket_threads_categories_create_list_proxy')
 					);
 				}),
 		);
@@ -62,10 +72,10 @@ export async function createTicket(
 	}
 
 	const { createdAt, client, guild, guildId, guildLocale, locale, member: interactionMember } = interaction;
-	const customId = 'customId' in interaction ? interaction.customId : undefined;
+	const interactionCustomId = 'customId' in interaction ? interaction.customId : undefined;
 	const fields = 'fields' in interaction ? interaction.fields : undefined;
 
-	const dynamicValue = customId ? this.extractCustomId(customId, true).dynamicValue : undefined;
+	const dynamicValue = interactionCustomId ? extractCustomId(interactionCustomId, true).dynamicValue : undefined;
 	const dynamicValues = dynamicValue?.split('_');
 	const { data: categoryId, success } = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(
 		Number(incomingCategoryId ?? dynamicValues?.at(0) ?? dynamicValue),
@@ -80,9 +90,12 @@ export async function createTicket(
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(interactionMember, translations.createTicket.errors.invalidUser.title()).setDescription(
-					translations.createTicket.errors.invalidUser.description(),
-				),
+				userEmbedError({
+					client,
+					description: translations.createTicket.errors.invalidUser.description(),
+					member: interactionMember,
+					title: translations.createTicket.errors.invalidUser.title(),
+				}),
 			],
 		});
 	}
@@ -91,9 +104,12 @@ export async function createTicket(
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(interactionMember, translations.createTicket.errors.invalidId.title()).setDescription(
-					translations.createTicket.errors.invalidId.description(),
-				),
+				userEmbedError({
+					client,
+					description: translations.createTicket.errors.invalidId.description(),
+					member: interactionMember,
+					title: translations.createTicket.errors.invalidId.title(),
+				}),
 			],
 		});
 	}
@@ -108,9 +124,12 @@ export async function createTicket(
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(interactionMember, translations.createTicket.errors.noConfiguration.title()).setDescription(
-					translations.createTicket.errors.noConfiguration.description(),
-				),
+				userEmbedError({
+					client,
+					description: translations.createTicket.errors.noConfiguration.description(),
+					member: interactionMember,
+					title: translations.createTicket.errors.noConfiguration.title(),
+				}),
 			],
 		});
 	}
@@ -119,9 +138,12 @@ export async function createTicket(
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(interactionMember, translations.createTicket.errors.noManagers.title()).setDescription(
-					translations.createTicket.errors.noManagers.description(),
-				),
+				userEmbedError({
+					client,
+					description: translations.createTicket.errors.noManagers.description(),
+					member: interactionMember,
+					title: translations.createTicket.errors.noManagers.title(),
+				}),
 			],
 		});
 	}
@@ -132,9 +154,12 @@ export async function createTicket(
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(interactionMember, translations.createTicket.errors.invalidChannel.title()).setDescription(
-					translations.createTicket.errors.invalidChannel.description(),
-				),
+				userEmbedError({
+					client,
+					description: translations.createTicket.errors.invalidChannel.description(),
+					member: interactionMember,
+					title: translations.createTicket.errors.invalidChannel.title(),
+				}),
 			],
 		});
 	}
@@ -170,9 +195,12 @@ export async function createTicket(
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(interactionMember, translations.createTicket.errors.noPermissions.title()).setDescription(
-					translations.createTicket.errors.noPermissions.description({ permissions }),
-				),
+				userEmbedError({
+					client,
+					description: translations.createTicket.errors.noPermissions.description({ permissions }),
+					member: interactionMember,
+					title: translations.createTicket.errors.noPermissions.title(),
+				}),
 			],
 		});
 	}
@@ -190,8 +218,9 @@ export async function createTicket(
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(interactionMember, translations.createTicket.errors.tooManyTickets.title()).setDescription(
-					proxiedUser
+				userEmbedError({
+					client,
+					description: proxiedUser
 						? translations.createTicket.errors.tooManyTickets.proxy.description({
 								amount: configuration.ticketThreadsConfigurations.activeTickets,
 								member: member.toString(),
@@ -199,7 +228,9 @@ export async function createTicket(
 						: translations.createTicket.errors.tooManyTickets.user.description({
 								amount: configuration.ticketThreadsConfigurations.activeTickets,
 							}),
-				),
+					member: interactionMember,
+					title: translations.createTicket.errors.tooManyTickets.title(),
+				}),
 			],
 		});
 	}
@@ -222,9 +253,12 @@ export async function createTicket(
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				this.userEmbedError(interactionMember, translations.createTicket.errors.invalidFields.title()).setDescription(
-					prettifyError(error),
-				),
+				userEmbedError({
+					client,
+					description: prettifyError(error),
+					member: interactionMember,
+					title: translations.createTicket.errors.invalidFields.title(),
+				}),
 			],
 		});
 	}
@@ -246,7 +280,7 @@ export async function createTicket(
 
 	await database.insert(ticketsThreads).values({ authorId: member.id, categoryId, guildId, threadId: thread.id });
 
-	const ticketEmbed = (proxiedUser ? this.embed : this.userEmbed(member)).setColor(Colors.Green);
+	const ticketEmbed = (proxiedUser ? embed({ client }) : userEmbed({ client, member })).setColor(Colors.Green);
 
 	if (userTitle) {
 		ticketEmbed.setTitle(userTitle);
@@ -258,23 +292,23 @@ export async function createTicket(
 
 	const buttons = ticketButtons({
 		close: {
-			customId: this.customId('ticket_threads_category_create_close'),
+			customId: customId('ticket_threads_category_create_close'),
 			label: guildTranslations.actions.close.builder.label(),
 		},
 		delete: {
-			customId: this.customId('ticket_threads_category_create_delete'),
+			customId: customId('ticket_threads_category_create_delete'),
 			label: guildTranslations.actions.delete.builder.label(),
 		},
 		lock: {
-			customId: this.customId('ticket_threads_category_create_lock'),
+			customId: customId('ticket_threads_category_create_lock'),
 			label: guildTranslations.actions.lock.builder.label(),
 		},
 		lockAndClose: {
-			customId: this.customId('ticket_threads_category_create_lock_and_close'),
+			customId: customId('ticket_threads_category_create_lock_and_close'),
 			label: guildTranslations.actions.lockAndClose.builder.label(),
 		},
 		renameTitle: {
-			customId: this.customId('ticket_threads_category_create_rename_title'),
+			customId: customId('ticket_threads_category_create_rename_title'),
 			label: guildTranslations.actions.renameTitle.builder.label(),
 		},
 	});
@@ -290,8 +324,8 @@ export async function createTicket(
 		...(configuration.ticketThreadsCategories.silentPings && { flags: [MessageFlags.SuppressNotifications] }),
 	});
 
-	const messageContainer = this.container(
-		ticketThreadsOpeningMessageContainer({
+	const messageContainer = container({
+		builder: ticketThreadsOpeningMessageContainer({
 			categoryEmoji: configuration.ticketThreadsCategories.categoryEmoji,
 			categoryTitle: configuration.ticketThreadsCategories.categoryTitle,
 			description: configuration.ticketThreadsCategories.openingMessageDescription,
@@ -299,7 +333,8 @@ export async function createTicket(
 			member,
 			title: configuration.ticketThreadsCategories.openingMessageTitle,
 		}),
-	);
+		client,
+	});
 	await thread.send({
 		allowedMentions: { users: [member.id] },
 		components: [new TextDisplayBuilder().setContent(member.toString()), messageContainer],
@@ -322,7 +357,7 @@ export async function createTicket(
 	await initialMessage.pin();
 	await thread.members.add(member);
 
-	const ticketCreatedEmbed = this.userEmbed(interactionMember)
+	const ticketCreatedEmbed = userEmbed({ client, member: interactionMember })
 		.setColor(Colors.Green)
 		.setTitle(translations.createTicket.ticketCreated.title())
 		.setDescription(
@@ -365,7 +400,7 @@ export async function createTicket(
 		member
 			.send({
 				embeds: [
-					this.embed
+					embed({ client })
 						.setTitle('Ticket Created by Proxy')
 						.setDescription(
 							`A ticketing manager created a support ticket for you in the "${

@@ -1,4 +1,14 @@
-import { Command, DeferReply, Modal } from '@ticketer/djs-framework';
+import {
+	Command,
+	container,
+	customId,
+	DeferReply,
+	dynamicCustomId,
+	extractCustomId,
+	Modal,
+	userEmbed,
+	userEmbedError,
+} from '@ticketer/djs-framework';
 import {
 	ButtonBuilder,
 	ButtonStyle,
@@ -33,7 +43,7 @@ export default class extends Command.Interaction {
 			.setDescription('Write a title to be used in the ticket panel.')
 			.setTextInputComponent(
 				new TextInputBuilder()
-					.setCustomId(super.customId('title'))
+					.setCustomId(customId('title'))
 					.setRequired(true)
 					.setMinLength(1)
 					.setMaxLength(200)
@@ -44,7 +54,7 @@ export default class extends Command.Interaction {
 			.setDescription('Write a description to be used in the ticket panel.')
 			.setTextInputComponent(
 				new TextInputBuilder()
-					.setCustomId(super.customId('description'))
+					.setCustomId(customId('description'))
 					.setRequired(true)
 					.setMinLength(1)
 					.setMaxLength(2000)
@@ -55,7 +65,7 @@ export default class extends Command.Interaction {
 			.setDescription('Write an emoji for the button used to create a ticket.')
 			.setTextInputComponent(
 				new TextInputBuilder()
-					.setCustomId(super.customId('button_emoji'))
+					.setCustomId(customId('button_emoji'))
 					.setRequired(false)
 					.setMinLength(1)
 					.setMaxLength(8)
@@ -66,7 +76,7 @@ export default class extends Command.Interaction {
 			.setDescription('Write a label for the button used to create a ticket.')
 			.setTextInputComponent(
 				new TextInputBuilder()
-					.setCustomId(super.customId('button_label'))
+					.setCustomId(customId('button_label'))
 					.setRequired(true)
 					.setMinLength(1)
 					.setMaxLength(80)
@@ -74,7 +84,7 @@ export default class extends Command.Interaction {
 			);
 
 		const modal = new ModalBuilder()
-			.setCustomId(super.customId('ticket_threads_categories_create_panel', channel.id))
+			.setCustomId(customId('ticket_threads_categories_create_panel', channel.id))
 			.setTitle('Ticket Panel Details')
 			.setLabelComponents(titleInput, descriptonInput, buttonEmojiInput, buttonLabelInput);
 
@@ -83,11 +93,11 @@ export default class extends Command.Interaction {
 }
 
 export class ModalInteraction extends Modal.Interaction {
-	public readonly customIds = [super.dynamicCustomId('ticket_threads_categories_create_panel')];
+	public readonly customIds = [dynamicCustomId('ticket_threads_categories_create_panel')];
 
 	@DeferReply()
 	public async execute({ interaction }: Modal.Context) {
-		const { customId, fields, guild, member } = interaction;
+		const { customId: interactionId, fields, guild } = interaction;
 
 		const rawButtonEmoji = fields.getTextInputValue('button_emoji');
 		const buttonEmoji = extractEmoji(rawButtonEmoji) ?? '🎫';
@@ -107,19 +117,21 @@ export class ModalInteraction extends Modal.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				embeds: [
-					super
-						.userEmbedError(member, 'One or multiple of the modal fields are invalid.')
-						.setDescription(prettifyError(error)),
+					userEmbedError({
+						...interaction,
+						description: prettifyError(error),
+						title: 'One or multiple of the modal fields are invalid.',
+					}),
 				],
 			});
 		}
 
-		const { dynamicValue: channelId } = super.extractCustomId(customId, true);
+		const { dynamicValue: channelId } = extractCustomId(interactionId, true);
 		const channel = await fetchChannel(guild, channelId);
 
 		if (!channel?.isTextBased()) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(member).setDescription('The specified channel is not text based.')],
+				embeds: [userEmbedError({ ...interaction, description: 'The specified channel is not text based.' })],
 			});
 		}
 
@@ -128,41 +140,41 @@ export class ModalInteraction extends Modal.Interaction {
 		if (!channel.permissionsFor(me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) {
 			return interaction.editReply({
 				embeds: [
-					super
-						.userEmbedError(member)
-						.setDescription(`I do not have the view channel and send messages permission in ${channel.toString()}.`),
+					userEmbedError({
+						...interaction,
+						description: `I do not have the view channel and send messages permission in ${channel}.`,
+					}),
 				],
 			});
 		}
 
-		const container = super.container((cont) =>
-			cont
-				.setAccentColor(Colors.Aqua)
-				.addTextDisplayComponents(new TextDisplayBuilder().setContent(heading(data.title, HeadingLevel.One)))
-				.addSectionComponents(
-					new SectionBuilder()
-						.addTextDisplayComponents(new TextDisplayBuilder().setContent(data.description))
-						.setButtonAccessory(
-							new ButtonBuilder()
-								.setCustomId(super.customId('ticket_threads_categories_create_list_panel'))
-								.setEmoji(buttonEmoji)
-								.setLabel(data.buttonLabel)
-								.setStyle(ButtonStyle.Primary),
-						),
-				),
-		);
+		const reply = container({
+			builder: (cont) =>
+				cont
+					.setAccentColor(Colors.Aqua)
+					.addTextDisplayComponents(new TextDisplayBuilder().setContent(heading(data.title, HeadingLevel.One)))
+					.addSectionComponents(
+						new SectionBuilder()
+							.addTextDisplayComponents(new TextDisplayBuilder().setContent(data.description))
+							.setButtonAccessory(
+								new ButtonBuilder()
+									.setCustomId(customId('ticket_threads_categories_create_list_panel'))
+									.setEmoji(buttonEmoji)
+									.setLabel(data.buttonLabel)
+									.setStyle(ButtonStyle.Primary),
+							),
+					),
+			client: interaction.client,
+		});
 
-		const message = await channel.send({ components: [container], flags: [MessageFlags.IsComponentsV2] });
+		const message = await channel.send({ components: [reply], flags: [MessageFlags.IsComponentsV2] });
 
 		void interaction.editReply({
 			embeds: [
-				super
-					.userEmbed(member)
+				userEmbed(interaction)
 					.setTitle('Sent the Ticket Panel')
 					.setDescription(
-						`The thread ticket panel has successfully been sent in ${channel.toString()}. View the message at ${
-							message.url
-						}!`,
+						`The thread ticket panel has successfully been sent in ${channel}. View the message at ${message.url}!`,
 					),
 			],
 		});

@@ -8,7 +8,16 @@ import {
 	ticketThreadsCategories,
 	ticketThreadsCategoriesSelectSchema,
 } from '@ticketer/database';
-import { Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
+import {
+	Component,
+	customId,
+	DeferReply,
+	DeferUpdate,
+	dynamicCustomId,
+	extractCustomId,
+	userEmbed,
+	userEmbedError,
+} from '@ticketer/djs-framework';
 import {
 	ActionRowBuilder,
 	ChannelSelectMenuBuilder,
@@ -29,7 +38,7 @@ import { goToPage, ThreadTicketing } from '@/utils';
 import { categoryFieldsModal, getCategories, HasGlobalConfiguration } from './helpers';
 
 export default class extends Component.Interaction {
-	public readonly customIds = [super.dynamicCustomId('ticket_threads_category_configuration')];
+	public readonly customIds = [dynamicCustomId('ticket_threads_category_configuration')];
 
 	public execute({ interaction }: Component.Context<'string'>) {
 		const value = interaction.values.at(0);
@@ -39,9 +48,9 @@ export default class extends Component.Interaction {
 				return this.fieldsModalValues({ interaction });
 			}
 			case 'managers': {
-				const { dynamicValue } = super.extractCustomId(interaction.customId);
+				const { dynamicValue } = extractCustomId(interaction.customId);
 				const managersMenu = new RoleSelectMenuBuilder()
-					.setCustomId(super.customId('ticket_threads_category_configuration_managers', dynamicValue))
+					.setCustomId(customId('ticket_threads_category_configuration_managers', dynamicValue))
 					.setMinValues(0)
 					.setMaxValues(10)
 					.setPlaceholder('Choose the ticket managers of this category.');
@@ -52,10 +61,10 @@ export default class extends Component.Interaction {
 			}
 			case 'channel':
 			case 'logs_channel': {
-				const { dynamicValue } = super.extractCustomId(interaction.customId);
+				const { dynamicValue } = extractCustomId(interaction.customId);
 
 				const channelMenu = new ChannelSelectMenuBuilder()
-					.setCustomId(super.customId(`ticket_threads_category_configuration_${value}`, dynamicValue))
+					.setCustomId(customId(`ticket_threads_category_configuration_${value}`, dynamicValue))
 					.setMinValues(1)
 					.setMaxValues(1)
 					.setPlaceholder(
@@ -71,10 +80,10 @@ export default class extends Component.Interaction {
 				return this.messageTitleDescriptionValues({ interaction });
 			}
 			case 'allowed_author_actions': {
-				const { dynamicValue } = super.extractCustomId(interaction.customId);
+				const { dynamicValue } = extractCustomId(interaction.customId);
 
 				const selectMenu = new StringSelectMenuBuilder()
-					.setCustomId(super.customId('ticket_threads_category_configuration_allowed_author_actions', dynamicValue))
+					.setCustomId(customId('ticket_threads_category_configuration_allowed_author_actions', dynamicValue))
 					.setMinValues(1)
 					.setMaxValues(1)
 					.setPlaceholder('Edit one of the following ticket author actions:')
@@ -128,7 +137,7 @@ export default class extends Component.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [super.userEmbedError(interaction.member).setDescription('The selected value could not be found.')],
+					embeds: [userEmbedError({ ...interaction, description: 'The selected value could not be found.' })],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -136,7 +145,7 @@ export default class extends Component.Interaction {
 	}
 
 	private async fieldsModalValues({ interaction }: Component.Context) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const {
 			data: categoryId,
 			error,
@@ -145,7 +154,7 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.reply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
 			});
 		}
 
@@ -160,17 +169,15 @@ export default class extends Component.Interaction {
 
 		if (!row) {
 			return interaction.reply({
-				embeds: [
-					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
-				],
+				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
 			});
 		}
 
-		void categoryFieldsModal.call(this, { interaction }, { id: categoryId, ...row });
+		void categoryFieldsModal({ interaction }, { id: categoryId, ...row });
 	}
 
 	private async messageTitleDescriptionValues({ interaction }: Component.Context) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const {
 			data: categoryId,
 			error,
@@ -179,7 +186,7 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.reply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
 			});
 		}
 
@@ -193,9 +200,7 @@ export default class extends Component.Interaction {
 
 		if (!row) {
 			return interaction.reply({
-				embeds: [
-					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
-				],
+				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
 			});
 		}
 
@@ -204,7 +209,7 @@ export default class extends Component.Interaction {
 			.setDescription('Write "{category}" and "{member}" to mention them.')
 			.setTextInputComponent(
 				(row.title ? new TextInputBuilder().setValue(row.title) : new TextInputBuilder())
-					.setCustomId(super.customId('title'))
+					.setCustomId(customId('title'))
 					.setRequired(false)
 					.setMinLength(1)
 					.setMaxLength(100)
@@ -215,7 +220,7 @@ export default class extends Component.Interaction {
 			.setDescription('Write "{category}" and "{member}" to mention them.')
 			.setTextInputComponent(
 				(row.description ? new TextInputBuilder().setValue(row.description) : new TextInputBuilder())
-					.setCustomId(super.customId('description'))
+					.setCustomId(customId('description'))
 					.setRequired(false)
 					.setMinLength(1)
 					.setMaxLength(500)
@@ -223,7 +228,7 @@ export default class extends Component.Interaction {
 			);
 
 		const modal = new ModalBuilder()
-			.setCustomId(super.customId('ticket_threads_category_message', categoryId))
+			.setCustomId(customId('ticket_threads_category_message', categoryId))
 			.setTitle('Opening Message Title, & Description')
 			.setLabelComponents(titleInput, descriptionInput);
 
@@ -232,7 +237,7 @@ export default class extends Component.Interaction {
 
 	@DeferReply()
 	private async privateAndNotification({ interaction }: Component.Context<'string'>) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const type = interaction.values.at(0)?.includes('private') ? 'private threads' : 'thread notification';
 		const {
 			data: categoryId,
@@ -242,7 +247,7 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
 			});
 		}
 
@@ -265,18 +270,15 @@ export default class extends Component.Interaction {
 
 		if (!row) {
 			return interaction.editReply({
-				embeds: [
-					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
-				],
+				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
 			});
 		}
 
 		const valueAsBoolean = type === 'private threads' ? row.privateThreads : row.threadNotifications;
-		const embed = super
-			.userEmbed(interaction.member)
+		const embed = userEmbed(interaction)
 			.setTitle('Updated the Thread Ticket Category')
 			.setDescription(
-				`${interaction.member.toString()} has toggled the ${type} option to ${valueAsBoolean ? 'enabled' : 'disabled'}.`,
+				`${interaction.member} has toggled the ${type} option to ${valueAsBoolean ? 'enabled' : 'disabled'}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed] });
@@ -284,7 +286,7 @@ export default class extends Component.Interaction {
 
 	@DeferReply()
 	private async silentPings({ interaction }: Component.Context<'string'>) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const {
 			data: categoryId,
 			error,
@@ -293,7 +295,7 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
 			});
 		}
 
@@ -311,17 +313,14 @@ export default class extends Component.Interaction {
 
 		if (!row) {
 			return interaction.editReply({
-				embeds: [
-					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
-				],
+				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
 			});
 		}
 
-		const embed = super
-			.userEmbed(interaction.member)
+		const embed = userEmbed(interaction)
 			.setTitle('Updated the Thread Ticket Category')
 			.setDescription(
-				`${interaction.member.toString()} has toggled the silent pings option to ${row.silentPings ? 'enabled' : 'disabled'}.`,
+				`${interaction.member} has toggled the silent pings option to ${row.silentPings ? 'enabled' : 'disabled'}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed] });
@@ -329,7 +328,7 @@ export default class extends Component.Interaction {
 
 	@DeferReply()
 	private async skipModals({ interaction }: Component.Context<'string'>) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const {
 			data: categoryId,
 			error,
@@ -338,7 +337,7 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
 			});
 		}
 
@@ -356,24 +355,21 @@ export default class extends Component.Interaction {
 
 		if (!row) {
 			return interaction.editReply({
-				embeds: [
-					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
-				],
+				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
 			});
 		}
 
-		const embed = super
-			.userEmbed(interaction.member)
+		const embed = userEmbed(interaction)
 			.setTitle('Updated the Thread Ticket Category')
 			.setDescription(
-				`${interaction.member.toString()} has toggled the skip modal option to ${row.skipModal ? 'enabled' : 'disabled'}.`,
+				`${interaction.member} has toggled the skip modal option to ${row.skipModal ? 'enabled' : 'disabled'}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed] });
 	}
 
 	private async threadTitleValues({ interaction }: Component.Context<'string'>) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const {
 			data: categoryId,
 			error,
@@ -382,7 +378,7 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.reply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
 			});
 		}
 
@@ -393,9 +389,7 @@ export default class extends Component.Interaction {
 
 		if (!row) {
 			return interaction.reply({
-				embeds: [
-					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
-				],
+				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
 			});
 		}
 
@@ -404,7 +398,7 @@ export default class extends Component.Interaction {
 			.setDescription('Write "{title}", "{member}", and "{date}" to mention them.')
 			.setTextInputComponent(
 				(row.threadTitle ? new TextInputBuilder().setValue(row.threadTitle) : new TextInputBuilder())
-					.setCustomId(super.customId('title'))
+					.setCustomId(customId('title'))
 					.setRequired(false)
 					.setMinLength(1)
 					.setMaxLength(100)
@@ -412,7 +406,7 @@ export default class extends Component.Interaction {
 			);
 
 		const modal = new ModalBuilder()
-			.setCustomId(super.customId('ticket_threads_category_thread_title', categoryId))
+			.setCustomId(customId('ticket_threads_category_thread_title', categoryId))
 			.setTitle('Created Thread Title')
 			.setLabelComponents(titleInput);
 
@@ -421,7 +415,7 @@ export default class extends Component.Interaction {
 
 	@DeferReply()
 	private async ticketTitleDescription({ interaction }: Component.Context<'string'>) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const {
 			data: categoryId,
 			error,
@@ -430,7 +424,7 @@ export default class extends Component.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
 			});
 		}
 
@@ -448,17 +442,14 @@ export default class extends Component.Interaction {
 
 		if (!row) {
 			return interaction.editReply({
-				embeds: [
-					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
-				],
+				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
 			});
 		}
 
-		const embed = super
-			.userEmbed(interaction.member)
+		const embed = userEmbed(interaction)
 			.setTitle('Updated the Thread Ticket Category')
 			.setDescription(
-				`${interaction.member.toString()} has toggled the ticket title and description option to ${row.titleAndDescriptionRequired ? 'required' : 'optional'}.`,
+				`${interaction.member} has toggled the ticket title and description option to ${row.titleAndDescriptionRequired ? 'required' : 'optional'}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed] });
@@ -467,37 +458,37 @@ export default class extends Component.Interaction {
 
 export class OtherComponentInteraction extends Component.Interaction {
 	public readonly customIds = [
-		super.dynamicCustomId('ticket_threads_category_configuration_channel'),
-		super.dynamicCustomId('ticket_threads_category_configuration_logs_channel'),
-		super.dynamicCustomId('ticket_threads_category_configuration_managers'),
-		super.dynamicCustomId('ticket_threads_category_configuration_allowed_author_actions'),
-		super.dynamicCustomId('ticket_threads_category_delete_confirm'),
-		super.dynamicCustomId('ticket_threads_category_delete_cancel'),
-		super.dynamicCustomId('ticket_threads_category_view_previous'),
-		super.dynamicCustomId('ticket_threads_category_view_next'),
+		dynamicCustomId('ticket_threads_category_configuration_channel'),
+		dynamicCustomId('ticket_threads_category_configuration_logs_channel'),
+		dynamicCustomId('ticket_threads_category_configuration_managers'),
+		dynamicCustomId('ticket_threads_category_configuration_allowed_author_actions'),
+		dynamicCustomId('ticket_threads_category_delete_confirm'),
+		dynamicCustomId('ticket_threads_category_delete_cancel'),
+		dynamicCustomId('ticket_threads_category_view_previous'),
+		dynamicCustomId('ticket_threads_category_view_next'),
 	];
 
 	@HasGlobalConfiguration
 	public execute({ interaction }: Component.Context) {
-		const { customId } = super.extractCustomId(interaction.customId);
+		const { customId: id } = extractCustomId(interaction.customId);
 
-		switch (customId) {
-			case super.dynamicCustomId('ticket_threads_category_configuration_channel'):
-			case super.dynamicCustomId('ticket_threads_category_configuration_logs_channel'): {
+		switch (id) {
+			case dynamicCustomId('ticket_threads_category_configuration_channel'):
+			case dynamicCustomId('ticket_threads_category_configuration_logs_channel'): {
 				return interaction.isChannelSelectMenu() && void this.categoryChannel({ interaction });
 			}
-			case super.dynamicCustomId('ticket_threads_category_configuration_managers'): {
+			case dynamicCustomId('ticket_threads_category_configuration_managers'): {
 				return interaction.isRoleSelectMenu() && void this.categoryManagers({ interaction });
 			}
-			case super.dynamicCustomId('ticket_threads_category_configuration_allowed_author_actions'): {
+			case dynamicCustomId('ticket_threads_category_configuration_allowed_author_actions'): {
 				return interaction.isStringSelectMenu() && void this.allowedAuthorActions({ interaction });
 			}
-			case super.dynamicCustomId('ticket_threads_category_delete_confirm'):
-			case super.dynamicCustomId('ticket_threads_category_delete_cancel'): {
+			case dynamicCustomId('ticket_threads_category_delete_confirm'):
+			case dynamicCustomId('ticket_threads_category_delete_cancel'): {
 				return interaction.isButton() && void this.confirmDeleteCategory({ interaction });
 			}
-			case super.dynamicCustomId('ticket_threads_category_view_previous'):
-			case super.dynamicCustomId('ticket_threads_category_view_next'): {
+			case dynamicCustomId('ticket_threads_category_view_previous'):
+			case dynamicCustomId('ticket_threads_category_view_next'): {
 				if (interaction.isButton()) {
 					void this.categoryView({ interaction });
 				}
@@ -506,7 +497,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 			}
 			default: {
 				return interaction.reply({
-					embeds: [super.userEmbedError(interaction.member).setDescription('The component ID could not be found.')],
+					embeds: [userEmbedError({ ...interaction, description: 'The component ID could not be found.' })],
 					flags: [MessageFlags.Ephemeral],
 				});
 			}
@@ -515,7 +506,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private async categoryChannel({ interaction }: Component.Context<'channel'>) {
-		const { customId, dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { customId, dynamicValue } = extractCustomId(interaction.customId, true);
 		const type = customId.includes('logs') ? 'logs channel' : 'ticket channel';
 		const {
 			data: categoryId,
@@ -526,7 +517,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
 			});
 		}
 
@@ -540,17 +531,16 @@ export class OtherComponentInteraction extends Component.Interaction {
 			})
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
-		const embed = super
-			.userEmbed(interaction.member)
+		const embed = userEmbed(interaction)
 			.setTitle('Updated the Thread Ticket Category')
-			.setDescription(`${interaction.member.toString()} updated the ${type} to ${channel.toString()}.`);
+			.setDescription(`${interaction.member} updated the ${type} to ${channel}.`);
 
 		return interaction.editReply({ components: [], embeds: [embed] });
 	}
 
 	@DeferUpdate
 	private async categoryManagers({ interaction }: Component.Context<'role'>) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const {
 			data: categoryId,
 			error,
@@ -560,7 +550,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
 			});
 		}
 
@@ -576,13 +566,10 @@ export class OtherComponentInteraction extends Component.Interaction {
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				super
-					.userEmbed(interaction.member)
+				userEmbed(interaction)
 					.setTitle('Updated the Thread Ticket Category')
 					.setDescription(
-						`${interaction.member.toString()} updated the managers of the category to: ${
-							managers.length > 0 ? roles : 'none'
-						}.`,
+						`${interaction.member} updated the managers of the category to: ${managers.length > 0 ? roles : 'none'}.`,
 					),
 			],
 		});
@@ -590,7 +577,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private async allowedAuthorActions({ interaction }: Component.Context<'string'>) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const {
 			data: categoryId,
 			error,
@@ -600,7 +587,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
 			});
 		}
 
@@ -608,7 +595,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 
 		if (!value) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription('The selected value could not be found.')],
+				embeds: [userEmbedError({ ...interaction, description: 'The selected value could not be found.' })],
 			});
 		}
 
@@ -619,9 +606,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 
 		if (!row) {
 			return interaction.editReply({
-				embeds: [
-					super.userEmbedError(interaction.member).setDescription('No category with the given ID could be found.'),
-				],
+				embeds: [userEmbedError({ ...interaction, description: 'No category with the given ID could be found.' })],
 			});
 		}
 
@@ -639,11 +624,10 @@ export class OtherComponentInteraction extends Component.Interaction {
 
 		return interaction.editReply({
 			embeds: [
-				super
-					.userEmbed(interaction.member)
+				userEmbed(interaction)
 					.setTitle('Updated the Thread Ticket Category')
 					.setDescription(
-						`${interaction.member.toString()} has toggled the ${inlineCode(ThreadTicketing.ActionsAsName[value as ThreadTicketing.KeyOfActions])} ticket author action to ${enabled ? 'enabled' : 'disabled'}.`,
+						`${interaction.member} has toggled the ${inlineCode(ThreadTicketing.ActionsAsName[value as ThreadTicketing.KeyOfActions])} ticket author action to ${enabled ? 'enabled' : 'disabled'}.`,
 					),
 			],
 		});
@@ -651,7 +635,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private async confirmDeleteCategory({ interaction }: Component.Context<'button'>) {
-		const { customId, dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { customId, dynamicValue } = extractCustomId(interaction.customId, true);
 		const confirmDeletion = customId.includes('confirm');
 		const {
 			data: categoryId,
@@ -662,7 +646,7 @@ export class OtherComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [userEmbedError({ ...interaction, description: prettifyError(error) })],
 			});
 		}
 
@@ -686,12 +670,11 @@ export class OtherComponentInteraction extends Component.Interaction {
 		return interaction.editReply({
 			components: [],
 			embeds: [
-				super
-					.userEmbed(interaction.member)
+				userEmbed(interaction)
 					.setTitle(confirmDeletion ? 'Deleted the Category' : 'Deletion Cancelled')
 					.setDescription(
 						confirmDeletion
-							? `${interaction.member.toString()} deleted the ${row?.title ? inlineCode(row.title) : 'No Title Found'} category.`
+							? `${interaction.member} deleted the ${row?.title ? inlineCode(row.title) : 'No Title Found'} category.`
 							: `The deletion of the category ${row?.title ? inlineCode(row.title) : 'No Title Found'} has been cancelled.`,
 					),
 			],
@@ -700,15 +683,15 @@ export class OtherComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private categoryView({ interaction }: Component.Context<'button'>) {
-		const { success, error, page } = goToPage.call(this, interaction);
+		const { success, error, page } = goToPage(interaction);
 
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.member).setDescription(error)],
+				embeds: [userEmbedError({ ...interaction, description: error })],
 			});
 		}
 
-		void getCategories.call(this, { interaction }, page);
+		void getCategories({ interaction }, page);
 	}
 }

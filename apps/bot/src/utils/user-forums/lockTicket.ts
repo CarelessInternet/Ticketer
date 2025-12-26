@@ -1,15 +1,14 @@
 import { automaticThreadsConfigurations, database, eq, userForumsConfigurations } from '@ticketer/database';
-import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
+import { type Command, type Component, userEmbed, userEmbedError } from '@ticketer/djs-framework';
 import { ChannelType, Colors } from 'discord.js';
 import { translate } from '@/i18n';
 
 export async function lockTicket(
-	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context | Component.Context,
 	lockAndClose = false,
 	isAutomaticThreads = false,
 ) {
-	const { channel, locale, member } = interaction;
+	const { channel, client, locale, member } = interaction;
 	const translations = translate(locale).tickets[isAutomaticThreads ? 'automaticThreads' : 'userForums'].actions;
 	const table = isAutomaticThreads ? automaticThreadsConfigurations : userForumsConfigurations;
 
@@ -19,9 +18,12 @@ export async function lockTicket(
 	) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(member, translations._errorIfNotThreadChannel.title()).setDescription(
-					translations._errorIfNotThreadChannel.description(),
-				),
+				userEmbedError({
+					client,
+					description: translations._errorIfNotThreadChannel.description(),
+					member,
+					title: translations._errorIfNotThreadChannel.title(),
+				}),
 			],
 		});
 	}
@@ -32,16 +34,16 @@ export async function lockTicket(
 	if (lockAndClose ? !channel.manageable || !channel.editable : !channel.manageable) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(
-					member,
-					lockAndClose
-						? translations.lockAndClose.execute.errors.notManageableAndEditable.title()
-						: translations.lock.execute.errors.notManageable.title(),
-				).setDescription(
-					lockAndClose
+				userEmbedError({
+					client,
+					description: lockAndClose
 						? translations.lockAndClose.execute.errors.notManageableAndEditable.description()
 						: translations.lock.execute.errors.notManageable.description(),
-				),
+					member,
+					title: lockAndClose
+						? translations.lockAndClose.execute.errors.notManageableAndEditable.title()
+						: translations.lock.execute.errors.notManageable.title(),
+				}),
 			],
 		});
 	}
@@ -60,14 +62,17 @@ export async function lockTicket(
 	if (!row || (ownerId !== member.id && !row.managers.some((id) => member.roles.resolve(id)))) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(member, translations._errorIfNotThreadAuthorOrManager.title()).setDescription(
-					translations._errorIfNotThreadAuthorOrManager.description(),
-				),
+				userEmbedError({
+					client,
+					description: translations._errorIfNotThreadAuthorOrManager.description(),
+					member,
+					title: translations._errorIfNotThreadAuthorOrManager.title(),
+				}),
 			],
 		});
 	}
 
-	const embed = this.userEmbed(member)
+	const embed = userEmbed({ client, member })
 		.setColor(Colors.DarkVividPink)
 		.setTitle(translations[lockAndClose ? 'lockAndClose' : 'lock'].execute.success.title())
 		.setDescription(translations[lockAndClose ? 'lockAndClose' : 'lock'].execute.success.description());

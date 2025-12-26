@@ -187,12 +187,10 @@ export default class extends Command.Interaction {
 	public execute(context: Command.Context<'chat'>) {
 		switch (context.interaction.options.getSubcommand(true)) {
 			case 'overview': {
-				this.configurationOverview(context);
-				return;
+				return this.configurationOverview(context);
 			}
 			case 'create': {
-				this.createConfiguration(context);
-				return;
+				return this.createConfiguration(context);
 			}
 			case 'edit': {
 				return this.editConfiguration(context);

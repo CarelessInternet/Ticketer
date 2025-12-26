@@ -413,6 +413,10 @@ type RootTranslation = {
 				errors: {
 					noShard: {
 						/**
+						 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
+						 */
+						title: string
+						/**
 						 * N​o​ ​s​h​a​r​d​ ​f​o​r​ ​t​h​e​ ​b​o​t​ ​c​o​u​l​d​ ​b​e​ ​f​o​u​n​d​.
 						 */
 						description: string
@@ -2516,6 +2520,10 @@ export type TranslationFunctions = {
 			command: {
 				errors: {
 					noShard: {
+						/**
+						 * An Error Occurred
+						 */
+						title: () => LocalizedString
 						/**
 						 * No shard for the bot could be found.
 						 */

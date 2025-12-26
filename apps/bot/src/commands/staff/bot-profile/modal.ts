@@ -1,4 +1,11 @@
-import { DeferReply, Modal } from '@ticketer/djs-framework';
+import {
+	container,
+	DeferReply,
+	dynamicCustomId,
+	extractCustomId,
+	Modal,
+	userEmbedError,
+} from '@ticketer/djs-framework';
 import {
 	ContainerBuilder,
 	codeBlock,
@@ -15,10 +22,10 @@ import z, { prettifyError } from 'zod';
 import { translate } from '@/i18n';
 
 export class ModalInteraction extends Modal.Interaction {
-	public readonly customIds = [super.dynamicCustomId('bot_profile_menu')];
+	public readonly customIds = [dynamicCustomId('bot_profile_menu')];
 
 	public async execute(context: Modal.Context) {
-		const { dynamicValue } = super.extractCustomId(context.interaction.customId, true);
+		const { dynamicValue } = extractCustomId(context.interaction.customId, true);
 
 		switch (dynamicValue) {
 			case 'name': {
@@ -39,9 +46,11 @@ export class ModalInteraction extends Modal.Interaction {
 
 				return context.interaction.reply({
 					embeds: [
-						super
-							.userEmbedError(context.interaction.member, translations.title())
-							.setDescription(translations.description()),
+						userEmbedError({
+							...context.interaction,
+							description: translations.description(),
+							title: translations.title(),
+						}),
 					],
 					flags: [MessageFlags.Ephemeral],
 				});
@@ -60,9 +69,7 @@ export class ModalInteraction extends Modal.Interaction {
 		if (!success) {
 			return interaction.reply({
 				embeds: [
-					super
-						.userEmbedError(interaction.member, translations.validation.title())
-						.setDescription(prettifyError(error)),
+					userEmbedError({ ...interaction, description: prettifyError(error), title: translations.validation.title() }),
 				],
 				flags: [MessageFlags.Ephemeral],
 			});
@@ -71,9 +78,11 @@ export class ModalInteraction extends Modal.Interaction {
 		if (!interaction.appPermissions.has(PermissionFlagsBits.ChangeNickname)) {
 			return interaction.reply({
 				embeds: [
-					super
-						.userEmbedError(interaction.member, translations.permissions.title())
-						.setDescription(translations.permissions.description()),
+					userEmbedError({
+						...interaction,
+						description: translations.permissions.description(),
+						title: translations.permissions.title(),
+					}),
 				],
 				flags: [MessageFlags.Ephemeral],
 			});
@@ -89,21 +98,23 @@ export class ModalInteraction extends Modal.Interaction {
 
 		return interaction.editReply({
 			components: [
-				super.container((cont) =>
-					cont
-						.addTextDisplayComponents(
-							new TextDisplayBuilder().setContent(heading(guildTranslations.heading(), HeadingLevel.One)),
-						)
-						.addTextDisplayComponents(
-							new TextDisplayBuilder().setContent(
-								guildTranslations.content({
-									member: interaction.member.toString(),
-									oldName: inlineCode(oldName),
-									newName: inlineCode(me.displayName),
-								}),
+				container({
+					builder: (cont) =>
+						cont
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(heading(guildTranslations.heading(), HeadingLevel.One)),
+							)
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(
+									guildTranslations.content({
+										member: interaction.member.toString(),
+										oldName: inlineCode(oldName),
+										newName: inlineCode(me.displayName),
+									}),
+								),
 							),
-						),
-				),
+					client: interaction.client,
+				}),
 			],
 			flags: [MessageFlags.IsComponentsV2],
 		});
@@ -120,9 +131,7 @@ export class ModalInteraction extends Modal.Interaction {
 		if (!success) {
 			return interaction.reply({
 				embeds: [
-					super
-						.userEmbedError(interaction.member, translations.validation.title())
-						.setDescription(prettifyError(error)),
+					userEmbedError({ ...interaction, description: prettifyError(error), title: translations.validation.title() }),
 				],
 				flags: [MessageFlags.Ephemeral],
 			});
@@ -133,7 +142,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 		const guildTranslations = translate(interaction.guildLocale).commands['bot-profile'].command.modals.bio.response
 			.success;
-		const container = new ContainerBuilder()
+		const reply = new ContainerBuilder()
 			.addTextDisplayComponents(
 				new TextDisplayBuilder().setContent(heading(guildTranslations.heading(), HeadingLevel.One)),
 			)
@@ -146,11 +155,11 @@ export class ModalInteraction extends Modal.Interaction {
 			);
 
 		if (bio) {
-			container.addTextDisplayComponents(new TextDisplayBuilder().setContent(codeBlock(bio)));
+			reply.addTextDisplayComponents(new TextDisplayBuilder().setContent(codeBlock(bio)));
 		}
 
 		return interaction.editReply({
-			components: [super.container(container)],
+			components: [container({ builder: reply, client: interaction.client })],
 			flags: [MessageFlags.IsComponentsV2],
 		});
 	}
@@ -169,7 +178,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 			return interaction.editReply({
 				embeds: [
-					super.userEmbedError(interaction.member, translatons.title()).setDescription(translatons.description()),
+					userEmbedError({ ...interaction, description: translatons.description(), title: translatons.title() }),
 				],
 			});
 		}
@@ -179,21 +188,23 @@ export class ModalInteraction extends Modal.Interaction {
 
 		return interaction.editReply({
 			components: [
-				super.container((cont) =>
-					cont
-						.addTextDisplayComponents(
-							new TextDisplayBuilder().setContent(heading(translatons.heading(), HeadingLevel.One)),
-						)
-						.addTextDisplayComponents(
-							new TextDisplayBuilder().setContent(translatons.content({ member: interaction.member.toString() })),
-						)
-						.addMediaGalleryComponents(
-							new MediaGalleryBuilder().addItems(
-								new MediaGalleryItemBuilder().setURL(oldAvatar),
-								new MediaGalleryItemBuilder().setURL(me.displayAvatarURL()),
+				container({
+					builder: (cont) =>
+						cont
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(heading(translatons.heading(), HeadingLevel.One)),
+							)
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(translatons.content({ member: interaction.member.toString() })),
+							)
+							.addMediaGalleryComponents(
+								new MediaGalleryBuilder().addItems(
+									new MediaGalleryItemBuilder().setURL(oldAvatar),
+									new MediaGalleryItemBuilder().setURL(me.displayAvatarURL()),
+								),
 							),
-						),
-				),
+					client: interaction.client,
+				}),
 			],
 			flags: [MessageFlags.IsComponentsV2],
 		});
@@ -214,7 +225,7 @@ export class ModalInteraction extends Modal.Interaction {
 
 			return interaction.editReply({
 				embeds: [
-					super.userEmbedError(interaction.member, translations.title()).setDescription(translations.description()),
+					userEmbedError({ ...interaction, description: translations.description(), title: translations.title() }),
 				],
 			});
 		}
@@ -222,7 +233,7 @@ export class ModalInteraction extends Modal.Interaction {
 		const translations = translate(interaction.locale).commands['bot-profile'].command.modals.banner.response.success;
 		const member = interaction.member.toString();
 		const newBanner = me.displayBannerURL();
-		const container = new ContainerBuilder()
+		const reply = new ContainerBuilder()
 			.addTextDisplayComponents(new TextDisplayBuilder().setContent(heading(translations.heading(), HeadingLevel.One)))
 			.addTextDisplayComponents(
 				new TextDisplayBuilder().setContent(
@@ -247,11 +258,11 @@ export class ModalInteraction extends Modal.Interaction {
 				builder.addItems(new MediaGalleryItemBuilder().setURL(newBanner));
 			}
 
-			container.addMediaGalleryComponents(builder);
+			reply.addMediaGalleryComponents(builder);
 		}
 
 		return interaction.editReply({
-			components: [super.container(container)],
+			components: [container({ builder: reply, client: interaction.client })],
 			flags: [MessageFlags.IsComponentsV2],
 		});
 	}

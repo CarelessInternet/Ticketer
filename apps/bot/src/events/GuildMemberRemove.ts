@@ -1,5 +1,5 @@
 import { database, eq, welcomeAndFarewell } from '@ticketer/database';
-import { Event } from '@ticketer/djs-framework';
+import { container, Event } from '@ticketer/djs-framework';
 import { type GuildMember, MessageFlags, PermissionFlagsBits } from 'discord.js';
 import { farewellContainer, fetchChannel, LogExceptions } from '@/utils';
 
@@ -10,7 +10,7 @@ export default class extends Event.Handler {
 	public async execute([member]: Event.ArgumentsOf<this['name']>) {
 		if (member.id === member.client.user.id) return;
 
-		const { id: guildId, members, preferredLocale } = member.guild;
+		const { client, id: guildId, members, preferredLocale } = member.guild;
 		const [data] = await database.select().from(welcomeAndFarewell).where(eq(welcomeAndFarewell.guildId, guildId));
 
 		if (!data?.farewellChannelId || !data.farewellEnabled) return;
@@ -23,18 +23,20 @@ export default class extends Event.Handler {
 
 		if (!channel.permissionsFor(me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) return;
 
-		const container = super.container((cont) =>
-			farewellContainer({
-				container: cont,
-				data: {
-					farewellMessageTitle: data.farewellMessageTitle,
-					farewellMessageDescription: data.farewellMessageDescription,
-				},
-				locale: preferredLocale,
-				member: member as GuildMember,
-			}),
-		);
+		const cont = container({
+			builder: (cont) =>
+				farewellContainer({
+					container: cont,
+					data: {
+						farewellMessageTitle: data.farewellMessageTitle,
+						farewellMessageDescription: data.farewellMessageDescription,
+					},
+					locale: preferredLocale,
+					member: member as GuildMember,
+				}),
+			client,
+		});
 
-		void channel.send({ components: [container], flags: [MessageFlags.IsComponentsV2] });
+		void channel.send({ components: [cont], flags: [MessageFlags.IsComponentsV2] });
 	}
 }

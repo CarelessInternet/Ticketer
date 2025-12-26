@@ -1,5 +1,14 @@
 import { and, database, desc, eq, ticketsThreads, ticketThreadsCategories } from '@ticketer/database';
-import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
+import {
+	Command,
+	Component,
+	customId,
+	DeferReply,
+	DeferUpdate,
+	dynamicCustomId,
+	embed,
+	userEmbedError,
+} from '@ticketer/djs-framework';
 import { channelMention } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
 import { goToPage, messageWithPagination, ThreadTicketing, withPagination } from '@/utils';
@@ -10,7 +19,6 @@ interface ViewTicketsOptions {
 }
 
 async function viewTickets(
-	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context<'chat'> | Component.Context,
 	{ page = 0, state }: ViewTicketsOptions,
 ) {
@@ -48,29 +56,31 @@ async function viewTickets(
 
 	const translations = translate(interaction.locale).commands['show-tickets'].command;
 	const embeds = tickets.map((ticket) =>
-		this.embed.setTitle(ThreadTicketing.titleAndEmoji(ticket.categoryTitle, ticket.categoryEmoji)).setFields(
-			{
-				name: translations.embeds[0].fields[0].name(),
-				value: channelMention(ticket.threadId),
-				inline: true,
-			},
-			{
-				name: translations.embeds[0].fields[1].name(),
-				value: ThreadTicketing.ticketState(ticket.state, interaction.locale),
-				inline: true,
-			},
-		),
+		embed(interaction)
+			.setTitle(ThreadTicketing.titleAndEmoji(ticket.categoryTitle, ticket.categoryEmoji))
+			.setFields(
+				{
+					name: translations.embeds[0].fields[0].name(),
+					value: channelMention(ticket.threadId),
+					inline: true,
+				},
+				{
+					name: translations.embeds[0].fields[1].name(),
+					value: ThreadTicketing.ticketState(ticket.state, interaction.locale),
+					inline: true,
+				},
+			),
 	);
 
 	const components = messageWithPagination({
 		locale: interaction.locale,
 		previous: {
-			customId: this.customId('ticket_threads_categories_view_tickets_previous', `${page.toString()}_${state ?? ''}`),
+			customId: customId('ticket_threads_categories_view_tickets_previous', `${page.toString()}_${state ?? ''}`),
 			disabled: page === 0,
 			label: translations.buttons.previous.label(),
 		},
 		next: {
-			customId: this.customId('ticket_threads_categories_view_tickets_next', `${page.toString()}_${state ?? ''}`),
+			customId: customId('ticket_threads_categories_view_tickets_next', `${page.toString()}_${state ?? ''}`),
 			disabled: tickets.length < PAGE_SIZE,
 			label: translations.buttons.next.label(),
 		},
@@ -108,7 +118,7 @@ export default class extends Command.Interaction {
 
 	@DeferReply({ ephemeral: true })
 	public execute(context: Command.Context<'chat'>) {
-		void viewTickets.call(this, context, {
+		void viewTickets(context, {
 			state: context.interaction.options.getString(
 				dataTranslations.options[0].name(),
 				false,
@@ -119,22 +129,22 @@ export default class extends Command.Interaction {
 
 export class ComponentInteraction extends Component.Interaction {
 	public readonly customIds = [
-		super.dynamicCustomId('ticket_threads_categories_view_tickets_previous'),
-		super.dynamicCustomId('ticket_threads_categories_view_tickets_next'),
+		dynamicCustomId('ticket_threads_categories_view_tickets_previous'),
+		dynamicCustomId('ticket_threads_categories_view_tickets_next'),
 	];
 
 	@DeferUpdate
 	public execute(context: Component.Context) {
-		const { success, additionalData, error, page } = goToPage.call(this, context.interaction);
+		const { success, additionalData, error, page } = goToPage(context.interaction);
 
 		if (!success) {
 			return context.interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(context.interaction.member).setDescription(error)],
+				embeds: [userEmbedError({ ...context.interaction, description: error })],
 			});
 		}
 
-		void viewTickets.call(this, context, {
+		void viewTickets(context, {
 			state: additionalData.at(0) as ViewTicketsOptions['state'] | undefined,
 			page,
 		});

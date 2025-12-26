@@ -1,4 +1,4 @@
-import { Command } from '@ticketer/djs-framework';
+import { Command, userEmbed, userEmbedError } from '@ticketer/djs-framework';
 import { inlineCode, MessageFlags, Status } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
 
@@ -12,10 +12,10 @@ export default class extends Command.Interaction {
 
 	public async execute({ interaction }: Command.Context) {
 		const translations = translate(interaction.locale).commands.ping.command;
-		const embed = super.userEmbed(interaction.member).setTitle(translations.embeds[0].title());
+		const reply = userEmbed(interaction.member).setTitle(translations.embeds[0].title());
 
 		const callback = await interaction.reply({
-			embeds: [embed],
+			embeds: [reply],
 			flags: [MessageFlags.Ephemeral],
 			withResponse: true,
 		});
@@ -23,15 +23,17 @@ export default class extends Command.Interaction {
 		if (!callback.resource?.message) {
 			return void interaction.editReply({
 				embeds: [
-					super
-						.userEmbedError(interaction.member, translations.embeds[1].title())
-						.setDescription(translations.embeds[1].description()),
+					userEmbedError({
+						...interaction,
+						description: translations.embeds[1].description(),
+						title: translations.embeds[1].title(),
+					}),
 				],
 			});
 		}
 
-		embed.setTitle(translations.embeds[2].title());
-		embed.setFields(
+		reply.setTitle(translations.embeds[2].title());
+		reply.setFields(
 			{
 				name: translations.embeds[2].fields[0].name(),
 				value: translations.embeds[2].fields[0].value({ ms: interaction.client.ws.ping }),
@@ -53,6 +55,6 @@ export default class extends Command.Interaction {
 			},
 		);
 
-		void interaction.editReply({ embeds: [embed] });
+		void interaction.editReply({ embeds: [reply] });
 	}
 }

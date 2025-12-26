@@ -255,8 +255,9 @@ export default class extends Command.Interaction {
 			return interaction.editReply({
 				embeds: [
 					userEmbedError({
-						...interaction,
+						client: interaction.client,
 						description: 'Please create a global thread ticket configuration before creating categories.',
+						member: interaction.member,
 					}),
 				],
 			});

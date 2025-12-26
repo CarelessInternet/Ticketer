@@ -1,14 +1,10 @@
 import { automaticThreadsConfigurations, database, eq, userForumsConfigurations } from '@ticketer/database';
-import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
+import { type Command, type Component, userEmbed, userEmbedError } from '@ticketer/djs-framework';
 import { ChannelType, Colors } from 'discord.js';
 import { translate } from '@/i18n';
 
-export async function closeTicket(
-	this: BaseInteraction.Interaction,
-	{ interaction }: Command.Context | Component.Context,
-	isAutomaticThreads = false,
-) {
-	const { channel, locale, member } = interaction;
+export async function closeTicket({ interaction }: Command.Context | Component.Context, isAutomaticThreads = false) {
+	const { channel, client, locale, member } = interaction;
 	const translations = translate(locale).tickets[isAutomaticThreads ? 'automaticThreads' : 'userForums'].actions;
 	const table = isAutomaticThreads ? automaticThreadsConfigurations : userForumsConfigurations;
 
@@ -18,9 +14,12 @@ export async function closeTicket(
 	) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(member, translations._errorIfNotThreadChannel.title()).setDescription(
-					translations._errorIfNotThreadChannel.description(),
-				),
+				userEmbedError({
+					client,
+					description: translations._errorIfNotThreadChannel.description(),
+					member,
+					title: translations._errorIfNotThreadChannel.title(),
+				}),
 			],
 		});
 	}
@@ -30,9 +29,12 @@ export async function closeTicket(
 	if (!channel.editable) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(member, translations.close.execute.errors.notEditable.title()).setDescription(
-					translations.close.execute.errors.notEditable.description(),
-				),
+				userEmbedError({
+					client,
+					description: translations.close.execute.errors.notEditable.description(),
+					member,
+					title: translations.close.execute.errors.notEditable.title(),
+				}),
 			],
 		});
 	}
@@ -51,14 +53,17 @@ export async function closeTicket(
 	if (!row || (ownerId !== member.id && !row.managers.some((id) => member.roles.resolve(id)))) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(member, translations._errorIfNotThreadAuthorOrManager.title()).setDescription(
-					translations._errorIfNotThreadAuthorOrManager.description(),
-				),
+				userEmbedError({
+					client,
+					description: translations._errorIfNotThreadAuthorOrManager.description(),
+					member,
+					title: translations._errorIfNotThreadAuthorOrManager.title(),
+				}),
 			],
 		});
 	}
 
-	const embed = this.userEmbed(member)
+	const embed = userEmbed({ client, member })
 		.setColor(Colors.Yellow)
 		.setTitle(translations.close.execute.success.title())
 		.setDescription(translations.close.execute.success.description());

@@ -1,5 +1,5 @@
 import { migrate } from '@ticketer/database';
-import { Command, DeferReply } from '@ticketer/djs-framework';
+import { Command, DeferReply, userEmbed } from '@ticketer/djs-framework';
 import { PermissionFlagsBits } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
 
@@ -20,9 +20,7 @@ export default class extends Command.Interaction {
 
 		const translations = translate(interaction.locale).commands.migrate.command.embeds[0];
 		void interaction.editReply({
-			embeds: [
-				super.userEmbed(interaction.member).setTitle(translations.title()).setDescription(translations.description()),
-			],
+			embeds: [userEmbed(interaction).setTitle(translations.title()).setDescription(translations.description())],
 		});
 	}
 }

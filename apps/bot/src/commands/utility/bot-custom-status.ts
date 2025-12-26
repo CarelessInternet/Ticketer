@@ -1,4 +1,4 @@
-import { Command, DeferReply } from '@ticketer/djs-framework';
+import { Command, DeferReply, userEmbed } from '@ticketer/djs-framework';
 import {
 	ActivityType,
 	type APIApplicationCommandOptionChoice,
@@ -70,9 +70,7 @@ export default class extends Command.Interaction {
 			});
 
 			return interaction.editReply({
-				embeds: [
-					super.userEmbed(interaction.member).setTitle(translations.title()).setDescription(translations.description()),
-				],
+				embeds: [userEmbed(interaction).setTitle(translations.title()).setDescription(translations.description())],
 			});
 		}
 
@@ -90,9 +88,7 @@ export default class extends Command.Interaction {
 		);
 
 		return interaction.editReply({
-			embeds: [
-				super.userEmbed(interaction.member).setTitle(translations.title()).setDescription(translations.description()),
-			],
+			embeds: [userEmbed(interaction).setTitle(translations.title()).setDescription(translations.description())],
 		});
 	}
 }

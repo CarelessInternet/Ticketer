@@ -1,12 +1,8 @@
-import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
+import { type Command, type Component, customId } from '@ticketer/djs-framework';
 import { LabelBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { translate } from '@/i18n';
 
-export function renameTitleModal(
-	this: BaseInteraction.Interaction,
-	{ interaction }: Command.Context | Component.Context,
-	isAutomaticThreads = false,
-) {
+export function renameTitleModal({ interaction }: Command.Context | Component.Context, isAutomaticThreads = false) {
 	const translations = translate(interaction.locale).tickets[isAutomaticThreads ? 'automaticThreads' : 'userForums']
 		.actions.renameTitle.component.modal;
 
@@ -15,7 +11,7 @@ export function renameTitleModal(
 		.setDescription(translations.inputs[0].description())
 		.setTextInputComponent(
 			new TextInputBuilder()
-				.setCustomId(this.customId('title'))
+				.setCustomId(customId('title'))
 				.setRequired(true)
 				.setMinLength(1)
 				.setMaxLength(100)
@@ -24,7 +20,7 @@ export function renameTitleModal(
 
 	const modal = new ModalBuilder()
 		.setCustomId(
-			this.customId(`ticket_${isAutomaticThreads ? 'automatic_threads' : 'user_forums'}_thread_rename_title_modal`),
+			customId(`ticket_${isAutomaticThreads ? 'automatic_threads' : 'user_forums'}_thread_rename_title_modal`),
 		)
 		.setTitle(translations.title())
 		.setLabelComponents(input);

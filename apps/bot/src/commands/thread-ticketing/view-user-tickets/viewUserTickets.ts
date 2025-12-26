@@ -1,5 +1,5 @@
 import { and, database, desc, eq, ticketsThreads, ticketThreadsCategories } from '@ticketer/database';
-import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
+import { type Command, type Component, customId, userEmbed } from '@ticketer/djs-framework';
 import { channelMention, type Snowflake } from 'discord.js';
 import { translate } from '@/i18n';
 import { managerIntersection, messageWithPagination, ThreadTicketing, withPagination } from '@/utils';
@@ -10,7 +10,6 @@ interface ViewUserTicketsOptions {
 }
 
 export async function viewUserTickets(
-	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context<'chat' | 'user'> | Component.Context,
 	{ page = 0, userId }: ViewUserTicketsOptions,
 ) {
@@ -54,7 +53,7 @@ export async function viewUserTickets(
 	const translations = translate(interaction.isChatInputCommand() ? interaction.guildLocale : interaction.locale)
 		.commands['view-user-tickets'].common.command;
 	const embeds = tickets.map((ticket) =>
-		this.userEmbed(user)
+		userEmbed({ client: interaction.client, user })
 			.setTitle(ThreadTicketing.titleAndEmoji(ticket.categoryTitle, ticket.categoryEmoji))
 			.setFields(
 				{
@@ -72,11 +71,11 @@ export async function viewUserTickets(
 	const components = messageWithPagination({
 		locale: interaction.ephemeral ? interaction.locale : interaction.guildLocale,
 		previous: {
-			customId: this.customId('ticket_threads_categories_view_user_previous', `${page.toString()}_${user.id}`),
+			customId: customId('ticket_threads_categories_view_user_previous', `${page.toString()}_${user.id}`),
 			disabled: page === 0,
 		},
 		next: {
-			customId: this.customId('ticket_threads_categories_view_user_next', `${page.toString()}_${user.id}`),
+			customId: customId('ticket_threads_categories_view_user_next', `${page.toString()}_${user.id}`),
 			disabled: tickets.length < PAGE_SIZE,
 		},
 	});

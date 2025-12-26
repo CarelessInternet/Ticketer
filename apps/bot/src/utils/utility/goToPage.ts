@@ -1,4 +1,4 @@
-import type { BaseInteraction } from '@ticketer/djs-framework';
+import { extractCustomId } from '@ticketer/djs-framework';
 import type { MessageComponentInteraction } from 'discord.js';
 import { prettifyError, z } from 'zod';
 
@@ -17,11 +17,10 @@ interface GoToPageSuccess {
 }
 
 export function goToPage(
-	this: BaseInteraction.Interaction,
 	interaction: MessageComponentInteraction,
 	goToNextString = 'next',
 ): GoToPageError | GoToPageSuccess {
-	const { customId, dynamicValue } = this.extractCustomId(interaction.customId, true);
+	const { customId, dynamicValue } = extractCustomId(interaction.customId, true);
 	const [pageAsString, ...rest] = dynamicValue.split('_') as [string, string | undefined];
 	const { data: currentPage, error, success } = z.coerce.number().int().nonnegative().safeParse(pageAsString);
 

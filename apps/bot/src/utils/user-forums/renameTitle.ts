@@ -1,14 +1,10 @@
 import { automaticThreadsConfigurations, database, eq, userForumsConfigurations } from '@ticketer/database';
-import type { BaseInteraction, Modal } from '@ticketer/djs-framework';
+import { type Modal, userEmbed, userEmbedError } from '@ticketer/djs-framework';
 import { ChannelType, Colors } from 'discord.js';
 import { translate } from '@/i18n';
 
-export async function renameTitle(
-	this: BaseInteraction.Interaction,
-	{ interaction }: Modal.Context,
-	isAutomaticThreads = false,
-) {
-	const { channel, fields, locale, member } = interaction;
+export async function renameTitle({ interaction }: Modal.Context, isAutomaticThreads = false) {
+	const { channel, client, fields, locale, member } = interaction;
 	const translations = translate(locale).tickets[isAutomaticThreads ? 'automaticThreads' : 'userForums'].actions;
 	const table = isAutomaticThreads ? automaticThreadsConfigurations : userForumsConfigurations;
 
@@ -18,9 +14,12 @@ export async function renameTitle(
 	) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(member, translations._errorIfNotThreadChannel.title()).setDescription(
-					translations._errorIfNotThreadChannel.description(),
-				),
+				userEmbedError({
+					client,
+					description: translations._errorIfNotThreadChannel.description(),
+					member,
+					title: translations._errorIfNotThreadChannel.title(),
+				}),
 			],
 		});
 	}
@@ -28,9 +27,12 @@ export async function renameTitle(
 	if (!channel.editable) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(member, translations.renameTitle.modal.errors.notEditable.title()).setDescription(
-					translations.renameTitle.modal.errors.notEditable.description(),
-				),
+				userEmbedError({
+					client,
+					description: translations.renameTitle.modal.errors.notEditable.description(),
+					member,
+					title: translations.renameTitle.modal.errors.notEditable.title(),
+				}),
 			],
 		});
 	}
@@ -49,9 +51,12 @@ export async function renameTitle(
 	if (!row || (ownerId !== member.id && !row.managers.some((id) => member.roles.resolve(id)))) {
 		return interaction.editReply({
 			embeds: [
-				this.userEmbedError(member, translations._errorIfNotThreadAuthorOrManager.title()).setDescription(
-					translations._errorIfNotThreadAuthorOrManager.description(),
-				),
+				userEmbedError({
+					client,
+					description: translations._errorIfNotThreadAuthorOrManager.description(),
+					member,
+					title: translations._errorIfNotThreadAuthorOrManager.title(),
+				}),
 			],
 		});
 	}
@@ -59,7 +64,7 @@ export async function renameTitle(
 	const oldTitle = channel.name;
 	const newTitle = fields.getTextInputValue('title');
 	const successTranslations = translations.renameTitle.modal.success;
-	const embed = this.userEmbed(member)
+	const embed = userEmbed({ client, member })
 		.setColor(Colors.DarkGreen)
 		.setTitle(successTranslations.title())
 		.setDescription(successTranslations.description({ oldTitle, newTitle }));

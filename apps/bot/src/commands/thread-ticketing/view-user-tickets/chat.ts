@@ -1,4 +1,4 @@
-import { Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
+import { Command, Component, DeferReply, DeferUpdate, dynamicCustomId, userEmbedError } from '@ticketer/djs-framework';
 import { PermissionFlagsBits } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
 import { goToPage } from '@/utils';
@@ -23,7 +23,7 @@ export default class extends Command.Interaction {
 
 	@DeferReply()
 	public execute(context: Command.Context<'chat'>) {
-		void viewUserTickets.call(this, context, {
+		void viewUserTickets(context, {
 			userId: context.interaction.options.getUser(dataTranslations.options[0].name(), true).id,
 		});
 	}
@@ -31,22 +31,28 @@ export default class extends Command.Interaction {
 
 export class ComponentInteraction extends Component.Interaction {
 	public readonly customIds = [
-		super.dynamicCustomId('ticket_threads_categories_view_user_previous'),
-		super.dynamicCustomId('ticket_threads_categories_view_user_next'),
+		dynamicCustomId('ticket_threads_categories_view_user_previous'),
+		dynamicCustomId('ticket_threads_categories_view_user_next'),
 	];
 
 	@DeferUpdate
 	public execute(context: Component.Context) {
-		const { success, additionalData, error, page } = goToPage.call(this, context.interaction);
+		const { success, additionalData, error, page } = goToPage(context.interaction);
 
 		if (!success) {
 			return context.interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(context.interaction.member).setDescription(error)],
+				embeds: [
+					userEmbedError({
+						client: context.interaction.client,
+						description: error,
+						member: context.interaction.member,
+					}),
+				],
 			});
 		}
 
-		void viewUserTickets.call(this, context, {
+		void viewUserTickets(context, {
 			// biome-ignore lint/style/noNonNullAssertion: It should exist.
 			userId: additionalData.at(0)!,
 			page,

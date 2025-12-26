@@ -1,4 +1,4 @@
-import { Command, DeferReply } from '@ticketer/djs-framework';
+import { Command, DeferReply, userEmbed, userEmbedError } from '@ticketer/djs-framework';
 import { PermissionFlagsBits } from 'discord.js';
 import { prettifyError, z } from 'zod';
 import { getTranslations, translate } from '@/i18n';
@@ -35,7 +35,12 @@ export default class extends Command.Interaction {
 			if (!success) {
 				return interaction.editReply({
 					embeds: [
-						super.userEmbedError(interaction.member, translations.title.error()).setDescription(prettifyError(error)),
+						userEmbedError({
+							client: interaction.client,
+							description: prettifyError(error),
+							member: interaction.member,
+							title: translations.title.error(),
+						}),
 					],
 				});
 			}
@@ -53,16 +58,18 @@ export default class extends Command.Interaction {
 			) {
 				return interaction.editReply({
 					embeds: [
-						super
-							.userEmbedError(interaction.member, translations.title.error())
-							.setDescription(translations.description.error()),
+						userEmbedError({
+							client: interaction.client,
+							description: translations.description.error(),
+							member: interaction.member,
+							title: translations.title.error(),
+						}),
 					],
 				});
 			}
 
 			const deleted = await interaction.channel.bulkDelete(amount);
-			const embed = super
-				.userEmbed(interaction.member)
+			const embed = userEmbed(interaction)
 				.setTitle(translations.title.success())
 				.setDescription(translations.description.success({ amount: deleted.size }));
 

@@ -1,11 +1,8 @@
-import type { BaseInteraction, Command, Component } from '@ticketer/djs-framework';
+import { type Command, type Component, customId } from '@ticketer/djs-framework';
 import { LabelBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { translate } from '@/i18n';
 
-export function renameTitleModal(
-	this: BaseInteraction.Interaction,
-	{ interaction }: Command.Context | Component.Context,
-) {
+export function renameTitleModal({ interaction }: Command.Context | Component.Context) {
 	const translations = translate(interaction.locale).tickets.threads.categories.actions.renameTitle.component.modal;
 
 	const input = new LabelBuilder()
@@ -13,7 +10,7 @@ export function renameTitleModal(
 		.setDescription(translations.inputs[0].description())
 		.setTextInputComponent(
 			new TextInputBuilder()
-				.setCustomId(this.customId('title'))
+				.setCustomId(customId('title'))
 				.setRequired(true)
 				.setMinLength(1)
 				.setMaxLength(100)
@@ -21,7 +18,7 @@ export function renameTitleModal(
 		);
 
 	const modal = new ModalBuilder()
-		.setCustomId(this.customId('ticket_threads_categories_create_rename_title_modal'))
+		.setCustomId(customId('ticket_threads_categories_create_rename_title_modal'))
 		.setTitle(translations.title())
 		.setLabelComponents(input);
 

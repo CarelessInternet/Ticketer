@@ -6,7 +6,15 @@ import {
 	ticketThreadsCategoriesInsertSchema,
 	ticketThreadsCategoriesSelectSchema,
 } from '@ticketer/database';
-import { DeferReply, Modal } from '@ticketer/djs-framework';
+import {
+	customId,
+	DeferReply,
+	dynamicCustomId,
+	extractCustomId,
+	Modal,
+	userEmbed,
+	userEmbedError,
+} from '@ticketer/djs-framework';
 import { inlineCode } from 'discord.js';
 import { prettifyError } from 'zod';
 import { extractEmoji } from '@/utils';
@@ -16,39 +24,45 @@ const MAXIMUM_CATEGORY_AMOUNT = 10;
 
 export default class extends Modal.Interaction {
 	public readonly customIds = [
-		super.customId('ticket_threads_category_fields'),
-		super.dynamicCustomId('ticket_threads_category_fields_dynamic'),
-		super.dynamicCustomId('ticket_threads_category_message'),
-		super.dynamicCustomId('ticket_threads_category_thread_title'),
+		customId('ticket_threads_category_fields'),
+		dynamicCustomId('ticket_threads_category_fields_dynamic'),
+		dynamicCustomId('ticket_threads_category_message'),
+		dynamicCustomId('ticket_threads_category_thread_title'),
 	];
 
 	@DeferReply()
 	@HasGlobalConfiguration
 	public async execute({ interaction }: Modal.Context) {
-		const { customId } = super.extractCustomId(interaction.customId);
+		const { customId: id } = extractCustomId(interaction.customId);
 
-		switch (customId) {
-			case super.customId('ticket_threads_category_fields'):
-			case super.dynamicCustomId('ticket_threads_category_fields_dynamic'): {
+		switch (id) {
+			case customId('ticket_threads_category_fields'):
+			case dynamicCustomId('ticket_threads_category_fields_dynamic'): {
 				return this.categoryFields({ interaction });
 			}
-			case super.dynamicCustomId('ticket_threads_category_message'): {
+			case dynamicCustomId('ticket_threads_category_message'): {
 				return this.categoryMessageTitleDescription({ interaction });
 			}
-			case super.dynamicCustomId('ticket_threads_category_thread_title'): {
+			case dynamicCustomId('ticket_threads_category_thread_title'): {
 				return this.categoryThreadTitle({ interaction });
 			}
 			default: {
 				return interaction.editReply({
-					embeds: [super.userEmbedError(interaction.member).setDescription('The modal ID could not be found.')],
+					embeds: [
+						userEmbedError({
+							client: interaction.client,
+							description: 'The modal ID could not be found.',
+							member: interaction.member,
+						}),
+					],
 				});
 			}
 		}
 	}
 
 	private async categoryFields({ interaction }: Modal.Context) {
-		const { customId, fields, guildId, member } = interaction;
-		const { dynamicValue } = super.extractCustomId(customId);
+		const { customId, fields, guildId } = interaction;
+		const { dynamicValue } = extractCustomId(customId);
 
 		const emoji = fields.getTextInputValue('emoji');
 		const categoryEmoji = extractEmoji(emoji);
@@ -64,7 +78,9 @@ export default class extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(member).setDescription(prettifyError(error))],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -79,7 +95,13 @@ export default class extends Modal.Interaction {
 
 			if (!idSuccess) {
 				return interaction.editReply({
-					embeds: [super.userEmbedError(member).setDescription(prettifyError(idError))],
+					embeds: [
+						userEmbedError({
+							client: interaction.client,
+							description: prettifyError(idError),
+							member: interaction.member,
+						}),
+					],
 				});
 			}
 
@@ -95,11 +117,11 @@ export default class extends Modal.Interaction {
 			if (amount >= MAXIMUM_CATEGORY_AMOUNT) {
 				return interaction.editReply({
 					embeds: [
-						super
-							.userEmbedError(member)
-							.setDescription(
-								`There are too many categories, you may not have more than ${MAXIMUM_CATEGORY_AMOUNT.toString()}.`,
-							),
+						userEmbedError({
+							client: interaction.client,
+							description: `There are too many categories, you may not have more than ${MAXIMUM_CATEGORY_AMOUNT.toString()}.`,
+							member: interaction.member,
+						}),
 					],
 				});
 			}
@@ -109,11 +131,10 @@ export default class extends Modal.Interaction {
 				.values({ categoryDescription, categoryEmoji, categoryTitle, guildId });
 		}
 
-		const embed = super
-			.userEmbed(member)
+		const embed = userEmbed(interaction)
 			.setTitle(`${dynamicValue ? 'Updated the' : 'Created a'} Thread Ticket Category`)
 			.setDescription(
-				`${member.toString()} ${
+				`${interaction.member} ${
 					dynamicValue ? 'updated' : 'created'
 				} the thread ticket category with the following details:`,
 			)
@@ -140,8 +161,8 @@ export default class extends Modal.Interaction {
 	}
 
 	private async categoryMessageTitleDescription({ interaction }: Modal.Context) {
-		const { customId, fields, member } = interaction;
-		const { dynamicValue } = super.extractCustomId(customId, true);
+		const { customId, fields } = interaction;
+		const { dynamicValue } = extractCustomId(customId, true);
 		const {
 			data: categoryId,
 			error: idError,
@@ -150,7 +171,13 @@ export default class extends Modal.Interaction {
 
 		if (!idSuccess) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(member).setDescription(prettifyError(idError))],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: prettifyError(idError),
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -167,7 +194,9 @@ export default class extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(member).setDescription(prettifyError(error))],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -178,11 +207,10 @@ export default class extends Modal.Interaction {
 			.set({ openingMessageTitle, openingMessageDescription })
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
-		const embed = super
-			.userEmbed(member)
+		const embed = userEmbed(interaction)
 			.setTitle('Updated the Thread Ticket Category')
 			.setDescription(
-				`${member.toString()} updated the opening message title and description to the following if they have text:`,
+				`${interaction.member} updated the opening message title and description to the following if they have text:`,
 			);
 
 		if (openingMessageTitle) {
@@ -205,8 +233,8 @@ export default class extends Modal.Interaction {
 	}
 
 	private async categoryThreadTitle({ interaction }: Modal.Context) {
-		const { customId, fields, member } = interaction;
-		const { dynamicValue } = super.extractCustomId(customId, true);
+		const { customId, fields } = interaction;
+		const { dynamicValue } = extractCustomId(customId, true);
 		const {
 			data: categoryId,
 			error: idError,
@@ -215,7 +243,13 @@ export default class extends Modal.Interaction {
 
 		if (!idSuccess) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(member).setDescription(prettifyError(idError))],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: prettifyError(idError),
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -229,7 +263,9 @@ export default class extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(member).setDescription(prettifyError(error))],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -240,11 +276,10 @@ export default class extends Modal.Interaction {
 			.set({ threadTitle })
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
-		const embed = super
-			.userEmbed(member)
+		const embed = userEmbed(interaction)
 			.setTitle('Updated the Thread Ticket Category')
 			.setDescription(
-				`${member.toString()} updated the ticket thread title to the following if it has text: ${threadTitle ? inlineCode(threadTitle) : 'Empty'}.`,
+				`${interaction.member} updated the ticket thread title to the following if it has text: ${threadTitle ? inlineCode(threadTitle) : 'Empty'}.`,
 			);
 
 		return interaction.editReply({ embeds: [embed] });

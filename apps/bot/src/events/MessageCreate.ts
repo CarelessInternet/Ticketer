@@ -1,5 +1,5 @@
 import { automaticThreadsConfigurations, database, eq } from '@ticketer/database';
-import { Event } from '@ticketer/djs-framework';
+import { container, customId, Event } from '@ticketer/djs-framework';
 import {
 	ActionRowBuilder,
 	type ButtonBuilder,
@@ -54,32 +54,33 @@ export default class extends Event.Handler {
 		const translations = translate(message.guild.preferredLocale).tickets.automaticThreads.actions;
 		const { renameTitle, ...restButtons } = ticketButtons({
 			close: {
-				customId: super.customId('ticket_automatic_threads_thread_close'),
+				customId: customId('ticket_automatic_threads_thread_close'),
 				label: translations.close.builder.label(),
 			},
 			delete: {
-				customId: super.customId('ticket_automatic_threads_thread_delete'),
+				customId: customId('ticket_automatic_threads_thread_delete'),
 				label: translations.delete.builder.label(),
 			},
 			lock: {
-				customId: super.customId('ticket_automatic_threads_thread_lock'),
+				customId: customId('ticket_automatic_threads_thread_lock'),
 				label: translations.lock.builder.label(),
 			},
 			lockAndClose: {
-				customId: super.customId('ticket_automatic_threads_thread_lock_and_close'),
+				customId: customId('ticket_automatic_threads_thread_lock_and_close'),
 				label: translations.lockAndClose.builder.label(),
 			},
 			renameTitle: {
-				customId: super.customId('ticket_automatic_threads_thread_rename_title'),
+				customId: customId('ticket_automatic_threads_thread_rename_title'),
 				label: translations.renameTitle.builder.label(),
 			},
 		});
 
-		const container = super.container(
-			automaticThreadsContainer({ ...row, member: message.member, renameTitleButton: renameTitle }),
-		);
+		const cont = container({
+			builder: automaticThreadsContainer({ ...row, member: message.member, renameTitleButton: renameTitle }),
+			client: message.client,
+		});
 		const buttonRow = new ActionRowBuilder<ButtonBuilder>().setComponents(Object.values(restButtons));
 
-		return thread.send({ components: [container, buttonRow], flags: [MessageFlags.IsComponentsV2] });
+		return thread.send({ components: [cont, buttonRow], flags: [MessageFlags.IsComponentsV2] });
 	}
 }

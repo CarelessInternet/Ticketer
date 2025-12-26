@@ -1,4 +1,4 @@
-import { Event } from '@ticketer/djs-framework';
+import { Event, extractCustomId, userEmbedError } from '@ticketer/djs-framework';
 import { environment } from '@ticketer/env/bot';
 import { MessageFlags, TimestampStyles, time } from 'discord.js';
 import { translate } from '@/i18n';
@@ -20,17 +20,19 @@ export default class extends Event.Handler {
 				interaction.isRepliable() &&
 				void interaction.reply({
 					embeds: [
-						super
-							.userEmbedError(interaction.member, translations.title())
-							.setDescription(translations.description())
-							.setFields([
-								{ name: translations.fields[0].name(), value: blacklist.reason, inline: true },
-								{
-									name: translations.fields[1].name(),
-									value: time(blacklist.timestamp, TimestampStyles.LongDateShortTime),
-									inline: true,
-								},
-							]),
+						userEmbedError({
+							client: interaction.client,
+							description: translations.description(),
+							member: interaction.member,
+							title: translations.title(),
+						}).setFields([
+							{ name: translations.fields[0].name(), value: blacklist.reason, inline: true },
+							{
+								name: translations.fields[1].name(),
+								value: time(blacklist.timestamp, TimestampStyles.LongDateShortTime),
+								inline: true,
+							},
+						]),
 					],
 					flags: [MessageFlags.Ephemeral],
 				})
@@ -81,10 +83,12 @@ export default class extends Event.Handler {
 
 					return interaction.reply({
 						embeds: [
-							super
-								.userEmbedError(interaction.member)
-								.setTitle(translations.title())
-								.setDescription(translations.description()),
+							userEmbedError({
+								client: interaction.client,
+								description: translations.description(),
+								member: interaction.member,
+								title: translations.title(),
+							}),
 						],
 						flags: [MessageFlags.Ephemeral],
 					});
@@ -95,12 +99,12 @@ export default class extends Event.Handler {
 		}
 
 		if (interaction.isMessageComponent()) {
-			const { customId } = super.extractCustomId(interaction.customId);
+			const { customId } = extractCustomId(interaction.customId);
 			return this.client.components.get(customId)?.execute({ interaction });
 		}
 
 		if (interaction.isModalSubmit()) {
-			const { customId } = super.extractCustomId(interaction.customId);
+			const { customId } = extractCustomId(interaction.customId);
 			return this.client.modals.get(customId)?.execute({ interaction });
 		}
 	}

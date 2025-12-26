@@ -1,11 +1,14 @@
 import { and, asc, count, database, eq, like, ticketsThreads, ticketThreadsCategories } from '@ticketer/database';
 import {
 	Autocomplete,
-	type BaseInteraction,
 	Command,
 	Component,
+	customId,
 	DeferReply,
 	DeferUpdate,
+	dynamicCustomId,
+	embed,
+	userEmbedError,
 } from '@ticketer/djs-framework';
 import { channelMention, PermissionFlagsBits, userMention } from 'discord.js';
 import { goToPage, managerIntersection, messageWithPagination, ThreadTicketing, withPagination } from '@/utils';
@@ -16,7 +19,6 @@ interface ViewCategoryTicketsOptions {
 }
 
 async function viewCategoryTickets(
-	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context<'chat'> | Component.Context,
 	{ categoryId, page = 0 }: ViewCategoryTicketsOptions = {},
 ) {
@@ -61,34 +63,33 @@ async function viewCategoryTickets(
 	});
 
 	const embeds = tickets.map((ticket) =>
-		this.embed.setTitle(ThreadTicketing.titleAndEmoji(ticket.categoryTitle, ticket.categoryEmoji)).setFields(
-			{
-				name: 'Thread Channel',
-				value: channelMention(ticket.threadId),
-				inline: true,
-			},
-			{
-				name: 'Ticket Author',
-				value: userMention(ticket.userId),
-				inline: true,
-			},
-			{
-				name: 'State',
-				value: ThreadTicketing.ticketState(ticket.state),
-				inline: true,
-			},
-		),
+		embed(interaction)
+			.setTitle(ThreadTicketing.titleAndEmoji(ticket.categoryTitle, ticket.categoryEmoji))
+			.setFields(
+				{
+					name: 'Thread Channel',
+					value: channelMention(ticket.threadId),
+					inline: true,
+				},
+				{
+					name: 'Ticket Author',
+					value: userMention(ticket.userId),
+					inline: true,
+				},
+				{
+					name: 'State',
+					value: ThreadTicketing.ticketState(ticket.state),
+					inline: true,
+				},
+			),
 	);
 	const components = messageWithPagination({
 		previous: {
-			customId: this.customId(
-				'ticket_threads_categories_view_category_previous',
-				`${page.toString()}_${categoryId ?? ''}`,
-			),
+			customId: customId('ticket_threads_categories_view_category_previous', `${page.toString()}_${categoryId ?? ''}`),
 			disabled: page === 0,
 		},
 		next: {
-			customId: this.customId('ticket_threads_categories_view_category_next', `${page.toString()}_${categoryId ?? ''}`),
+			customId: customId('ticket_threads_categories_view_category_next', `${page.toString()}_${categoryId ?? ''}`),
 			disabled: tickets.length < PAGE_SIZE,
 		},
 	});
@@ -114,7 +115,7 @@ export default class extends Command.Interaction {
 
 	@DeferReply()
 	public execute(context: Command.Context<'chat'>) {
-		void viewCategoryTickets.call(this, context, { categoryId: context.interaction.options.getString('title', false) });
+		void viewCategoryTickets(context, { categoryId: context.interaction.options.getString('title', false) });
 	}
 }
 
@@ -149,22 +150,28 @@ export class AutocompleteInteraction extends Autocomplete.Interaction {
 
 export class ComponentInteraction extends Component.Interaction {
 	public readonly customIds = [
-		super.dynamicCustomId('ticket_threads_categories_view_category_previous'),
-		super.dynamicCustomId('ticket_threads_categories_view_category_next'),
+		dynamicCustomId('ticket_threads_categories_view_category_previous'),
+		dynamicCustomId('ticket_threads_categories_view_category_next'),
 	];
 
 	@DeferUpdate
 	public execute(context: Component.Context) {
-		const { success, additionalData, error, page } = goToPage.call(this, context.interaction);
+		const { success, additionalData, error, page } = goToPage(context.interaction);
 
 		if (!success) {
 			return context.interaction.editReply({
 				components: [],
 				content: '',
-				embeds: [super.userEmbedError(context.interaction.member).setDescription(error)],
+				embeds: [
+					userEmbedError({
+						client: context.interaction.client,
+						description: error,
+						member: context.interaction.member,
+					}),
+				],
 			});
 		}
 
-		void viewCategoryTickets.call(this, context, { categoryId: additionalData.at(0), page });
+		void viewCategoryTickets(context, { categoryId: additionalData.at(0), page });
 	}
 }

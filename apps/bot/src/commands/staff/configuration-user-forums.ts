@@ -7,7 +7,19 @@ import {
 	userForumsConfigurationsInsertSchema,
 	userForumsConfigurationsSelectSchema,
 } from '@ticketer/database';
-import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate, Modal } from '@ticketer/djs-framework';
+import {
+	Command,
+	Component,
+	container,
+	customId,
+	DeferReply,
+	DeferUpdate,
+	dynamicCustomId,
+	extractCustomId,
+	Modal,
+	userEmbed,
+	userEmbedError,
+} from '@ticketer/djs-framework';
 import {
 	ActionRowBuilder,
 	bold,
@@ -40,7 +52,11 @@ function IsForumChannel(_: object, __: string, descriptor: PropertyDescriptor) {
 
 		if (type !== ChannelType.GuildForum) {
 			const embeds = [
-				this.userEmbedError(interaction.member).setDescription('The specified channel is not a forum channel.'),
+				userEmbedError({
+					client: interaction.client,
+					description: 'The specified channel is not a forum channel.',
+					member: interaction.member,
+				}),
 			];
 
 			return interaction.deferred ? interaction.editReply({ embeds }) : interaction.reply({ embeds });
@@ -53,11 +69,7 @@ function IsForumChannel(_: object, __: string, descriptor: PropertyDescriptor) {
 	return descriptor;
 }
 
-async function getConfigurations(
-	this: BaseInteraction.Interaction,
-	{ interaction }: Command.Context<'chat'> | Component.Context<'button'>,
-	page = 0,
-) {
+async function getConfigurations({ interaction }: Command.Context<'chat'> | Component.Context<'button'>, page = 0) {
 	const PAGE_SIZE = 3;
 	const configurations = await withPagination({
 		page,
@@ -71,30 +83,34 @@ async function getConfigurations(
 	});
 
 	const containers = configurations.map((config) =>
-		this.container((cont) =>
-			userForumsContainer({
-				container: cont
-					.addTextDisplayComponents(
-						new TextDisplayBuilder().setContent(`${bold('Channel')}: ${channelMention(config.channelId)}`),
-					)
-					.addTextDisplayComponents(
-						new TextDisplayBuilder().setContent(
-							`${bold('Managers')}: ${config.managers.length > 0 ? config.managers.map((id) => roleMention(id)).join(', ') : 'None'}`,
-						),
-					)
-					.addTextDisplayComponents(new TextDisplayBuilder().setContent(heading('Message Preview:', HeadingLevel.Two)))
-					.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true)),
-				description: config.openingMessageDescription,
-				member: interaction.member,
-				title: config.openingMessageTitle,
-			}),
-		),
+		container({
+			builder: (cont) =>
+				userForumsContainer({
+					container: cont
+						.addTextDisplayComponents(
+							new TextDisplayBuilder().setContent(`${bold('Channel')}: ${channelMention(config.channelId)}`),
+						)
+						.addTextDisplayComponents(
+							new TextDisplayBuilder().setContent(
+								`${bold('Managers')}: ${config.managers.length > 0 ? config.managers.map((id) => roleMention(id)).join(', ') : 'None'}`,
+							),
+						)
+						.addTextDisplayComponents(
+							new TextDisplayBuilder().setContent(heading('Message Preview:', HeadingLevel.Two)),
+						)
+						.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true)),
+					description: config.openingMessageDescription,
+					member: interaction.member,
+					title: config.openingMessageTitle,
+				}),
+			client: interaction.client,
+		}),
 	);
 
 	const pagination = messageWithPagination({
-		previous: { customId: this.customId('ticket_user_forums_view_previous', page), disabled: page === 0 },
+		previous: { customId: customId('ticket_user_forums_view_previous', page), disabled: page === 0 },
 		next: {
-			customId: this.customId('ticket_user_forums_view_next', page),
+			customId: customId('ticket_user_forums_view_next', page),
 			disabled: configurations.length < PAGE_SIZE,
 		},
 	});
@@ -103,7 +119,6 @@ async function getConfigurations(
 }
 
 function openingMessageModal(
-	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context<'chat'> | Component.Context<'string'>,
 	options: { id: string; title?: string; description?: string },
 ) {
@@ -112,7 +127,7 @@ function openingMessageModal(
 		.setDescription('Write "{member}" to mention the user.')
 		.setTextInputComponent(
 			(options.title ? new TextInputBuilder().setValue(options.title) : new TextInputBuilder())
-				.setCustomId(this.customId('title'))
+				.setCustomId(customId('title'))
 				.setRequired(true)
 				.setMinLength(1)
 				.setMaxLength(100)
@@ -123,7 +138,7 @@ function openingMessageModal(
 		.setDescription('Write "{member}" to mention the user.')
 		.setTextInputComponent(
 			(options.description ? new TextInputBuilder().setValue(options.description) : new TextInputBuilder())
-				.setCustomId(this.customId('description'))
+				.setCustomId(customId('description'))
 				.setRequired(true)
 				.setMinLength(1)
 				.setMaxLength(500)
@@ -131,7 +146,7 @@ function openingMessageModal(
 		);
 
 	const modal = new ModalBuilder()
-		.setCustomId(this.customId('ticket_user_forums_configuration_opening_message', options.id))
+		.setCustomId(customId('ticket_user_forums_configuration_opening_message', options.id))
 		.setTitle('Opening Message Title & Description')
 		.setLabelComponents(titleInput, descriptionInput);
 
@@ -187,12 +202,10 @@ export default class extends Command.Interaction {
 	public execute(context: Command.Context<'chat'>) {
 		switch (context.interaction.options.getSubcommand(true)) {
 			case 'overview': {
-				this.configurationOverview(context);
-				return;
+				return this.configurationOverview(context);
 			}
 			case 'create': {
-				this.createConfiguration(context);
-				return;
+				return this.createConfiguration(context);
 			}
 			case 'edit': {
 				return this.editConfiguration(context);
@@ -203,7 +216,11 @@ export default class extends Command.Interaction {
 			default: {
 				return context.interaction.reply({
 					embeds: [
-						super.userEmbedError(context.interaction.member).setDescription('The subcommand could not be found.'),
+						userEmbedError({
+							client: context.interaction.client,
+							description: 'The subcommand could not be found.',
+							member: context.interaction.member,
+						}),
 					],
 					flags: [MessageFlags.Ephemeral],
 				});
@@ -213,12 +230,12 @@ export default class extends Command.Interaction {
 
 	@DeferReply()
 	private configurationOverview(context: Command.Context<'chat'>) {
-		void getConfigurations.call(this, context);
+		void getConfigurations(context);
 	}
 
 	@IsForumChannel
 	private createConfiguration(context: Command.Context<'chat'>) {
-		void openingMessageModal.call(this, context, { id: context.interaction.options.getChannel('channel', true).id });
+		void openingMessageModal(context, { id: context.interaction.options.getChannel('channel', true).id });
 	}
 
 	@DeferReply()
@@ -233,17 +250,17 @@ export default class extends Command.Interaction {
 		if (!result) {
 			return interaction.editReply({
 				embeds: [
-					super
-						.userEmbedError(interaction.member)
-						.setDescription(
-							`The user forum configuration for the channel ${channel.toString()} could not be found. Please create one instead of editing it.`,
-						),
+					userEmbedError({
+						client: interaction.client,
+						description: `The user forum configuration for the channel ${channel} could not be found. Please create one instead of editing it.`,
+						member: interaction.member,
+					}),
 				],
 			});
 		}
 
 		const selectMenu = new StringSelectMenuBuilder()
-			.setCustomId(super.customId('ticket_user_forums_configuration_menu', channel.id))
+			.setCustomId(customId('ticket_user_forums_configuration_menu', channel.id))
 			.setMinValues(1)
 			.setMaxValues(1)
 			.setPlaceholder('Edit one of the following user forum options:')
@@ -273,11 +290,10 @@ export default class extends Command.Interaction {
 
 		return interaction.editReply({
 			embeds: [
-				super
-					.userEmbed(interaction.member)
+				userEmbed(interaction)
 					.setTitle('Deleted a User Forum Configuration')
 					.setDescription(
-						`${interaction.member.toString()} deleted a user forum configuration in the channel ${channel.toString()} if one existed.`,
+						`${interaction.member} deleted a user forum configuration in the channel ${channel} if one existed.`,
 					),
 			],
 		});
@@ -285,7 +301,7 @@ export default class extends Command.Interaction {
 }
 
 export class ConfigurationMenuInteraction extends Component.Interaction {
-	public readonly customIds = [super.dynamicCustomId('ticket_user_forums_configuration_menu')];
+	public readonly customIds = [dynamicCustomId('ticket_user_forums_configuration_menu')];
 
 	public execute(context: Component.Context<'string'>) {
 		switch (context.interaction.values.at(0)) {
@@ -293,9 +309,9 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 				return this.openingMessage(context);
 			}
 			case 'managers': {
-				const { dynamicValue } = super.extractCustomId(context.interaction.customId, true);
+				const { dynamicValue } = extractCustomId(context.interaction.customId, true);
 				const managersMenu = new RoleSelectMenuBuilder()
-					.setCustomId(super.customId('ticket_user_forums_configuration_managers', dynamicValue))
+					.setCustomId(customId('ticket_user_forums_configuration_managers', dynamicValue))
 					.setMinValues(0)
 					.setMaxValues(10)
 					.setPlaceholder('Choose the managers of the forum threads.');
@@ -307,7 +323,11 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 			default: {
 				return context.interaction.reply({
 					embeds: [
-						super.userEmbedError(context.interaction.member).setDescription('The selected value could not be found.'),
+						userEmbedError({
+							client: context.interaction.client,
+							description: 'The selected value could not be found.',
+							member: context.interaction.member,
+						}),
 					],
 					flags: [MessageFlags.Ephemeral],
 				});
@@ -316,13 +336,19 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 	}
 
 	private async openingMessage(context: Component.Context<'string'>) {
-		const { dynamicValue } = super.extractCustomId(context.interaction.customId, true);
+		const { dynamicValue } = extractCustomId(context.interaction.customId, true);
 		const { data: id, error, success } = userForumsConfigurationsSelectSchema.shape.channelId.safeParse(dynamicValue);
 
 		if (!success) {
 			return context.interaction
 				.reply({
-					embeds: [super.userEmbedError(context.interaction.member).setDescription(prettifyError(error))],
+					embeds: [
+						userEmbedError({
+							client: context.interaction.client,
+							description: prettifyError(error),
+							member: context.interaction.member,
+						}),
+					],
 					flags: [MessageFlags.Ephemeral],
 				})
 				.catch(() => false);
@@ -345,9 +371,11 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 			return context.interaction
 				.reply({
 					embeds: [
-						super
-							.userEmbedError(context.interaction.member)
-							.setDescription('No user forum configuration for the channel could be found.'),
+						userEmbedError({
+							client: context.interaction.client,
+							description: 'No user forum configuration for the channel could be found.',
+							member: context.interaction.member,
+						}),
 					],
 					flags: [MessageFlags.Ephemeral],
 				})
@@ -356,26 +384,26 @@ export class ConfigurationMenuInteraction extends Component.Interaction {
 
 		const { description, title } = row;
 
-		void openingMessageModal.call(this, context, { description, id, title });
+		void openingMessageModal(context, { description, id, title });
 	}
 }
 
 export class ComponentInteraction extends Component.Interaction {
 	public readonly customIds = [
-		super.dynamicCustomId('ticket_user_forums_configuration_managers'),
-		super.dynamicCustomId('ticket_user_forums_view_previous'),
-		super.dynamicCustomId('ticket_user_forums_view_next'),
+		dynamicCustomId('ticket_user_forums_configuration_managers'),
+		dynamicCustomId('ticket_user_forums_view_previous'),
+		dynamicCustomId('ticket_user_forums_view_next'),
 	];
 
 	public execute({ interaction }: Component.Context) {
-		const { customId } = super.extractCustomId(interaction.customId);
+		const { customId: id } = extractCustomId(interaction.customId);
 
-		switch (customId) {
-			case super.dynamicCustomId('ticket_user_forums_configuration_managers'): {
+		switch (id) {
+			case dynamicCustomId('ticket_user_forums_configuration_managers'): {
 				return interaction.isRoleSelectMenu() && void this.updateManagers({ interaction });
 			}
-			case super.dynamicCustomId('ticket_user_forums_view_previous'):
-			case super.dynamicCustomId('ticket_user_forums_view_next'): {
+			case dynamicCustomId('ticket_user_forums_view_previous'):
+			case dynamicCustomId('ticket_user_forums_view_next'): {
 				if (interaction.isButton()) {
 					void this.configurationOverview({ interaction });
 				}
@@ -385,7 +413,11 @@ export class ComponentInteraction extends Component.Interaction {
 			default: {
 				return interaction.reply({
 					embeds: [
-						super.userEmbedError(interaction.member).setDescription('The select menu custom ID could not be found.'),
+						userEmbedError({
+							client: interaction.client,
+							description: 'The select menu custom ID could not be found.',
+							member: interaction.member,
+						}),
 					],
 					flags: [MessageFlags.Ephemeral],
 				});
@@ -396,7 +428,7 @@ export class ComponentInteraction extends Component.Interaction {
 	@DeferUpdate
 	private async updateManagers({ interaction }: Component.Context<'role'>) {
 		const managers = interaction.roles.map((role) => role.id);
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const {
 			data: channelId,
 			error,
@@ -406,7 +438,9 @@ export class ComponentInteraction extends Component.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -421,11 +455,10 @@ export class ComponentInteraction extends Component.Interaction {
 			);
 
 		const roles = managers.map((id) => roleMention(id)).join(', ');
-		const embed = super
-			.userEmbed(interaction.member)
+		const embed = userEmbed(interaction)
 			.setTitle('Updated the User Forum Managers')
 			.setDescription(
-				`${interaction.member.toString()} updated the managers of the forum threads in ${channelMention(channelId)} to: ${
+				`${interaction.member} updated the managers of the forum threads in ${channelMention(channelId)} to: ${
 					managers.length > 0 ? roles : 'none'
 				}.`,
 			);
@@ -435,33 +468,43 @@ export class ComponentInteraction extends Component.Interaction {
 
 	@DeferUpdate
 	private configurationOverview(context: Component.Context<'button'>) {
-		const { success, error, page } = goToPage.call(this, context.interaction);
+		const { success, error, page } = goToPage(context.interaction);
 
 		if (!success) {
 			return context.interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(context.interaction.member).setDescription(error)],
+				embeds: [
+					userEmbedError({
+						client: context.interaction.client,
+						description: error,
+						member: context.interaction.member,
+					}),
+				],
 			});
 		}
 
-		void getConfigurations.call(this, context, page);
+		void getConfigurations(context, page);
 	}
 }
 
 export class ModalInteraction extends Modal.Interaction {
-	public readonly customIds = [super.dynamicCustomId('ticket_user_forums_configuration_opening_message')];
+	public readonly customIds = [dynamicCustomId('ticket_user_forums_configuration_opening_message')];
 
 	public execute(context: Modal.Context) {
-		const { customId } = super.extractCustomId(context.interaction.customId);
+		const { customId: id } = extractCustomId(context.interaction.customId);
 
-		switch (customId) {
-			case super.dynamicCustomId('ticket_user_forums_configuration_opening_message'): {
+		switch (id) {
+			case dynamicCustomId('ticket_user_forums_configuration_opening_message'): {
 				return this.createConfigurationOrUpdateOpeningMessage(context);
 			}
 			default: {
 				return context.interaction.reply({
 					embeds: [
-						super.userEmbedError(context.interaction.member).setDescription('The modal custom ID could not be found.'),
+						userEmbedError({
+							client: context.interaction.client,
+							description: 'The modal custom ID could not be found.',
+							member: context.interaction.member,
+						}),
 					],
 					flags: [MessageFlags.Ephemeral],
 				});
@@ -471,12 +514,18 @@ export class ModalInteraction extends Modal.Interaction {
 
 	@DeferReply()
 	private async createConfigurationOrUpdateOpeningMessage({ interaction }: Modal.Context) {
-		const { dynamicValue } = super.extractCustomId(interaction.customId, true);
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const channel = await fetchChannel(interaction.guild, dynamicValue);
 
 		if (channel?.type !== ChannelType.GuildForum) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription('The channel is not a forum channel.')],
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'The channel is not a forum channel.',
+						member: interaction.member,
+					}),
+				],
 			});
 		}
 
@@ -489,7 +538,9 @@ export class ModalInteraction extends Modal.Interaction {
 
 		if (!success) {
 			return interaction.editReply({
-				embeds: [super.userEmbedError(interaction.member).setDescription(prettifyError(error))],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
 			});
 		}
 
@@ -510,26 +561,29 @@ export class ModalInteraction extends Modal.Interaction {
 
 		return interaction.editReply({
 			components: [
-				super.container((cont) =>
-					cont
-						.addTextDisplayComponents(
-							new TextDisplayBuilder().setContent(
-								heading('Created/Updated a User Forum Configuration', HeadingLevel.One),
+				container({
+					builder: (cont) =>
+						cont
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(
+									heading('Created/Updated a User Forum Configuration', HeadingLevel.One),
+								),
+							)
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(
+									`${interaction.member} created or updated a user forum configuration in ${channel}. An example opening message can be seen in the container below.`,
+								),
 							),
-						)
-						.addTextDisplayComponents(
-							new TextDisplayBuilder().setContent(
-								`${interaction.member.toString()} created or updated a user forum configuration in ${channel.toString()}. An example opening message can be seen in the container below.`,
-							),
-						),
-				),
-				super.container(
-					userForumsContainer({
+					client: interaction.client,
+				}),
+				container({
+					builder: userForumsContainer({
 						description: data.openingMessageDescription,
 						member: interaction.member,
 						title: data.openingMessageTitle,
 					}),
-				),
+					client: interaction.client,
+				}),
 			],
 			flags: [MessageFlags.IsComponentsV2],
 		});

@@ -1,5 +1,14 @@
 import { and, database, desc, eq, ticketsThreads, ticketThreadsCategories } from '@ticketer/database';
-import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
+import {
+	Command,
+	Component,
+	customId,
+	DeferReply,
+	DeferUpdate,
+	dynamicCustomId,
+	embed,
+	userEmbedError,
+} from '@ticketer/djs-framework';
 import { type APIApplicationCommandOptionChoice, channelMention, PermissionFlagsBits, userMention } from 'discord.js';
 import { getTranslations } from '@/i18n';
 import { goToPage, messageWithPagination, ThreadTicketing, withPagination } from '@/utils';
@@ -10,7 +19,6 @@ interface ViewGlobalTicketsOptions {
 }
 
 async function viewGlobalTickets(
-	this: BaseInteraction.Interaction,
 	{ interaction }: Command.Context<'chat'> | Component.Context,
 	{ state, page = 0 }: ViewGlobalTicketsOptions = {},
 ) {
@@ -42,31 +50,33 @@ async function viewGlobalTickets(
 	});
 
 	const embeds = tickets.map((ticket) =>
-		this.embed.setTitle(ThreadTicketing.titleAndEmoji(ticket.categoryTitle, ticket.categoryEmoji)).setFields(
-			{
-				name: 'Thread Channel',
-				value: channelMention(ticket.threadId),
-				inline: true,
-			},
-			{
-				name: 'Ticket Author',
-				value: userMention(ticket.userId),
-				inline: true,
-			},
-			{
-				name: 'State',
-				value: ThreadTicketing.ticketState(ticket.state),
-				inline: true,
-			},
-		),
+		embed(interaction)
+			.setTitle(ThreadTicketing.titleAndEmoji(ticket.categoryTitle, ticket.categoryEmoji))
+			.setFields(
+				{
+					name: 'Thread Channel',
+					value: channelMention(ticket.threadId),
+					inline: true,
+				},
+				{
+					name: 'Ticket Author',
+					value: userMention(ticket.userId),
+					inline: true,
+				},
+				{
+					name: 'State',
+					value: ThreadTicketing.ticketState(ticket.state),
+					inline: true,
+				},
+			),
 	);
 	const components = messageWithPagination({
 		previous: {
-			customId: this.customId('ticket_threads_categories_view_global_previous', `${page.toString()}_${state ?? ''}`),
+			customId: customId('ticket_threads_categories_view_global_previous', `${page.toString()}_${state ?? ''}`),
 			disabled: page === 0,
 		},
 		next: {
-			customId: this.customId('ticket_threads_categories_view_global_next', `${page.toString()}_${state ?? ''}`),
+			customId: customId('ticket_threads_categories_view_global_next', `${page.toString()}_${state ?? ''}`),
 			disabled: tickets.length < PAGE_SIZE,
 		},
 	});
@@ -101,7 +111,7 @@ export default class extends Command.Interaction {
 
 	@DeferReply()
 	public execute(context: Command.Context<'chat'>) {
-		void viewGlobalTickets.call(this, context, {
+		void viewGlobalTickets(context, {
 			state: context.interaction.options.getString('state', false) as ThreadTicketing.TicketState,
 		});
 	}
@@ -109,22 +119,28 @@ export default class extends Command.Interaction {
 
 export class ComponentInteraction extends Component.Interaction {
 	public readonly customIds = [
-		super.dynamicCustomId('ticket_threads_categories_view_global_previous'),
-		super.dynamicCustomId('ticket_threads_categories_view_global_next'),
+		dynamicCustomId('ticket_threads_categories_view_global_previous'),
+		dynamicCustomId('ticket_threads_categories_view_global_next'),
 	];
 
 	@DeferUpdate
 	public execute(context: Component.Context) {
-		const { success, additionalData, error, page } = goToPage.call(this, context.interaction);
+		const { success, additionalData, error, page } = goToPage(context.interaction);
 
 		if (!success) {
 			return context.interaction.editReply({
 				components: [],
-				embeds: [super.userEmbedError(context.interaction.member).setDescription(error)],
+				embeds: [
+					userEmbedError({
+						client: context.interaction.client,
+						description: error,
+						member: context.interaction.member,
+					}),
+				],
 			});
 		}
 
-		void viewGlobalTickets.call(this, context, {
+		void viewGlobalTickets(context, {
 			state: additionalData.at(0) as ViewGlobalTicketsOptions['state'] | undefined,
 			page,
 		});

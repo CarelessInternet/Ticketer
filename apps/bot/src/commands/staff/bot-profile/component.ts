@@ -1,4 +1,4 @@
-import { Component } from '@ticketer/djs-framework';
+import { Component, customId, userEmbedError } from '@ticketer/djs-framework';
 import {
 	FileUploadBuilder,
 	LabelBuilder,
@@ -10,7 +10,7 @@ import {
 import { translate } from '@/i18n';
 
 export default class extends Component.Interaction {
-	public readonly customIds = [super.customId('bot_profile_menu')];
+	public readonly customIds = [customId('bot_profile_menu')];
 
 	public execute({ interaction }: Component.Context<'string'>) {
 		const guildTranslations = translate(interaction.locale).commands['bot-profile'].command.modals;
@@ -19,7 +19,7 @@ export default class extends Component.Interaction {
 			case 'name': {
 				return interaction.showModal(
 					new ModalBuilder()
-						.setCustomId(super.customId('bot_profile_menu', 'name'))
+						.setCustomId(customId('bot_profile_menu', 'name'))
 						.setTitle(guildTranslations.name.input.title())
 						.setLabelComponents(
 							new LabelBuilder()
@@ -27,7 +27,7 @@ export default class extends Component.Interaction {
 								.setDescription(guildTranslations.name.input.labels[0].description())
 								.setTextInputComponent(
 									new TextInputBuilder()
-										.setCustomId(super.customId('name'))
+										.setCustomId(customId('name'))
 										.setRequired(false)
 										.setMinLength(1)
 										.setMaxLength(32)
@@ -40,7 +40,7 @@ export default class extends Component.Interaction {
 			case 'bio': {
 				return interaction.showModal(
 					new ModalBuilder()
-						.setCustomId(super.customId('bot_profile_menu', 'bio'))
+						.setCustomId(customId('bot_profile_menu', 'bio'))
 						.setTitle(guildTranslations.bio.input.title())
 						.setLabelComponents(
 							new LabelBuilder()
@@ -48,7 +48,7 @@ export default class extends Component.Interaction {
 								.setDescription(guildTranslations.bio.input.labels[0].description())
 								.setTextInputComponent(
 									new TextInputBuilder()
-										.setCustomId(super.customId('bio'))
+										.setCustomId(customId('bio'))
 										.setRequired(false)
 										.setMinLength(1)
 										.setMaxLength(190)
@@ -60,7 +60,7 @@ export default class extends Component.Interaction {
 			case 'avatar': {
 				return interaction.showModal(
 					new ModalBuilder()
-						.setCustomId(super.customId('bot_profile_menu', 'avatar'))
+						.setCustomId(customId('bot_profile_menu', 'avatar'))
 						.setTitle(guildTranslations.avatar.input.title())
 						.setLabelComponents(
 							new LabelBuilder()
@@ -68,7 +68,7 @@ export default class extends Component.Interaction {
 								.setDescription(guildTranslations.avatar.input.labels[0].description())
 								.setFileUploadComponent(
 									new FileUploadBuilder()
-										.setCustomId(super.customId('avatar'))
+										.setCustomId(customId('avatar'))
 										.setRequired(false)
 										.setMinValues(1)
 										.setMaxValues(1),
@@ -79,7 +79,7 @@ export default class extends Component.Interaction {
 			case 'banner': {
 				return interaction.showModal(
 					new ModalBuilder()
-						.setCustomId(super.customId('bot_profile_menu', 'banner'))
+						.setCustomId(customId('bot_profile_menu', 'banner'))
 						.setTitle(guildTranslations.banner.input.title())
 						.setLabelComponents(
 							new LabelBuilder()
@@ -87,7 +87,7 @@ export default class extends Component.Interaction {
 								.setDescription(guildTranslations.banner.input.labels[0].description())
 								.setFileUploadComponent(
 									new FileUploadBuilder()
-										.setCustomId(super.customId('banner'))
+										.setCustomId(customId('banner'))
 										.setRequired(false)
 										.setMinValues(1)
 										.setMaxValues(1),
@@ -100,7 +100,12 @@ export default class extends Component.Interaction {
 
 				return interaction.reply({
 					embeds: [
-						super.userEmbedError(interaction.member, translations.title()).setDescription(translations.description()),
+						userEmbedError({
+							client: interaction.client,
+							description: translations.description(),
+							member: interaction.member,
+							title: translations.title(),
+						}),
 					],
 					flags: [MessageFlags.Ephemeral],
 				});

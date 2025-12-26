@@ -1,15 +1,21 @@
 import { database, desc, eq, guildBlacklists, guildBlacklistsInsertSchema } from '@ticketer/database';
-import { type BaseInteraction, Command, Component, DeferReply, DeferUpdate } from '@ticketer/djs-framework';
+import {
+	Command,
+	Component,
+	customId,
+	DeferReply,
+	DeferUpdate,
+	dynamicCustomId,
+	embed,
+	userEmbed,
+	userEmbedError,
+} from '@ticketer/djs-framework';
 import { inlineCode, PermissionFlagsBits } from 'discord.js';
 import { prettifyError } from 'zod';
 import { getTranslations, translate } from '@/i18n';
 import { formatDateShort, goToPage, messageWithPagination, refreshGuildBlacklist, withPagination } from '@/utils';
 
-async function getBlacklists(
-	this: BaseInteraction.Interaction,
-	{ interaction }: Command.Context<'chat'> | Component.Context<'button'>,
-	page = 0,
-) {
+async function getBlacklists({ interaction }: Command.Context<'chat'> | Component.Context<'button'>, page = 0) {
 	const PAGE_SIZE = 5;
 	const blacklists = await withPagination({
 		page,
@@ -19,7 +25,7 @@ async function getBlacklists(
 
 	const translations = translate(interaction.locale).commands['guild-blacklist'].command.embeds.overview;
 	const embeds = blacklists.map((blacklist) =>
-		this.embed
+		embed(interaction)
 			.setTitle(translations.title({ id: blacklist.guildId }))
 			.setFields(
 				{ name: translations.fields[0].name(), value: blacklist.reason, inline: true },
@@ -28,9 +34,9 @@ async function getBlacklists(
 	);
 
 	const components = messageWithPagination({
-		previous: { customId: this.customId('guild_blacklist_view_previous', page), disabled: page === 0 },
+		previous: { customId: customId('guild_blacklist_view_previous', page), disabled: page === 0 },
 		next: {
-			customId: this.customId('guild_blacklist_view_next', page),
+			customId: customId('guild_blacklist_view_next', page),
 			disabled: blacklists.length < PAGE_SIZE,
 		},
 	});
@@ -107,8 +113,7 @@ export default class extends Command.Interaction {
 	public execute(context: Command.Context<'chat'>) {
 		switch (context.interaction.options.getSubcommand(true)) {
 			case dataTranslations.subcommands[0].name(): {
-				this.getBlacklists(context);
-				return;
+				return this.getBlacklists(context);
 			}
 			case dataTranslations.subcommands[1].name(): {
 				return this.addBlacklist(context);
@@ -121,7 +126,7 @@ export default class extends Command.Interaction {
 
 	@DeferReply()
 	private getBlacklists(context: Command.Context<'chat'>) {
-		void getBlacklists.call(this, context);
+		void getBlacklists(context);
 	}
 
 	@DeferReply()
@@ -135,9 +140,12 @@ export default class extends Command.Interaction {
 		if (!success) {
 			return interaction.editReply({
 				embeds: [
-					super
-						.userEmbedError(interaction.member, translations.errors.invalidFields.title())
-						.setDescription(prettifyError(error)),
+					userEmbedError({
+						client: interaction.client,
+						description: prettifyError(error),
+						member: interaction.member,
+						title: translations.errors.invalidFields.title(),
+					}),
 				],
 			});
 		}
@@ -150,8 +158,7 @@ export default class extends Command.Interaction {
 
 		return interaction.editReply({
 			embeds: [
-				super
-					.userEmbed(interaction.member)
+				userEmbed(interaction)
 					.setTitle(translations.embeds.create.title())
 					.setDescription(translations.embeds.create.description({ id: inlineCode(data.guildId) }))
 					.setFields(
@@ -172,8 +179,7 @@ export default class extends Command.Interaction {
 
 		return interaction.editReply({
 			embeds: [
-				super
-					.userEmbed(interaction.member)
+				userEmbed(interaction)
 					.setTitle(translations.title())
 					.setDescription(translations.description({ id: inlineCode(id), member: interaction.member.toString() })),
 			],
@@ -183,28 +189,30 @@ export default class extends Command.Interaction {
 
 export class PaginationInteraction extends Component.Interaction {
 	public readonly customIds = [
-		super.dynamicCustomId('guild_blacklist_view_previous'),
-		super.dynamicCustomId('guild_blacklist_view_next'),
+		dynamicCustomId('guild_blacklist_view_previous'),
+		dynamicCustomId('guild_blacklist_view_next'),
 	];
 
 	@DeferUpdate
 	public execute(context: Component.Context<'button'>) {
-		const { success, error, page } = goToPage.call(this, context.interaction);
+		const { success, error, page } = goToPage(context.interaction);
 
 		if (!success) {
 			return context.interaction.editReply({
 				components: [],
 				embeds: [
-					super
-						.userEmbedError(
-							context.interaction.member,
-							translate(context.interaction.locale).commands['guild-blacklist'].command.errors.invalidFields.title(),
-						)
-						.setDescription(error),
+					userEmbedError({
+						client: context.interaction.client,
+						description: error,
+						member: context.interaction.member,
+						title: translate(context.interaction.locale).commands[
+							'guild-blacklist'
+						].command.errors.invalidFields.title(),
+					}),
 				],
 			});
 		}
 
-		void getBlacklists.call(this, context, page);
+		void getBlacklists(context, page);
 	}
 }

@@ -39,7 +39,7 @@ export function isCommand(
 export function isSubcommand(
 	interaction: InteractionClassTypes | BaseInteraction.Interaction,
 ): interaction is Subcommand.Interaction {
-	return 'data' in interaction && 'subcommand' in interaction.data;
+	return 'data' in interaction && 'subcommandName' in interaction.data;
 }
 
 /**

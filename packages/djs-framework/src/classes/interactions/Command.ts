@@ -46,7 +46,7 @@ export abstract class Interaction extends BaseInteraction.Interaction {
 			.setType(ApplicationCommandType.Message);
 	}
 
-	public abstract execute(parameters: Context<Types>): unknown;
+	public abstract execute?(parameters: Context<Types>): unknown;
 }
 
 export type Data =

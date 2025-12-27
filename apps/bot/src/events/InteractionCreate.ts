@@ -94,7 +94,7 @@ export default class extends Event.Handler {
 					});
 				}
 
-				return command.execute({ interaction });
+				return command.execute?.({ interaction });
 			}
 		}
 

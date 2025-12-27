@@ -11,19 +11,18 @@ export abstract class Interaction extends BaseInteraction.Interaction {
 	public readonly commandType = ApplicationCommandType.ChatInput;
 	public readonly type = InteractionType.ApplicationCommand;
 
+	protected subcommand<T extends Data>(data: T) {
+		return data;
+	}
+
 	public abstract execute(parameters: Context): unknown;
 }
 
-interface BaseData {
+export interface Data {
 	subcommandName: string;
 	parentCommandName: string;
+	parentSubcommandGroupName?: string;
 }
-
-interface ParentSubcommandData extends BaseData {
-	parentSubcommandGroupName: string;
-}
-
-export type Data = BaseData | ParentSubcommandData;
 
 export interface Context {
 	interaction: ChatInputCommandInteraction<'cached'>;

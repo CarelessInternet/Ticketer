@@ -59,7 +59,7 @@ export function HasGlobalConfiguration(_: object, __: string, descriptor: Proper
 	return descriptor;
 }
 
-function categoryViewContainers(
+export function categoryViewContainers(
 	{ interaction }: Command.Context | Component.Context,
 	categories: (typeof ticketThreadsCategories.$inferSelect)[],
 ) {
@@ -164,7 +164,7 @@ export async function getCategories(context: Command.Context | Component.Context
 	});
 }
 
-export function categoryFieldsModal(
+export async function categoryFieldsModal(
 	context: Command.Context | Component.Context,
 	options?: { id?: string | number; emoji?: string | null; title?: string; description?: string },
 ) {

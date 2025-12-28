@@ -23,7 +23,7 @@ export class Client extends DiscordClient {
 	public readonly commands = new Collection<string, Command.Interaction>();
 	public readonly components = new Collection<string, Component.Interaction>();
 	public readonly modals = new Collection<string, Modal.Interaction>();
-	public readonly subcommands = new Collection<string, Subcommand.Interaction>();
+	public readonly subcommands = new Collection<Subcommand.Data, Subcommand.Interaction>();
 
 	public guildBlacklists = new Collection<Snowflake, GuildBlacklist>();
 
@@ -38,9 +38,9 @@ export class Client extends DiscordClient {
 			this.events.set(event.name, event);
 
 			if (event.once) {
-				super.once(event.name, (...eventArguments) => event.execute(eventArguments));
+				super.once(event.name, (...eventArguments) => event.execute?.(eventArguments));
 			} else {
-				super.on(event.name, (...eventArguments) => event.execute(eventArguments));
+				super.on(event.name, (...eventArguments) => event.execute?.(eventArguments));
 			}
 		}
 
@@ -52,7 +52,7 @@ export class Client extends DiscordClient {
 				this.autocompletes.set(interaction.name, interaction);
 			}
 
-			if (Guards.isCommand(interaction)) {
+			if (Guards.isCommand(interaction) && !Guards.isSubcommand(interaction)) {
 				this.commands.set(interaction.data.name, interaction);
 			}
 
@@ -69,7 +69,7 @@ export class Client extends DiscordClient {
 			}
 
 			if (Guards.isSubcommand(interaction)) {
-				this.subcommands.set(interaction.data.parentCommandName, interaction);
+				this.subcommands.set(interaction.data, interaction);
 			}
 		}
 	}

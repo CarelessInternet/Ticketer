@@ -58,7 +58,7 @@ export default class extends Event.Handler {
 						(subcommand) =>
 							'parentSubcommandGroupName' in subcommand.data &&
 							subcommand.data.parentSubcommandGroupName === subcommandGroupName &&
-							subcommand.data.subcommandName === subcommandName,
+							subcommand.data.subcommandNames.includes(subcommandName),
 					);
 
 					if (correnspondingSubcommand) {
@@ -67,8 +67,8 @@ export default class extends Event.Handler {
 				}
 
 				if (subcommandName) {
-					const correnspondingSubcommand = subcommands.find(
-						(subcommand) => subcommand.data.subcommandName === subcommandName,
+					const correnspondingSubcommand = subcommands.find((subcommand) =>
+						subcommand.data.subcommandNames.includes(subcommandName),
 					);
 
 					if (correnspondingSubcommand) {
@@ -94,7 +94,7 @@ export default class extends Event.Handler {
 					});
 				}
 
-				return command.execute({ interaction });
+				return command.execute?.({ interaction });
 			}
 		}
 

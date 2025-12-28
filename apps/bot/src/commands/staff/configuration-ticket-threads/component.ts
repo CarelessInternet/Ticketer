@@ -518,62 +518,15 @@ export default class extends Component.Interaction {
 	}
 }
 
-export class OtherComponentInteraction extends Component.Interaction {
+export class Channel extends Component.Interaction {
 	public readonly customIds = [
 		dynamicCustomId('ticket_threads_category_configuration_channel'),
 		dynamicCustomId('ticket_threads_category_configuration_logs_channel'),
-		dynamicCustomId('ticket_threads_category_configuration_managers'),
-		dynamicCustomId('ticket_threads_category_configuration_allowed_author_actions'),
-		dynamicCustomId('ticket_threads_category_delete_confirm'),
-		dynamicCustomId('ticket_threads_category_delete_cancel'),
-		dynamicCustomId('ticket_threads_category_view_previous'),
-		dynamicCustomId('ticket_threads_category_view_next'),
 	];
 
-	@HasGlobalConfiguration
-	public execute({ interaction }: Component.Context) {
-		const { customId: id } = extractCustomId(interaction.customId);
-
-		switch (id) {
-			case dynamicCustomId('ticket_threads_category_configuration_channel'):
-			case dynamicCustomId('ticket_threads_category_configuration_logs_channel'): {
-				return interaction.isChannelSelectMenu() && void this.categoryChannel({ interaction });
-			}
-			case dynamicCustomId('ticket_threads_category_configuration_managers'): {
-				return interaction.isRoleSelectMenu() && void this.categoryManagers({ interaction });
-			}
-			case dynamicCustomId('ticket_threads_category_configuration_allowed_author_actions'): {
-				return interaction.isStringSelectMenu() && void this.allowedAuthorActions({ interaction });
-			}
-			case dynamicCustomId('ticket_threads_category_delete_confirm'):
-			case dynamicCustomId('ticket_threads_category_delete_cancel'): {
-				return interaction.isButton() && void this.confirmDeleteCategory({ interaction });
-			}
-			case dynamicCustomId('ticket_threads_category_view_previous'):
-			case dynamicCustomId('ticket_threads_category_view_next'): {
-				if (interaction.isButton()) {
-					void this.categoryView({ interaction });
-				}
-
-				break;
-			}
-			default: {
-				return interaction.reply({
-					embeds: [
-						userEmbedError({
-							client: interaction.client,
-							description: 'The component ID could not be found.',
-							member: interaction.member,
-						}),
-					],
-					flags: [MessageFlags.Ephemeral],
-				});
-			}
-		}
-	}
-
 	@DeferUpdate
-	private async categoryChannel({ interaction }: Component.Context<'channel'>) {
+	@HasGlobalConfiguration
+	public async execute({ interaction }: Component.Context<'channel'>) {
 		const { customId, dynamicValue } = extractCustomId(interaction.customId, true);
 		const type = customId.includes('logs') ? 'logs channel' : 'ticket channel';
 		const {
@@ -607,9 +560,14 @@ export class OtherComponentInteraction extends Component.Interaction {
 
 		return interaction.editReply({ components: [], embeds: [embed] });
 	}
+}
+
+export class Managers extends Component.Interaction {
+	public readonly customIds = [dynamicCustomId('ticket_threads_category_configuration_managers')];
 
 	@DeferUpdate
-	private async categoryManagers({ interaction }: Component.Context<'role'>) {
+	@HasGlobalConfiguration
+	public async execute({ interaction }: Component.Context<'role'>) {
 		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const {
 			data: categoryId,
@@ -646,9 +604,14 @@ export class OtherComponentInteraction extends Component.Interaction {
 			],
 		});
 	}
+}
+
+export class AuthorActions extends Component.Interaction {
+	public readonly customIds = [dynamicCustomId('ticket_threads_category_configuration_allowed_author_actions')];
 
 	@DeferUpdate
-	private async allowedAuthorActions({ interaction }: Component.Context<'string'>) {
+	@HasGlobalConfiguration
+	public async execute({ interaction }: Component.Context<'string'>) {
 		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const {
 			data: categoryId,
@@ -718,9 +681,17 @@ export class OtherComponentInteraction extends Component.Interaction {
 			],
 		});
 	}
+}
+
+export class Delete extends Component.Interaction {
+	public readonly customIds = [
+		dynamicCustomId('ticket_threads_category_delete_confirm'),
+		dynamicCustomId('ticket_threads_category_delete_cancel'),
+	];
 
 	@DeferUpdate
-	private async confirmDeleteCategory({ interaction }: Component.Context<'button'>) {
+	@HasGlobalConfiguration
+	public async execute({ interaction }: Component.Context<'button'>) {
 		const { customId, dynamicValue } = extractCustomId(interaction.customId, true);
 		const confirmDeletion = customId.includes('confirm');
 		const {
@@ -768,9 +739,17 @@ export class OtherComponentInteraction extends Component.Interaction {
 			],
 		});
 	}
+}
+
+export class Overview extends Component.Interaction {
+	public readonly customIds = [
+		dynamicCustomId('ticket_threads_category_view_previous'),
+		dynamicCustomId('ticket_threads_category_view_next'),
+	];
 
 	@DeferUpdate
-	private categoryView({ interaction }: Component.Context<'button'>) {
+	@HasGlobalConfiguration
+	public execute({ interaction }: Component.Context<'button'>) {
 		const { success, error, page } = goToPage(interaction);
 
 		if (!success) {

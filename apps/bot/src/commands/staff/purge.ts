@@ -48,8 +48,8 @@ export default class extends Command.Interaction {
 			const me = await interaction.guild.members.fetchMe();
 
 			if (
-				!me
-					.permissionsIn(interaction.channel)
+				!interaction.channel
+					.permissionsFor(me)
 					.has([
 						PermissionFlagsBits.ViewChannel,
 						PermissionFlagsBits.ReadMessageHistory,

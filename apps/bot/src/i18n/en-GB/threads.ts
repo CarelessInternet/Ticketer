@@ -14,10 +14,6 @@ export default {
 		},
 		createModal: {
 			errors: {
-				invalidCustomId: {
-					title: ERROR_TITLE,
-					description: 'The custom ID could not be found.',
-				},
 				invalidId: {
 					title: ERROR_TITLE,
 					description: 'The category ID is not valid.',

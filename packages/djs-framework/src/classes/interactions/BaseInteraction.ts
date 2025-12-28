@@ -10,7 +10,7 @@ import { Base } from '..';
 export abstract class Interaction extends Base {
 	public abstract readonly type: InteractionType;
 
-	public abstract execute(parameters: Context): unknown;
+	public abstract execute?(parameters: Context): unknown;
 }
 
 export interface Context {

@@ -1423,16 +1423,6 @@ type RootTranslation = {
 				}
 				createModal: {
 					errors: {
-						invalidCustomId: {
-							/**
-							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
-							 */
-							title: string
-							/**
-							 * T​h​e​ ​c​u​s​t​o​m​ ​I​D​ ​c​o​u​l​d​ ​n​o​t​ ​b​e​ ​f​o​u​n​d​.
-							 */
-							description: string
-						}
 						invalidId: {
 							/**
 							 * A​n​ ​E​r​r​o​r​ ​O​c​c​u​r​r​e​d
@@ -3512,16 +3502,6 @@ export type TranslationFunctions = {
 				}
 				createModal: {
 					errors: {
-						invalidCustomId: {
-							/**
-							 * An Error Occurred
-							 */
-							title: () => LocalizedString
-							/**
-							 * The custom ID could not be found.
-							 */
-							description: () => LocalizedString
-						}
 						invalidId: {
 							/**
 							 * An Error Occurred

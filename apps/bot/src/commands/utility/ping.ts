@@ -21,7 +21,7 @@ export default class extends Command.Interaction {
 		});
 
 		if (!callback.resource?.message) {
-			return void interaction.editReply({
+			return interaction.editReply({
 				embeds: [
 					userEmbedError({
 						client: interaction.client,

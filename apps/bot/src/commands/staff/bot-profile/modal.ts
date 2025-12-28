@@ -21,7 +21,7 @@ import {
 import { prettifyError, z } from 'zod';
 import { translate } from '@/i18n';
 
-export class ModalInteraction extends Modal.Interaction {
+export default class extends Modal.Interaction {
 	public readonly customIds = [dynamicCustomId('bot_profile_menu')];
 
 	public async execute(context: Modal.Context) {

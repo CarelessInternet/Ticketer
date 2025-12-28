@@ -13,7 +13,6 @@ import {
 	ChannelSelectMenuBuilder,
 	ChannelType,
 	LabelBuilder,
-	MessageFlags,
 	ModalBuilder,
 	RoleSelectMenuBuilder,
 	roleMention,
@@ -23,49 +22,9 @@ import {
 import type { InsertWithoutGuildId } from './helpers';
 
 export default class extends Component.Interaction {
-	public readonly customIds = [
-		customId('welcome_configuration'),
-		customId('welcome_configuration_channel'),
-		customId('welcome_configuration_roles'),
-		customId('farewell_configuration'),
-		customId('farewell_configuration_channel'),
-	];
+	public readonly customIds = [customId('welcome_configuration'), customId('farewell_configuration')];
 
-	public execute({ interaction }: Component.Context) {
-		const { customId: id } = extractCustomId(interaction.customId);
-
-		switch (id) {
-			case customId('welcome_configuration'):
-			case customId('farewell_configuration'): {
-				return interaction.isStringSelectMenu() && void this.welcomeAndFarewellConfiguration({ interaction });
-			}
-			case customId('welcome_configuration_channel'):
-			case customId('farewell_configuration_channel'): {
-				return interaction.isChannelSelectMenu() && void this.welcomeAndFarewellConfigurationChannel({ interaction });
-			}
-			case customId('welcome_configuration_roles'): {
-				return interaction.isRoleSelectMenu() && void this.welcomeConfigurationRoles({ interaction });
-			}
-			default: {
-				return interaction.reply({
-					embeds: [
-						userEmbedError({
-							client: interaction.client,
-							description: 'The select menu ID could not be found.',
-							member: interaction.member,
-						}),
-					],
-					flags: [MessageFlags.Ephemeral],
-				});
-			}
-		}
-	}
-
-	private capitalise<T extends string>(text: T) {
-		text.replace(/./, (character) => character.toUpperCase()) as Capitalize<T>;
-	}
-
-	private welcomeAndFarewellConfiguration({ interaction }: Component.Context<'string'>) {
+	public execute({ interaction }: Component.Context<'string'>) {
 		const { customId: id } = extractCustomId(interaction.customId);
 		const type = id.includes('welcome_configuration') ? 'welcome' : 'farewell';
 		const value = interaction.values.at(0);
@@ -151,29 +110,8 @@ export default class extends Component.Interaction {
 		}
 	}
 
-	@DeferUpdate
-	private async welcomeAndFarewellConfigurationChannel({ interaction }: Component.Context<'channel'>) {
-		const { channels, customId: id, guildId } = interaction;
-		const { customId } = extractCustomId(id);
-		// biome-ignore lint/style/noNonNullAssertion: It should exist.
-		const channel = channels.at(0)!;
-
-		const type = customId.includes('welcome') ? 'welcome' : 'farewell';
-		const channelDatabaseValue: InsertWithoutGuildId =
-			type === 'welcome' ? { welcomeChannelId: channel.id } : { farewellChannelId: channel.id };
-
-		await database
-			.insert(welcomeAndFarewell)
-			.values({ guildId, ...channelDatabaseValue })
-			.onDuplicateKeyUpdate({
-				set: channelDatabaseValue,
-			});
-
-		const embed = userEmbed(interaction)
-			.setTitle('Updated the Welcome/Farewell Configuration')
-			.setDescription(`${interaction.member} updated the ${type} channel to ${channel}`);
-
-		return interaction.editReply({ embeds: [embed], components: [] });
+	private capitalise<T extends string>(text: T) {
+		text.replace(/./, (character) => character.toUpperCase()) as Capitalize<T>;
 	}
 
 	@DeferReply()
@@ -224,9 +162,42 @@ export default class extends Component.Interaction {
 
 		return interaction.editReply({ embeds: [embed] });
 	}
+}
+
+export class Channel extends Component.Interaction {
+	public readonly customIds = [customId('welcome_configuration_channel'), customId('farewell_configuration_channel')];
 
 	@DeferUpdate
-	private async welcomeConfigurationRoles({ interaction }: Component.Context<'role'>) {
+	public async execute({ interaction }: Component.Context<'channel'>) {
+		const { channels, customId: id, guildId } = interaction;
+		const { customId } = extractCustomId(id);
+		// biome-ignore lint/style/noNonNullAssertion: It should exist.
+		const channel = channels.at(0)!;
+
+		const type = customId.includes('welcome') ? 'welcome' : 'farewell';
+		const channelDatabaseValue: InsertWithoutGuildId =
+			type === 'welcome' ? { welcomeChannelId: channel.id } : { farewellChannelId: channel.id };
+
+		await database
+			.insert(welcomeAndFarewell)
+			.values({ guildId, ...channelDatabaseValue })
+			.onDuplicateKeyUpdate({
+				set: channelDatabaseValue,
+			});
+
+		const embed = userEmbed(interaction)
+			.setTitle('Updated the Welcome/Farewell Configuration')
+			.setDescription(`${interaction.member} updated the ${type} channel to ${channel}`);
+
+		return interaction.editReply({ embeds: [embed], components: [] });
+	}
+}
+
+export class Roles extends Component.Interaction {
+	public readonly customIds = [customId('welcome_configuration_roles')];
+
+	@DeferUpdate
+	public async execute({ interaction }: Component.Context<'role'>) {
 		const { guildId } = interaction;
 		const welcomeNewMemberRoles = interaction.roles.map((role) => role.id);
 

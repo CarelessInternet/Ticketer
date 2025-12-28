@@ -26,41 +26,11 @@ export default class extends Modal.Interaction {
 	public readonly customIds = [
 		customId('ticket_threads_category_fields'),
 		dynamicCustomId('ticket_threads_category_fields_dynamic'),
-		dynamicCustomId('ticket_threads_category_message'),
-		dynamicCustomId('ticket_threads_category_thread_title'),
 	];
 
 	@DeferReply()
 	@HasGlobalConfiguration
 	public async execute({ interaction }: Modal.Context) {
-		const { customId: id } = extractCustomId(interaction.customId);
-
-		switch (id) {
-			case customId('ticket_threads_category_fields'):
-			case dynamicCustomId('ticket_threads_category_fields_dynamic'): {
-				return this.categoryFields({ interaction });
-			}
-			case dynamicCustomId('ticket_threads_category_message'): {
-				return this.categoryMessageTitleDescription({ interaction });
-			}
-			case dynamicCustomId('ticket_threads_category_thread_title'): {
-				return this.categoryThreadTitle({ interaction });
-			}
-			default: {
-				return interaction.editReply({
-					embeds: [
-						userEmbedError({
-							client: interaction.client,
-							description: 'The modal ID could not be found.',
-							member: interaction.member,
-						}),
-					],
-				});
-			}
-		}
-	}
-
-	private async categoryFields({ interaction }: Modal.Context) {
 		const { customId, fields, guildId } = interaction;
 		const { dynamicValue } = extractCustomId(customId);
 
@@ -159,10 +129,15 @@ export default class extends Modal.Interaction {
 			embeds: [embed],
 		});
 	}
+}
 
-	private async categoryMessageTitleDescription({ interaction }: Modal.Context) {
-		const { customId, fields } = interaction;
-		const { dynamicValue } = extractCustomId(customId, true);
+export class CategoryMessage extends Modal.Interaction {
+	public readonly customIds = [dynamicCustomId('ticket_threads_category_message')];
+
+	@DeferReply()
+	@HasGlobalConfiguration
+	public async execute({ interaction }: Modal.Context) {
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const {
 			data: categoryId,
 			error: idError,
@@ -188,8 +163,8 @@ export default class extends Modal.Interaction {
 		} = ticketThreadsCategoriesInsertSchema
 			.pick({ openingMessageTitle: true, openingMessageDescription: true })
 			.safeParse({
-				openingMessageTitle: fields.getTextInputValue('title'),
-				openingMessageDescription: fields.getTextInputValue('description'),
+				openingMessageTitle: interaction.fields.getTextInputValue('title'),
+				openingMessageDescription: interaction.fields.getTextInputValue('description'),
 			});
 
 		if (!success) {
@@ -231,8 +206,14 @@ export default class extends Modal.Interaction {
 
 		return interaction.editReply({ embeds: [embed] });
 	}
+}
 
-	private async categoryThreadTitle({ interaction }: Modal.Context) {
+export class ThreadTitle extends Modal.Interaction {
+	public readonly customIds = [dynamicCustomId('ticket_threads_category_thread_title')];
+
+	@DeferReply()
+	@HasGlobalConfiguration
+	public async execute({ interaction }: Modal.Context) {
 		const { customId, fields } = interaction;
 		const { dynamicValue } = extractCustomId(customId, true);
 		const {

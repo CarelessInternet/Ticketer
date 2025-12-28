@@ -17,7 +17,7 @@ import { configurationMenu } from './helpers';
 export default class extends Subcommand.Interaction {
 	public readonly data = super.subcommand({
 		parentCommandName: 'configuration-welcome-farewell',
-		subcommandName: 'settings',
+		subcommandNames: ['settings'],
 	});
 
 	public execute({ interaction }: Subcommand.Context) {
@@ -28,7 +28,7 @@ export default class extends Subcommand.Interaction {
 export class Overview extends Subcommand.Interaction {
 	public readonly data = super.subcommand({
 		parentCommandName: 'configuration-welcome-farewell',
-		subcommandName: 'overview',
+		subcommandNames: ['overview'],
 	});
 
 	@DeferReply()

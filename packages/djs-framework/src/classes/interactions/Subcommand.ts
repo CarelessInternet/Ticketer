@@ -19,9 +19,9 @@ export abstract class Interaction extends BaseInteraction.Interaction {
 }
 
 export interface Data {
-	subcommandName: string;
 	parentCommandName: string;
 	parentSubcommandGroupName?: string;
+	subcommandNames: string[];
 }
 
 export interface Context {

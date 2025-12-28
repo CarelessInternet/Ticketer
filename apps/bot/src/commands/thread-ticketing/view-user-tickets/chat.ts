@@ -2,7 +2,7 @@ import { Command, Component, DeferReply, DeferUpdate, dynamicCustomId, userEmbed
 import { PermissionFlagsBits } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
 import { goToPage } from '@/utils';
-import { viewUserTickets } from './viewUserTickets';
+import { viewUserTickets } from './helpers';
 
 const dataTranslations = translate().commands['view-user-tickets'].chat.data;
 

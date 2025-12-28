@@ -1,7 +1,7 @@
 import { Command, DeferReply } from '@ticketer/djs-framework';
 import { PermissionFlagsBits } from 'discord.js';
 import { getTranslations, translate } from '@/i18n';
-import { viewUserTickets } from './viewUserTickets';
+import { viewUserTickets } from './helpers';
 
 const dataTranslations = translate().commands['view-user-tickets']['context-user'].data;
 

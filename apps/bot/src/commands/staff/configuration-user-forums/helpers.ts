@@ -2,6 +2,7 @@ import { database, desc, eq, userForumsConfigurations } from '@ticketer/database
 import { type Command, type Component, container, customId, userEmbedError } from '@ticketer/djs-framework';
 import {
 	bold,
+	ChannelSelectMenuBuilder,
 	ChannelType,
 	channelMention,
 	HeadingLevel,
@@ -97,13 +98,25 @@ export async function getConfigurations(
 
 export async function openingMessageModal(
 	{ interaction }: Command.Context<'chat'> | Component.Context<'string'>,
-	options: { id: string; title?: string; description?: string },
+	{ channelId, description, title }: { channelId?: string; title?: string; description?: string },
 ) {
+	const channelInput = new LabelBuilder()
+		.setLabel('Channel')
+		.setDescription('The forum channel where the bot sends the message below to the user.')
+		.setChannelSelectMenuComponent(
+			// TODO: make this disabled in presence of a preset channel when Discord allows so.
+			(channelId ? new ChannelSelectMenuBuilder().setDefaultChannels(channelId) : new ChannelSelectMenuBuilder())
+				.setCustomId(customId('channel'))
+				.setRequired(true)
+				.setMinValues(1)
+				.setMaxValues(1)
+				.setChannelTypes(ChannelType.GuildForum),
+		);
 	const titleInput = new LabelBuilder()
 		.setLabel('Message Title')
 		.setDescription('Write "{member}" to mention the user.')
 		.setTextInputComponent(
-			(options.title ? new TextInputBuilder().setValue(options.title) : new TextInputBuilder())
+			(title ? new TextInputBuilder().setValue(title) : new TextInputBuilder())
 				.setCustomId(customId('title'))
 				.setRequired(true)
 				.setMinLength(1)
@@ -114,7 +127,7 @@ export async function openingMessageModal(
 		.setLabel('Message Description')
 		.setDescription('Write "{member}" to mention the user.')
 		.setTextInputComponent(
-			(options.description ? new TextInputBuilder().setValue(options.description) : new TextInputBuilder())
+			(description ? new TextInputBuilder().setValue(description) : new TextInputBuilder())
 				.setCustomId(customId('description'))
 				.setRequired(true)
 				.setMinLength(1)
@@ -123,9 +136,9 @@ export async function openingMessageModal(
 		);
 
 	const modal = new ModalBuilder()
-		.setCustomId(customId('ticket_user_forums_configuration_opening_message', options.id))
+		.setCustomId(customId('ticket_user_forums_configuration_opening_message'))
 		.setTitle('Opening Message Title & Description')
-		.setLabelComponents(titleInput, descriptionInput);
+		.setLabelComponents([channelInput, titleInput, descriptionInput].filter((input) => !!input));
 
 	return interaction.showModal(modal).catch(() => false);
 }

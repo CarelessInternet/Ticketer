@@ -11,16 +11,7 @@ export default class extends Command.Interaction {
 			subcommand.setName('overview').setDescription('View the current configurations for automatic threads.'),
 		)
 		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('create')
-				.setDescription('Create a new configuration for automatic threads.')
-				.addChannelOption((option) =>
-					option
-						.setName('channel')
-						.setDescription('The text channel where the bot creates a thread for the user.')
-						.addChannelTypes(ChannelType.GuildText)
-						.setRequired(true),
-				),
+			subcommand.setName('create').setDescription('Create a new configuration for automatic threads.'),
 		)
 		.addSubcommand((subcommand) =>
 			subcommand

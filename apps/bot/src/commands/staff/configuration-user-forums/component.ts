@@ -51,7 +51,11 @@ export default class extends Component.Interaction {
 
 	private async openingMessage(context: Component.Context<'string'>) {
 		const { dynamicValue } = extractCustomId(context.interaction.customId, true);
-		const { data: id, error, success } = userForumsConfigurationsSelectSchema.shape.channelId.safeParse(dynamicValue);
+		const {
+			data: channelId,
+			error,
+			success,
+		} = userForumsConfigurationsSelectSchema.shape.channelId.safeParse(dynamicValue);
 
 		if (!success) {
 			return context.interaction
@@ -76,7 +80,7 @@ export default class extends Component.Interaction {
 			.from(userForumsConfigurations)
 			.where(
 				and(
-					eq(userForumsConfigurations.channelId, id),
+					eq(userForumsConfigurations.channelId, channelId),
 					eq(userForumsConfigurations.guildId, context.interaction.guildId),
 				),
 			);
@@ -96,9 +100,7 @@ export default class extends Component.Interaction {
 				.catch(() => false);
 		}
 
-		const { description, title } = row;
-
-		void openingMessageModal(context, { description, id, title });
+		void openingMessageModal(context, { channelId, ...row });
 	}
 }
 

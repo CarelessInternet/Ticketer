@@ -1,17 +1,8 @@
-import {
-	Command,
-	container,
-	customId,
-	DeferReply,
-	dynamicCustomId,
-	extractCustomId,
-	Modal,
-	userEmbed,
-	userEmbedError,
-} from '@ticketer/djs-framework';
+import { Command, container, customId, DeferReply, Modal, userEmbed, userEmbedError } from '@ticketer/djs-framework';
 import {
 	ButtonBuilder,
 	ButtonStyle,
+	ChannelSelectMenuBuilder,
 	Colors,
 	HeadingLevel,
 	heading,
@@ -25,19 +16,24 @@ import {
 	TextInputStyle,
 } from 'discord.js';
 import { prettifyError, z } from 'zod';
-import { extractEmoji, fetchChannel } from '@/utils';
+import { extractEmoji } from '@/utils';
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName('panel')
 		.setDescription('Create a ticket panel in a specific channel.')
-		.setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels | PermissionFlagsBits.ManageThreads)
-		.addChannelOption((option) =>
-			option.setName('channel').setDescription('Choose the channel where the panel goes to.').setRequired(true),
-		);
+		.setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels | PermissionFlagsBits.ManageThreads);
 
 	public execute({ interaction }: Command.Context<'chat'>) {
-		const channel = interaction.options.getChannel('channel', true);
-
+		const channelInput = new LabelBuilder()
+			.setLabel('Channel')
+			.setDescription('Choose the channel where the panel will be displayed.')
+			.setChannelSelectMenuComponent(
+				new ChannelSelectMenuBuilder()
+					.setCustomId(customId('channel'))
+					.setRequired(true)
+					.setMinValues(1)
+					.setMaxValues(1),
+			);
 		const titleInput = new LabelBuilder()
 			.setLabel('Title')
 			.setDescription('Write a title to be used in the ticket panel.')
@@ -84,20 +80,20 @@ export default class extends Command.Interaction {
 			);
 
 		const modal = new ModalBuilder()
-			.setCustomId(customId('ticket_threads_categories_create_panel', channel.id))
+			.setCustomId(customId('ticket_threads_categories_create_panel'))
 			.setTitle('Ticket Panel Details')
-			.setLabelComponents(titleInput, descriptonInput, buttonEmojiInput, buttonLabelInput);
+			.setLabelComponents(channelInput, titleInput, descriptonInput, buttonEmojiInput, buttonLabelInput);
 
 		return interaction.showModal(modal);
 	}
 }
 
 export class ModalInteraction extends Modal.Interaction {
-	public readonly customIds = [dynamicCustomId('ticket_threads_categories_create_panel')];
+	public readonly customIds = [customId('ticket_threads_categories_create_panel')];
 
 	@DeferReply()
 	public async execute({ interaction }: Modal.Context) {
-		const { customId: interactionId, fields, guild } = interaction;
+		const { fields, guild } = interaction;
 
 		const rawButtonEmoji = fields.getTextInputValue('button_emoji');
 		const buttonEmoji = extractEmoji(rawButtonEmoji) ?? '🎫';
@@ -127,8 +123,7 @@ export class ModalInteraction extends Modal.Interaction {
 			});
 		}
 
-		const { dynamicValue: channelId } = extractCustomId(interactionId, true);
-		const channel = await fetchChannel(guild, channelId);
+		const channel = fields.getSelectedChannels('channel', true).at(0);
 
 		if (!channel?.isTextBased()) {
 			return interaction.editReply({

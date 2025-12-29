@@ -57,7 +57,7 @@ export default class extends Component.Interaction {
 	private async openingMessage(context: Component.Context<'string'>) {
 		const { dynamicValue } = extractCustomId(context.interaction.customId, true);
 		const {
-			data: id,
+			data: channelId,
 			error,
 			success,
 		} = automaticThreadsConfigurationsSelectSchema.shape.channelId.safeParse(dynamicValue);
@@ -85,7 +85,7 @@ export default class extends Component.Interaction {
 			.from(automaticThreadsConfigurations)
 			.where(
 				and(
-					eq(automaticThreadsConfigurations.channelId, id),
+					eq(automaticThreadsConfigurations.channelId, channelId),
 					eq(automaticThreadsConfigurations.guildId, context.interaction.guildId),
 				),
 			);
@@ -105,9 +105,7 @@ export default class extends Component.Interaction {
 				.catch(() => false);
 		}
 
-		const { description, title } = row;
-
-		void openingMessageModal(context, { description, id, title });
+		void openingMessageModal(context, { channelId, ...row });
 	}
 }
 

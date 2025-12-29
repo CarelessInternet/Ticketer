@@ -1,11 +1,4 @@
-import {
-	container,
-	DeferReply,
-	dynamicCustomId,
-	extractCustomId,
-	Modal,
-	userEmbedError,
-} from '@ticketer/djs-framework';
+import { container, customId, DeferReply, Modal, userEmbedError } from '@ticketer/djs-framework';
 import {
 	ContainerBuilder,
 	codeBlock,
@@ -22,44 +15,9 @@ import { prettifyError, z } from 'zod';
 import { translate } from '@/i18n';
 
 export default class extends Modal.Interaction {
-	public readonly customIds = [dynamicCustomId('bot_profile_menu')];
+	public readonly customIds = [customId('bot_profile_menu_name')];
 
-	public async execute(context: Modal.Context) {
-		const { dynamicValue } = extractCustomId(context.interaction.customId, true);
-
-		switch (dynamicValue) {
-			case 'name': {
-				return this.name(context);
-			}
-			case 'bio': {
-				return this.bio(context);
-			}
-			case 'avatar': {
-				return this.avatar(context);
-			}
-			case 'banner': {
-				return this.banner(context);
-			}
-			default: {
-				const translations = translate(context.interaction.locale).commands['bot-profile'].command.modals.errors
-					.customId;
-
-				return context.interaction.reply({
-					embeds: [
-						userEmbedError({
-							client: context.interaction.client,
-							description: translations.description(),
-							member: context.interaction.member,
-							title: translations.title(),
-						}),
-					],
-					flags: [MessageFlags.Ephemeral],
-				});
-			}
-		}
-	}
-
-	private async name({ interaction }: Modal.Context) {
+	public async execute({ interaction }: Modal.Context) {
 		const translations = translate(interaction.locale).commands['bot-profile'].command.modals.name.response.errors;
 		const {
 			data: nick,
@@ -126,8 +84,12 @@ export default class extends Modal.Interaction {
 			flags: [MessageFlags.IsComponentsV2],
 		});
 	}
+}
 
-	private async bio({ interaction }: Modal.Context) {
+export class Bio extends Modal.Interaction {
+	public readonly customIds = [customId('bot_profile_menu_bio')];
+
+	public async execute({ interaction }: Modal.Context) {
 		const translations = translate(interaction.locale).commands['bot-profile'].command.modals.bio.response.errors;
 		const {
 			data: bio,
@@ -175,9 +137,13 @@ export default class extends Modal.Interaction {
 			flags: [MessageFlags.IsComponentsV2],
 		});
 	}
+}
+
+export class Avatar extends Modal.Interaction {
+	public readonly customIds = [customId('bot_profile_menu_avatar')];
 
 	@DeferReply()
-	private async avatar({ interaction }: Modal.Context) {
+	public async execute({ interaction }: Modal.Context) {
 		const avatar = interaction.fields.getUploadedFiles('avatar', false)?.at(0)?.url ?? '';
 		let me = await interaction.guild.members.fetchMe();
 		const oldAvatar = me.displayAvatarURL();
@@ -226,9 +192,13 @@ export default class extends Modal.Interaction {
 			flags: [MessageFlags.IsComponentsV2],
 		});
 	}
+}
+
+export class Banner extends Modal.Interaction {
+	public readonly customIds = [customId('bot_profile_menu_banner')];
 
 	@DeferReply()
-	private async banner({ interaction }: Modal.Context) {
+	public async execute({ interaction }: Modal.Context) {
 		const banner = interaction.fields.getUploadedFiles('banner', false)?.at(0)?.url ?? '';
 		// Force fetch due to caching issues.
 		let me = await interaction.guild.members.fetchMe({ force: true });

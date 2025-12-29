@@ -21,9 +21,8 @@ export class Create extends Subcommand.Interaction {
 		subcommandNames: ['create'],
 	});
 
-	@IsTextChannel
 	public execute(context: Subcommand.Context) {
-		void openingMessageModal(context, { id: context.interaction.options.getChannel('channel', true).id });
+		void openingMessageModal(context, {});
 	}
 }
 

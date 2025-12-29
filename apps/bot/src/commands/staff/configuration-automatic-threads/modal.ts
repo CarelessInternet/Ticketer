@@ -3,25 +3,17 @@ import {
 	automaticThreadsConfigurationsInsertSchema,
 	database,
 } from '@ticketer/database';
-import {
-	container,
-	DeferReply,
-	dynamicCustomId,
-	extractCustomId,
-	Modal,
-	userEmbedError,
-} from '@ticketer/djs-framework';
+import { container, customId, DeferReply, Modal, userEmbedError } from '@ticketer/djs-framework';
 import { ChannelType, HeadingLevel, heading, MessageFlags, TextDisplayBuilder } from 'discord.js';
 import { prettifyError } from 'zod';
-import { automaticThreadsContainer, fetchChannel } from '@/utils';
+import { automaticThreadsContainer } from '@/utils';
 
 export class ModalInteraction extends Modal.Interaction {
-	public readonly customIds = [dynamicCustomId('ticket_automatic_threads_configuration_opening_message')];
+	public readonly customIds = [customId('ticket_automatic_threads_configuration_opening_message')];
 
 	@DeferReply()
 	public async execute({ interaction }: Modal.Context) {
-		const { dynamicValue } = extractCustomId(interaction.customId, true);
-		const channel = await fetchChannel(interaction.guild, dynamicValue);
+		const channel = interaction.fields.getSelectedChannels('channel', true).at(0);
 
 		if (channel?.type !== ChannelType.GuildText) {
 			return interaction.editReply({

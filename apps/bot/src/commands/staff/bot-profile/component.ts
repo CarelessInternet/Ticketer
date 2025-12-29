@@ -19,7 +19,7 @@ export default class extends Component.Interaction {
 			case 'name': {
 				return interaction.showModal(
 					new ModalBuilder()
-						.setCustomId(customId('bot_profile_menu', 'name'))
+						.setCustomId(customId('bot_profile_menu_name'))
 						.setTitle(guildTranslations.name.input.title())
 						.setLabelComponents(
 							new LabelBuilder()
@@ -40,7 +40,7 @@ export default class extends Component.Interaction {
 			case 'bio': {
 				return interaction.showModal(
 					new ModalBuilder()
-						.setCustomId(customId('bot_profile_menu', 'bio'))
+						.setCustomId(customId('bot_profile_menu_bio'))
 						.setTitle(guildTranslations.bio.input.title())
 						.setLabelComponents(
 							new LabelBuilder()
@@ -60,7 +60,7 @@ export default class extends Component.Interaction {
 			case 'avatar': {
 				return interaction.showModal(
 					new ModalBuilder()
-						.setCustomId(customId('bot_profile_menu', 'avatar'))
+						.setCustomId(customId('bot_profile_menu_avatar'))
 						.setTitle(guildTranslations.avatar.input.title())
 						.setLabelComponents(
 							new LabelBuilder()
@@ -79,7 +79,7 @@ export default class extends Component.Interaction {
 			case 'banner': {
 				return interaction.showModal(
 					new ModalBuilder()
-						.setCustomId(customId('bot_profile_menu', 'banner'))
+						.setCustomId(customId('bot_profile_menu_banner'))
 						.setTitle(guildTranslations.banner.input.title())
 						.setLabelComponents(
 							new LabelBuilder()

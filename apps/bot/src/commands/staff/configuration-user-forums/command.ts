@@ -11,16 +11,7 @@ export default class extends Command.Interaction {
 			subcommand.setName('overview').setDescription('View the current configurations for user forum threads.'),
 		)
 		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('create')
-				.setDescription('Create a new configuration for user forums assisted by the bot.')
-				.addChannelOption((option) =>
-					option
-						.setName('channel')
-						.setDescription('The forum channel where the bot assists with support for the user.')
-						.addChannelTypes(ChannelType.GuildForum)
-						.setRequired(true),
-				),
+			subcommand.setName('create').setDescription('Create a new configuration for user forums assisted by the bot.'),
 		)
 		.addSubcommand((subcommand) =>
 			subcommand

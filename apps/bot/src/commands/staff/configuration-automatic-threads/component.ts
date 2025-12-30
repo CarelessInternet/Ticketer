@@ -17,7 +17,7 @@ import {
 import { ActionRowBuilder, channelMention, MessageFlags, RoleSelectMenuBuilder, roleMention } from 'discord.js';
 import { prettifyError } from 'zod';
 import { goToPage } from '@/utils';
-import { getConfigurations, openingMessageModal } from './helpers';
+import { configurationMenu, getConfigurations, openingMessageModal } from './helpers';
 
 export default class extends Component.Interaction {
 	public readonly customIds = [dynamicCustomId('ticket_automatic_threads_configuration_menu')];
@@ -37,7 +37,7 @@ export default class extends Component.Interaction {
 
 				const row = new ActionRowBuilder<RoleSelectMenuBuilder>().setComponents(managersMenu);
 
-				return context.interaction.reply({ components: [row] });
+				return context.interaction.update({ components: [row] });
 			}
 			default: {
 				return context.interaction.reply({
@@ -116,13 +116,27 @@ export class Managers extends Component.Interaction {
 	public async execute({ interaction }: Component.Context<'role'>) {
 		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const managers = interaction.roles.map((role) => role.id);
+		const {
+			data: channelId,
+			error,
+			success,
+		} = automaticThreadsConfigurationsSelectSchema.shape.channelId.safeParse(dynamicValue);
+
+		if (!success) {
+			return interaction.editReply({
+				components: [],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
+			});
+		}
 
 		await database
 			.update(automaticThreadsConfigurations)
 			.set({ managers })
 			.where(
 				and(
-					eq(automaticThreadsConfigurations.channelId, dynamicValue),
+					eq(automaticThreadsConfigurations.channelId, channelId),
 					eq(automaticThreadsConfigurations.guildId, interaction.guildId),
 				),
 			);
@@ -131,12 +145,13 @@ export class Managers extends Component.Interaction {
 		const embed = userEmbed(interaction)
 			.setTitle('Updated the Automatic Threads Managers')
 			.setDescription(
-				`${interaction.member} updated the managers of the automatic threads in ${channelMention(dynamicValue)} to: ${
+				`${interaction.member} updated the managers of the automatic threads in ${channelMention(channelId)} to: ${
 					managers.length > 0 ? roles : 'none'
 				}.`,
 			);
 
-		return interaction.editReply({ embeds: [embed], components: [] });
+		interaction.editReply({ components: [], content: '', embeds: [embed] });
+		return interaction.followUp({ components: configurationMenu(channelId) });
 	}
 }
 

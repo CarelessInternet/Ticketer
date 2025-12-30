@@ -1,13 +1,13 @@
 import { database, welcomeAndFarewell, welcomeAndFarewellInsertSchema } from '@ticketer/database';
-import { customId, DeferReply, Modal, userEmbed, userEmbedError } from '@ticketer/djs-framework';
+import { customId, DeferUpdate, Modal, userEmbed, userEmbedError } from '@ticketer/djs-framework';
 import { inlineCode } from 'discord.js';
 import { prettifyError } from 'zod';
-import type { InsertWithoutGuildId } from './helpers';
+import { configurationMenu, type InsertWithoutGuildId } from './helpers';
 
 export default class extends Modal.Interaction {
 	public readonly customIds = [customId('welcome_message_title'), customId('farewell_message_title')];
 
-	@DeferReply()
+	@DeferUpdate
 	public async execute({ interaction }: Modal.Context) {
 		const type = interaction.customId.includes('welcome') ? 'welcome' : 'farewell';
 		const rawTitle = interaction.fields.getTextInputValue('message_title');
@@ -20,7 +20,8 @@ export default class extends Modal.Interaction {
 			: welcomeAndFarewellInsertSchema.shape.farewellMessageTitle.safeParse(rawTitle);
 
 		if (!success) {
-			return interaction.editReply({
+			interaction.editReply({
+				components: [],
 				embeds: [
 					userEmbedError({
 						client: interaction.client,
@@ -29,6 +30,7 @@ export default class extends Modal.Interaction {
 					}),
 				],
 			});
+			return interaction.followUp({ components: configurationMenu() });
 		}
 
 		const titleDatabaseValue: InsertWithoutGuildId =
@@ -46,14 +48,15 @@ export default class extends Modal.Interaction {
 					(title ? `:\n\n${inlineCode(title)}` : ' the default title.'),
 			);
 
-		return interaction.editReply({ embeds: [embed] });
+		interaction.editReply({ components: [], embeds: [embed] });
+		return interaction.followUp({ components: configurationMenu() });
 	}
 }
 
 export class Description extends Modal.Interaction {
 	public readonly customIds = [customId('welcome_message_description'), customId('farewell_message_description')];
 
-	@DeferReply()
+	@DeferUpdate
 	public async execute({ interaction }: Modal.Context) {
 		const type = interaction.customId.includes('welcome') ? 'welcome' : 'farewell';
 		const rawDescription = interaction.fields.getTextInputValue('message_description');
@@ -66,7 +69,8 @@ export class Description extends Modal.Interaction {
 			: welcomeAndFarewellInsertSchema.shape.farewellMessageDescription.safeParse(rawDescription);
 
 		if (!success) {
-			return interaction.editReply({
+			interaction.editReply({
+				components: [],
 				embeds: [
 					userEmbedError({
 						client: interaction.client,
@@ -75,6 +79,7 @@ export class Description extends Modal.Interaction {
 					}),
 				],
 			});
+			return interaction.followUp({ components: configurationMenu() });
 		}
 
 		const descriptionDatabaseValue: InsertWithoutGuildId =
@@ -92,6 +97,7 @@ export class Description extends Modal.Interaction {
 					(description ? `:\n\n${inlineCode(description)}` : ' the default description.'),
 			);
 
-		return interaction.editReply({ embeds: [embed] });
+		interaction.editReply({ components: [], embeds: [embed] });
+		return interaction.followUp({ components: configurationMenu() });
 	}
 }

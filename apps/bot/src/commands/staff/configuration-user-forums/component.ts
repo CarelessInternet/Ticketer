@@ -2,7 +2,6 @@ import { and, database, eq, userForumsConfigurations, userForumsConfigurationsSe
 import {
 	Component,
 	customId,
-	DeferReply,
 	DeferUpdate,
 	dynamicCustomId,
 	extractCustomId,
@@ -12,7 +11,7 @@ import {
 import { ActionRowBuilder, channelMention, MessageFlags, RoleSelectMenuBuilder, roleMention } from 'discord.js';
 import { prettifyError } from 'zod';
 import { goToPage } from '@/utils';
-import { getConfigurations, openingMessageModal } from './helpers';
+import { configurationMenu, getConfigurations, openingMessageModal } from './helpers';
 
 export default class extends Component.Interaction {
 	public readonly customIds = [dynamicCustomId('ticket_user_forums_configuration_menu')];
@@ -32,7 +31,7 @@ export default class extends Component.Interaction {
 
 				const row = new ActionRowBuilder<RoleSelectMenuBuilder>().setComponents(managersMenu);
 
-				return context.interaction.reply({ components: [row] });
+				return context.interaction.update({ components: [row] });
 			}
 			default: {
 				return context.interaction.reply({
@@ -107,7 +106,7 @@ export default class extends Component.Interaction {
 export class Managers extends Component.Interaction {
 	public readonly customIds = [dynamicCustomId('ticket_user_forums_configuration_managers')];
 
-	@DeferReply()
+	@DeferUpdate
 	public async execute({ interaction }: Component.Context<'role'>) {
 		const managers = interaction.roles.map((role) => role.id);
 		const { dynamicValue } = extractCustomId(interaction.customId, true);
@@ -145,7 +144,8 @@ export class Managers extends Component.Interaction {
 				}.`,
 			);
 
-		return interaction.editReply({ components: [], embeds: [embed] });
+		interaction.editReply({ components: [], content: '', embeds: [embed] });
+		return interaction.followUp({ components: configurationMenu(channelId) });
 	}
 }
 

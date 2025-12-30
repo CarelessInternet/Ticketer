@@ -1,4 +1,4 @@
-import { container, customId, DeferReply, Modal, userEmbedError } from '@ticketer/djs-framework';
+import { container, customId, DeferUpdate, Modal, userEmbedError } from '@ticketer/djs-framework';
 import {
 	ContainerBuilder,
 	codeBlock,
@@ -13,6 +13,7 @@ import {
 } from 'discord.js';
 import { prettifyError, z } from 'zod';
 import { translate } from '@/i18n';
+import { configurationMenu } from './helpers';
 
 export default class extends Modal.Interaction {
 	public readonly customIds = [customId('bot_profile_menu_name')];
@@ -53,7 +54,7 @@ export default class extends Modal.Interaction {
 			});
 		}
 
-		await interaction.deferReply();
+		await interaction.deferUpdate();
 		let me = await interaction.guild.members.fetchMe();
 		const oldName = me.displayName;
 
@@ -61,7 +62,7 @@ export default class extends Modal.Interaction {
 		const guildTranslations = translate(interaction.guildLocale).commands['bot-profile'].command.modals.name.response
 			.success;
 
-		return interaction.editReply({
+		interaction.editReply({
 			components: [
 				container({
 					builder: (cont) =>
@@ -83,6 +84,7 @@ export default class extends Modal.Interaction {
 			],
 			flags: [MessageFlags.IsComponentsV2],
 		});
+		return interaction.followUp(configurationMenu({ client: interaction.client, locale: interaction.guildLocale }));
 	}
 }
 
@@ -111,7 +113,7 @@ export class Bio extends Modal.Interaction {
 			});
 		}
 
-		await interaction.deferReply();
+		await interaction.deferUpdate();
 		await interaction.guild.members.editMe({ bio });
 
 		const guildTranslations = translate(interaction.guildLocale).commands['bot-profile'].command.modals.bio.response
@@ -132,17 +134,18 @@ export class Bio extends Modal.Interaction {
 			reply.addTextDisplayComponents(new TextDisplayBuilder().setContent(codeBlock(bio)));
 		}
 
-		return interaction.editReply({
+		interaction.editReply({
 			components: [container({ builder: reply, client: interaction.client })],
 			flags: [MessageFlags.IsComponentsV2],
 		});
+		return interaction.followUp(configurationMenu({ client: interaction.client, locale: interaction.guildLocale }));
 	}
 }
 
 export class Avatar extends Modal.Interaction {
 	public readonly customIds = [customId('bot_profile_menu_avatar')];
 
-	@DeferReply()
+	@DeferUpdate
 	public async execute({ interaction }: Modal.Context) {
 		const avatar = interaction.fields.getUploadedFiles('avatar', false)?.at(0)?.url ?? '';
 		let me = await interaction.guild.members.fetchMe();
@@ -154,7 +157,7 @@ export class Avatar extends Modal.Interaction {
 			const translatons = translate(interaction.locale).commands['bot-profile'].command.modals.avatar.response.errors
 				.unknown;
 
-			return interaction.editReply({
+			interaction.editReply({
 				embeds: [
 					userEmbedError({
 						client: interaction.client,
@@ -164,12 +167,13 @@ export class Avatar extends Modal.Interaction {
 					}),
 				],
 			});
+			return interaction.followUp(configurationMenu({ client: interaction.client, locale: interaction.guildLocale }));
 		}
 
 		const translatons = translate(interaction.guildLocale).commands['bot-profile'].command.modals.avatar.response
 			.success;
 
-		return interaction.editReply({
+		interaction.editReply({
 			components: [
 				container({
 					builder: (cont) =>
@@ -191,13 +195,14 @@ export class Avatar extends Modal.Interaction {
 			],
 			flags: [MessageFlags.IsComponentsV2],
 		});
+		return interaction.followUp(configurationMenu({ client: interaction.client, locale: interaction.guildLocale }));
 	}
 }
 
 export class Banner extends Modal.Interaction {
 	public readonly customIds = [customId('bot_profile_menu_banner')];
 
-	@DeferReply()
+	@DeferUpdate
 	public async execute({ interaction }: Modal.Context) {
 		const banner = interaction.fields.getUploadedFiles('banner', false)?.at(0)?.url ?? '';
 		// Force fetch due to caching issues.
@@ -210,7 +215,7 @@ export class Banner extends Modal.Interaction {
 			const translations = translate(interaction.locale).commands['bot-profile'].command.modals.banner.response.errors
 				.unknown;
 
-			return interaction.editReply({
+			interaction.editReply({
 				embeds: [
 					userEmbedError({
 						client: interaction.client,
@@ -220,6 +225,7 @@ export class Banner extends Modal.Interaction {
 					}),
 				],
 			});
+			return interaction.followUp(configurationMenu({ client: interaction.client, locale: interaction.guildLocale }));
 		}
 
 		const translations = translate(interaction.locale).commands['bot-profile'].command.modals.banner.response.success;
@@ -253,9 +259,10 @@ export class Banner extends Modal.Interaction {
 			reply.addMediaGalleryComponents(builder);
 		}
 
-		return interaction.editReply({
+		interaction.editReply({
 			components: [container({ builder: reply, client: interaction.client })],
 			flags: [MessageFlags.IsComponentsV2],
 		});
+		return interaction.followUp(configurationMenu({ client: interaction.client, locale: interaction.guildLocale }));
 	}
 }

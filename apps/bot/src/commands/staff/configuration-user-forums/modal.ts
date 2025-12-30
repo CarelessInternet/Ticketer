@@ -1,13 +1,14 @@
 import { database, userForumsConfigurations, userForumsConfigurationsInsertSchema } from '@ticketer/database';
-import { container, customId, DeferReply, Modal, userEmbedError } from '@ticketer/djs-framework';
+import { container, customId, DeferUpdate, Modal, userEmbedError } from '@ticketer/djs-framework';
 import { ChannelType, HeadingLevel, heading, MessageFlags, TextDisplayBuilder } from 'discord.js';
 import { prettifyError } from 'zod';
 import { userForumsContainer } from '@/utils';
+import { configurationMenu } from './helpers';
 
-export class ModalInteraction extends Modal.Interaction {
+export default class extends Modal.Interaction {
 	public readonly customIds = [customId('ticket_user_forums_configuration_opening_message')];
 
-	@DeferReply()
+	@DeferUpdate
 	public async execute({ interaction }: Modal.Context) {
 		const channel = interaction.fields.getSelectedChannels('channel', true).at(0);
 
@@ -31,11 +32,14 @@ export class ModalInteraction extends Modal.Interaction {
 			});
 
 		if (!success) {
-			return interaction.editReply({
+			interaction.editReply({
+				components: [],
+				content: '',
 				embeds: [
 					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
 				],
 			});
+			return interaction.followUp({ components: configurationMenu(channel.id) });
 		}
 
 		await database
@@ -53,7 +57,7 @@ export class ModalInteraction extends Modal.Interaction {
 				},
 			});
 
-		return interaction.editReply({
+		interaction.editReply({
 			components: [
 				container({
 					builder: (cont) =>
@@ -79,7 +83,9 @@ export class ModalInteraction extends Modal.Interaction {
 					client: interaction.client,
 				}),
 			],
+			content: '',
 			flags: [MessageFlags.IsComponentsV2],
 		});
+		return interaction.followUp({ components: configurationMenu(channel.id) });
 	}
 }

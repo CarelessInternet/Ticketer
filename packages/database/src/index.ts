@@ -22,4 +22,4 @@ export function migrate() {
 export * from 'drizzle-orm';
 export { type MySqlSelect, unionAll } from 'drizzle-orm/mysql-core';
 export * from './schema';
-export { ThreadTicketActionsPermissionBitField } from './utils/ThreadTicketActionsPermissionBitField';
+export { ThreadTicketActionsPermissionBitField } from './utility/ThreadTicketActionsPermissionBitField';

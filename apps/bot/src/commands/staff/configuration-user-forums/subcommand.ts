@@ -1,7 +1,6 @@
 import { database, eq, userForumsConfigurations } from '@ticketer/database';
-import { customId, DeferReply, Subcommand, userEmbed, userEmbedError } from '@ticketer/djs-framework';
-import { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from 'discord.js';
-import { getConfigurations, IsForumChannel, openingMessageModal } from './helpers';
+import { DeferReply, Subcommand, userEmbed, userEmbedError } from '@ticketer/djs-framework';
+import { configurationMenu, getConfigurations, IsForumChannel, openingMessageModal } from './helpers';
 
 export default class extends Subcommand.Interaction {
 	public readonly data = super.subcommand({
@@ -53,27 +52,7 @@ export class Edit extends Subcommand.Interaction {
 			});
 		}
 
-		const selectMenu = new StringSelectMenuBuilder()
-			.setCustomId(customId('ticket_user_forums_configuration_menu', channel.id))
-			.setMinValues(1)
-			.setMaxValues(1)
-			.setPlaceholder('Edit one of the following user forum options:')
-			.setOptions(
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('📔')
-					.setLabel('Message Title & Description')
-					.setDescription("Change the opening message's title and description.")
-					.setValue('message_title_description'),
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('🛡️')
-					.setLabel('Ticket Managers')
-					.setDescription('Choose the managers who are responsible for this forum.')
-					.setValue('managers'),
-			);
-
-		const row = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(selectMenu);
-
-		return interaction.editReply({ components: [row], content: channel.toString() });
+		return interaction.editReply({ components: configurationMenu(channel.id), content: channel.toString() });
 	}
 }
 

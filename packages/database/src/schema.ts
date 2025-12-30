@@ -17,7 +17,7 @@ import {
 	jsonWithParsing,
 	snowflake,
 	snowflakeRequiredParser,
-} from './utils';
+} from './utility';
 
 export const guildBlacklists = mysqlTable(
 	'guildBlacklists',

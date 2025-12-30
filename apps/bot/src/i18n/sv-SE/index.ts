@@ -380,11 +380,11 @@ const sv_SE = {
 						fields: [
 							{
 								name: 'Ping',
-								value: '⌛ {ms}ms',
+								value: '⌛ {ms} ms',
 							},
 							{
 								name: 'Latens',
-								value: '🏓 Ungefär {ms}ms',
+								value: '🏓 Ungefär {ms} ms',
 							},
 							{
 								name: 'WebSocket Status',

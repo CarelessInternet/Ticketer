@@ -126,10 +126,7 @@ export default class extends Component.Interaction {
 			});
 
 		const [row] = await database
-			.select({
-				welcomeEnabled: welcomeAndFarewell.welcomeEnabled,
-				farewellEnabled: welcomeAndFarewell.farewellEnabled,
-			})
+			.select({ welcomeEnabled, farewellEnabled })
 			.from(welcomeAndFarewell)
 			.where(eq(welcomeAndFarewell.guildId, guildId));
 

@@ -2,7 +2,6 @@ import { and, database, eq, userForumsConfigurations, userForumsConfigurationsSe
 import {
 	Component,
 	customId,
-	DeferUpdate,
 	dynamicCustomId,
 	extractCustomId,
 	userEmbed,
@@ -57,18 +56,16 @@ export default class extends Component.Interaction {
 		} = userForumsConfigurationsSelectSchema.shape.channelId.safeParse(dynamicValue);
 
 		if (!success) {
-			return context.interaction
-				.reply({
-					embeds: [
-						userEmbedError({
-							client: context.interaction.client,
-							description: prettifyError(error),
-							member: context.interaction.member,
-						}),
-					],
-					flags: [MessageFlags.Ephemeral],
-				})
-				.catch(() => false);
+			return context.interaction.reply({
+				embeds: [
+					userEmbedError({
+						client: context.interaction.client,
+						description: prettifyError(error),
+						member: context.interaction.member,
+					}),
+				],
+				flags: [MessageFlags.Ephemeral],
+			});
 		}
 
 		const [row] = await database
@@ -85,18 +82,19 @@ export default class extends Component.Interaction {
 			);
 
 		if (!row) {
-			return context.interaction
-				.reply({
-					embeds: [
-						userEmbedError({
-							client: context.interaction.client,
-							description: 'No user forum configuration for the channel could be found.',
-							member: context.interaction.member,
-						}),
-					],
-					flags: [MessageFlags.Ephemeral],
-				})
-				.catch(() => false);
+			context.interaction.editReply({
+				embeds: [
+					userEmbedError({
+						client: context.interaction.client,
+						description: 'No user forum configuration for the channel could be found.',
+						member: context.interaction.member,
+					}),
+				],
+			});
+			return context.interaction.followUp({
+				components: configurationMenu(channelId),
+				content: context.interaction.message.content,
+			});
 		}
 
 		void openingMessageModal(context, { channelId, ...row });
@@ -106,7 +104,6 @@ export default class extends Component.Interaction {
 export class Managers extends Component.Interaction {
 	public readonly customIds = [dynamicCustomId('ticket_user_forums_configuration_managers')];
 
-	@DeferUpdate
 	public async execute({ interaction }: Component.Context<'role'>) {
 		const managers = interaction.roles.map((role) => role.id);
 		const { dynamicValue } = extractCustomId(interaction.customId, true);
@@ -117,7 +114,7 @@ export class Managers extends Component.Interaction {
 		} = userForumsConfigurationsSelectSchema.shape.channelId.safeParse(dynamicValue);
 
 		if (!success) {
-			return interaction.editReply({
+			return interaction.reply({
 				components: [],
 				embeds: [
 					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
@@ -125,6 +122,7 @@ export class Managers extends Component.Interaction {
 			});
 		}
 
+		await interaction.deferUpdate();
 		await database
 			.update(userForumsConfigurations)
 			.set({ managers })
@@ -145,7 +143,7 @@ export class Managers extends Component.Interaction {
 			);
 
 		interaction.editReply({ components: [], content: '', embeds: [embed] });
-		return interaction.followUp({ components: configurationMenu(channelId) });
+		return interaction.followUp({ components: configurationMenu(channelId), content: interaction.message.content });
 	}
 }
 
@@ -155,12 +153,11 @@ export class Overview extends Component.Interaction {
 		dynamicCustomId('ticket_user_forums_view_next'),
 	];
 
-	@DeferUpdate
 	public async execute(context: Component.Context<'button'>) {
 		const { success, error, page } = goToPage(context.interaction);
 
 		if (!success) {
-			return context.interaction.editReply({
+			return context.interaction.reply({
 				components: [],
 				embeds: [
 					userEmbedError({
@@ -169,9 +166,11 @@ export class Overview extends Component.Interaction {
 						member: context.interaction.member,
 					}),
 				],
+				flags: [MessageFlags.Ephemeral],
 			});
 		}
 
+		await context.interaction.deferUpdate();
 		void getConfigurations(context, page);
 	}
 }

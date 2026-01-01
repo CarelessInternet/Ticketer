@@ -3,7 +3,7 @@ import {
 	automaticThreadsConfigurationsInsertSchema,
 	database,
 } from '@ticketer/database';
-import { container, customId, DeferUpdate, Modal, userEmbedError } from '@ticketer/djs-framework';
+import { container, customId, Modal, userEmbedError } from '@ticketer/djs-framework';
 import { ChannelType, HeadingLevel, heading, MessageFlags, TextDisplayBuilder } from 'discord.js';
 import { prettifyError } from 'zod';
 import { automaticThreadsContainer } from '@/utils';
@@ -12,12 +12,11 @@ import { configurationMenu } from './helpers';
 export default class extends Modal.Interaction {
 	public readonly customIds = [customId('ticket_automatic_threads_configuration_opening_message')];
 
-	@DeferUpdate
 	public async execute({ interaction }: Modal.Context) {
 		const channel = interaction.fields.getSelectedChannels('channel', true).at(0);
 
 		if (channel?.type !== ChannelType.GuildText) {
-			return interaction.editReply({
+			return interaction.reply({
 				embeds: [
 					userEmbedError({
 						client: interaction.client,
@@ -25,6 +24,7 @@ export default class extends Modal.Interaction {
 						member: interaction.member,
 					}),
 				],
+				flags: [MessageFlags.Ephemeral],
 			});
 		}
 
@@ -36,16 +36,18 @@ export default class extends Modal.Interaction {
 			});
 
 		if (!success) {
-			interaction.editReply({
+			interaction.reply({
 				components: [],
 				content: '',
 				embeds: [
 					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
 				],
+				flags: [MessageFlags.Ephemeral],
 			});
-			return interaction.followUp({ components: configurationMenu(channel.id) });
+			return interaction.followUp({ components: configurationMenu(channel.id), content: interaction.message?.content });
 		}
 
+		await interaction.deferUpdate();
 		await database
 			.insert(automaticThreadsConfigurations)
 			.values({
@@ -90,6 +92,6 @@ export default class extends Modal.Interaction {
 			content: '',
 			flags: [MessageFlags.IsComponentsV2],
 		});
-		return interaction.followUp({ components: configurationMenu(channel.id) });
+		return interaction.followUp({ components: configurationMenu(channel.id), content: interaction.message?.content });
 	}
 }

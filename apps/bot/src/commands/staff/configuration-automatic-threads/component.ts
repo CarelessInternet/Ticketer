@@ -8,7 +8,6 @@ import {
 import {
 	Component,
 	customId,
-	DeferUpdate,
 	dynamicCustomId,
 	extractCustomId,
 	userEmbed,
@@ -17,7 +16,7 @@ import {
 import { ActionRowBuilder, channelMention, MessageFlags, RoleSelectMenuBuilder, roleMention } from 'discord.js';
 import { prettifyError } from 'zod';
 import { goToPage } from '@/utils';
-import { getConfigurations, openingMessageModal } from './helpers';
+import { configurationMenu, getConfigurations, openingMessageModal } from './helpers';
 
 export default class extends Component.Interaction {
 	public readonly customIds = [dynamicCustomId('ticket_automatic_threads_configuration_menu')];
@@ -37,7 +36,7 @@ export default class extends Component.Interaction {
 
 				const row = new ActionRowBuilder<RoleSelectMenuBuilder>().setComponents(managersMenu);
 
-				return context.interaction.reply({ components: [row] });
+				return context.interaction.update({ components: [row] });
 			}
 			default: {
 				return context.interaction.reply({
@@ -63,18 +62,16 @@ export default class extends Component.Interaction {
 		} = automaticThreadsConfigurationsSelectSchema.shape.channelId.safeParse(dynamicValue);
 
 		if (!success) {
-			return context.interaction
-				.reply({
-					embeds: [
-						userEmbedError({
-							client: context.interaction.client,
-							description: prettifyError(error),
-							member: context.interaction.member,
-						}),
-					],
-					flags: [MessageFlags.Ephemeral],
-				})
-				.catch(() => false);
+			return context.interaction.reply({
+				embeds: [
+					userEmbedError({
+						client: context.interaction.client,
+						description: prettifyError(error),
+						member: context.interaction.member,
+					}),
+				],
+				flags: [MessageFlags.Ephemeral],
+			});
 		}
 
 		const [row] = await database
@@ -91,18 +88,19 @@ export default class extends Component.Interaction {
 			);
 
 		if (!row) {
-			return context.interaction
-				.reply({
-					embeds: [
-						userEmbedError({
-							client: context.interaction.client,
-							description: 'No automatic threads configuration for the channel could be found.',
-							member: context.interaction.member,
-						}),
-					],
-					flags: [MessageFlags.Ephemeral],
-				})
-				.catch(() => false);
+			context.interaction.editReply({
+				embeds: [
+					userEmbedError({
+						client: context.interaction.client,
+						description: 'No automatic threads configuration for the channel could be found.',
+						member: context.interaction.member,
+					}),
+				],
+			});
+			return context.interaction.followUp({
+				components: configurationMenu(channelId),
+				content: context.interaction.message.content,
+			});
 		}
 
 		void openingMessageModal(context, { channelId, ...row });
@@ -112,17 +110,32 @@ export default class extends Component.Interaction {
 export class Managers extends Component.Interaction {
 	public readonly customIds = [dynamicCustomId('ticket_automatic_threads_configuration_managers')];
 
-	@DeferUpdate
 	public async execute({ interaction }: Component.Context<'role'>) {
 		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const managers = interaction.roles.map((role) => role.id);
+		const {
+			data: channelId,
+			error,
+			success,
+		} = automaticThreadsConfigurationsSelectSchema.shape.channelId.safeParse(dynamicValue);
 
+		if (!success) {
+			return interaction.reply({
+				components: [],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
+				flags: [MessageFlags.Ephemeral],
+			});
+		}
+
+		await interaction.deferUpdate();
 		await database
 			.update(automaticThreadsConfigurations)
 			.set({ managers })
 			.where(
 				and(
-					eq(automaticThreadsConfigurations.channelId, dynamicValue),
+					eq(automaticThreadsConfigurations.channelId, channelId),
 					eq(automaticThreadsConfigurations.guildId, interaction.guildId),
 				),
 			);
@@ -131,12 +144,13 @@ export class Managers extends Component.Interaction {
 		const embed = userEmbed(interaction)
 			.setTitle('Updated the Automatic Threads Managers')
 			.setDescription(
-				`${interaction.member} updated the managers of the automatic threads in ${channelMention(dynamicValue)} to: ${
+				`${interaction.member} updated the managers of the automatic threads in ${channelMention(channelId)} to: ${
 					managers.length > 0 ? roles : 'none'
 				}.`,
 			);
 
-		return interaction.editReply({ embeds: [embed], components: [] });
+		interaction.editReply({ components: [], content: '', embeds: [embed] });
+		return interaction.followUp({ components: configurationMenu(channelId), content: interaction.message.content });
 	}
 }
 
@@ -146,12 +160,11 @@ export class Overview extends Component.Interaction {
 		dynamicCustomId('ticket_automatic_threads_view_next'),
 	];
 
-	@DeferUpdate
-	public execute(context: Component.Context<'button'>) {
+	public async execute(context: Component.Context<'button'>) {
 		const { success, error, page } = goToPage(context.interaction);
 
 		if (!success) {
-			return context.interaction.editReply({
+			return context.interaction.reply({
 				components: [],
 				embeds: [
 					userEmbedError({
@@ -160,9 +173,11 @@ export class Overview extends Component.Interaction {
 						member: context.interaction.member,
 					}),
 				],
+				flags: [MessageFlags.Ephemeral],
 			});
 		}
 
+		await context.interaction.deferUpdate();
 		void getConfigurations(context, page);
 	}
 }

@@ -833,7 +833,7 @@ type RootTranslation = {
 								 */
 								name: string
 								/**
-								 * ⌛​ ​{​m​s​}​m​s
+								 * ⌛​ ​{​m​s​}​ ​m​s
 								 * @param {number} ms
 								 */
 								value: RequiredParams<'ms'>
@@ -844,7 +844,7 @@ type RootTranslation = {
 								 */
 								name: string
 								/**
-								 * �​�​ ​R​o​u​g​h​l​y​ ​{​m​s​}​m​s
+								 * �​�​ ​R​o​u​g​h​l​y​ ​{​m​s​}​ ​m​s
 								 * @param {number} ms
 								 */
 								value: RequiredParams<'ms'>
@@ -2927,7 +2927,7 @@ export type TranslationFunctions = {
 								 */
 								name: () => LocalizedString
 								/**
-								 * ⌛ {ms}ms
+								 * ⌛ {ms} ms
 								 */
 								value: (arg: { ms: number }) => LocalizedString
 							}
@@ -2937,7 +2937,7 @@ export type TranslationFunctions = {
 								 */
 								name: () => LocalizedString
 								/**
-								 * 🏓 Roughly {ms}ms
+								 * 🏓 Roughly {ms} ms
 								 */
 								value: (arg: { ms: number }) => LocalizedString
 							}

@@ -10,17 +10,10 @@ import {
 	ticketThreadsConfigurationsInsertSchema,
 } from '@ticketer/database';
 import { customId, DeferReply, embed, Subcommand, userEmbed, userEmbedError } from '@ticketer/djs-framework';
-import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
-	inlineCode,
-	StringSelectMenuBuilder,
-	StringSelectMenuOptionBuilder,
-} from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, inlineCode, MessageFlags } from 'discord.js';
 import { prettifyError } from 'zod';
 import { ThreadTicketing } from '@/utils';
-import { categoryFieldsModal, getCategories, HasGlobalConfiguration } from './helpers';
+import { categoryFieldsModal, configurationMenu, getCategories, HasGlobalConfiguration } from './helpers';
 
 export default class extends Subcommand.Interaction {
 	public readonly data = super.subcommand({
@@ -29,7 +22,6 @@ export default class extends Subcommand.Interaction {
 		subcommandNames: ['active-tickets'],
 	});
 
-	@DeferReply()
 	public async execute({ interaction }: Subcommand.Context) {
 		const {
 			data: activeTickets,
@@ -40,7 +32,7 @@ export default class extends Subcommand.Interaction {
 		);
 
 		if (!success) {
-			return interaction.editReply({
+			return interaction.reply({
 				embeds: [
 					userEmbedError({
 						client: interaction.client,
@@ -48,14 +40,14 @@ export default class extends Subcommand.Interaction {
 						member: interaction.member,
 					}),
 				],
+				flags: [MessageFlags.Ephemeral],
 			});
 		}
 
-		const { guildId } = interaction;
-
+		await interaction.deferReply();
 		await database
 			.insert(ticketThreadsConfigurations)
-			.values({ activeTickets, guildId })
+			.values({ activeTickets, guildId: interaction.guildId })
 			.onDuplicateKeyUpdate({ set: { activeTickets } });
 
 		const embed = userEmbed(interaction)
@@ -138,7 +130,6 @@ export class CategoriesEdit extends Subcommand.Interaction {
 		subcommandNames: ['edit'],
 	});
 
-	@DeferReply()
 	public async execute({ interaction }: Subcommand.Context) {
 		const {
 			data: categoryId,
@@ -147,13 +138,15 @@ export class CategoriesEdit extends Subcommand.Interaction {
 		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(interaction.options.getString('title', true)));
 
 		if (!success) {
-			return interaction.editReply({
+			return interaction.reply({
 				embeds: [
 					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
 				],
+				flags: [MessageFlags.Ephemeral],
 			});
 		}
 
+		await interaction.deferReply();
 		const [result] = await database
 			.select({ emoji: ticketThreadsCategories.categoryEmoji, title: ticketThreadsCategories.categoryTitle })
 			.from(ticketThreadsCategories)
@@ -172,77 +165,8 @@ export class CategoriesEdit extends Subcommand.Interaction {
 		}
 
 		const reply = embed(interaction).setTitle(ThreadTicketing.titleAndEmoji(result.title, result.emoji));
-		const categoriesMenu = new StringSelectMenuBuilder()
-			.setCustomId(customId('ticket_threads_category_configuration', categoryId))
-			.setMinValues(1)
-			.setMaxValues(1)
-			.setPlaceholder('Edit one of the following ticket category options:')
-			.setOptions(
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('📰')
-					.setLabel('Emoji, Title, & Description')
-					.setDescription('Change the emoji, title, and description used for this category.')
-					.setValue('emoji_title_description'),
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('🛡️')
-					.setLabel('Ticket Managers')
-					.setDescription('Choose the managers who are responsible for this category.')
-					.setValue('managers'),
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('#️⃣')
-					.setLabel('Channel')
-					.setDescription('Change the channel where tickets of this category go.')
-					.setValue('channel'),
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('📜')
-					.setLabel('Logs Channel')
-					.setDescription('Change the channel where logs get sent during ticket activity for the category.')
-					.setValue('logs_channel'),
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('📔')
-					.setLabel('Message Title & Description')
-					.setDescription("Change the opening message's title and description.")
-					.setValue('message_title_description'),
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('🚦')
-					.setLabel('Allowed Author Actions')
-					.setDescription('Change what actions the ticket author can use.')
-					.setValue('allowed_author_actions'),
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('🛃')
-					.setLabel('Private Thread')
-					.setDescription('Toggle whether the tickets are private.')
-					.setValue('private'),
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('🔔')
-					.setLabel('Silent Pings')
-					.setDescription('Toggle whether managers get pinged (with noise) on ticket creation.')
-					.setValue('silent_pings'),
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('⏩')
-					.setLabel('Skip Modal')
-					.setDescription('Toggle whether modals are skipped.')
-					.setValue('skip_modals'),
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('📣')
-					.setLabel('Thread Notification')
-					.setDescription('Toggle whether the new thread system message stays on.')
-					.setValue('notification'),
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('📑')
-					.setLabel('Thread Title')
-					.setDescription("Edit the created thread's title.")
-					.setValue('thread_title'),
-				new StringSelectMenuOptionBuilder()
-					.setEmoji('📝')
-					.setLabel('Title & Description')
-					.setDescription('Toggle whether ticket authors must write a title and description.')
-					.setValue('ticket_title_description'),
-			);
 
-		const row = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(categoriesMenu);
-
-		return interaction.editReply({ components: [row], embeds: [reply] });
+		return interaction.editReply({ components: configurationMenu(categoryId), embeds: [reply] });
 	}
 }
 

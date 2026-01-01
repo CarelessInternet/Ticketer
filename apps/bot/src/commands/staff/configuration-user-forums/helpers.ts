@@ -1,6 +1,7 @@
 import { database, desc, eq, userForumsConfigurations } from '@ticketer/database';
 import { type Command, type Component, container, customId, userEmbedError } from '@ticketer/djs-framework';
 import {
+	ActionRowBuilder,
 	bold,
 	ChannelSelectMenuBuilder,
 	ChannelType,
@@ -13,6 +14,8 @@ import {
 	roleMention,
 	SeparatorBuilder,
 	SeparatorSpacingSize,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
 	TextDisplayBuilder,
 	TextInputBuilder,
 	TextInputStyle,
@@ -138,7 +141,29 @@ export async function openingMessageModal(
 	const modal = new ModalBuilder()
 		.setCustomId(customId('ticket_user_forums_configuration_opening_message'))
 		.setTitle('Opening Message Title & Description')
-		.setLabelComponents([channelInput, titleInput, descriptionInput].filter((input) => !!input));
+		.setLabelComponents(channelInput, titleInput, descriptionInput);
 
 	return interaction.showModal(modal).catch(() => false);
+}
+
+export function configurationMenu(channelId: string) {
+	const selectMenu = new StringSelectMenuBuilder()
+		.setCustomId(customId('ticket_user_forums_configuration_menu', channelId))
+		.setMinValues(1)
+		.setMaxValues(1)
+		.setPlaceholder('Edit one of the following user forum options:')
+		.setOptions(
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('📔')
+				.setLabel('Message Title & Description')
+				.setDescription("Change the opening message's title and description.")
+				.setValue('message_title_description'),
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('🛡️')
+				.setLabel('Ticket Managers')
+				.setDescription('Choose the managers who are responsible for this forum.')
+				.setValue('managers'),
+		);
+
+	return [new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(selectMenu)];
 }

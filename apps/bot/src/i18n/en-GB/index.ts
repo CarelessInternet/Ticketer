@@ -380,11 +380,11 @@ const en_GB = {
 						fields: [
 							{
 								name: 'Ping',
-								value: '⌛ {ms:number}ms',
+								value: '⌛ {ms:number} ms',
 							},
 							{
 								name: 'Latency',
-								value: '🏓 Roughly {ms:number}ms',
+								value: '🏓 Roughly {ms:number} ms',
 							},
 							{
 								name: 'WebSocket Status',

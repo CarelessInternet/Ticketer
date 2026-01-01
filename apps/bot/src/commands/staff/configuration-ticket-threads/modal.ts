@@ -8,7 +8,7 @@ import {
 } from '@ticketer/database';
 import {
 	customId,
-	DeferReply,
+	DeferUpdate,
 	dynamicCustomId,
 	extractCustomId,
 	Modal,
@@ -18,7 +18,7 @@ import {
 import { inlineCode } from 'discord.js';
 import { prettifyError } from 'zod';
 import { extractEmoji } from '@/utils';
-import { HasGlobalConfiguration } from './helpers';
+import { configurationMenu, HasGlobalConfiguration } from './helpers';
 
 const MAXIMUM_CATEGORY_AMOUNT = 10;
 
@@ -28,11 +28,12 @@ export default class extends Modal.Interaction {
 		dynamicCustomId('ticket_threads_category_fields_dynamic'),
 	];
 
-	@DeferReply()
 	@HasGlobalConfiguration
 	public async execute({ interaction }: Modal.Context) {
 		const { customId, fields, guildId } = interaction;
 		const { dynamicValue } = extractCustomId(customId);
+
+		await (dynamicValue ? interaction.deferUpdate() : interaction.deferReply());
 
 		const emoji = fields.getTextInputValue('emoji');
 		const categoryEmoji = extractEmoji(emoji);
@@ -55,10 +56,11 @@ export default class extends Modal.Interaction {
 		}
 
 		const { categoryDescription, categoryTitle } = values;
+		let categoryId = 0;
 
 		if (dynamicValue) {
 			const {
-				data: categoryId,
+				data,
 				error: idError,
 				success: idSuccess,
 			} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
@@ -75,6 +77,7 @@ export default class extends Modal.Interaction {
 				});
 			}
 
+			categoryId = data;
 			await database
 				.update(ticketThreadsCategories)
 				.set({ categoryDescription, categoryEmoji, categoryTitle })
@@ -125,16 +128,18 @@ export default class extends Modal.Interaction {
 				},
 			);
 
-		return interaction.editReply({
-			embeds: [embed],
-		});
+		interaction.editReply({ components: [], embeds: [embed] });
+
+		if (categoryId) {
+			return interaction.followUp({ components: configurationMenu(categoryId), embeds: interaction.message?.embeds });
+		}
 	}
 }
 
 export class CategoryMessage extends Modal.Interaction {
 	public readonly customIds = [dynamicCustomId('ticket_threads_category_message')];
 
-	@DeferReply()
+	@DeferUpdate
 	@HasGlobalConfiguration
 	public async execute({ interaction }: Modal.Context) {
 		const { dynamicValue } = extractCustomId(interaction.customId, true);
@@ -168,11 +173,12 @@ export class CategoryMessage extends Modal.Interaction {
 			});
 
 		if (!success) {
-			return interaction.editReply({
+			interaction.editReply({
 				embeds: [
 					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
 				],
 			});
+			return interaction.followUp({ components: configurationMenu(categoryId), embeds: interaction.message?.embeds });
 		}
 
 		const { openingMessageDescription, openingMessageTitle } = values;
@@ -204,14 +210,15 @@ export class CategoryMessage extends Modal.Interaction {
 			});
 		}
 
-		return interaction.editReply({ embeds: [embed] });
+		interaction.editReply({ components: [], embeds: [embed] });
+		return interaction.followUp({ components: configurationMenu(categoryId), embeds: interaction.message?.embeds });
 	}
 }
 
 export class ThreadTitle extends Modal.Interaction {
 	public readonly customIds = [dynamicCustomId('ticket_threads_category_thread_title')];
 
-	@DeferReply()
+	@DeferUpdate
 	@HasGlobalConfiguration
 	public async execute({ interaction }: Modal.Context) {
 		const { customId, fields } = interaction;
@@ -263,6 +270,7 @@ export class ThreadTitle extends Modal.Interaction {
 				`${interaction.member} updated the ticket thread title to the following if it has text: ${threadTitle ? inlineCode(threadTitle) : 'Empty'}.`,
 			);
 
-		return interaction.editReply({ embeds: [embed] });
+		interaction.editReply({ components: [], embeds: [embed] });
+		return interaction.followUp({ components: configurationMenu(categoryId), embeds: interaction.message?.embeds });
 	}
 }

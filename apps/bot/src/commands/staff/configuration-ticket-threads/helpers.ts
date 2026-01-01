@@ -8,6 +8,7 @@ import {
 	userEmbedError,
 } from '@ticketer/djs-framework';
 import {
+	ActionRowBuilder,
 	bold,
 	channelMention,
 	HeadingLevel,
@@ -19,6 +20,8 @@ import {
 	roleMention,
 	SeparatorBuilder,
 	SeparatorSpacingSize,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
 	TextDisplayBuilder,
 	TextInputBuilder,
 	TextInputStyle,
@@ -209,4 +212,76 @@ export async function categoryFieldsModal(
 		.setLabelComponents(emojiInput, titleInput, descriptionInput);
 
 	return context.interaction.showModal(modal).catch(() => false);
+}
+
+export function configurationMenu(categoryId: number) {
+	const categoriesMenu = new StringSelectMenuBuilder()
+		.setCustomId(customId('ticket_threads_category_configuration', categoryId))
+		.setMinValues(1)
+		.setMaxValues(1)
+		.setPlaceholder('Edit one of the following ticket category options:')
+		.setOptions(
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('📰')
+				.setLabel('Emoji, Title, & Description')
+				.setDescription('Change the emoji, title, and description used for this category.')
+				.setValue('emoji_title_description'),
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('🛡️')
+				.setLabel('Ticket Managers')
+				.setDescription('Choose the managers who are responsible for this category.')
+				.setValue('managers'),
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('#️⃣')
+				.setLabel('Channel')
+				.setDescription('Change the channel where tickets of this category go.')
+				.setValue('channel'),
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('📜')
+				.setLabel('Logs Channel')
+				.setDescription('Change the channel where logs get sent during ticket activity for the category.')
+				.setValue('logs_channel'),
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('📔')
+				.setLabel('Message Title & Description')
+				.setDescription("Change the opening message's title and description.")
+				.setValue('message_title_description'),
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('🚦')
+				.setLabel('Allowed Author Actions')
+				.setDescription('Change what actions the ticket author can use.')
+				.setValue('allowed_author_actions'),
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('🛃')
+				.setLabel('Private Thread')
+				.setDescription('Toggle whether the tickets are private.')
+				.setValue('private'),
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('🔔')
+				.setLabel('Silent Pings')
+				.setDescription('Toggle whether managers get pinged (with noise) on ticket creation.')
+				.setValue('silent_pings'),
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('⏩')
+				.setLabel('Skip Modal')
+				.setDescription('Toggle whether modals are skipped.')
+				.setValue('skip_modals'),
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('📣')
+				.setLabel('Thread Notification')
+				.setDescription('Toggle whether the new thread system message stays on.')
+				.setValue('notification'),
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('📑')
+				.setLabel('Thread Title')
+				.setDescription("Edit the created thread's title.")
+				.setValue('thread_title'),
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('📝')
+				.setLabel('Title & Description')
+				.setDescription('Toggle whether ticket authors must write a title and description.')
+				.setValue('ticket_title_description'),
+		);
+
+	return [new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(categoriesMenu)];
 }

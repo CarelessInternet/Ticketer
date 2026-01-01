@@ -11,7 +11,6 @@ import {
 import {
 	Component,
 	customId,
-	DeferReply,
 	DeferUpdate,
 	dynamicCustomId,
 	extractCustomId,
@@ -35,7 +34,7 @@ import {
 } from 'discord.js';
 import { prettifyError } from 'zod';
 import { goToPage, ThreadTicketing } from '@/utils';
-import { categoryFieldsModal, getCategories, HasGlobalConfiguration } from './helpers';
+import { categoryFieldsModal, configurationMenu, getCategories, HasGlobalConfiguration } from './helpers';
 
 export default class extends Component.Interaction {
 	public readonly customIds = [dynamicCustomId('ticket_threads_category_configuration')];
@@ -57,7 +56,7 @@ export default class extends Component.Interaction {
 
 				const row = new ActionRowBuilder<RoleSelectMenuBuilder>().setComponents(managersMenu);
 
-				return interaction.reply({ components: [row] });
+				return interaction.update({ components: [row] });
 			}
 			case 'channel':
 			case 'logs_channel': {
@@ -74,7 +73,7 @@ export default class extends Component.Interaction {
 
 				const row = new ActionRowBuilder<ChannelSelectMenuBuilder>().setComponents(channelMenu);
 
-				return interaction.reply({ components: [row] });
+				return interaction.update({ components: [row] });
 			}
 			case 'message_title_description': {
 				return this.messageTitleDescriptionValues({ interaction });
@@ -117,7 +116,7 @@ export default class extends Component.Interaction {
 
 				const row = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(selectMenu);
 
-				return interaction.reply({ components: [row] });
+				return interaction.update({ components: [row] });
 			}
 			case 'private':
 			case 'notification': {
@@ -257,7 +256,6 @@ export default class extends Component.Interaction {
 		return interaction.showModal(modal).catch(() => false);
 	}
 
-	@DeferReply()
 	private async privateAndNotification({ interaction }: Component.Context<'string'>) {
 		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const type = interaction.values.at(0)?.includes('private') ? 'private threads' : 'thread notification';
@@ -268,13 +266,15 @@ export default class extends Component.Interaction {
 		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
 
 		if (!success) {
-			return interaction.editReply({
+			return interaction.reply({
 				embeds: [
 					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
 				],
+				flags: [MessageFlags.Ephemeral],
 			});
 		}
 
+		await interaction.deferUpdate();
 		await database
 			.update(ticketThreadsCategories)
 			.set(
@@ -311,10 +311,10 @@ export default class extends Component.Interaction {
 				`${interaction.member} has toggled the ${type} option to ${valueAsBoolean ? 'enabled' : 'disabled'}.`,
 			);
 
-		return interaction.editReply({ embeds: [embed] });
+		interaction.editReply({ components: [], embeds: [embed] });
+		return interaction.followUp({ components: configurationMenu(categoryId), embeds: interaction.message.embeds });
 	}
 
-	@DeferReply()
 	private async silentPings({ interaction }: Component.Context<'string'>) {
 		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const {
@@ -324,13 +324,15 @@ export default class extends Component.Interaction {
 		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
 
 		if (!success) {
-			return interaction.editReply({
+			return interaction.reply({
 				embeds: [
 					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
 				],
+				flags: [MessageFlags.Ephemeral],
 			});
 		}
 
+		await interaction.deferUpdate();
 		await database
 			.update(ticketThreadsCategories)
 			.set({
@@ -361,10 +363,10 @@ export default class extends Component.Interaction {
 				`${interaction.member} has toggled the silent pings option to ${row.silentPings ? 'enabled' : 'disabled'}.`,
 			);
 
-		return interaction.editReply({ embeds: [embed] });
+		interaction.editReply({ components: [], embeds: [embed] });
+		return interaction.followUp({ components: configurationMenu(categoryId), embeds: interaction.message.embeds });
 	}
 
-	@DeferReply()
 	private async skipModals({ interaction }: Component.Context<'string'>) {
 		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const {
@@ -374,13 +376,15 @@ export default class extends Component.Interaction {
 		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
 
 		if (!success) {
-			return interaction.editReply({
+			return interaction.reply({
 				embeds: [
 					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
 				],
+				flags: [MessageFlags.Ephemeral],
 			});
 		}
 
+		await interaction.deferUpdate();
 		await database
 			.update(ticketThreadsCategories)
 			.set({
@@ -411,7 +415,8 @@ export default class extends Component.Interaction {
 				`${interaction.member} has toggled the skip modal option to ${row.skipModal ? 'enabled' : 'disabled'}.`,
 			);
 
-		return interaction.editReply({ embeds: [embed] });
+		interaction.editReply({ components: [], embeds: [embed] });
+		return interaction.followUp({ components: configurationMenu(categoryId), embeds: interaction.message.embeds });
 	}
 
 	private async threadTitleValues({ interaction }: Component.Context<'string'>) {
@@ -427,6 +432,7 @@ export default class extends Component.Interaction {
 				embeds: [
 					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
 				],
+				flags: [MessageFlags.Ephemeral],
 			});
 		}
 
@@ -444,6 +450,7 @@ export default class extends Component.Interaction {
 						member: interaction.member,
 					}),
 				],
+				flags: [MessageFlags.Ephemeral],
 			});
 		}
 
@@ -467,7 +474,6 @@ export default class extends Component.Interaction {
 		return interaction.showModal(modal).catch(() => false);
 	}
 
-	@DeferReply()
 	private async ticketTitleDescription({ interaction }: Component.Context<'string'>) {
 		const { dynamicValue } = extractCustomId(interaction.customId, true);
 		const {
@@ -477,13 +483,15 @@ export default class extends Component.Interaction {
 		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
 
 		if (!success) {
-			return interaction.editReply({
+			return interaction.reply({
 				embeds: [
 					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
 				],
+				flags: [MessageFlags.Ephemeral],
 			});
 		}
 
+		await interaction.deferUpdate();
 		await database
 			.update(ticketThreadsCategories)
 			.set({
@@ -514,7 +522,8 @@ export default class extends Component.Interaction {
 				`${interaction.member} has toggled the ticket title and description option to ${row.titleAndDescriptionRequired ? 'required' : 'optional'}.`,
 			);
 
-		return interaction.editReply({ embeds: [embed] });
+		interaction.editReply({ components: [], embeds: [embed] });
+		return interaction.followUp({ components: configurationMenu(categoryId), embeds: interaction.message.embeds });
 	}
 }
 
@@ -558,7 +567,8 @@ export class Channel extends Component.Interaction {
 			.setTitle('Updated the Thread Ticket Category')
 			.setDescription(`${interaction.member} updated the ${type} to ${channel}.`);
 
-		return interaction.editReply({ components: [], embeds: [embed] });
+		interaction.editReply({ components: [], embeds: [embed] });
+		return interaction.followUp({ components: configurationMenu(categoryId), embeds: interaction.message.embeds });
 	}
 }
 
@@ -593,7 +603,7 @@ export class Managers extends Component.Interaction {
 
 		const roles = managers.map((id) => roleMention(id)).join(', ');
 
-		return interaction.editReply({
+		interaction.editReply({
 			components: [],
 			embeds: [
 				userEmbed(interaction)
@@ -603,6 +613,7 @@ export class Managers extends Component.Interaction {
 					),
 			],
 		});
+		return interaction.followUp({ components: configurationMenu(categoryId), embeds: interaction.message.embeds });
 	}
 }
 
@@ -628,20 +639,6 @@ export class AuthorActions extends Component.Interaction {
 			});
 		}
 
-		const value = interaction.values.at(0);
-
-		if (!value) {
-			return interaction.editReply({
-				embeds: [
-					userEmbedError({
-						client: interaction.client,
-						description: 'The selected value could not be found.',
-						member: interaction.member,
-					}),
-				],
-			});
-		}
-
 		const [row] = await database
 			.select()
 			.from(ticketThreadsCategories)
@@ -660,6 +657,7 @@ export class AuthorActions extends Component.Interaction {
 		}
 
 		const authorPermissions = new ThreadTicketActionsPermissionBitField(row.allowedAuthorActions);
+		const value = interaction.values.at(0);
 		let enabled = false;
 
 		for (const [name, flag] of ThreadTicketing.actionsAsKeyAndFlagsMap) {
@@ -671,7 +669,8 @@ export class AuthorActions extends Component.Interaction {
 
 		await authorPermissions.updateAuthorPermissions(row.id, row.guildId);
 
-		return interaction.editReply({
+		interaction.editReply({
+			components: [],
 			embeds: [
 				userEmbed(interaction)
 					.setTitle('Updated the Thread Ticket Category')
@@ -680,6 +679,7 @@ export class AuthorActions extends Component.Interaction {
 					),
 			],
 		});
+		return interaction.followUp({ components: configurationMenu(categoryId), embeds: interaction.message.embeds });
 	}
 }
 
@@ -726,7 +726,7 @@ export class Delete extends Component.Interaction {
 				);
 		}
 
-		return interaction.editReply({
+		interaction.editReply({
 			components: [],
 			embeds: [
 				userEmbed(interaction)
@@ -738,6 +738,7 @@ export class Delete extends Component.Interaction {
 					),
 			],
 		});
+		return interaction.followUp({ components: configurationMenu(categoryId), embeds: interaction.message.embeds });
 	}
 }
 

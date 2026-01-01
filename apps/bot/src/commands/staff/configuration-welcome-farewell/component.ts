@@ -1,13 +1,5 @@
 import { database, eq, not, welcomeAndFarewell } from '@ticketer/database';
-import {
-	Component,
-	customId,
-	DeferReply,
-	DeferUpdate,
-	extractCustomId,
-	userEmbed,
-	userEmbedError,
-} from '@ticketer/djs-framework';
+import { Component, customId, DeferUpdate, extractCustomId, userEmbed, userEmbedError } from '@ticketer/djs-framework';
 import {
 	ActionRowBuilder,
 	ChannelSelectMenuBuilder,
@@ -19,7 +11,7 @@ import {
 	TextInputBuilder,
 	TextInputStyle,
 } from 'discord.js';
-import type { InsertWithoutGuildId } from './helpers';
+import { configurationMenu, type InsertWithoutGuildId } from './helpers';
 
 export default class extends Component.Interaction {
 	public readonly customIds = [customId('welcome_configuration'), customId('farewell_configuration')];
@@ -40,7 +32,7 @@ export default class extends Component.Interaction {
 
 				const channelRow = new ActionRowBuilder<ChannelSelectMenuBuilder>().setComponents(channelSelectMenu);
 
-				return interaction.reply({ components: [channelRow] });
+				return interaction.update({ components: [channelRow] });
 			}
 			case 'title': {
 				const titleInput = new LabelBuilder()
@@ -91,7 +83,7 @@ export default class extends Component.Interaction {
 
 				const rolesRow = new ActionRowBuilder<RoleSelectMenuBuilder>().setComponents(rolesSelectMenu);
 
-				return interaction.reply({ components: [rolesRow] });
+				return interaction.update({ components: [rolesRow] });
 			}
 			case 'enabled': {
 				return this.welcomeAndFarewellConfigurationToggle({ interaction });
@@ -114,7 +106,7 @@ export default class extends Component.Interaction {
 		text.replace(/./, (character) => character.toUpperCase()) as Capitalize<T>;
 	}
 
-	@DeferReply()
+	@DeferUpdate
 	private async welcomeAndFarewellConfigurationToggle({ interaction }: Component.Context<'string'>) {
 		const { farewellEnabled, welcomeEnabled } = welcomeAndFarewell;
 		const { guildId } = interaction;
@@ -134,15 +126,13 @@ export default class extends Component.Interaction {
 			});
 
 		const [row] = await database
-			.select({
-				welcomeEnabled: welcomeAndFarewell.welcomeEnabled,
-				farewellEnabled: welcomeAndFarewell.farewellEnabled,
-			})
+			.select({ welcomeEnabled, farewellEnabled })
 			.from(welcomeAndFarewell)
-			.where(eq(welcomeAndFarewell.guildId, interaction.guildId));
+			.where(eq(welcomeAndFarewell.guildId, guildId));
 
 		if (!row) {
-			return interaction.editReply({
+			interaction.editReply({
+				components: [],
 				embeds: [
 					userEmbedError({
 						client: interaction.client,
@@ -151,6 +141,8 @@ export default class extends Component.Interaction {
 					}),
 				],
 			});
+
+			return interaction.followUp({ components: configurationMenu() });
 		}
 
 		const valueAsBoolean = type === 'welcome' ? row.welcomeEnabled : row.farewellEnabled;
@@ -160,7 +152,8 @@ export default class extends Component.Interaction {
 				`${interaction.member} has toggled the ${type} option to ${valueAsBoolean ? 'enabled' : 'disabled'}.`,
 			);
 
-		return interaction.editReply({ embeds: [embed] });
+		interaction.editReply({ components: [], embeds: [embed] });
+		return interaction.followUp({ components: configurationMenu() });
 	}
 }
 
@@ -187,9 +180,10 @@ export class Channel extends Component.Interaction {
 
 		const embed = userEmbed(interaction)
 			.setTitle('Updated the Welcome/Farewell Configuration')
-			.setDescription(`${interaction.member} updated the ${type} channel to ${channel}`);
+			.setDescription(`${interaction.member} updated the ${type} channel to ${channel}.`);
 
-		return interaction.editReply({ embeds: [embed], components: [] });
+		interaction.editReply({ components: [], embeds: [embed] });
+		return interaction.followUp({ components: configurationMenu() });
 	}
 }
 
@@ -212,9 +206,10 @@ export class Roles extends Component.Interaction {
 			.setDescription(
 				`${interaction.member} updated the roles given to new members: ${
 					welcomeNewMemberRoles.length > 0 ? roles : 'none'
-				}`,
+				}.`,
 			);
 
-		return interaction.editReply({ embeds: [embed], components: [] });
+		interaction.editReply({ components: [], embeds: [embed] });
+		return interaction.followUp({ components: configurationMenu() });
 	}
 }

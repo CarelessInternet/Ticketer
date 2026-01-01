@@ -1,6 +1,7 @@
 import { automaticThreadsConfigurations, database, desc, eq } from '@ticketer/database';
 import { type Component, container, customId, type Subcommand, userEmbedError } from '@ticketer/djs-framework';
 import {
+	ActionRowBuilder,
 	bold,
 	ChannelSelectMenuBuilder,
 	ChannelType,
@@ -13,6 +14,8 @@ import {
 	roleMention,
 	SeparatorBuilder,
 	SeparatorSpacingSize,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
 	TextDisplayBuilder,
 	TextInputBuilder,
 	TextInputStyle,
@@ -136,7 +139,29 @@ export async function openingMessageModal(
 	const modal = new ModalBuilder()
 		.setCustomId(customId('ticket_automatic_threads_configuration_opening_message'))
 		.setTitle('Opening Message Title & Description')
-		.setLabelComponents([channelInput, titleInput, descriptionInput].filter((input) => !!input));
+		.setLabelComponents(channelInput, titleInput, descriptionInput);
 
 	return interaction.showModal(modal).catch(() => false);
+}
+
+export function configurationMenu(channelId: string) {
+	const selectMenu = new StringSelectMenuBuilder()
+		.setCustomId(customId('ticket_automatic_threads_configuration_menu', channelId))
+		.setMinValues(1)
+		.setMaxValues(1)
+		.setPlaceholder('Edit one of the following automatic threads options:')
+		.setOptions(
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('📔')
+				.setLabel('Message Title & Description')
+				.setDescription("Change the opening message's title and description.")
+				.setValue('message_title_description'),
+			new StringSelectMenuOptionBuilder()
+				.setEmoji('🛡️')
+				.setLabel('Ticket Managers')
+				.setDescription('Choose the managers who are responsible for this text channel.')
+				.setValue('managers'),
+		);
+
+	return [new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(selectMenu)];
 }

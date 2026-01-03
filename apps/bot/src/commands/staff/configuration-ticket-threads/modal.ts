@@ -15,9 +15,9 @@ import {
 	userEmbed,
 	userEmbedError,
 } from '@ticketer/djs-framework';
-import { inlineCode } from 'discord.js';
+import { formatEmoji, inlineCode } from 'discord.js';
 import { prettifyError } from 'zod';
-import { extractEmoji } from '@/utils';
+import { discordEmojiFromId, extractDiscordEmoji } from '@/utils';
 import { configurationMenu, HasGlobalConfiguration } from './helpers';
 
 const MAXIMUM_CATEGORY_AMOUNT = 10;
@@ -35,8 +35,27 @@ export default class extends Modal.Interaction {
 
 		await (dynamicValue ? interaction.deferUpdate() : interaction.deferReply());
 
-		const emoji = fields.getTextInputValue('emoji');
-		const categoryEmoji = extractEmoji(emoji);
+		let { emoji: categoryEmoji, isSnowflake } = extractDiscordEmoji(fields.getTextInputValue('emoji'));
+		let emojiIsAnimated = false;
+
+		if (isSnowflake) {
+			const fetchedEmoji = await discordEmojiFromId(interaction, categoryEmoji);
+
+			if (!fetchedEmoji?.id || !fetchedEmoji.botInGuild) {
+				return interaction.editReply({
+					embeds: [
+						userEmbedError({
+							client: interaction.client,
+							description: 'The emoji ID is invalid or from a server the bot is not in.',
+							member: interaction.member,
+						}),
+					],
+				});
+			}
+
+			categoryEmoji = fetchedEmoji.id;
+			emojiIsAnimated = fetchedEmoji.animated;
+		}
 
 		const {
 			data: values,
@@ -114,7 +133,8 @@ export default class extends Modal.Interaction {
 			.setFields(
 				{
 					name: 'Emoji',
-					value: categoryEmoji ?? 'None.',
+					// biome-ignore lint/style/noNonNullAssertion: It is defined if isSnowflake is true.
+					value: isSnowflake ? formatEmoji(categoryEmoji!, emojiIsAnimated) : (categoryEmoji ?? 'None'),
 					inline: true,
 				},
 				{
@@ -131,7 +151,10 @@ export default class extends Modal.Interaction {
 		interaction.editReply({ components: [], embeds: [embed] });
 
 		if (categoryId) {
-			return interaction.followUp({ components: configurationMenu(categoryId), embeds: interaction.message?.embeds });
+			return interaction.followUp({
+				components: configurationMenu(categoryId),
+				embeds: interaction.message?.embeds,
+			});
 		}
 	}
 }

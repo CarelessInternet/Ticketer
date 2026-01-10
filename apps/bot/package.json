@@ -20,9 +20,9 @@
 		"discord.js": "^14.25.1",
 		"tsx": "^4.21.0",
 		"typesafe-i18n": "^5.26.2",
-		"zod": "^4.3.4"
+		"zod": "^4.3.5"
 	},
 	"devDependencies": {
-		"@types/node": "^25.0.3"
+		"@types/node": "^25.0.6"
 	}
 }

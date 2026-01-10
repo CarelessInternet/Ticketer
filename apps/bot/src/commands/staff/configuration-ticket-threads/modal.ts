@@ -36,17 +36,16 @@ export default class extends Modal.Interaction {
 		await (dynamicValue ? interaction.deferUpdate() : interaction.deferReply());
 
 		let { emoji: categoryEmoji, isSnowflake } = extractDiscordEmoji(fields.getTextInputValue('emoji'));
-		let emojiIsAnimated = false;
 
 		if (isSnowflake) {
 			const fetchedEmoji = await discordEmojiFromId(interaction, categoryEmoji);
 
-			if (!fetchedEmoji?.id || !fetchedEmoji.botInGuild) {
+			if (!fetchedEmoji?.id || !fetchedEmoji.botInGuild || fetchedEmoji.animated) {
 				return interaction.editReply({
 					embeds: [
 						userEmbedError({
 							client: interaction.client,
-							description: 'The emoji ID is invalid or from a server the bot is not in.',
+							description: 'The emoji ID is invalid, animated, or from a server the bot is not in.',
 							member: interaction.member,
 						}),
 					],
@@ -54,7 +53,6 @@ export default class extends Modal.Interaction {
 			}
 
 			categoryEmoji = fetchedEmoji.id;
-			emojiIsAnimated = fetchedEmoji.animated;
 		}
 
 		const {
@@ -134,7 +132,7 @@ export default class extends Modal.Interaction {
 				{
 					name: 'Emoji',
 					// biome-ignore lint/style/noNonNullAssertion: It is defined if isSnowflake is true.
-					value: isSnowflake ? formatEmoji(categoryEmoji!, emojiIsAnimated) : (categoryEmoji ?? 'None'),
+					value: isSnowflake ? formatEmoji(categoryEmoji!, false) : (categoryEmoji ?? 'None'),
 					inline: true,
 				},
 				{

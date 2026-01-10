@@ -15,7 +15,7 @@ import {
 	userEmbed,
 	userEmbedError,
 } from '@ticketer/djs-framework';
-import { formatEmoji, inlineCode } from 'discord.js';
+import { formatEmoji, inlineCode, MessageFlags } from 'discord.js';
 import { prettifyError } from 'zod';
 import { discordEmojiFromId, extractDiscordEmoji } from '@/utils';
 import { configurationMenu, HasGlobalConfiguration } from './helpers';
@@ -31,8 +31,25 @@ export default class extends Modal.Interaction {
 	@HasGlobalConfiguration
 	public async execute({ interaction }: Modal.Context) {
 		const { customId, fields, guildId } = interaction;
-		const { dynamicValue } = extractCustomId(customId);
+		const {
+			data: values,
+			error,
+			success,
+		} = ticketThreadsCategoriesInsertSchema.pick({ categoryTitle: true, categoryDescription: true }).safeParse({
+			categoryTitle: fields.getTextInputValue('title'),
+			categoryDescription: fields.getTextInputValue('description'),
+		});
 
+		if (!success) {
+			return interaction.reply({
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
+				flags: [MessageFlags.Ephemeral],
+			});
+		}
+
+		const { dynamicValue } = extractCustomId(customId);
 		await (dynamicValue ? interaction.deferUpdate() : interaction.deferReply());
 
 		let { emoji: categoryEmoji, isSnowflake } = extractDiscordEmoji(fields.getTextInputValue('emoji'));
@@ -53,23 +70,6 @@ export default class extends Modal.Interaction {
 			}
 
 			categoryEmoji = fetchedEmoji.id;
-		}
-
-		const {
-			data: values,
-			error,
-			success,
-		} = ticketThreadsCategoriesInsertSchema.pick({ categoryTitle: true, categoryDescription: true }).safeParse({
-			categoryTitle: fields.getTextInputValue('title'),
-			categoryDescription: fields.getTextInputValue('description'),
-		});
-
-		if (!success) {
-			return interaction.editReply({
-				embeds: [
-					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
-				],
-			});
 		}
 
 		const { categoryDescription, categoryTitle } = values;

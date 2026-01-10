@@ -58,7 +58,7 @@ export default class extends Command.Interaction {
 			);
 		const buttonEmojiInput = new LabelBuilder()
 			.setLabel('Buttom Emoji')
-			.setDescription("Write an emoji for the button used to create a ticket. For a server's emoji, write its ID!")
+			.setDescription("Write an emoji for the button used to create a ticket. For your server's emoji, write its ID!")
 			.setTextInputComponent(
 				new TextInputBuilder()
 					.setCustomId(customId('button_emoji'))

@@ -16,7 +16,8 @@ export const snowflake = customType<{ data: DiscordSnowflake }>({
 	},
 });
 
-const snowflakeParser = z.coerce.bigint().min(17n).transform(String);
+// 17 digits.
+const snowflakeParser = z.coerce.bigint().min(10_000_000_000_000_000n).transform(String);
 export const snowflakeOptionalParser = snowflakeParser.optional();
 export const snowflakeRequiredParser = snowflakeParser;
 

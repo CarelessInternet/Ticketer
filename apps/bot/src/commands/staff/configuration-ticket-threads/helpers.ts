@@ -179,8 +179,7 @@ export async function categoryFieldsModal(
 				.setCustomId(customId('emoji'))
 				.setRequired(false)
 				.setMinLength(1)
-				// 8 because of unicode.
-				.setMaxLength(8)
+				.setMaxLength(21)
 				.setStyle(TextInputStyle.Short),
 		);
 	const titleInput = new LabelBuilder()

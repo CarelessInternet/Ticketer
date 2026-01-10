@@ -1417,7 +1417,7 @@ type RootTranslation = {
 				}
 				categoryList: {
 					/**
-					 * S​e​l​e​c​t​ ​a​ ​c​a​t​e​g​o​r​y​ ​t​o​ ​c​r​e​a​t​e​ ​a​ ​t​i​c​k​e​t​ ​w​i​t​h​i​n​.
+					 * S​e​l​e​c​t​ ​a​ ​c​a​t​e​g​o​r​y​ ​t​o​ ​c​r​e​a​t​e​ ​a​ ​t​i​c​k​e​t​ ​i​n​.
 					 */
 					placeholder: string
 				}
@@ -3496,7 +3496,7 @@ export type TranslationFunctions = {
 				}
 				categoryList: {
 					/**
-					 * Select a category to create a ticket within.
+					 * Select a category to create a ticket in.
 					 */
 					placeholder: () => LocalizedString
 				}

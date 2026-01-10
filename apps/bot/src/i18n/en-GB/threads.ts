@@ -10,7 +10,7 @@ export default {
 			},
 		},
 		categoryList: {
-			placeholder: 'Select a category to create a ticket within.',
+			placeholder: 'Select a category to create a ticket in.',
 		},
 		createModal: {
 			errors: {

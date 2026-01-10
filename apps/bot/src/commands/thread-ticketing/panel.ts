@@ -1,4 +1,4 @@
-import { Command, container, customId, DeferReply, Modal, userEmbed, userEmbedError } from '@ticketer/djs-framework';
+import { Command, container, customId, Modal, userEmbed, userEmbedError } from '@ticketer/djs-framework';
 import {
 	ButtonBuilder,
 	ButtonStyle,
@@ -16,7 +16,7 @@ import {
 	TextInputStyle,
 } from 'discord.js';
 import { prettifyError, z } from 'zod';
-import { extractEmoji } from '@/utils';
+import { discordEmojiFromId, extractDiscordEmoji } from '@/utils';
 
 export default class extends Command.Interaction {
 	public readonly data = super.SlashBuilder.setName('panel')
@@ -58,13 +58,13 @@ export default class extends Command.Interaction {
 			);
 		const buttonEmojiInput = new LabelBuilder()
 			.setLabel('Buttom Emoji')
-			.setDescription('Write an emoji for the button used to create a ticket.')
+			.setDescription("Write an emoji for the button used to create a ticket. For your server's emoji, write its ID!")
 			.setTextInputComponent(
 				new TextInputBuilder()
 					.setCustomId(customId('button_emoji'))
 					.setRequired(false)
 					.setMinLength(1)
-					.setMaxLength(8)
+					.setMaxLength(21)
 					.setStyle(TextInputStyle.Short),
 			);
 		const buttonLabelInput = new LabelBuilder()
@@ -91,12 +91,21 @@ export default class extends Command.Interaction {
 export class ModalInteraction extends Modal.Interaction {
 	public readonly customIds = [customId('ticket_threads_categories_create_panel')];
 
-	@DeferReply()
 	public async execute({ interaction }: Modal.Context) {
-		const { fields, guild } = interaction;
+		const channel = interaction.fields.getSelectedChannels('channel', true).at(0);
 
-		const rawButtonEmoji = fields.getTextInputValue('button_emoji');
-		const buttonEmoji = extractEmoji(rawButtonEmoji) ?? '🎫';
+		if (!channel?.isTextBased()) {
+			return interaction.reply({
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'The specified channel is not text based.',
+						member: interaction.member,
+					}),
+				],
+				flags: [MessageFlags.Ephemeral],
+			});
+		}
 
 		const { success, data, error } = z
 			.object({
@@ -105,13 +114,13 @@ export class ModalInteraction extends Modal.Interaction {
 				buttonLabel: z.string().min(1).max(80),
 			})
 			.safeParse({
-				title: fields.getTextInputValue('title'),
-				description: fields.getTextInputValue('description'),
-				buttonLabel: fields.getTextInputValue('button_label'),
+				title: interaction.fields.getTextInputValue('title'),
+				description: interaction.fields.getTextInputValue('description'),
+				buttonLabel: interaction.fields.getTextInputValue('button_label'),
 			});
 
 		if (!success) {
-			return interaction.editReply({
+			return interaction.reply({
 				embeds: [
 					userEmbedError({
 						client: interaction.client,
@@ -120,24 +129,33 @@ export class ModalInteraction extends Modal.Interaction {
 						title: 'One or multiple of the modal fields are invalid.',
 					}),
 				],
+				flags: [MessageFlags.Ephemeral],
 			});
 		}
 
-		const channel = fields.getSelectedChannels('channel', true).at(0);
+		let { emoji, isSnowflake } = extractDiscordEmoji(interaction.fields.getTextInputValue('button_emoji'));
+		await interaction.deferReply();
 
-		if (!channel?.isTextBased()) {
-			return interaction.editReply({
-				embeds: [
-					userEmbedError({
-						client: interaction.client,
-						description: 'The specified channel is not text based.',
-						member: interaction.member,
-					}),
-				],
-			});
+		if (isSnowflake) {
+			const fetchedEmoji = await discordEmojiFromId(interaction, emoji);
+
+			if (!fetchedEmoji?.id) {
+				return interaction.editReply({
+					embeds: [
+						userEmbedError({
+							client: interaction.client,
+							description: 'The emoji ID is invalid.',
+							member: interaction.member,
+						}),
+					],
+				});
+			}
+
+			emoji = fetchedEmoji.id;
 		}
 
-		const me = await guild.members.fetchMe();
+		emoji ||= '🎫';
+		const me = await interaction.guild.members.fetchMe();
 
 		if (!channel.permissionsFor(me).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) {
 			return interaction.editReply({
@@ -162,7 +180,7 @@ export class ModalInteraction extends Modal.Interaction {
 							.setButtonAccessory(
 								new ButtonBuilder()
 									.setCustomId(customId('ticket_threads_categories_create_list_panel'))
-									.setEmoji(buttonEmoji)
+									.setEmoji(emoji)
 									.setLabel(data.buttonLabel)
 									.setStyle(ButtonStyle.Primary),
 							),
@@ -177,7 +195,7 @@ export class ModalInteraction extends Modal.Interaction {
 				userEmbed(interaction)
 					.setTitle('Sent the Ticket Panel')
 					.setDescription(
-						`The thread ticket panel has successfully been sent in ${channel}. View the message at ${message.url}!`,
+						`The thread ticket panel has been sent successfully in ${channel}. View the message at ${message.url}!`,
 					),
 			],
 		});

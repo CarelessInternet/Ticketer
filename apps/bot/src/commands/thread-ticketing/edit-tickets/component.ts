@@ -55,7 +55,7 @@ export default class extends Component.Interaction {
 						.setDescription(
 							`${interaction.member} pruned ${categories.at(0)?.count.toString() ?? 'Unknown'} ` +
 								`ticket(s) with the state ${inlineCode(ThreadTicketing.ticketState(state))} in the following categories:
-							${categories.map((category) => inlineCode(ThreadTicketing.titleAndEmoji(category.categoryTitle, category.categoryEmoji))).join(', ')}.`,
+							${categories.map((category) => ThreadTicketing.titleAndEmoji(category.categoryTitle, category.categoryEmoji)).join(', ')}.`,
 						),
 				],
 			});
@@ -100,7 +100,7 @@ export default class extends Component.Interaction {
 						.setTitle('Purged Inactive Thread Tickets')
 						.setDescription(
 							`${interaction.member} purged ${categories.at(0)?.count.toString() ?? 'Unknown'} inactive ticket(s) in the following categories:
-							${categories.map((category) => inlineCode(ThreadTicketing.titleAndEmoji(category.categoryTitle, category.categoryEmoji))).join(', ')}.`,
+							${categories.map((category) => ThreadTicketing.titleAndEmoji(category.categoryTitle, category.categoryEmoji)).join(', ')}.`,
 						),
 				],
 			});

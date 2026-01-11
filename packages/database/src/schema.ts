@@ -64,6 +64,7 @@ export const ticketThreadsCategories = mysqlTable(
 		id: int('id', { unsigned: true }).autoincrement().primaryKey(),
 		guildId: snowflake('guildId').notNull(),
 		allowedAuthorActions: int('allowedAuthorActions', { unsigned: true }),
+		authorLeaveAction: int('authorLeaveAction', { unsigned: true }),
 		// This is either a Unicode emoji or a Discord emoji (snowflake).
 		categoryEmoji: varchar('categoryEmoji', { length: 21 }),
 		categoryTitle: varchar('categoryTitle', { length: 100 }).notNull(),

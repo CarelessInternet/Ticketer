@@ -554,6 +554,13 @@ const en_GB = {
 				message: '{member:string} has left the server.',
 			},
 		},
+		threadMembersUpdate: {
+			logs: {
+				title: 'Ticket Author Left',
+				description:
+					'{member:string} left the thread at {thread:string} and therefore the ticket has been {state|{lock: locked, close: closed, lockAndClose: locked and closed, delete: deleted}}.',
+			},
+		},
 	},
 	miscellaneous: {
 		paginationButtons: {

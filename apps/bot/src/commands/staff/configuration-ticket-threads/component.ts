@@ -81,6 +81,9 @@ export default class extends Component.Interaction {
 			case 'allowed_author_actions': {
 				return this.authorActions({ interaction });
 			}
+			case 'author_leave_action': {
+				return this.authorLeaveAction({ interaction });
+			}
 			case 'private':
 			case 'notification': {
 				return this.privateAndNotification({ interaction });
@@ -238,7 +241,7 @@ export default class extends Component.Interaction {
 
 		await interaction.deferUpdate();
 		const [row] = await database
-			.select({ allowedAuthorActions: ticketThreadsCategories.allowedAuthorActions })
+			.select()
 			.from(ticketThreadsCategories)
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
@@ -256,10 +259,10 @@ export default class extends Component.Interaction {
 
 		const authorPermissions = new ThreadTicketActionsPermissionBitField(row.allowedAuthorActions);
 		const selectMenu = new StringSelectMenuBuilder()
-			.setCustomId(customId('ticket_threads_category_configuration_allowed_author_actions', categoryId))
-			.setMinValues(1)
+			.setCustomId(customId('ticket_threads_category_configuration_allowed_author_actions', row.id))
+			.setMinValues(0)
 			.setMaxValues(Object.keys(ThreadTicketActionsPermissionBitField.Flags).length)
-			.setPlaceholder('Edit one of the following ticket author actions:')
+			.setPlaceholder('Edit the following ticket author actions:')
 			.setOptions(
 				new StringSelectMenuOptionBuilder()
 					.setEmoji('📝')
@@ -291,6 +294,79 @@ export default class extends Component.Interaction {
 					.setDescription('Toggle whether ticket authors can delete tickets.')
 					.setValue('delete')
 					.setDefault(authorPermissions.has(ThreadTicketActionsPermissionBitField.Flags.Delete)),
+			);
+
+		const rowBuilder = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(selectMenu);
+
+		return interaction.editReply({ components: [rowBuilder] });
+	}
+
+	private async authorLeaveAction({ interaction }: Component.Context<'string'>) {
+		const { dynamicValue } = extractCustomId(interaction.customId);
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
+
+		if (!success) {
+			return interaction.reply({
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
+				flags: [MessageFlags.Ephemeral],
+			});
+		}
+
+		await interaction.deferUpdate();
+		const [row] = await database
+			.select()
+			.from(ticketThreadsCategories)
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
+
+		if (!row) {
+			return interaction.editReply({
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'No category with the given ID could be found.',
+						member: interaction.member,
+					}),
+				],
+			});
+		}
+
+		const actions = new ThreadTicketActionsPermissionBitField(row.authorLeaveAction, false);
+		const selectMenu = new StringSelectMenuBuilder()
+			.setCustomId(customId('ticket_threads_category_configuration_author_leave_action', row.id))
+			.setMinValues(0)
+			.setMaxValues(1)
+			.setPlaceholder('Edit one of the following ticket author leave actions:')
+			.setOptions(
+				new StringSelectMenuOptionBuilder()
+					.setEmoji('🔒')
+					.setLabel('Lock')
+					.setDescription('Toggle whether the ticket will be locked.')
+					.setValue('lock')
+					.setDefault(actions.has(ThreadTicketActionsPermissionBitField.Flags.Lock)),
+				new StringSelectMenuOptionBuilder()
+					.setEmoji('🗃')
+					.setLabel('Close')
+					.setDescription('Toggle whether the ticket well be closed.')
+					.setValue('close')
+					.setDefault(actions.has(ThreadTicketActionsPermissionBitField.Flags.Close)),
+				new StringSelectMenuOptionBuilder()
+					.setEmoji('🔐')
+					.setLabel('Lock & Close')
+					.setDescription('Toggle whether the ticket will be locked and closed.')
+					.setValue('lock_and_close')
+					.setDefault(actions.has(ThreadTicketActionsPermissionBitField.Flags.LockAndClose)),
+				new StringSelectMenuOptionBuilder()
+					.setEmoji('🗑')
+					.setLabel('Delete')
+					.setDescription('Toggle whether the ticket  will be deleted.')
+					.setValue('delete')
+					.setDefault(actions.has(ThreadTicketActionsPermissionBitField.Flags.Delete)),
 			);
 
 		const rowBuilder = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(selectMenu);
@@ -704,7 +780,7 @@ export class AuthorActions extends Component.Interaction {
 			interaction.values.includes(name) ? authorPermissions.set(flag) : authorPermissions.clear(flag);
 		}
 
-		await authorPermissions.updateAuthorPermissions(row.id, row.guildId);
+		await authorPermissions.updateAllowedAuthorActions(row.id, row.guildId);
 
 		interaction.editReply({
 			components: [],
@@ -712,11 +788,75 @@ export class AuthorActions extends Component.Interaction {
 				userEmbed(interaction)
 					.setTitle('Updated the Thread Ticket Category')
 					.setDescription(
-						`${interaction.member} has edited the allowed author actions to: ${ThreadTicketing.actionsBitfieldToNames(
-							authorPermissions.permissions,
-						)
-							.map((name) => inlineCode(name))
-							.join(', ')}.`,
+						`${interaction.member} has edited the allowed author actions to: ${
+							interaction.values.length > 0
+								? ThreadTicketing.actionsBitfieldToNames(authorPermissions.permissions)
+										.map((name) => inlineCode(name))
+										.join(', ')
+								: 'None'
+						}.`,
+					),
+			],
+		});
+		return interaction.followUp({ components: configurationMenu(categoryId), embeds: interaction.message.embeds });
+	}
+}
+
+export class AuthorLeaveAction extends Component.Interaction {
+	public readonly customIds = [dynamicCustomId('ticket_threads_category_configuration_author_leave_action')];
+
+	@DeferUpdate
+	@HasGlobalConfiguration
+	public async execute({ interaction }: Component.Context<'string'>) {
+		const { dynamicValue } = extractCustomId(interaction.customId, true);
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
+
+		if (!success) {
+			return interaction.editReply({
+				components: [],
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
+			});
+		}
+
+		const [row] = await database
+			.select()
+			.from(ticketThreadsCategories)
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
+
+		if (!row) {
+			return interaction.editReply({
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'No category with the given ID could be found.',
+						member: interaction.member,
+					}),
+				],
+			});
+		}
+
+		const bit = ThreadTicketing.actionsAsKeyAndFlagsMap.get(interaction.values.at(0) as ThreadTicketing.KeyOfActions);
+		await database
+			.update(ticketThreadsCategories)
+			.set({ authorLeaveAction: bit })
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
+
+		interaction.editReply({
+			components: [],
+			embeds: [
+				userEmbed(interaction)
+					.setTitle('Updated the Thread Ticket Category')
+					.setDescription(
+						`${interaction.member} has edited the author leave action to: ${
+							// biome-ignore lint/style/noNonNullAssertion: It should exist.
+							bit ? inlineCode(ThreadTicketing.actionsBitfieldToNames(bit).at(0)!) : 'None'
+						}.`,
 					),
 			],
 		});

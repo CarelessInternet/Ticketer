@@ -21,7 +21,7 @@ export default class extends Event.Handler {
 			exists(database.select().from(ticketsThreads).where(eq(ticketsThreads.threadId, newThread.id)).limit(1)),
 		);
 
-		// Two events are sent when the thread is archived and the locked button is pressed. We pray for no race conditions 🙏.
+		// Two events are sent when the thread is archived but the locked button is pressed. We pray for no race conditions 🙏.
 		if (lockedAndArchived) {
 			return database.update(ticketsThreads).set({ state: 'lockedAndArchived' }).where(whereCondition);
 		} else if (unarchived || unlocked) {

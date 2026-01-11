@@ -554,6 +554,13 @@ const sv_SE = {
 				message: '{member} har lämnat servern.',
 			},
 		},
+		threadMembersUpdate: {
+			logs: {
+				title: 'Stödbiljettsägare lämnade',
+				description:
+					'{member} lämnade tråden vid {thread} och därför har stödbiljetten {state|{lock: låsts, close: stängts, lockAndClose: låsts och stängts, delete: raderats}}.',
+			},
+		},
 	},
 	miscellaneous: {
 		paginationButtons: {

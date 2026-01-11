@@ -1163,6 +1163,21 @@ type RootTranslation = {
 				message: RequiredParams<'member'>
 			}
 		}
+		threadMembersUpdate: {
+			logs: {
+				/**
+				 * T​i​c​k​e​t​ ​A​u​t​h​o​r​ ​L​e​f​t
+				 */
+				title: string
+				/**
+				 * {​m​e​m​b​e​r​}​ ​l​e​f​t​ ​t​h​e​ ​t​h​r​e​a​d​ ​a​t​ ​{​t​h​r​e​a​d​}​ ​a​n​d​ ​t​h​e​r​e​f​o​r​e​ ​t​h​e​ ​t​i​c​k​e​t​ ​h​a​s​ ​b​e​e​n​ ​{​s​t​a​t​e​|​{​l​o​c​k​:​ ​l​o​c​k​e​d​,​ ​c​l​o​s​e​:​ ​c​l​o​s​e​d​,​ ​l​o​c​k​A​n​d​C​l​o​s​e​:​ ​l​o​c​k​e​d​ ​a​n​d​ ​c​l​o​s​e​d​,​ ​d​e​l​e​t​e​:​ ​d​e​l​e​t​e​d​}​}​.
+				 * @param {string} member
+				 * @param {'lock' | 'close' | 'lockAndClose' | 'delete'} state
+				 * @param {string} thread
+				 */
+				description: RequiredParams<'member' | `state|{lock:${string}, close:${string}, lockAndClose:${string}, delete:${string}}` | 'thread'>
+			}
+		}
 	}
 	miscellaneous: {
 		paginationButtons: {
@@ -3244,6 +3259,18 @@ export type TranslationFunctions = {
 				 * {member} has left the server.
 				 */
 				message: (arg: { member: string }) => LocalizedString
+			}
+		}
+		threadMembersUpdate: {
+			logs: {
+				/**
+				 * Ticket Author Left
+				 */
+				title: () => LocalizedString
+				/**
+				 * {member} left the thread at {thread} and therefore the ticket has been {state|{lock: locked, close: closed, lockAndClose: locked and closed, delete: deleted}}.
+				 */
+				description: (arg: { member: string, state: 'lock' | 'close' | 'lockAndClose' | 'delete', thread: string }) => LocalizedString
 			}
 		}
 	}

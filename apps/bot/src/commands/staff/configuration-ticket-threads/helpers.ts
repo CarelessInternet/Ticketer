@@ -251,6 +251,11 @@ export function configurationMenu(categoryId: number) {
 				.setDescription('Change what actions the ticket author can use.')
 				.setValue('allowed_author_actions'),
 			new StringSelectMenuOptionBuilder()
+				.setEmoji('👋')
+				.setLabel('Author Leave Action')
+				.setDescription('Change the action to perform when the ticket author leaves the thread.')
+				.setValue('author_leave_action'),
+			new StringSelectMenuOptionBuilder()
 				.setEmoji('🛃')
 				.setLabel('Private Thread')
 				.setDescription('Toggle whether the tickets are private.')

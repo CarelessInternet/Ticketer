@@ -1,0 +1,1 @@
+ALTER TABLE `ticketThreadsCategories` ADD `authorLeaveAction` int unsigned;

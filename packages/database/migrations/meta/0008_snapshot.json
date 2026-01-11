@@ -1,0 +1,591 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "id": "b7efcf48-6e4c-41c5-8c49-0081dac6e7b2",
+  "prevId": "0791c300-37d8-427b-abe9-ebb46cf85598",
+  "tables": {
+    "automaticThreadsConfigurations": {
+      "name": "automaticThreadsConfigurations",
+      "columns": {
+        "channelId": {
+          "name": "channelId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "guildId": {
+          "name": "guildId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "managers": {
+          "name": "managers",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "('[]')"
+        },
+        "openingMessageTitle": {
+          "name": "openingMessageTitle",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "openingMessageDescription": {
+          "name": "openingMessageDescription",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "guildId_index": {
+          "name": "guildId_index",
+          "columns": [
+            "guildId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "automaticThreadsConfigurations_channelId": {
+          "name": "automaticThreadsConfigurations_channelId",
+          "columns": [
+            "channelId"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "guildBlacklists": {
+      "name": "guildBlacklists",
+      "columns": {
+        "guildId": {
+          "name": "guildId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reason": {
+          "name": "reason",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "timestamp": {
+          "name": "timestamp",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "timestamp_index": {
+          "name": "timestamp_index",
+          "columns": [
+            "timestamp"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "guildBlacklists_guildId": {
+          "name": "guildBlacklists_guildId",
+          "columns": [
+            "guildId"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "ticketThreadsCategories": {
+      "name": "ticketThreadsCategories",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "guildId": {
+          "name": "guildId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "allowedAuthorActions": {
+          "name": "allowedAuthorActions",
+          "type": "int unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "authorLeaveAction": {
+          "name": "authorLeaveAction",
+          "type": "int unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "categoryEmoji": {
+          "name": "categoryEmoji",
+          "type": "varchar(21)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "categoryTitle": {
+          "name": "categoryTitle",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "categoryDescription": {
+          "name": "categoryDescription",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "channelId": {
+          "name": "channelId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "logsChannelId": {
+          "name": "logsChannelId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "managers": {
+          "name": "managers",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "('[]')"
+        },
+        "openingMessageTitle": {
+          "name": "openingMessageTitle",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "openingMessageDescription": {
+          "name": "openingMessageDescription",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "privateThreads": {
+          "name": "privateThreads",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "silentPings": {
+          "name": "silentPings",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "skipModal": {
+          "name": "skipModal",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "threadNotifications": {
+          "name": "threadNotifications",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "threadTitle": {
+          "name": "threadTitle",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "titleAndDescriptionRequired": {
+          "name": "titleAndDescriptionRequired",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        }
+      },
+      "indexes": {
+        "guildId_index": {
+          "name": "guildId_index",
+          "columns": [
+            "guildId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "ticket_threads_categories_fk": {
+          "name": "ticket_threads_categories_fk",
+          "tableFrom": "ticketThreadsCategories",
+          "tableTo": "ticketThreadsConfigurations",
+          "columnsFrom": [
+            "guildId"
+          ],
+          "columnsTo": [
+            "guildId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "ticketThreadsCategories_id": {
+          "name": "ticketThreadsCategories_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "ticketThreadsConfigurations": {
+      "name": "ticketThreadsConfigurations",
+      "columns": {
+        "guildId": {
+          "name": "guildId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "activeTickets": {
+          "name": "activeTickets",
+          "type": "tinyint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "ticketThreadsConfigurations_guildId": {
+          "name": "ticketThreadsConfigurations_guildId",
+          "columns": [
+            "guildId"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "ticketsThreads": {
+      "name": "ticketsThreads",
+      "columns": {
+        "threadId": {
+          "name": "threadId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "authorId": {
+          "name": "authorId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "categoryId": {
+          "name": "categoryId",
+          "type": "int unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "guildId": {
+          "name": "guildId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "state": {
+          "name": "state",
+          "type": "enum('active','archived','locked','lockedAndArchived')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'active'"
+        }
+      },
+      "indexes": {
+        "authorId_index": {
+          "name": "authorId_index",
+          "columns": [
+            "authorId"
+          ],
+          "isUnique": false
+        },
+        "categoryId_index": {
+          "name": "categoryId_index",
+          "columns": [
+            "categoryId"
+          ],
+          "isUnique": false
+        },
+        "guildId_index": {
+          "name": "guildId_index",
+          "columns": [
+            "guildId"
+          ],
+          "isUnique": false
+        },
+        "state_index": {
+          "name": "state_index",
+          "columns": [
+            "state"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "tickets_threads_fk": {
+          "name": "tickets_threads_fk",
+          "tableFrom": "ticketsThreads",
+          "tableTo": "ticketThreadsCategories",
+          "columnsFrom": [
+            "guildId",
+            "categoryId"
+          ],
+          "columnsTo": [
+            "guildId",
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "ticketsThreads_threadId": {
+          "name": "ticketsThreads_threadId",
+          "columns": [
+            "threadId"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "userForumsConfigurations": {
+      "name": "userForumsConfigurations",
+      "columns": {
+        "channelId": {
+          "name": "channelId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "guildId": {
+          "name": "guildId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "managers": {
+          "name": "managers",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "('[]')"
+        },
+        "openingMessageTitle": {
+          "name": "openingMessageTitle",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "openingMessageDescription": {
+          "name": "openingMessageDescription",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "guildId_index": {
+          "name": "guildId_index",
+          "columns": [
+            "guildId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "userForumsConfigurations_channelId": {
+          "name": "userForumsConfigurations_channelId",
+          "columns": [
+            "channelId"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "welcomeAndFarewell": {
+      "name": "welcomeAndFarewell",
+      "columns": {
+        "guildId": {
+          "name": "guildId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "welcomeChannelId": {
+          "name": "welcomeChannelId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "welcomeMessageTitle": {
+          "name": "welcomeMessageTitle",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "welcomeMessageDescription": {
+          "name": "welcomeMessageDescription",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "welcomeNewMemberRoles": {
+          "name": "welcomeNewMemberRoles",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "('[]')"
+        },
+        "welcomeEnabled": {
+          "name": "welcomeEnabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "farewellChannelId": {
+          "name": "farewellChannelId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "farewellMessageTitle": {
+          "name": "farewellMessageTitle",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "farewellMessageDescription": {
+          "name": "farewellMessageDescription",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "farewellEnabled": {
+          "name": "farewellEnabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "welcomeAndFarewell_guildId": {
+          "name": "welcomeAndFarewell_guildId",
+          "columns": [
+            "guildId"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "welcomeAndFarewell_welcomeChannelId_unique": {
+          "name": "welcomeAndFarewell_welcomeChannelId_unique",
+          "columns": [
+            "welcomeChannelId"
+          ]
+        },
+        "welcomeAndFarewell_farewellChannelId_unique": {
+          "name": "welcomeAndFarewell_farewellChannelId_unique",
+          "columns": [
+            "farewellChannelId"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    }
+  },
+  "views": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {},
+    "indexes": {}
+  }
+}

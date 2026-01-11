@@ -57,6 +57,13 @@
       "when": 1767380338577,
       "tag": "0007_nappy_green_goblin",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1768163263334,
+      "tag": "0008_lame_nemesis",
+      "breakpoints": true
     }
   ]
 }

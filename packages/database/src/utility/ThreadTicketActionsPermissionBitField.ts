@@ -19,8 +19,8 @@ export class ThreadTicketActionsPermissionBitField {
 
 	private bitfield: number;
 
-	public constructor(bitfield?: typeof ThreadTicketActionsPermissionBitField.Default | null) {
-		this.bitfield = bitfield ?? ThreadTicketActionsPermissionBitField.Default;
+	public constructor(bitfield?: typeof ThreadTicketActionsPermissionBitField.Default | null, defaultToAll = true) {
+		this.bitfield = bitfield ?? (defaultToAll ? ThreadTicketActionsPermissionBitField.Default : 0);
 	}
 
 	public get permissions() {
@@ -46,7 +46,7 @@ export class ThreadTicketActionsPermissionBitField {
 		return this.has(bit);
 	}
 
-	public updateAuthorPermissions(
+	public updateAllowedAuthorActions(
 		categoryId: typeof ticketThreadsCategories.$inferSelect.id,
 		guildId: DiscordSnowflake,
 	) {

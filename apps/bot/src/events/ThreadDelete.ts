@@ -7,7 +7,7 @@ export default class extends Event.Handler {
 
 	@LogExceptions
 	public execute([thread]: Event.ArgumentsOf<this['name']>) {
-		if (thread.client.user.id) {
+		if (thread.ownerId === thread.client.user.id) {
 			void database
 				.delete(ticketsThreads)
 				.where(eq(ticketsThreads.threadId, thread.id))

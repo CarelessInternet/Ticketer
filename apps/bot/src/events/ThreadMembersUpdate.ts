@@ -59,7 +59,7 @@ export default class extends Event.Handler {
 			state = 'delete';
 		}
 
-		if (row.logsChannelId) {
+		if (row.logsChannelId && row.authorLeaveAction) {
 			const me = await thread.guild.members.fetchMe();
 			const logsChannel = await fetchChannel(thread.guild, row.logsChannelId);
 

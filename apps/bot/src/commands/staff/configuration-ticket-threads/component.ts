@@ -844,7 +844,7 @@ export class AuthorLeaveAction extends Component.Interaction {
 		const bit = ThreadTicketing.actionsAsKeyAndFlagsMap.get(interaction.values.at(0) as ThreadTicketing.KeyOfActions);
 		await database
 			.update(ticketThreadsCategories)
-			.set({ authorLeaveAction: bit })
+			.set({ authorLeaveAction: bit ?? null })
 			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
 
 		interaction.editReply({

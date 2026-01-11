@@ -79,44 +79,7 @@ export default class extends Component.Interaction {
 				return this.messageTitleDescriptionValues({ interaction });
 			}
 			case 'allowed_author_actions': {
-				const { dynamicValue } = extractCustomId(interaction.customId);
-
-				const selectMenu = new StringSelectMenuBuilder()
-					.setCustomId(customId('ticket_threads_category_configuration_allowed_author_actions', dynamicValue))
-					.setMinValues(1)
-					.setMaxValues(1)
-					.setPlaceholder('Edit one of the following ticket author actions:')
-					.setOptions(
-						new StringSelectMenuOptionBuilder()
-							.setEmoji('📝')
-							.setLabel('Rename Title')
-							.setDescription('Toggle whether ticket authors can rename titles.')
-							.setValue('rename_title'),
-						new StringSelectMenuOptionBuilder()
-							.setEmoji('🔒')
-							.setLabel('Lock')
-							.setDescription('Toggle whether ticket authors can lock tickets.')
-							.setValue('lock'),
-						new StringSelectMenuOptionBuilder()
-							.setEmoji('🗃')
-							.setLabel('Close')
-							.setDescription('Toggle whether ticket authors can close tickets.')
-							.setValue('close'),
-						new StringSelectMenuOptionBuilder()
-							.setEmoji('🔐')
-							.setLabel('Lock & Close')
-							.setDescription('Toggle whether ticket authors can lock and close tickets.')
-							.setValue('lock_and_close'),
-						new StringSelectMenuOptionBuilder()
-							.setEmoji('🗑')
-							.setLabel('Delete')
-							.setDescription('Toggle whether ticket authors can delete tickets.')
-							.setValue('delete'),
-					);
-
-				const row = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(selectMenu);
-
-				return interaction.update({ components: [row] });
+				return this.authorActions({ interaction });
 			}
 			case 'private':
 			case 'notification': {
@@ -254,6 +217,85 @@ export default class extends Component.Interaction {
 			.setLabelComponents(titleInput, descriptionInput);
 
 		return interaction.showModal(modal).catch(() => false);
+	}
+
+	private async authorActions({ interaction }: Component.Context<'string'>) {
+		const { dynamicValue } = extractCustomId(interaction.customId);
+		const {
+			data: categoryId,
+			error,
+			success,
+		} = ticketThreadsCategoriesSelectSchema.shape.id.safeParse(Number(dynamicValue));
+
+		if (!success) {
+			return interaction.reply({
+				embeds: [
+					userEmbedError({ client: interaction.client, description: prettifyError(error), member: interaction.member }),
+				],
+				flags: [MessageFlags.Ephemeral],
+			});
+		}
+
+		await interaction.deferUpdate();
+		const [row] = await database
+			.select({ allowedAuthorActions: ticketThreadsCategories.allowedAuthorActions })
+			.from(ticketThreadsCategories)
+			.where(and(eq(ticketThreadsCategories.id, categoryId), eq(ticketThreadsCategories.guildId, interaction.guildId)));
+
+		if (!row) {
+			return interaction.editReply({
+				embeds: [
+					userEmbedError({
+						client: interaction.client,
+						description: 'No category with the given ID could be found.',
+						member: interaction.member,
+					}),
+				],
+			});
+		}
+
+		const authorPermissions = new ThreadTicketActionsPermissionBitField(row.allowedAuthorActions);
+		const selectMenu = new StringSelectMenuBuilder()
+			.setCustomId(customId('ticket_threads_category_configuration_allowed_author_actions', categoryId))
+			.setMinValues(1)
+			.setMaxValues(Object.keys(ThreadTicketActionsPermissionBitField.Flags).length)
+			.setPlaceholder('Edit one of the following ticket author actions:')
+			.setOptions(
+				new StringSelectMenuOptionBuilder()
+					.setEmoji('📝')
+					.setLabel('Rename Title')
+					.setDescription('Toggle whether ticket authors can rename titles.')
+					.setValue('rename_title')
+					.setDefault(authorPermissions.has(ThreadTicketActionsPermissionBitField.Flags.RenameTitle)),
+				new StringSelectMenuOptionBuilder()
+					.setEmoji('🔒')
+					.setLabel('Lock')
+					.setDescription('Toggle whether ticket authors can lock tickets.')
+					.setValue('lock')
+					.setDefault(authorPermissions.has(ThreadTicketActionsPermissionBitField.Flags.Lock)),
+				new StringSelectMenuOptionBuilder()
+					.setEmoji('🗃')
+					.setLabel('Close')
+					.setDescription('Toggle whether ticket authors can close tickets.')
+					.setValue('close')
+					.setDefault(authorPermissions.has(ThreadTicketActionsPermissionBitField.Flags.Close)),
+				new StringSelectMenuOptionBuilder()
+					.setEmoji('🔐')
+					.setLabel('Lock & Close')
+					.setDescription('Toggle whether ticket authors can lock and close tickets.')
+					.setValue('lock_and_close')
+					.setDefault(authorPermissions.has(ThreadTicketActionsPermissionBitField.Flags.LockAndClose)),
+				new StringSelectMenuOptionBuilder()
+					.setEmoji('🗑')
+					.setLabel('Delete')
+					.setDescription('Toggle whether ticket authors can delete tickets.')
+					.setValue('delete')
+					.setDefault(authorPermissions.has(ThreadTicketActionsPermissionBitField.Flags.Delete)),
+			);
+
+		const rowBuilder = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(selectMenu);
+
+		return interaction.editReply({ components: [rowBuilder] });
 	}
 
 	private async privateAndNotification({ interaction }: Component.Context<'string'>) {
@@ -657,14 +699,9 @@ export class AuthorActions extends Component.Interaction {
 		}
 
 		const authorPermissions = new ThreadTicketActionsPermissionBitField(row.allowedAuthorActions);
-		const value = interaction.values.at(0);
-		let enabled = false;
 
 		for (const [name, flag] of ThreadTicketing.actionsAsKeyAndFlagsMap) {
-			if (value === name) {
-				enabled = authorPermissions.toggle(flag);
-				break;
-			}
+			interaction.values.includes(name) ? authorPermissions.set(flag) : authorPermissions.clear(flag);
 		}
 
 		await authorPermissions.updateAuthorPermissions(row.id, row.guildId);
@@ -675,7 +712,11 @@ export class AuthorActions extends Component.Interaction {
 				userEmbed(interaction)
 					.setTitle('Updated the Thread Ticket Category')
 					.setDescription(
-						`${interaction.member} has toggled the ${inlineCode(ThreadTicketing.ActionsAsName[value as ThreadTicketing.KeyOfActions])} ticket author action to ${enabled ? 'enabled' : 'disabled'}.`,
+						`${interaction.member} has edited the allowed author actions to: ${ThreadTicketing.actionsBitfieldToNames(
+							authorPermissions.permissions,
+						)
+							.map((name) => inlineCode(name))
+							.join(', ')}.`,
 					),
 			],
 		});

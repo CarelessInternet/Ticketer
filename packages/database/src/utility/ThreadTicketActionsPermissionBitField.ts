@@ -23,12 +23,26 @@ export class ThreadTicketActionsPermissionBitField {
 		this.bitfield = bitfield ?? ThreadTicketActionsPermissionBitField.Default;
 	}
 
+	public get permissions() {
+		return this.bitfield;
+	}
+
 	public has(bit: number) {
 		return (this.bitfield & bit) === bit;
 	}
 
 	public toggle(bit: number) {
 		this.bitfield ^= bit;
+		return this.has(bit);
+	}
+
+	public set(bit: number) {
+		this.bitfield |= bit;
+		return this.has(bit);
+	}
+
+	public clear(bit: number) {
+		this.bitfield &= ~bit;
 		return this.has(bit);
 	}
 

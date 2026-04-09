@@ -67,55 +67,58 @@ export default class extends Command.Interaction {
 		const translations = translate(interaction.locale).commands.help.command.components;
 
 		const commands = commandsArray.join(', ');
-		const buttons: { label: string; url: string }[] = [
-			{
-				label: translations[2].links.donate(),
-				url: this.UTM('/links/funding/donate'),
-			},
-			{
-				label: translations[2].links.website(),
-				url: this.UTM(),
-			},
-			...(environment.DISCORD_SUPPORT_SERVER
-				? [
-						{
-							label: translations[2].links.supportServer(),
-							url: new URL(environment.DISCORD_SUPPORT_SERVER).toString(),
-						},
-					]
-				: []),
-			{
-				label: translations[2].links.invite(),
-				url: this.UTM('/links/discord/invite'),
-			},
-		];
+		const buttons: { label: string; url: string }[] = environment.WEBSITE_URL
+			? [
+					{
+						label: translations[2].links.donate(),
+						url: this.UTM('/links/funding/donate'),
+					},
+					{
+						label: translations[2].links.website(),
+						url: this.UTM(),
+					},
+					{
+						label: translations[2].links.supportServer(),
+						url: this.UTM('/links/discord/support'),
+					},
+					{
+						label: translations[2].links.invite(),
+						url: this.UTM('/links/discord/invite'),
+					},
+				]
+			: [];
 
 		const reply = container({
 			builder: (cont) =>
-				cont
-					.addSectionComponents(
-						new SectionBuilder()
-							.addTextDisplayComponents(
-								new TextDisplayBuilder().setContent(heading(translations[0].text[0].content())),
-								new TextDisplayBuilder().setContent(commands),
+				environment.WEBSITE_URL
+					? cont
+							.addSectionComponents(
+								new SectionBuilder()
+									.addTextDisplayComponents(
+										new TextDisplayBuilder().setContent(heading(translations[0].text[0].content())),
+										new TextDisplayBuilder().setContent(commands),
+									)
+									.setButtonAccessory(
+										new ButtonBuilder()
+											.setStyle(ButtonStyle.Link)
+											.setLabel(translations[0].button.label())
+											.setURL(this.UTM(`/${getLocale(interaction.locale)}/docs/commands`)),
+									),
 							)
-							.setButtonAccessory(
-								new ButtonBuilder()
-									.setStyle(ButtonStyle.Link)
-									.setLabel(translations[0].button.label())
-									.setURL(this.UTM(`/${getLocale(interaction.locale)}/docs/commands`)),
-							),
-					)
-					.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true))
-					.addTextDisplayComponents(new TextDisplayBuilder().setContent(heading(translations[1].text())))
-					.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(false))
-					.addActionRowComponents(
-						new ActionRowBuilder<ButtonBuilder>().setComponents(
-							buttons.map((button) =>
-								new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel(button.label).setURL(button.url),
-							),
+							.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true))
+							.addTextDisplayComponents(new TextDisplayBuilder().setContent(heading(translations[1].text())))
+							.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(false))
+							.addActionRowComponents(
+								new ActionRowBuilder<ButtonBuilder>().setComponents(
+									buttons.map((button) =>
+										new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel(button.label).setURL(button.url),
+									),
+								),
+							)
+					: cont.addTextDisplayComponents(
+							new TextDisplayBuilder().setContent(heading(translations[0].text[0].content())),
+							new TextDisplayBuilder().setContent(commands),
 						),
-					),
 			client: interaction.client,
 		});
 

@@ -9,7 +9,7 @@
 
 	// The 'service' property is the name of the service for the container that VS Code should
 	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
-	"service": "bot",
+	"service": "codebase",
 
 	// The optional 'workspaceFolder' property is the path VS Code should open by default when
 	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
@@ -39,7 +39,7 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"ms-azuretools.vscode-docker",
+				"ms-azuretools.vscode-containers",
 				"biomejs.biome",
 				"bradlc.vscode-tailwindcss",
 				"wix.vscode-import-cost",
@@ -51,6 +51,26 @@
 				"editor.defaultFormatter": "biomejs.biome",
 				"editor.codeActionsOnSave": {
 					"source.fixAll.biome": "explicit"
+				},
+				"js/ts.tsdk.path": "node_modules/.pnpm/node_modules/typescript/lib",
+				// Debug settings.
+				"launch": {
+					"version": "0.2.0",
+					"configurations": [
+						// Method 2: https://tsx.is/vscode
+						{
+							"name": "Attach to process",
+							"type": "node",
+							"request": "attach",
+							"port": 9229,
+							"skipFiles": [
+								// Node.js internal core modules.
+								"<node_internals>/**",
+								// Ignore all dependencies (optional).
+								"${workspaceFolder}/node_modules/**"
+							]
+						}
+					]
 				}
 			}
 		}

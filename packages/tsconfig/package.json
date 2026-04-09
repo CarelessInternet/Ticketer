@@ -1,0 +1,15 @@
+{
+	"name": "@ticketer/tsconfig",
+	"version": "0.1.0",
+	"private": true,
+	"files": [
+		"tsconfig.base.json"
+	],
+	"type": "module",
+	"scripts": {
+		"check": "biome check --write"
+	},
+	"devDependencies": {
+		"@types/node": "^25.5.2"
+	}
+}

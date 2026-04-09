@@ -5,7 +5,7 @@ import type { PropsWithChildren } from 'react';
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
 import Paragraph from '@/components/Paragraph';
-import RichText from '@/components/RichText';
+import RichText, { UTMLinkSupport } from '@/components/RichText';
 import ScrollLink from '@/components/ScrollLink';
 import SectionDivider from '@/components/SectionDivider';
 import Title from '@/components/Title';
@@ -62,7 +62,18 @@ export default async function Page({ params }: PageProps<'/[locale]/legal/privac
 				</SectionDivider>
 				<SectionDivider header={t('sections.website.sections.4.title')}>
 					<Paragraph>
-						<RichText>{(tags) => t.rich('sections.website.sections.4.description', tags)}</RichText>
+						<RichText>
+							{(tags) =>
+								t.rich('sections.website.sections.4.description', {
+									linkSupport: (chunk) => (
+										<UTMLinkSupport medium="hyperlink" content="privacy policy website">
+											{chunk}
+										</UTMLinkSupport>
+									),
+									...tags,
+								})
+							}
+						</RichText>
 					</Paragraph>
 				</SectionDivider>
 			</Divider>
@@ -116,7 +127,18 @@ export default async function Page({ params }: PageProps<'/[locale]/legal/privac
 				</SectionDivider>
 				<SectionDivider header={t('sections.discord-bot.sections.7.title')}>
 					<Paragraph>
-						<RichText>{(tags) => t.rich('sections.discord-bot.sections.7.description', tags)}</RichText>
+						<RichText>
+							{(tags) =>
+								t.rich('sections.discord-bot.sections.7.description', {
+									linkSupport: (chunk) => (
+										<UTMLinkSupport medium="hyperlink" content="privacy policy bot">
+											{chunk}
+										</UTMLinkSupport>
+									),
+									...tags,
+								})
+							}
+						</RichText>
 					</Paragraph>
 				</SectionDivider>
 				<SectionDivider header={t('sections.discord-bot.sections.8.title')}>

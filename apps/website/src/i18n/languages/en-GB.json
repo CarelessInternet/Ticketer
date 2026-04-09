@@ -38,7 +38,7 @@
 				}
 			},
 			"items": {
-				"sidebar": "Links & Theme",
+				"sidebar": "Links, Language, & Theme",
 				"invite": "Invite to Discord Server",
 				"support": "Discord Support Server",
 				"github": "GitHub Repository",
@@ -236,7 +236,7 @@
 						"paragraphs": {
 							"1": "Open Visual Studio Code, and inside the code editor, open the command palette and run the following command.",
 							"2": "It should prompt for a repository URL. Paste Ticketer's GitHub URL and afterwards choose the main branch:",
-							"3": "Once the Dev Container has started, you can get to coding. It's as simple as that! Do not forget to create the necessary bot, database, and website development environment files to run the different apps!"
+							"3": "Once the Dev Container has started, you can get to coding. It's as simple as that! Do not forget to create the necessary bot and website development environment files to run the different apps!"
 						}
 					}
 				}

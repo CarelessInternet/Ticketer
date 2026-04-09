@@ -1,17 +1,17 @@
 import { env } from 'node:process';
 import { createEnv } from '@t3-oss/env-core';
 import { z } from 'zod';
-import { common } from './common';
 
 export const environment = createEnv({
 	server: {
-		...common,
+		npm_package_version: z.string(),
+		NODE_ENV: z.union([z.literal('development'), z.literal('production')]),
 		DISCORD_APPLICATION_ID: z.string().min(17),
 		DISCORD_BOT_TOKEN: z.string(),
 		DISCORD_GUILD_ID: z.string().min(17),
 		DISCORD_OWNER_ID: z.string().min(17),
-		DISCORD_SUPPORT_SERVER: z.url({ protocol: /^https?$/, hostname: /^discord\.gg$/ }).optional(),
-		WEBSITE_URL: z.url(),
+		// z.url instead of z.httpUrl to allow ports in the URL for e.g. localhost.
+		WEBSITE_URL: z.url({ protocol: /^https?$/ }).optional(),
 	},
 	runtimeEnv: env,
 	emptyStringAsUndefined: true,

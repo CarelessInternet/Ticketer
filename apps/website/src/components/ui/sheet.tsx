@@ -3,7 +3,6 @@
 import * as SheetPrimitive from '@radix-ui/react-dialog';
 import { XIcon } from 'lucide-react';
 import type * as React from 'react';
-
 import { cn } from '@/lib/utils';
 
 function Sheet({ ...properties }: React.ComponentProps<typeof SheetPrimitive.Root>) {
@@ -100,4 +99,4 @@ function SheetDescription({ className, ...properties }: React.ComponentProps<typ
 	);
 }
 
-export { Sheet, SheetTrigger, SheetClose, SheetContent, SheetHeader, SheetFooter, SheetTitle, SheetDescription };
+export { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger };

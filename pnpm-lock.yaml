@@ -26,6 +26,9 @@ importers:
       '@ticketer/env':
         specifier: workspace:*
         version: link:../../packages/env
+      '@ticketer/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
       chalk:
         specifier: ^5.6.2
         version: 5.6.2
@@ -41,10 +44,6 @@ importers:
       zod:
         specifier: ^4.3.6
         version: 4.3.6
-    devDependencies:
-      '@ticketer/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
 
   apps/website:
     dependencies:

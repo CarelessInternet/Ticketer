@@ -1,12 +1,12 @@
 import '../globals.css';
 import { environment } from '@ticketer/env/website';
+import { ThemeProvider } from '@wrksz/themes/next';
 import type { Metadata } from 'next';
 import { DM_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import Script from 'next/script';
 import { hasLocale, type Locale, NextIntlClientProvider } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { ThemeProvider } from 'next-themes';
 import { ViewTransition } from 'react';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
@@ -53,6 +53,7 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[lo
 					defer
 					src={new URL('/script.js', environment.NEXT_PUBLIC_UMAMI_URL).toString()}
 					data-website-id={environment.NEXT_PUBLIC_UMAMI_ID}
+					strategy="afterInteractive"
 				/>
 			)}
 			<body className={cn('min-h-screen bg-background font-sans antialiased', font.variable)}>

@@ -6,7 +6,7 @@ import CodeBlock from '@/components/CodeBlock';
 import Divider from '@/components/Divider';
 import ExternalLink from '@/components/ExternalLink';
 import Paragraph from '@/components/Paragraph';
-import RichText from '@/components/RichText';
+import RichText, { UTMLinkSupport } from '@/components/RichText';
 import ScrollLink from '@/components/ScrollLink';
 import Title from '@/components/Title';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -81,6 +81,7 @@ DISCORD_APPLICATION_ID=""
 DISCORD_BOT_TOKEN=""
 DISCORD_GUILD_ID=""
 DISCORD_OWNER_ID=""
+WEBSITE_URL="https://ticketer.pyce.eu" # Optional, change the URL or leave it as is to show credit :).
 `.trim();
 
 const databaseEnvironmentTemplate = `
@@ -123,6 +124,11 @@ export default async function Page({ params }: PageProps<'/[locale]/docs/self-ho
 							t.rich('heading.description', {
 								linkDocker: (chunk) => (
 									<ExternalLink href="https://docs.docker.com/engine/install/">{chunk}</ExternalLink>
+								),
+								linkSupport: (chunk) => (
+									<UTMLinkSupport medium="hyperlink" content="self-hosting">
+										{chunk}
+									</UTMLinkSupport>
 								),
 								...tags,
 							})

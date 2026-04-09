@@ -5,7 +5,7 @@
 
 # Ticketer
 
-Welcome to the official GitHub page for the Ticketer bot! Here lies the source code for the bot and website.<br>
+Welcome to the official GitHub page for the Ticketer project! Here lies the source code for the bot and website.<br>
 Consider starring the repository, all stars and forks are appreciated!<br>
 Do not make a public clone of the bot.<br>
 
@@ -19,4 +19,4 @@ For any bug reports, suggestions, or general feedback, please submit an issue or
 
 ## Pull Requests
 
-If you wish to create a pull request for a feature, bug fix, or anything that may benefit the bot, feel free to do so!
+If you wish to create a pull request for a feature, bug fix, or anything that may benefit the project, feel free to do so!

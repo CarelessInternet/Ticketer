@@ -38,7 +38,7 @@
 				}
 			},
 			"items": {
-				"sidebar": "Länkar & Tema",
+				"sidebar": "Länkar, Språk & Tema",
 				"invite": "Länk till Discord-servern",
 				"support": "Discord Stödserver",
 				"github": "GitHub-förvaret",
@@ -236,7 +236,7 @@
 						"paragraphs": {
 							"1": "Öppna Visual Studio Code och öppna kommandopaletten inuti kodeditorn och kör följande kommando:",
 							"2": "Du blir ombedd att ange en länk till ett repository. Klistra in Ticketers GitHub-länk och välj därefter huvudgrenen (main branch):",
-							"3": "När Dev Containern har startat kan du börja koda. Så enkelt är det! Glöm inte att skapa de nödvändiga utvecklingsmiljöfilerna för boten, databasen, och webbsidan för att kunna köra de olika apparna!"
+							"3": "När Dev Containern har startat kan du börja koda. Så enkelt är det! Glöm inte att skapa de nödvändiga utvecklingsmiljöfilerna för boten och webbsidan för att kunna köra de olika apparna!"
 						}
 					}
 				}

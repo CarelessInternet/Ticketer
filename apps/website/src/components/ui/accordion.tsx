@@ -3,7 +3,6 @@
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDownIcon } from 'lucide-react';
 import type * as React from 'react';
-
 import { cn } from '@/lib/utils';
 
 function Accordion({ ...properties }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
@@ -58,4 +57,4 @@ function AccordionContent({
 	);
 }
 
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };
+export { Accordion, AccordionContent, AccordionItem, AccordionTrigger };

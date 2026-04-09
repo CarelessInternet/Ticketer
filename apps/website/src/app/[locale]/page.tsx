@@ -3,6 +3,7 @@ import type { Locale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import InternalLink from '@/components/InternalLink';
 import { Button } from '@/components/ui/button';
+import { UTM } from '@/lib/analytics';
 
 export default async function Home({ params }: PageProps<'/[locale]'>) {
 	const { locale } = await params;
@@ -25,7 +26,12 @@ export default async function Home({ params }: PageProps<'/[locale]'>) {
 				</div>
 				<div className="flex justify-center">
 					<Button variant="outline" asChild className="w-fit gap-x-1">
-						<InternalLink href="/links/discord/invite" noLocalisation noDefaultStyles prefetch={false}>
+						<InternalLink
+							href={UTM({ route: '/links/discord/invite', medium: 'button link', content: 'homepage' })}
+							noLocalisation
+							noDefaultStyles
+							prefetch={false}
+						>
 							<Plus />
 							{t('button')}
 						</InternalLink>

@@ -16,6 +16,7 @@ import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import type { HTMLAttributes, JSX, PropsWithChildren } from 'react';
 import { Button } from '@/components/ui/button';
+import { UTM } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 import InternalLink from '../InternalLink';
 import {
@@ -25,7 +26,7 @@ import {
 	NavigationMenuList,
 	NavigationMenuTrigger,
 } from '../ui/navigation-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import Link from './Link';
 import LocaleSwitcher from './LocaleSwitcher';
@@ -162,22 +163,22 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 	const items = [
 		{
 			content: t('items.invite'),
-			href: '/links/discord/invite',
+			href: UTM({ route: '/links/discord/invite', medium: 'navbar link' }),
 			icon: <PlusCircle />,
 		},
 		{
 			content: t('items.support'),
-			href: '/links/discord/support',
+			href: UTM({ route: '/links/discord/support', medium: 'navbar link' }),
 			icon: <MessageCircleQuestion />,
 		},
 		{
 			content: t('items.github'),
-			href: '/links/github',
+			href: UTM({ route: '/links/github', medium: 'navbar link' }),
 			icon: <GitHub />,
 		},
 		{
 			content: t('items.donate'),
-			href: '/links/funding/donate',
+			href: UTM({ route: '/links/funding/donate', medium: 'navbar link' }),
 			icon: <HandCoins />,
 		},
 	] satisfies TooltipLinkItems[];
@@ -235,17 +236,19 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 									</Button>
 								</SheetTrigger>
 								<SheetContent side="right">
-									<SheetHeader className="pb-2">
+									<SheetHeader>
 										<SheetTitle>{t('items.sidebar')}</SheetTitle>
+										{/* Required to get rid of the missing description warning. */}
+										<SheetDescription className="hidden"></SheetDescription>
 									</SheetHeader>
-									<div className="space-y-4">
+									<div className="ml-4 space-y-4">
 										<TooltipLinkItems inDrawer items={items} />
 										<div className="flex items-center space-x-2">
-											<LocaleSwitcher />
+											<LocaleSwitcher content={t('items.locale.change')} />
 											<p>{t('items.locale.change')}</p>
 										</div>
 										<div className="flex items-center space-x-2">
-											<ThemeSwitcher />
+											<ThemeSwitcher content={t('items.theme.change')} />
 											<p>{t('items.theme.change')}</p>
 										</div>
 									</div>
@@ -254,16 +257,8 @@ export default async function Navbar({ className, ...properties }: HTMLAttribute
 						</div>
 						<div className="hidden space-x-2 lg:flex">
 							<TooltipLinkItems items={items} />
-							<TooltipItem content={t('items.locale.change')}>
-								<div>
-									<LocaleSwitcher />
-								</div>
-							</TooltipItem>
-							<TooltipItem content={t('items.theme.change')}>
-								<div>
-									<ThemeSwitcher />
-								</div>
-							</TooltipItem>
+							<LocaleSwitcher content={t('items.locale.change')} />
+							<ThemeSwitcher content={t('items.theme.change')} />
 						</div>
 					</div>
 				</div>

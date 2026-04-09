@@ -1,6 +1,6 @@
 {
-	"$schema": "https://turbo.build/schema.json",
-	"globalEnv": ["NEXT_PUBLIC_*"],
+	"$schema": "./node_modules/turbo/schema.json",
+	"globalEnv": ["DB_*", "NEXT_PUBLIC_*"],
 	"globalDependencies": ["**/.env.*.local"],
 	"ui": "tui",
 	"tasks": {

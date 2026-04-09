@@ -1,0 +1,3 @@
+{
+	"extends": ["@ticketer/tsconfig/tsconfig.base.json"]
+}

@@ -1,3 +1,6 @@
+publicHoistPattern:
+  - "@types/node" # Required for only one installation of types to be present in all packages.
+
 packages:
   - apps/*
   - packages/*

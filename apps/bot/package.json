@@ -16,13 +16,11 @@
 		"@ticketer/database": "workspace:*",
 		"@ticketer/djs-framework": "workspace:*",
 		"@ticketer/env": "workspace:*",
+		"@ticketer/tsconfig": "workspace:*",
 		"chalk": "^5.6.2",
-		"discord.js": "^14.25.1",
+		"discord.js": "^14.26.2",
 		"tsx": "^4.21.0",
-		"typesafe-i18n": "^5.26.2",
-		"zod": "^4.3.5"
-	},
-	"devDependencies": {
-		"@types/node": "^25.0.6"
+		"typesafe-i18n": "^5.27.1",
+		"zod": "^4.3.6"
 	}
 }

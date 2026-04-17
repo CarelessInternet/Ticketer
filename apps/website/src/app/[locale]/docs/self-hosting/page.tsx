@@ -47,12 +47,12 @@ services:
     networks:
       - ticketer_database_network
 
-  # Comment the service below if you do not want to self-host the website.
+  # Remove the service below if you do not want to self-host the website.
   # The website is exposed on port 2027.
   website:
     build:
-      # To build a specific version instead of the latest, add e.g. "#v3.6.1" after ".git" below.
-      context: https://github.com/CarelessInternet/Ticketer.git#v3.6.1
+      # To build a specific version instead of the latest, add e.g. "#v3.6.2" after ".git" below.
+      context: https://github.com/CarelessInternet/Ticketer.git
       dockerfile: ./apps/website/Dockerfile
       args:
         NEXT_PUBLIC_SITE_URL: "http://localhost:2027" # Change to the public-facing URL if needed.

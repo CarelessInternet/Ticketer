@@ -18,7 +18,7 @@
 		"@ticketer/env": "workspace:*",
 		"@ticketer/tsconfig": "workspace:*",
 		"chalk": "^5.6.2",
-		"discord.js": "^14.26.2",
+		"discord.js": "^14.26.3",
 		"tsx": "^4.21.0",
 		"typesafe-i18n": "^5.27.1",
 		"zod": "^4.3.6"

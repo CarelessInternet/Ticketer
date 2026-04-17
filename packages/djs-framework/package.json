@@ -10,7 +10,7 @@
 		"test": "tsx --test ./tests/**/*.test.ts"
 	},
 	"peerDependencies": {
-		"discord.js": "^14"
+		"discord.js": "^14.26.3"
 	},
 	"devDependencies": {
 		"@ticketer/tsconfig": "workspace:*",

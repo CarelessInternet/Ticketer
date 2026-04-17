@@ -43,7 +43,7 @@ export default class extends Modal.Interaction {
 			return interaction.followUp({ components: configurationMenu(channel.id), content: interaction.message?.content });
 		}
 
-		await interaction.deferUpdate();
+		interaction.message ? await interaction.deferUpdate() : await interaction.deferReply();
 		await database
 			.insert(userForumsConfigurations)
 			.values({

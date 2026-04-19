@@ -51,7 +51,7 @@ services:
   # The website is exposed on port 2027.
   website:
     build:
-      # To build a specific version instead of the latest, add e.g. "#v3.6.2" after ".git" below.
+      # To build a specific version instead of the latest, add e.g. "#v3.6.3" after ".git" below.
       context: https://github.com/CarelessInternet/Ticketer.git
       dockerfile: ./apps/website/Dockerfile
       args:

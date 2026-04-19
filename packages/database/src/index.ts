@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath } from 'bun';
 import { drizzle } from 'drizzle-orm/mysql2';
 import { migrate as drizzleMigrate } from 'drizzle-orm/mysql2/migrator';
 import { createConnection } from 'mysql2/promise';

@@ -1,4 +1,3 @@
-import { env } from 'node:process';
 import {
 	type Client,
 	Colors,
@@ -25,7 +24,7 @@ export function embed({ client }: Base) {
 	return new EmbedBuilder()
 		.setColor(Colors.Blurple)
 		.setTimestamp()
-		.setFooter({ text: `Version ${env.npm_package_version}`, iconURL: client.user.displayAvatarURL() });
+		.setFooter({ text: `Version ${import.meta.env.npm_package_version}`, iconURL: client.user.displayAvatarURL() });
 }
 
 type Member = User | GuildMember;
@@ -78,7 +77,7 @@ export function container({
 		.addTextDisplayComponents(
 			new TextDisplayBuilder().setContent(
 				subtext(
-					`${client.user.displayName}: Version ${env.npm_package_version} • ${time(new Date(), TimestampStyles.ShortDateMediumTime)}`,
+					`${client.user.displayName}: Version ${import.meta.env.npm_package_version} • ${time(new Date(), TimestampStyles.ShortDateMediumTime)}`,
 				),
 			),
 		);

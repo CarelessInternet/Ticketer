@@ -1,4 +1,3 @@
-import { env } from 'node:process';
 import { createEnv } from '@t3-oss/env-core';
 import { z } from 'zod';
 
@@ -13,6 +12,6 @@ export const environment = createEnv({
 		// z.url instead of z.httpUrl to allow ports in the URL for e.g. localhost.
 		WEBSITE_URL: z.url({ protocol: /^https?$/ }).optional(),
 	},
-	runtimeEnv: env,
+	runtimeEnv: import.meta.env,
 	emptyStringAsUndefined: true,
 });

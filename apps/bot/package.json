@@ -4,12 +4,12 @@
 	"main": "./src/index.ts",
 	"type": "module",
 	"scripts": {
-		"dev": "tsx watch --env-file=.env.bot.development.local .",
-		"debug": "tsx watch --inspect-wait --env-file=.env.bot.development.local .",
-		"start": "tsx .",
+		"dev": "bun --env-file=.env.bot.development.local .",
+		"debug": "bun --inspect-wait --env-file=.env.bot.development.local .",
+		"start": "bun .",
 		"check": "biome check --write",
-		"commands:deploy:development": "tsx --env-file=.env.bot.development.local ./src/deploy.ts",
-		"commands:deploy:production": "tsx ./src/deploy.ts",
+		"commands:deploy:development": "bun --env-file=.env.bot.development.local ./src/deploy.ts",
+		"commands:deploy:production": "bun ./src/deploy.ts",
 		"i18n": "typesafe-i18n"
 	},
 	"dependencies": {
@@ -19,7 +19,6 @@
 		"@ticketer/tsconfig": "workspace:*",
 		"chalk": "^5.6.2",
 		"discord.js": "^14.26.3",
-		"tsx": "^4.21.0",
 		"typesafe-i18n": "^5.27.1",
 		"zod": "^4.3.6"
 	}

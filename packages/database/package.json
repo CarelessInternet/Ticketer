@@ -7,7 +7,7 @@
 	"type": "module",
 	"scripts": {
 		"check": "biome check --write",
-		"drizzle:studio:development": "drizzle-kit studio --port 3001",
+		"drizzle:studio:development": "drizzle-kit studio",
 		"migrations:check": "drizzle-kit check",
 		"migrations:drop": "drizzle-kit drop",
 		"migrations:generate": "drizzle-kit generate",

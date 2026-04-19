@@ -4,15 +4,10 @@
 # If you need more help, visit the Dockerfile reference guide at
 # https://docs.docker.com/engine/reference/builder/
 
-ARG NODE_MAJOR_VERSION=24
-ARG PNPM_MAJOR_VERSION=10
+ARG BUN_MAJOR_VERSION=1
 ARG TURBO_MAJOR_VERSION=2
 
-FROM node:${NODE_MAJOR_VERSION}-alpine AS base
-RUN --mount=type=cache,target=/root/.npm \
-    npm install -g pnpm@${PNPM_MAJOR_VERSION}
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
+FROM oven/bun:${BUN_MAJOR_VERSION}-alpine AS base
 ENV NODE_ENV=production
 
 # Require the dependencies which "@ticketer/website" depends on.
@@ -20,7 +15,7 @@ FROM base AS builder
 RUN apk add --no-cache libc6-compat
 RUN apk update
 WORKDIR /src
-RUN pnpm add -g turbo@${TURBO_MAJOR_VERSION}
+RUN bun add --global turbo@${TURBO_MAJOR_VERSION}
 COPY . .
 RUN turbo prune @ticketer/website --docker
 
@@ -28,15 +23,12 @@ FROM base AS installer
 RUN apk add --no-cache libc6-compat
 RUN apk update
 WORKDIR /src
-RUN pnpm add -g turbo@${TURBO_MAJOR_VERSION}
+RUN bun add --global turbo@${TURBO_MAJOR_VERSION}
 
 # Install the dependencies.
 COPY --from=builder /src/out/json/ .
-COPY --from=builder /src/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
-    --mount=type=cache,target=/root/.local/share/pnpm/store \
-    pnpm install --frozen-lockfile
+COPY --from=builder /src/out/bun.lock ./bun.lock
+RUN bun install --frozen-lockfile
 
 # Build the project and its dependencies.
 COPY --from=builder /src/out/full/ .
@@ -62,18 +54,18 @@ RUN turbo run build --filter=@ticketer/website
 FROM base AS runner
 RUN apk add --no-cache curl
 WORKDIR /src
-USER node
+USER bun
 
 # https://turborepo.com/docs/guides/tools/docker
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=installer --chown=node:node /src/apps/website/.next/standalone ./
-COPY --from=installer --chown=node:node /src/apps/website/.next/static ./apps/website/.next/static
-COPY --from=installer --chown=node:node /src/apps/website/public ./apps/website/public
+COPY --from=installer --chown=bun:bun /src/apps/website/.next/standalone ./
+COPY --from=installer --chown=bun:bun /src/apps/website/.next/static ./apps/website/.next/static
+COPY --from=installer --chown=bun:bun /src/apps/website/public ./apps/website/public
 
 ENV HOSTNAME=0.0.0.0
 ENV PORT=2027
 EXPOSE ${PORT}
 
 # Run the website.
-CMD ["node", "apps/website/server.js"]
+CMD ["bun", "run", "apps/website/server.js"]

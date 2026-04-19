@@ -257,10 +257,10 @@ export default async function Page({ params }: PageProps<'/[locale]/docs/self-ho
 					</span>
 				</CodeBlock>
 				<Paragraph>{t('content.running-the-bot.paragraphs.2')}</Paragraph>
-				<CodeBlock clipboardText='docker exec ticketer-bot sh -c "cd /src/apps/bot && pnpm commands:deploy:production"'>
+				<CodeBlock clipboardText='docker exec ticketer-bot sh -c "cd /src/apps/bot && bun run commands:deploy:production"'>
 					<span>
 						<span className="text-green-500">docker </span>
-						<span>exec ticketer-bot sh -c &quot;cd /src/apps/bot && pnpm commands:deploy:production&quot;</span>
+						<span>exec ticketer-bot sh -c &quot;cd /src/apps/bot && bun run commands:deploy:production&quot;</span>
 					</span>
 				</CodeBlock>
 				<Paragraph>

@@ -1,11 +1,10 @@
-import { fileURLToPath } from 'node:url';
 import { environment } from '@ticketer/env/bot';
+import { fileURLToPath } from 'bun';
 import chalk from 'chalk';
 import { ShardingManager } from 'discord.js';
 import { formatDateLong } from '@/utils';
 
 const sharder = new ShardingManager(fileURLToPath(import.meta.resolve('./bot.ts')), {
-	execArgv: ['--import=tsx'],
 	mode: 'process',
 	token: environment.DISCORD_BOT_TOKEN,
 });

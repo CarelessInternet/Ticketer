@@ -51,9 +51,10 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[lo
 			{environment.NEXT_PUBLIC_UMAMI_ID && environment.NEXT_PUBLIC_UMAMI_URL && (
 				<Script
 					defer
+					strategy="afterInteractive"
 					src={new URL('/script.js', environment.NEXT_PUBLIC_UMAMI_URL).toString()}
 					data-website-id={environment.NEXT_PUBLIC_UMAMI_ID}
-					strategy="afterInteractive"
+					data-performance="true"
 				/>
 			)}
 			<body className={cn('min-h-screen bg-background font-sans antialiased', font.variable)}>

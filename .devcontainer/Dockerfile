@@ -4,15 +4,9 @@
 # If you need more help, visit the Dockerfile reference guide at
 # https://docs.docker.com/engine/reference/builder/
 
-ARG NODE_MAJOR_VERSION=24
-# Necessary to run "pnpm install" when the Dev Container has started.
-ARG PNPM_MAJOR_VERSION=10
+ARG BUN_MAJOR_VERSION=1
 
-FROM node:${NODE_MAJOR_VERSION}-alpine as base
-RUN --mount=type=cache,target=/root/.npm \
-    npm install -g pnpm@${PNPM_MAJOR_VERSION}
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
+FROM oven/bun:${BUN_MAJOR_VERSION}-alpine AS base
 
 # https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials#_sharing-gpg-keys
 RUN apk add --no-cache bash bash-completion git gnupg gcompat

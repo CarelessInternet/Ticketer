@@ -1,7 +1,7 @@
 import { exit } from 'node:process';
-import { fileURLToPath } from 'node:url';
 import { Client } from '@ticketer/djs-framework';
 import { environment } from '@ticketer/env/bot';
+import { fileURLToPath } from 'bun';
 import chalk from 'chalk';
 
 const client = new Client({

@@ -7,13 +7,12 @@
 	"type": "module",
 	"scripts": {
 		"check": "biome check --write",
-		"test": "tsx --test ./tests/**/*.test.ts"
+		"test": "bun test"
 	},
 	"peerDependencies": {
 		"discord.js": "^14.26.3"
 	},
 	"devDependencies": {
-		"@ticketer/tsconfig": "workspace:*",
-		"tsx": "^4.21.0"
+		"@ticketer/tsconfig": "workspace:*"
 	}
 }

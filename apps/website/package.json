@@ -4,11 +4,11 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --port 2027",
-		"debug": "pnpm run dev",
+		"debug": "bun run dev",
 		"build": "NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 next build",
 		"start": "NODE_ENV=production next start --port 2027",
 		"typegen": "next typegen",
-		"check": "pnpm run typegen && biome check --write"
+		"check": "bun run typegen && biome check --write"
 	},
 	"dependencies": {
 		"@icons-pack/react-simple-icons": "^13.13.0",
@@ -39,6 +39,7 @@
 	"devDependencies": {
 		"@tailwindcss/postcss": "^4.2.2",
 		"@ticketer/tsconfig": "workspace:*",
+		"@types/node": "^25.6.0",
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
 		"autoprefixer": "^10.5.0",

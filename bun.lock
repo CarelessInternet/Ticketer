@@ -11,7 +11,7 @@
     },
     "apps/bot": {
       "name": "@ticketer/bot",
-      "version": "3.6.2",
+      "version": "3.6.3",
       "dependencies": {
         "@ticketer/database": "workspace:*",
         "@ticketer/djs-framework": "workspace:*",
